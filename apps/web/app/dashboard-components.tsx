@@ -59,10 +59,10 @@ function Comparisons({
   const { t, month } = useLocale();
   const base = month(shiftMonth(period, comparisonOffset(comparison)));
   return (
-    <span title={t("vs. {period}", { period: base })}>
+    <span className="comparison-pair" title={t("vs. {period}", { period: base })}>
       <span className="comparison-label">
         {t(comparison === "mom" ? "Mensual" : "Interanual")}
-      </span>{" "}
+      </span>
       <Change value={m[comparison]} compact />
       <span className="sr-only"> · {t("vs. {period}", { period: base })}</span>
     </span>
@@ -824,11 +824,14 @@ export function RankingCard({
                     className="ranking-amount"
                     title={
                       mode === "value"
-                        ? currency(entityValue(e, prices, mode))
+                        ? `${number(entityValue(e, prices, mode), 2, 0)} USD`
                         : `${number(entityValue(e, prices, mode), fluid === "oil" ? 0 : 2, 0)} ${volumeUnit(fluid)}`
                     }
                   >
                     {compact(entityValue(e, prices, mode))}
+                    {entityValue(e, prices, mode) != null && (
+                      <span className="ranking-unit">{mode === "value" ? "USD" : volumeUnit(fluid)}</span>
+                    )}
                   </span>
                 </span>
                 {operators && (

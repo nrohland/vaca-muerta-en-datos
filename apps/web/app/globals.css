@@ -1737,3 +1737,38 @@ footer .status-badge {
     flex-wrap: wrap;
   }
 }
+
+/* Keep localized comparison labels close to the numeric token. */
+.comparison-pair {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+}
+.comparison-pair .comparison-label {
+  margin-right: 0;
+}
+.kpi-value {
+  column-gap: 6px;
+}
+.ranking-amount {
+  white-space: nowrap;
+}
+.ranking-unit {
+  margin-left: 4px;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+@media (min-width: 601px) {
+  .ranking-columns,
+  .ranking-row {
+    grid-template-columns: minmax(0, 1fr) 115px 60px 90px;
+  }
+  .ranking-areas .ranking-columns,
+  .ranking-areas .ranking-row {
+    grid-template-columns: minmax(0, 1fr) 115px 90px;
+  }
+}
+footer .status-badge {
+  margin-left: 6px;
+}

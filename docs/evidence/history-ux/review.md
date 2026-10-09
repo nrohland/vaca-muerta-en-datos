@@ -32,3 +32,11 @@ El caso de revisión guarda automáticamente las capturas en `docs/evidence/hist
 ## Archivos
 
 `apps/web/app/dashboard-components.tsx`, `globals.css`, `page.tsx`, nuevo `icons.tsx`; `lib/i18n.ts`, nuevo `history.ts`; tests de formatos, resumen y nuevo `history-review.spec.ts`; spec `specs/007-history-ux/spec.md` y evidencia de validación.
+
+## Ajustes por comentarios de revisión
+
+Se elimina la separación duplicada entre etiqueta de comparación y porcentaje (espacio de texto más margen CSS), usando un único gap de 4 px. Se reduce a 6 px el espacio valor/unidad del KPI. Los números y porcentajes localizados conservan sus helpers existentes y precisión.
+
+Ambos rankings muestran ahora la unidad junto al valor compacto (bbl, MMm³ o USD); el tooltip monetario muestra el importe completo con máximo dos decimales. Las columnas se ajustan para alojar la unidad. El footer visible se limita a fuente, estado preliminar y enlace a Metodología; período, universo y limitaciones siguen disponibles dentro de la explicación expandible.
+
+Validación de estos ajustes: 21 tests aprobados, tipos y build estático aprobados, diff sin errores. La revisión visual sigue pendiente del acceso al navegador. Gráfico adicional de pozos productivos propuesto al usuario, todavía no implementado.

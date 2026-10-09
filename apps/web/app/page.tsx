@@ -399,9 +399,6 @@ export default function Page() {
             </a>
             {data && (
               <>
-                {t(" · Producción hasta {period}", {
-                  period: month(data.manifest.source.approved_period),
-                })}{" "}
                 {!data.approval && (
                   <span
                     className="status-badge"
@@ -414,14 +411,6 @@ export default function Page() {
                 )}
               </>
             )}
-            <span>
-              {t(" · Vaca Muerta · No convencional. ")}
-              {t(
-                fluid === "oil"
-                  ? estimationNote
-                  : "Valorización del gas pendiente.",
-              )}
-            </span>
           </span>
           <details id="methodology" className="provenance">
             <summary>{t("Fuentes y metodología")}</summary>

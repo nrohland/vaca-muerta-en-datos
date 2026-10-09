@@ -1,0 +1,212 @@
+{
+  "data_sha256": "96b02cf1cf912e3e4a9d100dee2dff886517d374b8a85ec3f09f7671b653a4e1",
+  "generated_at": "2026-10-02T16:11:26.380095+00:00",
+  "input_sha256": {
+    "activity": "e7ccf370048526bb0e1308af68dcd6c9f2ca103ed3dd3d75ed4871b0e6d43963",
+    "areas_geometry": "be8495ca6084aa402cb9192cb4bbc7b718cc9743496b40194200de728b301ace",
+    "dbt_run_results": "0b24c17b433d4e7a8ede86586fa270e49e095eb0266f501cdaa088a93c8826eb",
+    "entities": "ebbe01401cabd6109d521b1efd2a8b7a90983f68ed5894decfb31e20df1af6c9",
+    "geo_manifest": "5e2f6dc3469a0a91eb3cba859793ceb4c7005bdeb3411f9cbe0984e7b641d518",
+    "map_coverage": "ce13df9bbb3ce83e6d0f8a0d43faa75f5c2c357f2f11f1b20991063e0e0c82b0",
+    "operator_areas": "e91b618a4efe11673c4ed8898988ab076d2ec696f2b81a70e32a36448a3a3819",
+    "production": "a0d07bc9e2eea3fe64d2b8ec4fa7ad6c71dac2f126cd88aff173be41f078523e"
+  },
+  "map": {
+    "index": {
+      "bytes": 72566,
+      "path": "map/index.json",
+      "sha256": "2b1f5f5b8f06081e9c1ef162616d56528a5696779d4e181ecbdaf68ad56ee4ee"
+    },
+    "schema_version": 1
+  },
+  "operator_grouping": {
+    "legal_provenance_field": "legal_operator_provenance",
+    "mappings": [
+      {
+        "grouping_basis": "reviewed_explicit_id_mapping",
+        "history_policy": "presentation_constant_from_2023_01_no_acquired_vendor_restatement",
+        "legal_operator_id": "PCN",
+        "operator_group_id": "PLUSPETROL",
+        "operator_group_name": "Pluspetrol",
+        "rule_version": "estrato-operator-groups-v1",
+        "valid_from": "2023-01-01",
+        "valid_to": ""
+      },
+      {
+        "grouping_basis": "reviewed_explicit_id_mapping",
+        "history_policy": "presentation_constant_from_2023_01_no_acquired_vendor_restatement",
+        "legal_operator_id": "PLU",
+        "operator_group_id": "PLUSPETROL",
+        "operator_group_name": "Pluspetrol",
+        "rule_version": "estrato-operator-groups-v1",
+        "valid_from": "2023-01-01",
+        "valid_to": ""
+      }
+    ],
+    "rule_version": "estrato-operator-groups-v1",
+    "seed_sha256": "4ac8b5ac9491fdd65a1d6122c80b1b854f859d4040417be78464c0a9015aeffc",
+    "semantics": "constant presentation mapping from 2023-01; no acquired-vendor historical restatement",
+    "unknown_id_policy": "preserve source ID and declared legal name"
+  },
+  "schema_version": 1,
+  "source": {
+    "acceptance_note": "Engineering review of full retained official available-record snapshots: schema, pagination, grain, period coverage, primary dbt tests; source declarations remain revisable. Owner approval for public promotion remains separate.",
+    "accepted_at": "2026-10-02T15:17:07.997560+00:00",
+    "accepted_periods": [
+      "2023-01-01",
+      "2023-02-01",
+      "2023-03-01",
+      "2023-04-01",
+      "2023-05-01",
+      "2023-06-01",
+      "2023-07-01",
+      "2023-08-01",
+      "2023-09-01",
+      "2023-10-01",
+      "2023-11-01",
+      "2023-12-01",
+      "2024-01-01",
+      "2024-02-01",
+      "2024-03-01",
+      "2024-04-01",
+      "2024-05-01",
+      "2024-06-01",
+      "2024-07-01",
+      "2024-08-01",
+      "2024-09-01",
+      "2024-10-01",
+      "2024-11-01",
+      "2024-12-01",
+      "2025-01-01",
+      "2025-02-01",
+      "2025-03-01",
+      "2025-04-01",
+      "2025-05-01",
+      "2025-06-01",
+      "2025-07-01",
+      "2025-08-01",
+      "2025-09-01",
+      "2025-10-01",
+      "2025-11-01",
+      "2025-12-01",
+      "2026-01-01",
+      "2026-02-01",
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01",
+      "2026-06-01",
+      "2026-07-01"
+    ],
+    "approved_period": "2026-07-01",
+    "commit": "448a406",
+    "comparison_evidence": "cambios-respecto-carga-anterior.json",
+    "data_kind": "official",
+    "geography_candidate_manifest": "geo-candidate-20261002/manifest.json",
+    "geography_review_evidence": [
+      "validacion-carga-geografica.json",
+      "validacion-join-geografia-bigquery.json",
+      "validacion-topologia-concesiones.json"
+    ],
+    "raw_candidate": "vaca-muerta-pulse.raw_cap4_candidate_20261001.produccion_pozo_mes",
+    "resources": [
+      {
+        "extracted_at": "2026-10-01T19:04:37.084000+00:00",
+        "hash_scope": "normalized full annual NDJSON, not original CSV bytes",
+        "id": "231c39b3-e81e-4398-af8d-b115807f2c25",
+        "original_download_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/231c39b3-e81e-4398-af8d-b115807f2c25/download/produccin-de-pozos-de-gas-y-petrleo-2023.csv",
+        "period_rows": {
+          "2023-01-01": 80833,
+          "2023-02-01": 80912,
+          "2023-03-01": 80969,
+          "2023-04-01": 81048,
+          "2023-05-01": 81133,
+          "2023-06-01": 81240,
+          "2023-07-01": 81312,
+          "2023-08-01": 81349,
+          "2023-09-01": 81431,
+          "2023-10-01": 81496,
+          "2023-11-01": 81561,
+          "2023-12-01": 81687
+        },
+        "raw_rows": 974971,
+        "sha256": "50ebfafe74cafcace2514d6d5c690b1bd04d19aa37bab38680bddad5674d30e8",
+        "source_last_modified": "2026-06-05T17:37:05.622693",
+        "url": "https://datos.energia.gob.ar/api/3/action/datastore_search?resource_id=231c39b3-e81e-4398-af8d-b115807f2c25",
+        "year": 2023
+      },
+      {
+        "extracted_at": "2026-10-01T19:08:21.198817+00:00",
+        "hash_scope": "normalized full annual NDJSON, not original CSV bytes",
+        "id": "43a09dce-1742-44d0-bc13-f193deaab563",
+        "original_download_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/43a09dce-1742-44d0-bc13-f193deaab563/download/produccin-de-pozos-de-gas-y-petrleo-2024.csv",
+        "period_rows": {
+          "2024-01-01": 81572,
+          "2024-02-01": 81649,
+          "2024-03-01": 81720,
+          "2024-04-01": 81797,
+          "2024-05-01": 81883,
+          "2024-06-01": 81934,
+          "2024-07-01": 82008,
+          "2024-08-01": 82104,
+          "2024-09-01": 81994,
+          "2024-10-01": 82223,
+          "2024-11-01": 82316,
+          "2024-12-01": 82351
+        },
+        "raw_rows": 983551,
+        "sha256": "763006979c5f66d860d7108f03259ca3ad7149d3eab0f65a892ba04d3dac930e",
+        "source_last_modified": "2026-09-23T08:08:40.267048",
+        "url": "https://datos.energia.gob.ar/api/3/action/datastore_search?resource_id=43a09dce-1742-44d0-bc13-f193deaab563",
+        "year": 2024
+      },
+      {
+        "extracted_at": "2026-10-01T19:03:44.676624+00:00",
+        "hash_scope": "normalized full annual NDJSON, not original CSV bytes",
+        "id": "d774b5d7-0756-48fe-88f2-8729b57b22da",
+        "original_download_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/d774b5d7-0756-48fe-88f2-8729b57b22da/download/produccin-de-pozos-de-gas-y-petrleo-2025.csv",
+        "period_rows": {
+          "2025-01-01": 82412,
+          "2025-02-01": 82490,
+          "2025-03-01": 82556,
+          "2025-04-01": 82651,
+          "2025-05-01": 82734,
+          "2025-06-01": 82804,
+          "2025-07-01": 82184,
+          "2025-08-01": 82659,
+          "2025-09-01": 82846,
+          "2025-10-01": 82829,
+          "2025-11-01": 82835,
+          "2025-12-01": 82844
+        },
+        "raw_rows": 991844,
+        "sha256": "49ba36a68e2436922cf290f8b9b55d3b8c18284da8bac093b20aa28177520194",
+        "source_last_modified": "2026-09-23T08:05:59.029743",
+        "url": "https://datos.energia.gob.ar/api/3/action/datastore_search?resource_id=d774b5d7-0756-48fe-88f2-8729b57b22da",
+        "year": 2025
+      },
+      {
+        "extracted_at": "2026-10-01T19:00:47.305250+00:00",
+        "hash_scope": "normalized full annual NDJSON, not original CSV bytes",
+        "id": "fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+        "original_download_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+        "period_rows": {
+          "2026-01-01": 80423,
+          "2026-02-01": 80476,
+          "2026-03-01": 80510,
+          "2026-04-01": 82788,
+          "2026-05-01": 82872,
+          "2026-06-01": 79282,
+          "2026-07-01": 74649
+        },
+        "raw_rows": 561000,
+        "sha256": "6513c645158b0e53d1bd071f74c3e97a9605e5fbb3d467a7743d76d7d6a13ec8",
+        "source_last_modified": "2026-10-01T10:02:03.874866",
+        "url": "https://datos.energia.gob.ar/api/3/action/datastore_search?resource_id=fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+        "year": 2026
+      }
+    ],
+    "snapshot_revisions_note": "First preserved publication candidate; no previous public release exists. Comparison with September14 warehouse detected75 corrected2024 area assignments, with volumes unchanged."
+  },
+  "status": "candidate",
+  "version": "2026-07-01-96b02cf1cf91"
+}

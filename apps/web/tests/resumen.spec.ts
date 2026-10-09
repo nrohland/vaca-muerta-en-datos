@@ -1,0 +1,219 @@
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
+import { readFileSync, mkdirSync } from "node:fs";
+import path from "node:path";
+import { number, prepareEntities, type Release } from "../lib/contract";
+const release: Release = JSON.parse(
+  readFileSync("public/data/release.json", "utf8"),
+);
+const manifest = JSON.parse(readFileSync("public/data/manifest.json", "utf8"));
+const latest = manifest.source.approved_period;
+const base = "/vaca-muerta-pulse/";
+const evidence =
+  process.env.EVIDENCE_DIR ?? path.resolve("../../docs/evidence/resumen");
+async function ready(page: any) {
+  await expect(
+    page.getByRole("heading", { name: "Resumen de producción" }),
+  ).toBeVisible();
+}
+
+test("real snapshot matches KPIs and both top-five rankings for oil and gas", async ({
+  page,
+}) => {
+  await page.goto(base);
+  await ready(page);
+  for (const fluid of ["oil", "gas"] as const) {
+    await page
+      .getByRole("button", {
+        name: fluid === "oil" ? "Petróleo" : "Gas",
+        exact: true,
+      })
+      .click();
+    const r = release.production.find(
+      (r) => r.fluid === fluid && r.periodo === latest,
+    )!;
+    await expect(page.locator(".kpi-card--primary .kpi-value")).toContainText(
+      number(r.rate, fluid === "oil" ? 0 : 2),
+    );
+    await expect(page.locator(".kpi-comparisons")).toContainText(
+      number(r.yoy_rate_pct!),
+    );
+    await expect(page.locator(".kpi-comparisons")).toContainText(
+      number(r.mom_rate_pct!),
+    );
+    await expect(page.locator(".kpi-card").nth(1)).toContainText(
+      number(r.positive_producing_wells, 0),
+    );
+    await expect(page.locator(".kpi-card").nth(2)).toContainText(
+      number(r.volume, fluid === "oil" ? 0 : 2),
+    );
+    await expect(page.locator(".kpi-card").nth(3)).toContainText(
+      number(r.top5_company_share_pct),
+    );
+    for (const dimension of ["company", "area"] as const) {
+      const top = prepareEntities(
+        release.entities,
+        fluid,
+        dimension,
+        latest,
+      ).top;
+      const card = page.locator(
+        dimension === "company" ? ".ranking-operators" : ".ranking-areas",
+      );
+      await expect(card.locator("li")).toHaveCount(5);
+      for (let i = 0; i < 5; i++) {
+        const row = card.locator("li").nth(i),
+          e = top[i];
+        await expect(row.locator(".bar-value")).toContainText(
+          number(e.volume, fluid === "oil" ? 0 : 2),
+        );
+        await expect(row.locator(".yoy-value")).toContainText(
+          e.yoy_volume_pct == null
+            ? "Sin comparador"
+            : number(Math.abs(e.yoy_volume_pct)),
+        );
+        const width = await row
+          .locator(".bar-track>span")
+          .evaluate((el: any) => parseFloat(el.style.width));
+        expect(width).toBeCloseTo((e.volume / r.volume) * 100, 6);
+        if (dimension === "company")
+          await expect(row.locator(".share-value")).toContainText(
+            number((e.volume / r.volume) * 100),
+          );
+      }
+    }
+  }
+});
+test("filters, chart ranges, early missing comparisons and URL reload", async ({
+  page,
+}) => {
+  await page.goto(base);
+  await ready(page);
+  await page.getByRole("button", { name: "Gas", exact: true }).click();
+  await page.getByRole("button", { name: "36m", exact: true }).click();
+  await expect(page.getByRole("button", { name: "36m" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
+  await page
+    .getByLabel("Mes de producción")
+    .selectOption(manifest.source.accepted_periods[0]);
+  await expect(page.locator(".kpi-comparisons")).toContainText(
+    "Sin comparador",
+  );
+  await expect(page.locator(".kpi-comparisons")).toContainText(
+    "Sin comparador",
+  );
+  await page.reload();
+  await ready(page);
+  await expect(
+    page.getByRole("button", { name: "Gas", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByLabel("Mes de producción")).toHaveValue(
+    manifest.source.accepted_periods[0],
+  );
+  await page.getByText("Ver tabla de datos", { exact: true }).click();
+  await expect(page.locator("table")).toBeVisible();
+});
+test("progressive destinations retain filters and entity identity through browser history", async ({
+  page,
+}) => {
+  await page.goto(base);
+  await ready(page);
+  await page.getByRole("button", { name: "Gas", exact: true }).click();
+  const first = prepareEntities(release.entities, "gas", "company", latest)
+    .top[0];
+  await page.locator(".ranking-operators .ranking-row").first().click();
+  await expect(page.locator(".planned-view")).toContainText("Próximamente");
+  expect(new URL(page.url()).searchParams.get("operator")).toBe(
+    first.entity_id,
+  );
+  expect(new URL(page.url()).searchParams.get("fluid")).toBe("gas");
+  await page.goBack();
+  await ready(page);
+  await page.goForward();
+  await expect(page.locator(".planned-view")).toBeVisible();
+  await page.getByRole("button", { name: "Volver al Resumen" }).click();
+  await ready(page);
+  const area = prepareEntities(release.entities, "gas", "area", latest).top[0];
+  await page.locator(".ranking-areas .ranking-row").first().click();
+  await expect(
+    page.getByRole("heading", { name: area.entity_name, exact: true }),
+  ).toBeVisible();
+  expect(new URL(page.url()).searchParams.get("area")).toBe(area.entity_id);
+  await page.getByRole("tab", { name: "Producción", exact: true }).click();
+  await expect(page.locator(".planned-view")).toBeVisible();
+  await page.getByRole("tab", { name: "Actividad", exact: true }).click();
+  await expect(
+    page.getByRole("heading", { name: "Actividad", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("tab", { name: "Resumen", exact: true }).click();
+  await ready(page);
+  await page.getByRole("tab", { name: "Resumen", exact: true }).focus();
+  await page.keyboard.press("ArrowRight");
+  await expect(
+    page.getByRole("tab", { name: "Producción", exact: true }),
+  ).toBeFocused();
+});
+test("hash mismatch blocks display and retry recovers", async ({ page }) => {
+  await page.route("**/data/release.json", (route) =>
+    route.fulfill({ json: { schema_version: 1 } }),
+  );
+  await page.goto(base);
+  await expect(page.getByRole("alert")).toContainText("La versión no coincide");
+  await expect(page.locator(".kpi-card")).toHaveCount(0);
+  await page.unroute("**/data/release.json");
+  await page.getByRole("button", { name: "Reintentar" }).click();
+  await ready(page);
+});
+test("missing and invalid approval retain existing validation behavior", async ({
+  page,
+}) => {
+  await page.goto(base);
+  await ready(page);
+  await expect(page.locator(".status-badge")).toHaveText("Preliminar");
+  await page.route("**/data/approval.json", (route) =>
+    route.fulfill({ json: { status: "approved", version: "wrong" } }),
+  );
+  await page.reload();
+  await expect(page.getByRole("alert")).toContainText(
+    "Aprobación no corresponde",
+  );
+});
+for (const [name, width, height] of [
+  ["desktop", 1440, 900],
+  ["laptop", 1366, 768],
+  ["mobile", 390, 844],
+] as const) {
+  test(`visual and accessibility review ${name} light/dark`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width, height });
+    await page.goto(base);
+    await ready(page);
+    await expect(page.locator(".recharts-line-curve")).toBeVisible();
+    if (width >= 1101)
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollHeight <= window.innerHeight,
+        ),
+      ).toBe(true);
+    await expect(page.locator(".operator-logo img")).toHaveCount(5);
+    mkdirSync(evidence, { recursive: true });
+    for (const mode of ["light", "dark"] as const) {
+      if (mode === "dark")
+        await page.getByRole("button", { name: "Modo oscuro" }).click();
+      expect(
+        await page.evaluate(
+          () => document.documentElement.scrollWidth <= window.innerWidth,
+        ),
+      ).toBe(true);
+      const results = await new AxeBuilder({ page }).analyze();
+      expect(results.violations).toEqual([]);
+      await page.screenshot({
+        path: path.join(evidence, `${name}-${mode}.png`),
+        fullPage: true,
+      });
+    }
+  });
+}

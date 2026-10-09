@@ -1,5 +1,7 @@
 # Vaca Muerta: actualización y valorización para revisión
 
+[PR #33, borrador](https://github.com/nrohland/vaca-muerta-pulse/pull/33), rama `feat/resumen-data-valuation`, sobre la iteración aprobada #32.
+
 Agosto de 2026 incorporado al Resumen de revisión. Septiembre existe en el archivo oficial, pero su cobertura es parcial y queda excluido. La arquitectura aprobada se conserva; se aplicó la skill analytics-ui del ZIP. Sin merge, deploy ni promoción pública. Harness intacto.
 
 ## 1. Auditoría de fechas y retraso

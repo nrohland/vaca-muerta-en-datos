@@ -131,3 +131,7 @@ Diagrama de confianza: el SA de Meltano (`vm-pulse-meltano`) escribe `raw_*`; el
 - CDC sub-diario, Airflow/Composer, dbt Cloud, auth de usuarios, GIS pesado, cuenca fuera de Vaca Muerta como producto (el raw puede aterrizar más amplio y filtrar en `stg`).
 - Load de fuentes hermanas restantes (perforación SESCO, comercio exterior, ductos Res. 319/93, Brent, seed Oldelval). Adjunto IV: job `cap4-fracturas` (no el default de producción).
 - Rigs live (NCS/IAPG), breakeven, o cualquier KPI que el Front invente sin mart + URL de source.
+
+## Iteración UI Resumen (2026-10-09)
+
+Por autorización del usuario, Hito 3 incorpora solo Resumen y la base local de contratos/agregados en `apps/web`. Next.js + React/Recharts con componentes reutilizables; ver [ADR 0003](adrs/0003-resumen-ui.md) y [alcance](../specs/001-vaca-muerta-pulse/resumen-ui.md). No cierra el Hito 3 ni promueve el snapshot candidato.

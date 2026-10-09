@@ -1,5 +1,7 @@
 # Vaca Muerta: formatos, comparación temporal e idiomas
 
+[PR #34, borrador](https://github.com/nrohland/vaca-muerta-pulse/pull/34), sobre #33.
+
 Iteración sobre la arquitectura aprobada, usando la skill analytics-ui. Rama `feat/resumen-comparison-i18n`, apilada sobre #33. Sin merge ni deploy.
 
 ## Cambios

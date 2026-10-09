@@ -228,9 +228,7 @@ test("monetary mode updates metrics and units; gas availability and price failur
 }) => {
   await page.goto(base);
   await ready(page);
-  await page
-    .getByRole("button", { name: "Valor estimado", exact: true })
-    .click();
+  await page.getByRole("button", { name: "Valor USD", exact: true }).click();
   const r = release.production.find(
     (r) => r.fluid === "oil" && r.periodo === latest,
   )!;
@@ -330,7 +328,7 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
 }) => {
   await page.goto(base);
   await ready(page);
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(12);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   await expect(page.locator(".recharts-line-curve")).toBeVisible();
   await expect(page.locator(".recharts-yAxis")).toHaveCount(0);
   const info = page.getByRole("button", {
@@ -339,7 +337,7 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   });
   const before = await page.locator(".kpi-card").first().boundingBox();
   await info.hover();
-  await expect(page.getByRole("tooltip")).toContainText("días calendario");
+  await expect(page.getByRole("tooltip")).toContainText("Promedio diario");
   await info.press("Enter");
   await expect(page.locator('.kpi-card[data-flipped="true"]')).toHaveCount(1);
   const back = page.getByRole("button", {
@@ -368,8 +366,61 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   );
   await page.getByRole("button", { name: "Gas", exact: true }).click();
   await expect(page.locator(".recharts-line-curve")).toHaveCount(0);
-  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(12);
+  await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   await expect(page.locator(".chart-context")).toContainText(
     "referencia nacional",
   );
+});
+
+test("historical windows, explicit partial coverage and compact information", async ({
+  page,
+}) => {
+  await page.goto(base);
+  await ready(page);
+  await expect(
+    page.getByRole("button", { name: "36m", exact: true }),
+  ).toHaveAttribute("aria-pressed", "true");
+  for (const [label, count] of [
+    ["12m", 12],
+    ["24m", 24],
+    ["36m", 36],
+    ["5 años", 44],
+  ] as const) {
+    await page.getByRole("button", { name: label, exact: true }).click();
+    await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(count);
+    await expect(
+      page.getByRole("button", { name: label, exact: true }),
+    ).toHaveAttribute("aria-pressed", "true");
+  }
+  await expect(page.locator(".history-coverage")).toContainText("44 de 60");
+  await page.locator(".recharts-bar-rectangle").last().hover();
+  await expect(page.locator(".chart-tooltip .tooltip-row")).toHaveCount(2);
+  await expect(page.locator(".chart-tooltip")).not.toContainText("Interanual");
+  await expect(page.locator(".chart-tooltip")).not.toContainText("Brent");
+  await page.setViewportSize({ width: 390, height: 844 });
+  await expect(page.locator(".chart-scroll-hint")).toBeVisible();
+  expect(
+    await page
+      .locator(".chart-scroll")
+      .evaluate((e) => e.scrollWidth > e.clientWidth),
+  ).toBe(true);
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.locator(".chart-scroll").focus();
+  await page.keyboard.press("Home");
+  await page
+    .getByRole("button", {
+      name: "Metodología de Volumen mensual",
+      exact: true,
+    })
+    .click();
+  await expect(
+    page.locator('.kpi-card[data-flipped="true"] .kpi-methodology'),
+  ).toContainText("Suma de la producción");
+  await expect(
+    page.locator('.kpi-card[data-flipped="true"] .kpi-methodology'),
+  ).not.toContainText("Unidad:");
 });

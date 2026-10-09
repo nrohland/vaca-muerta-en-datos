@@ -223,6 +223,46 @@ Object.assign(translations, {
   "Precio promedio mensual Brent utilizado como referencia, no precio efectivo de venta.":
     "Monthly average Brent reference price, not the actual sale price.",
   "Valor apresentado: {value}": "Displayed value: {value}",
+  "Fuente: EIA.": "Source: EIA.",
+  "Fuente: Secretaría de Energía · EIA.":
+    "Source: Secretariat of Energy · EIA.",
+  "Fuente: Secretaría de Energía.": "Source: Secretariat of Energy.",
+  "Valor USD": "USD Value",
+  "5 años": "5 years",
+  "Cobertura: {count} de {requested} meses solicitados · {start}–{end}":
+    "Coverage: {count} of {requested} requested months · {start}–{end}",
+  "Gráfico desplazable de producción y valor":
+    "Scrollable production and value chart",
+  "Deslizá para explorar los meses →": "Scroll to explore the months →",
+  "Ver metodología →": "View methodology →",
+  "Promedio diario de producción del mes.":
+    "Average daily production for the month.",
+  "Promedio diario del valor estimado del mes.":
+    "Average daily estimated value for the month.",
+  "Producción acumulada durante el mes.": "Total production during the month.",
+  "Pozos con producción positiva en el mes.":
+    "Wells with positive production during the month.",
+  "Producción valorizada a precio de referencia.":
+    "Production valued at the reference price.",
+  "Volumen mensual dividido por los días del período.":
+    "Monthly volume divided by the days in the period.",
+  "Suma de la producción registrada durante el mes.":
+    "Sum of production recorded during the month.",
+  "Volumen mensual × precio del período. Estimación, no facturación efectiva.":
+    "Monthly volume × the period’s reference price. Estimate, not actual revenue.",
+  "Valor mensual estimado / días calendario. No representa facturación efectiva.":
+    "Estimated monthly value / calendar days. Not actual revenue.",
+  "Promedio mensual Brent de referencia; no es el precio efectivo de venta.":
+    "Monthly average Brent reference; not the actual sale price.",
+  "Precio promedio mensual de referencia Brent.":
+    "Monthly average Brent reference price.",
+  "Estimación monetaria no disponible.": "Monetary estimate unavailable.",
+  "Estimación pendiente: referencia monetaria sin validar para este período.":
+    "Estimate pending: monetary reference not validated for this period.",
+  "El selector Volumen / Valor USD controla KPIs y rankings; aquí se muestran ambas series disponibles.":
+    "The Volume / USD Value selector controls KPIs and rankings; this chart shows both available series.",
+  "Producción diaria = volumen mensual / días calendario. Volumen mensual = suma de la producción registrada. Pozos productivos = pozos únicos con producción positiva. Las comparaciones usan cada métrica y su período correspondiente; bases ausentes o cero no generan variaciones.":
+    "Daily production = monthly volume / calendar days. Monthly volume = sum of recorded production. Producing wells = unique wells with positive production. Comparisons use each metric and its corresponding period; missing or zero bases do not generate changes.",
 });
 export function formatters(language: Language) {
   const locale = locales[language];
@@ -274,6 +314,15 @@ export function formatters(language: Language) {
           period.slice(2, 4)
       : text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
   };
+  const monthYear = (period: string) => {
+    const parts = new Intl.DateTimeFormat(locale, {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).formatToParts(new Date(`${period}T00:00:00Z`));
+    const text = `${parts.find((p) => p.type === "month")?.value} ${parts.find((p) => p.type === "year")?.value}`;
+    return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+  };
   const date = (value: string | null | undefined) => {
     if (!value) return t("no informada");
     const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -302,6 +351,7 @@ export function formatters(language: Language) {
     compact,
     million,
     month,
+    monthYear,
     date,
     percent,
   };

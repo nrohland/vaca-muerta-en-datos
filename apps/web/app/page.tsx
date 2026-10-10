@@ -479,6 +479,7 @@ export default function Page() {
                 )}
               </p>
             )}
+            <p>{t("El gráfico combinado utiliza escalas independientes para volumen y USD, ambas desde cero. Comparar la evolución de cada serie, no sus alturas entre sí.")}</p>
             <p>
               {t(
                 "Escala desde cero. Una vista porcentual o índice base 100 podría incorporarse en el futuro.",

@@ -242,7 +242,7 @@ function ModuleCard({
   className = "",
 }: {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   controls?: ReactNode;
   action?: ReactNode;
   children: ReactNode;
@@ -254,7 +254,7 @@ function ModuleCard({
       <header className="module-heading">
         <div>
           <h2 id={id}>{title}</h2>
-          <p>{subtitle}</p>
+          {subtitle && <p>{subtitle}</p>}
         </div>
         <div className="module-controls">
           {controls}
@@ -384,6 +384,12 @@ function TrendTooltip({
     </div>
   );
 }
+function WellsTooltip({active, payload}: {active?: boolean; payload?: readonly {payload?: {periodo: string; physical: number | null}}[]}) {
+  const {t, number, monthYear} = useLocale();
+  const point = payload?.[0]?.payload;
+  if (!active || !point) return null;
+  return <div className="chart-tooltip compact-chart-tooltip"><strong>{monthYear(point.periodo)}</strong><div className="tooltip-row"><span>{t("Pozos productivos")}</span><strong>{number(point.physical, 0)}</strong></div></div>;
+}
 export function Evolution({
   mode,
   prices,
@@ -394,7 +400,9 @@ export function Evolution({
   setRange,
   onDetail,
   comparison,
+  kind = "production",
 }: {
+  kind?: "production" | "wells";
   rows: Row[];
   mode: Mode;
   prices: Prices | null;
@@ -406,6 +414,7 @@ export function Evolution({
   comparison: Comparison;
 }) {
   const { t, number, physical, currency, month } = useLocale();
+  const wells = kind === "wells";
   const selected = historyRanges.some((n) => n === range)
     ? range
     : defaultHistoryRange;
@@ -437,7 +446,7 @@ export function Evolution({
     const row = rows.find(
       (r) => r.fluid === fluid && r.periodo === point.periodo,
     );
-    const volume = row ? metric(row, rows, prices, "volume", "volume") : null;
+    const volume = row ? metric(row, rows, prices, wells ? "wells" : "volume", "volume") : null;
     const value = row ? metric(row, rows, prices, "volume", "value") : null;
     return {
       ...point,
@@ -448,23 +457,18 @@ export function Evolution({
       base: shiftMonth(point.periodo, comparisonOffset(comparison)),
     };
   });
-  const monetary = fluid === "oil";
+  const monetary = !wells && fluid === "oil";
   const last = series.at(-1);
   const lastValue = monetary ? last?.estimated : last?.physical;
   return (
     <ChartCard
       title={t(
-        monetary
+        wells ? "Evolución de pozos productivos" : monetary
           ? "Evolución de producción y valor"
           : "Evolución de la producción",
       )}
-      subtitle={t(
-        monetary
-          ? "Mensual · escalas independientes desde cero; alturas no comparables."
-          : "Volumen mensual · escala desde cero.",
-      )}
-      className="evolution"
-      controls={
+      className={wells ? "evolution wells-evolution" : "evolution production-evolution"}
+      controls={!wells &&
         <div className="ranges" aria-label={t("Período de evolución")}>
           {historyRanges.map((n) => (
             <button
@@ -479,14 +483,14 @@ export function Evolution({
       }
       action={
         <button className="text-action" onClick={onDetail}>
-          {t("Producción · Próximamente")} <span aria-hidden="true">↗</span>
+          {t(wells ? "Actividad · Próximamente" : "Producción · Próximamente")} <span aria-hidden="true">↗</span>
         </button>
       }
     >
       <div className="chart-legend">
         <span>
           <i className="legend-bar" aria-hidden="true" />
-          {t("Producción física")} · {volumeUnit(fluid)}
+          {wells ? t("Pozos productivos") : `${t("Producción física")} · ${volumeUnit(fluid)}`}
         </span>
         {monetary && (
           <span>
@@ -514,7 +518,7 @@ export function Evolution({
         onScroll={(e) => setScrollOffset(e.currentTarget.scrollLeft)}
         tabIndex={0}
         role="region"
-        aria-label={t("Gráfico desplazable de producción y valor")}
+        aria-label={t(wells ? "Gráfico desplazable de pozos productivos" : "Gráfico desplazable de producción y valor")}
       >
         <div
           className="line-chart"
@@ -555,18 +559,18 @@ export function Evolution({
                   scrollable ? { x: scrollOffset + 12, y: 8 } : undefined
                 }
                 content={
-                  <TrendTooltip fluid={fluid} prices={prices} rows={rows} />
+                  wells ? <WellsTooltip /> : <TrendTooltip fluid={fluid} prices={prices} rows={rows} />
                 }
                 cursor={{ fill: "var(--chart-grid)" }}
               />
-              <Bar
+              {wells ? <Line yAxisId="physical" dataKey="physical" type="linear" stroke="var(--accent)" strokeWidth={2.5} dot={series.length === 1 ? {r: 4} : false} activeDot={{r: 4}} connectNulls={false} isAnimationActive={false} /> : <Bar
                 yAxisId="physical"
                 dataKey="physical"
                 fill="var(--accent)"
                 fillOpacity={mode === "value" ? 0.65 : 0.9}
                 radius={[3, 3, 0, 0]}
                 isAnimationActive={false}
-              />
+              />}
               {monetary && (
                 <Line
                   yAxisId="value"
@@ -597,7 +601,7 @@ export function Evolution({
                       fill="var(--ink)"
                       fontSize={11}
                     >
-                      {monetary
+                      {wells ? number(lastValue, 0) : monetary
                         ? currency(lastValue)
                         : physical(lastValue, fluid)}
                     </text>
@@ -613,13 +617,13 @@ export function Evolution({
           {t("Deslizá para explorar los meses →")}
         </p>
       )}
-      <p className="chart-context">
+      {!wells && <p className="chart-context">
         {t(
           monetary
             ? "El selector Volumen / Valor USD controla KPIs y rankings; aquí se muestran ambas series disponibles."
             : "Gas: valor estimado pendiente de una referencia nacional y conversión energética validadas.",
         )}
-      </p>
+      </p>}
       <details className="data-disclosure">
         <summary>{t("Ver tabla de datos")}</summary>
         <table>
@@ -632,7 +636,7 @@ export function Evolution({
             <tr>
               <th>{t("Mes")}</th>
               <th>
-                {t("Volumen mensual ({unit})", {
+                {wells ? t("Pozos productivos") : t("Volumen mensual ({unit})", {
                   unit: fluid === "oil" ? "bbl" : "m³",
                 })}
               </th>
@@ -662,7 +666,7 @@ export function Evolution({
                   {number(
                     r.physical == null
                       ? null
-                      : r.physical * (fluid === "gas" ? 1e6 : 1),
+                      : r.physical * (!wells && fluid === "gas" ? 1e6 : 1),
                     0,
                   )}
                 </td>
@@ -1042,6 +1046,7 @@ export function SummaryDashboard({
           }
         />
       </div>
+      <div className="evolution-grid">
       <Evolution
         rows={rows}
         fluid={fluid}
@@ -1053,6 +1058,8 @@ export function SummaryDashboard({
         comparison={comparison}
         onDetail={() => onNavigate("production")}
       />
+      <Evolution kind="wells" rows={rows} fluid={fluid} period={period} range={range} setRange={setRange} mode={shownMode} prices={prices} comparison={comparison} onDetail={() => onNavigate("activity")} />
+      </div>
       <div className="ranking-grid">
         {(["company", "area"] as const).map((dimension) => (
           <RankingCard

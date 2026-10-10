@@ -40,3 +40,9 @@ Se elimina la separación duplicada entre etiqueta de comparación y porcentaje 
 Ambos rankings muestran ahora la unidad junto al valor compacto (bbl, MMm³ o USD); el tooltip monetario muestra el importe completo con máximo dos decimales. Las columnas se ajustan para alojar la unidad. El footer visible se limita a fuente, estado preliminar y enlace a Metodología; período, universo y limitaciones siguen disponibles dentro de la explicación expandible.
 
 Validación de estos ajustes: 21 tests aprobados, tipos y build estático aprobados, diff sin errores. La revisión visual sigue pendiente del acceso al navegador. Gráfico adicional de pozos productivos propuesto al usuario, todavía no implementado.
+
+## Evolución de pozos productivos
+
+Se agrega la serie histórica de pozos productivos usando el conteo existente y el mismo componente de evolución parametrizado, ventana y filtro de petróleo/gas. Desktop comparte fila 2:1; tablet/mobile apilan. Rango único compartido, eje desde cero, tooltip compacto y tabla con conteos completos, sin interpolar faltantes. Se elimina el subtítulo visible sobre alturas no comparables y se conserva la explicación de escalas independientes en Metodología.
+
+Tipos, build y los 21 tests unitarios aprobados. Casos de navegador actualizados para distinguir ambos gráficos y verificar conteos/rangos de pozos; ejecución y capturas siguen pendientes por indisponibilidad del control de navegador. Sin cambios en datos, cálculos ni harness.

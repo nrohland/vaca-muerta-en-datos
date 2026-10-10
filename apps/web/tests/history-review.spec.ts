@@ -66,7 +66,7 @@ test("desktop historical coverage, simplified backs and ES/EN themes", async ({
             })
             .click();
         await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(44);
-        await expect(page.locator(".recharts-line-curve")).toHaveCount(
+        await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(
           fluid === "oil" ? 1 : 0,
         );
         expect(
@@ -94,8 +94,8 @@ test.describe("touchable historical chart", () => {
   });
   test("internal scrolling and bounded compact tooltip", async ({ page }) => {
     await ready(page);
-    const scroll = page.locator(".chart-scroll");
-    await expect(page.locator(".chart-scroll-hint")).toBeVisible();
+    const scroll = page.locator(".production-evolution .chart-scroll");
+    await expect(page.locator(".production-evolution .chart-scroll-hint")).toBeVisible();
     expect(await scroll.evaluate((e) => e.scrollWidth > e.clientWidth)).toBe(
       true,
     );
@@ -104,7 +104,7 @@ test.describe("touchable historical chart", () => {
         () => document.documentElement.scrollWidth <= innerWidth,
       ),
     ).toBe(true);
-    await page.locator(".evolution").scrollIntoViewIfNeeded();
+    await page.locator(".production-evolution").scrollIntoViewIfNeeded();
     await page.locator(".recharts-bar-rectangle").last().tap();
     await expect(page.locator(".chart-tooltip .tooltip-row")).toHaveCount(2);
     await expect(page.locator(".chart-tooltip")).not.toContainText(
@@ -126,4 +126,20 @@ test.describe("touchable historical chart", () => {
     expect(await scroll.evaluate((e) => e.scrollLeft)).toBe(0);
     await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   });
+});
+
+
+test("producing wells share the selected history and retain exact counts", async ({page}) => {
+  await ready(page);
+  const wells = page.locator(".wells-evolution");
+  await expect(wells).toContainText("Evolución de pozos productivos");
+  await expect(wells.locator(".line-chart")).toHaveAttribute("data-physical-min", "0");
+  await expect(wells.locator(".recharts-line-curve")).toHaveCount(1);
+  await wells.getByText("Ver tabla de datos", {exact: true}).click();
+  await expect(wells.locator("tbody tr")).toHaveCount(36);
+  await expect(wells.locator("tbody tr").last()).toContainText("2.678");
+  await page.getByRole("button", {name: "5 años", exact: true}).click();
+  await expect(wells.locator("tbody tr")).toHaveCount(44);
+  await expect(wells.locator(".history-coverage")).toContainText("44 de 60");
+  await expect(page.locator(".production-evolution .module-heading")).not.toContainText("alturas no comparables");
 });

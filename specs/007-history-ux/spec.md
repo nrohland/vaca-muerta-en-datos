@@ -8,3 +8,7 @@ Aplicar analytics-ui sin alterar datos, cálculos, KPIs o rankings.
 - Reverso KPI: título, explicación breve, fuente y enlace Ver metodología →. Hover: una oración. Conservar foco, retorno, altura y transición accesible, sin explicaciones extensas.
 - Tooltip gráfico: mes/año, producción y valor estimado exclusivamente. Datos con unidades completas en tabla; metodología detallada en footer. ES/EN y temas conservados.
 - Validar cobertura, huecos, los cuatro rangos, productos/modos, responsive, desplazamiento, interacción y formatos. Rama/PR sin merge/deploy; harness intacto.
+
+## Evolución de pozos junto al gráfico principal
+
+A pedido del usuario, eliminar el subtítulo visible sobre alturas no comparables; mantener unidades en leyenda y explicar las escalas independientes en Metodología. En desktop, compartir fila 2:1 con evolución de pozos productivos (conteo único positivo existente, eje desde cero, sin agregar ni cambiar métricas). Reutilizar ventana histórica, filtros, gráfico, scroll, tooltip y tabla; compartir selector de rango, sin duplicarlo. Tablet/mobile apilan las cards. Mantener ES/EN y datos faltantes nulos.

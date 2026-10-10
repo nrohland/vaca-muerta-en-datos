@@ -264,6 +264,12 @@ Object.assign(translations, {
   "Producción diaria = volumen mensual / días calendario. Volumen mensual = suma de la producción registrada. Pozos productivos = pozos únicos con producción positiva. Las comparaciones usan cada métrica y su período correspondiente; bases ausentes o cero no generan variaciones.":
     "Daily production = monthly volume / calendar days. Monthly volume = sum of recorded production. Producing wells = unique wells with positive production. Comparisons use each metric and its corresponding period; missing or zero bases do not generate changes.",
 });
+Object.assign(translations, {
+  "Evolución de pozos productivos": "Producing wells over time",
+  "Actividad · Próximamente": "Activity · Coming soon",
+  "Gráfico desplazable de pozos productivos": "Scrollable producing wells chart",
+  "El gráfico combinado utiliza escalas independientes para volumen y USD, ambas desde cero. Comparar la evolución de cada serie, no sus alturas entre sí.": "The combined chart uses independent volume and USD scales, both starting at zero. Compare changes within each series, rather than heights across series.",
+});
 export function formatters(language: Language) {
   const locale = locales[language];
   const t = (key: string, vars: Record<string, string | number> = {}) =>

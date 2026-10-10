@@ -116,8 +116,8 @@ test("filters, chart ranges, early missing comparisons and URL reload", async ({
   await expect(page.getByLabel("Mes de producción")).toHaveValue(
     manifest.source.accepted_periods[0],
   );
-  await page.getByText("Ver tabla de datos", { exact: true }).click();
-  await expect(page.locator("table")).toBeVisible();
+  await page.locator(".production-evolution").getByText("Ver tabla de datos", { exact: true }).click();
+  await expect(page.locator(".production-evolution table")).toBeVisible();
 });
 test("progressive destinations retain filters and entity identity through browser history", async ({
   page,
@@ -196,7 +196,7 @@ for (const [name, width, height] of [
     await page.setViewportSize({ width, height });
     await page.goto(base);
     await ready(page);
-    await expect(page.locator(".recharts-line-curve")).toBeVisible();
+    await expect(page.locator(".production-evolution .recharts-line-curve")).toBeVisible();
     if (width >= 1101)
       expect(
         await page.evaluate(
@@ -298,7 +298,7 @@ test("language persistence, exact ranking values, selected comparisons and zero-
     `${formatters("en").number(top.volume, 0)} bbl`,
   );
   await expect(page.locator(".recharts-yAxis")).toHaveCount(0);
-  await expect(page.locator(".line-chart")).toHaveAttribute(
+  await expect(page.locator(".production-evolution .line-chart")).toHaveAttribute(
     "data-physical-min",
     "0",
   );
@@ -315,8 +315,8 @@ test("language persistence, exact ranking values, selected comparisons and zero-
   await page
     .getByRole("button", { name: "Year over year", exact: true })
     .click();
-  await page.getByText("View data table", { exact: true }).click();
-  await expect(page.locator("table")).toContainText(
+  await page.locator(".production-evolution").getByText("View data table", { exact: true }).click();
+  await expect(page.locator(".production-evolution table")).toContainText(
     formatters("en").month(shiftMonth(latest, -12), true),
   );
   await page.getByRole("button", { name: "Dark mode", exact: true }).click();
@@ -329,7 +329,7 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   await page.goto(base);
   await ready(page);
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
-  await expect(page.locator(".recharts-line-curve")).toBeVisible();
+  await expect(page.locator(".production-evolution .recharts-line-curve")).toBeVisible();
   await expect(page.locator(".recharts-yAxis")).toHaveCount(0);
   const info = page.getByRole("button", {
     name: "Metodología de Producción diaria",
@@ -360,12 +360,12 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   await page.locator(".recharts-bar-rectangle").last().hover();
   await expect(page.locator(".chart-tooltip")).toContainText("20,76 M bbl");
   await expect(page.locator(".chart-tooltip")).toContainText("US$ 1.891,17 M");
-  await page.getByText("Ver tabla de datos", { exact: true }).click();
+  await page.locator(".production-evolution").getByText("Ver tabla de datos", { exact: true }).click();
   await expect(page.locator('time[datetime="2026-08-01"]').first()).toHaveText(
     "ago 26",
   );
   await page.getByRole("button", { name: "Gas", exact: true }).click();
-  await expect(page.locator(".recharts-line-curve")).toHaveCount(0);
+  await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(0);
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   await expect(page.locator(".chart-context")).toContainText(
     "referencia nacional",
@@ -398,10 +398,10 @@ test("historical windows, explicit partial coverage and compact information", as
   await expect(page.locator(".chart-tooltip")).not.toContainText("Interanual");
   await expect(page.locator(".chart-tooltip")).not.toContainText("Brent");
   await page.setViewportSize({ width: 390, height: 844 });
-  await expect(page.locator(".chart-scroll-hint")).toBeVisible();
+  await expect(page.locator(".production-evolution .chart-scroll-hint")).toBeVisible();
   expect(
     await page
-      .locator(".chart-scroll")
+      .locator(".production-evolution .chart-scroll")
       .evaluate((e) => e.scrollWidth > e.clientWidth),
   ).toBe(true);
   expect(
@@ -409,7 +409,7 @@ test("historical windows, explicit partial coverage and compact information", as
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
-  await page.locator(".chart-scroll").focus();
+  await page.locator(".production-evolution .chart-scroll").focus();
   await page.keyboard.press("Home");
   await page
     .getByRole("button", {

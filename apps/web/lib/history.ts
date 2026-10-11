@@ -1,5 +1,5 @@
 import { trend, type Row, type Fluid } from "./contract.ts";
-export const historyRanges = [12, 24, 36, 60] as const;
+export const historyRanges = [12, 24, 36, 0] as const;
 export const defaultHistoryRange = 36;
 
 // Presentation window only. Never create observations before validated coverage.
@@ -13,19 +13,21 @@ export function historyWindow(
     .filter((r) => r.fluid === fluid && r.periodo <= period)
     .map((r) => r.periodo)
     .sort()[0];
+  const months = first ? (Number(period.slice(0,4))-Number(first.slice(0,4)))*12 + Number(period.slice(5,7))-Number(first.slice(5,7))+1 : 0;
+  const resolved = requested === 0 ? months : requested;
   const points = first
-    ? trend(rows, fluid, period, requested).filter((p) => p.periodo >= first)
+    ? trend(rows, fluid, period, resolved).filter((p) => p.periodo >= first)
     : [];
   const observed = points.filter((p) =>
     rows.some((r) => r.fluid === fluid && r.periodo === p.periodo),
   );
   return {
     points,
-    requested,
+    requested: resolved,
     available: observed.length,
     start: points[0]?.periodo ?? null,
     end: points.at(-1)?.periodo ?? null,
-    partial: observed.length < requested,
+    partial: observed.length < resolved,
   };
 }
 

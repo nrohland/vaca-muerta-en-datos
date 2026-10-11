@@ -1773,34 +1773,6 @@ footer .status-badge {
   margin-left: 6px;
 }
 
-.evolution-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-  gap: 14px;
-  margin-bottom: 14px;
-  align-items: stretch;
-}
-.evolution-grid .evolution {
-  margin-bottom: 0;
-}
-.evolution-grid .module-heading {
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.evolution-grid .line-chart {
-  height: 230px;
-}
-.evolution-grid .ranges button {
-  white-space: nowrap;
-}
-.evolution-grid .wells-evolution .line-chart {
-  min-width: 0;
-}
-@media (max-width: 1100px) {
-  .evolution-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-  .evolution-grid .wells-evolution .line-chart {
-    min-width: var(--history-width);
-  }
-}
+.production-evolution { margin-bottom: 14px; }
+.production-evolution .line-chart { height: 230px; }
+.production-evolution .ranges button { white-space: nowrap; }

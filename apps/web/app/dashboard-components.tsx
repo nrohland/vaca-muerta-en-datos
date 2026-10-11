@@ -413,7 +413,7 @@ export function Evolution({
   onDetail: () => void;
   comparison: Comparison;
 }) {
-  const { t, number, physical, currency, month } = useLocale();
+  const { t, number, physical, currency, month, historyMonth } = useLocale();
   const wells = kind === "wells";
   const selected = historyRanges.some((n) => n === range)
     ? range
@@ -433,14 +433,16 @@ export function Evolution({
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const measure = () => setScrollable(el.scrollWidth > el.clientWidth + 1);
+    const compactViewport = window.matchMedia("(max-width: 1100px)");
+    const measure = () => setScrollable(compactViewport.matches && el.scrollWidth > el.clientWidth + 1);
+    compactViewport.addEventListener("change", measure);
     const observer = new ResizeObserver(measure);
     observer.observe(el);
     if (el.firstElementChild) observer.observe(el.firstElementChild);
     measure();
     el.scrollLeft = el.scrollWidth;
     setScrollOffset(el.scrollLeft);
-    return () => observer.disconnect();
+    return () => { observer.disconnect(); compactViewport.removeEventListener("change", measure); };
   }, [selected, fluid, period]);
   const series = coverage.points.map((point) => {
     const row = rows.find(
@@ -476,7 +478,7 @@ export function Evolution({
               aria-pressed={selected === n}
               onClick={() => setRange(n)}
             >
-              {n === 60 ? t("5 años") : `${n}m`}
+              {n === 0 ? t("Histórico") : `${n}m`}
             </button>
           ))}
         </div>
@@ -499,15 +501,15 @@ export function Evolution({
           </span>
         )}
       </div>
-      {coverage.partial && (
+      {(selected === 0 || coverage.partial) && (
         <p className="history-coverage" role="status">
           {t(
-            "Cobertura: {count} de {requested} meses solicitados · {start}–{end}",
+            "Histórico disponible: {start} – {end}",
             {
               count: coverage.available,
               requested: selected,
-              start: coverage.start ? month(coverage.start, true) : "—",
-              end: coverage.end ? month(coverage.end, true) : "—",
+              start: coverage.start ? historyMonth(coverage.start) : "—",
+              end: coverage.end ? historyMonth(coverage.end) : "—",
             },
           )}
         </p>
@@ -535,7 +537,7 @@ export function Evolution({
             <ComposedChart
               data={series}
               margin={{ left: 12, right: 24, top: 30, bottom: 8 }}
-              barCategoryGap={selected >= 36 ? "15%" : "22%"}
+              barCategoryGap={coverage.requested >= 36 ? "15%" : "22%"}
             >
               <XAxis
                 dataKey="periodo"
@@ -543,7 +545,7 @@ export function Evolution({
                 padding={{ left: 12, right: 16 }}
                 ticks={historyTicks(
                   series.map((p) => p.periodo),
-                  selected,
+                  coverage.requested,
                 )}
                 minTickGap={30}
                 tick={{ fill: "var(--muted)", fontSize: 11 }}
@@ -554,6 +556,7 @@ export function Evolution({
               <YAxis yAxisId="physical" hide domain={nonnegativeDomain} />
               <YAxis yAxisId="value" hide domain={nonnegativeDomain} />
               <Tooltip
+                isAnimationActive={false}
                 trigger={touchTooltip ? "click" : "hover"}
                 position={
                   scrollable ? { x: scrollOffset + 12, y: 8 } : undefined
@@ -617,13 +620,7 @@ export function Evolution({
           {t("Deslizá para explorar los meses →")}
         </p>
       )}
-      {!wells && <p className="chart-context">
-        {t(
-          monetary
-            ? "El selector Volumen / Valor USD controla KPIs y rankings; aquí se muestran ambas series disponibles."
-            : "Gas: valor estimado pendiente de una referencia nacional y conversión energética validadas.",
-        )}
-      </p>}
+      {!wells && !monetary && <p className="chart-context">{t("Gas: valor estimado no disponible.")}</p>}
       <details className="data-disclosure">
         <summary>{t("Ver tabla de datos")}</summary>
         <table>
@@ -1046,7 +1043,6 @@ export function SummaryDashboard({
           }
         />
       </div>
-      <div className="evolution-grid">
       <Evolution
         rows={rows}
         fluid={fluid}
@@ -1058,8 +1054,6 @@ export function SummaryDashboard({
         comparison={comparison}
         onDetail={() => onNavigate("production")}
       />
-      <Evolution kind="wells" rows={rows} fluid={fluid} period={period} range={range} setRange={setRange} mode={shownMode} prices={prices} comparison={comparison} onDetail={() => onNavigate("activity")} />
-      </div>
       <div className="ranking-grid">
         {(["company", "area"] as const).map((dimension) => (
           <RankingCard

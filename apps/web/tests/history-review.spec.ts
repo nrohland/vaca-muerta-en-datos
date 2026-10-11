@@ -20,9 +20,9 @@ test("desktop historical coverage, simplified backs and ES/EN themes", async ({
     page.getByRole("button", { name: "36m", exact: true }),
   ).toHaveAttribute("aria-pressed", "true");
   await page.screenshot({ path: path.join(evidence, "desktop-36m.png") });
-  await page.getByRole("button", { name: "5 años", exact: true }).click();
+  await page.getByRole("button", { name: "Histórico", exact: true }).click();
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(44);
-  await expect(page.locator(".history-coverage")).toContainText("44 de 60");
+  await expect(page.locator(".history-coverage")).toContainText("Histórico disponible: ene 2023 – ago 2026");
   await page.screenshot({ path: path.join(evidence, "desktop-5years.png") });
   const info = page.getByRole("button", {
     name: "Metodología de Volumen mensual",
@@ -129,17 +129,12 @@ test.describe("touchable historical chart", () => {
 });
 
 
-test("producing wells share the selected history and retain exact counts", async ({page}) => {
+test("summary has one full-width chart and keeps the wells KPI", async ({page}) => {
   await ready(page);
-  const wells = page.locator(".wells-evolution");
-  await expect(wells).toContainText("Evolución de pozos productivos");
-  await expect(wells.locator(".line-chart")).toHaveAttribute("data-physical-min", "0");
-  await expect(wells.locator(".recharts-line-curve")).toHaveCount(1);
-  await wells.getByText("Ver tabla de datos", {exact: true}).click();
-  await expect(wells.locator("tbody tr")).toHaveCount(36);
-  await expect(wells.locator("tbody tr").last()).toContainText("2.678");
-  await page.getByRole("button", {name: "5 años", exact: true}).click();
-  await expect(wells.locator("tbody tr")).toHaveCount(44);
-  await expect(wells.locator(".history-coverage")).toContainText("44 de 60");
-  await expect(page.locator(".production-evolution .module-heading")).not.toContainText("alturas no comparables");
+  await expect(page.locator(".evolution")).toHaveCount(1);
+  await expect(page.locator(".wells-evolution")).toHaveCount(0);
+  await expect(page.locator(".kpi-card")).toHaveCount(4);
+  await expect(page.locator(".kpi-card").nth(2)).toContainText("2.678");
+  await expect(page.locator(".chart-context")).toHaveCount(0);
+  await expect(page.locator(".chart-scroll-hint")).toHaveCount(0);
 });

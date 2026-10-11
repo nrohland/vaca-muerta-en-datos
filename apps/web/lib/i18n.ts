@@ -156,6 +156,9 @@ export const translations: Record<string, string> = {
 };
 // Contract errors remain diagnostic data; translate all known validation messages at the UI boundary.
 Object.assign(translations, {
+  "Histórico": "History",
+  "Histórico disponible: {start} – {end}": "Available history: {start} – {end}",
+  "Gas: valor estimado no disponible.": "Gas: estimated value unavailable.",
   "Fila inválida": "Invalid row",
   "Fluido o período inválido": "Invalid product or period",
   "Unidad inválida": "Invalid unit",
@@ -288,6 +291,7 @@ export function formatters(language: Language) {
           maximumFractionDigits: decimals,
           minimumFractionDigits: minimum,
         }).format(value);
+  const historyMonth = (period: string) => new Intl.DateTimeFormat(locale, {month: "short", year: "numeric", timeZone: "UTC"}).format(new Date(`${period}T00:00:00Z`)).replace(/\./g, "");
   const exact = (value: number | null | undefined) => number(value, 20, 0);
   const compact = (value: number | null | undefined) => {
     if (value == null) return t("No disponible");
@@ -351,6 +355,7 @@ export function formatters(language: Language) {
     locale,
     t,
     number,
+    historyMonth,
     exact,
     currency,
     physical,

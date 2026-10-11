@@ -368,7 +368,7 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(0);
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   await expect(page.locator(".chart-context")).toContainText(
-    "referencia nacional",
+    "no disponible",
   );
 });
 
@@ -384,7 +384,7 @@ test("historical windows, explicit partial coverage and compact information", as
     ["12m", 12],
     ["24m", 24],
     ["36m", 36],
-    ["5 años", 44],
+    ["Histórico", 44],
   ] as const) {
     await page.getByRole("button", { name: label, exact: true }).click();
     await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(count);
@@ -392,7 +392,7 @@ test("historical windows, explicit partial coverage and compact information", as
       page.getByRole("button", { name: label, exact: true }),
     ).toHaveAttribute("aria-pressed", "true");
   }
-  await expect(page.locator(".history-coverage")).toContainText("44 de 60");
+  await expect(page.locator(".history-coverage")).toContainText("Histórico disponible: ene 2023 – ago 2026");
   await page.locator(".recharts-bar-rectangle").last().hover();
   await expect(page.locator(".chart-tooltip .tooltip-row")).toHaveCount(2);
   await expect(page.locator(".chart-tooltip")).not.toContainText("Interanual");

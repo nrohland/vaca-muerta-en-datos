@@ -80,7 +80,7 @@ Archivos principales:
 - `scripts/import_brent.py`, `bind_valuation.py`: importación trazable y vínculo de artefactos.
 - Tests de contrato, métricas, UI y candidato CSV; READMEs, spec 004 y evidencia.
 
-El pipeline dbt ejecutado corresponde al código existente de #25–31, commit `448a406c8cc87de425964d8d6aa412f608d67b71`, en checkout separado. No se copiaron ni reinventaron sus cálculos SQL. Dataset raw y capas candidatos aislados; `WRITE_EMPTY`, producción existente preservada. La capa física conserva septiembre parcial; sólo los marts de publicación con períodos aceptados alimentan el frontend. El mart legado `fct_barrilito_rate` usa el máximo raw y no debe usarse para esta publicación. El mapa opcional anterior no se expone en el nuevo release, porque no se reprocesaron sus marts; sus archivos se conservan y no existe una pantalla de mapa en esta entrega.
+El pipeline dbt ejecutado corresponde al código existente de #25–31, commit `448a406c8cc87de425964d8d6aa412f608d67b71`, en checkout separado. No se copiaron ni reinventaron sus cálculos SQL. Dataset raw y capas candidatos aislados; `WRITE_EMPTY`, producción existente preservada. La capa física conserva septiembre parcial; sólo los marts de publicación con períodos aceptados alimentan el frontend. El mart legado `fct_production_rate` usa el máximo raw y no debe usarse para esta publicación. El mapa opcional anterior no se expone en el nuevo release, porque no se reprocesaron sus marts; sus archivos se conservan y no existe una pantalla de mapa en esta entrega.
 
 ## 5. Pruebas y evidencia
 

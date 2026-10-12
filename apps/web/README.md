@@ -1,17 +1,17 @@
-# Vaca Muerta en datos — Resumen
+# Frontend — Vaca Muerta en Datos
 
-Iteración de Hito 3 autorizada el 9 de octubre de 2026: solo Resumen. El frontend local editorial del 6 de octubre se incorpora por primera vez al repositorio con una nueva composición modular, usando la skill analytics-ui del ZIP adjunto (leída en el entorno de trabajo; sin modificar el harness).
+Aplicación Next.js de revisión con Resumen como base aprobada y vistas de Producción, Operadores, Áreas y Actividad. Usa agregados reales del snapshot candidato y componentes compartidos; no necesita credenciales del warehouse para ejecutarse. El alcance y los resultados de cada iteración se documentan en `specs/` y `docs/evidence/`.
 
-## Ejecutar y verificar
+## Ejecutar
 
-Node.js 22.13+; validado con Node 25.8.1. Desde `apps/web`:
+Node.js 22.13+ y npm. Desde `apps/web`:
 
 ```sh
 npm ci
 npm run dev
 ```
 
-Abrir http://localhost:3000/vaca-muerta-pulse/.
+Abrir `http://localhost:3000/vaca-muerta-pulse/`.
 
 ```sh
 npm run typecheck
@@ -21,48 +21,28 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-El build estático queda en `out/`. Las pruebas de navegador sirven ese build localmente y generan capturas en `docs/evidence/resumen`. `EVIDENCE_DIR` permite cambiar la carpeta. No hay despliegue automático en esta entrega.
+El build estático queda en `out/`. El runner de navegador requiere un entorno compatible y un puerto disponible. `EVIDENCE_DIR` permite dirigir las capturas; los reportes de evidencia deben indicar qué suite y qué inspección visual se ejecutaron realmente. No hay despliegue automático.
 
-## Sistema de componentes
+## Componentes y navegación
 
-`app/dashboard-components.tsx` contiene KpiCard (principal/secundaria, contexto, unidad, estado, tooltip opcional), ModuleCard común, ChartCard, RankingCard y GlobalFilters. El tema está en `app/globals.css`. Producción diaria ocupa el doble que cada KPI secundario en desktop e incluye YoY/MoM en su propia card. Las otras tres cards muestran pozos productivos, volumen mensual y cuota Top 5 (campos existentes). Variaciones positivas verdes y negativas rojas por instrucción del usuario. Logos oficiales locales y nombres cortos por ID; razones sociales en tooltip. Overview cerrado sin scroll a 1440×900 y 1366×768; mobile apila módulos. Evolución usa Recharts, un trazo, tooltip y tabla accesible. Ver [ADR 0003](../../docs/adrs/0003-resumen-ui.md).
+Stack instalado: Next.js 16, React 19, TypeScript 7 y Recharts 3. Tremor pertenece al plan inicial, no al package actual. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard` y `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
 
-## Contrato de datos conservado
+El mismo concepto mantiene color y comportamiento entre pestañas: petróleo azul, gas violeta, monetario ámbar. Variaciones positivas verdes y negativas rojas siguen la convención del producto. Rankings de participación usan escala real 0–100%; etiquetas, unidades, tooltips y tablas permiten leer cifras exactas.
 
-`lib/contract.ts`, `lib/operators.ts`, `public/data/release.json` y `manifest.json` son copias exactas de la entrega local del 6 de octubre. El release contiene agregados, no registros raw. Los cálculos de tasas, variaciones, ranking y pozos provienen de marts/export candidatos de #27, #29 y #31; no se cambian en este PR. El cliente verifica contrato, SHA-256 y manifiesto antes de mostrar métricas. La participación mostrada es volumen de entidad / volumen total; las barras usan escala real 0–100%. KPIs comparan tasas; YoY de ranking compara volumen mensual.
+`lib/navigation.ts` conserva fluido, período, modo volumen/valor y comparación MoM/YoY, además de vista e ID de entidad en deep links. `lib/i18n.ts` y `lib/locale.tsx` centralizan ES/EN y formatos Intl; la preferencia de idioma tiene fallback español. Las vistas mantienen claro/oscuro, navegación atrás/adelante y responsive.
 
-No se inventa aprobación: mientras no exista un `approval.json` válido se muestra Preliminar. Esto es una revisión del frontend sobre el snapshot oficial candidato, no promoción a producción. Petróleo: bbl/d y bbl mensuales; gas: MMm³/d y MMm³ mensuales. No hay contador live. Recorte: formación Vaca Muerta, no convencional. Área: permiso/concesión. Las transferencias de activos pueden cambiar rankings.
+## Contrato de datos
 
-## Navegación progresiva
+`lib/contract.ts` verifica release, SHA-256, manifiesto, cobertura y corte antes de mostrar métricas. `public/data/release.json` contiene agregados, nunca registros raw. El candidato acepta **agosto de 2026** como máximo; septiembre parcial queda excluido. Sin un `approval.json` válido se muestra **Preliminar**. Validación técnica no equivale a aprobación de publicación.
 
-`lib/navigation.ts` define Resumen → Producción/Operadores/Áreas/Actividad → operador/área. Filtros e IDs se conservan en la URL, con atrás/adelante. Los destinos solo muestran Próximamente; no se incorporan las vistas locales de operadores o mapa ni se construyen drill-downs.
+Petróleo: bbl y bbl/d; gas: MMm³ y MMm³/d. Tasa = volumen mensual / días calendario. Pozos productivos = IDs únicos con producción positiva del fluido. No hay contador live. Permisos/concesiones y transferencias pueden afectar rankings.
 
-Alcance/aceptación: [resumen-ui.md](../../specs/001-vaca-muerta-pulse/resumen-ui.md). Hito 3 completo queda pendiente; sin cambios en extracción, dbt o harness.
+`lib/metrics.ts` separa comparaciones y valorización de la presentación. Brent mensual EIA está en `prices.json`; `valuation-manifest.json` vincula sus bytes con el release. `scripts/import_brent.py` y `scripts/bind_valuation.py` de la raíz permiten importar y ligar artefactos. Cada período usa su precio; faltantes no se rellenan. Gas mantiene métricas físicas y explica la indisponibilidad de USD. Un error de precios no bloquea la lectura de volumen físico.
 
-## Iteración de actualidad y valorización (9 de octubre de 2026)
+Producción profundiza en historia, acumulados comparables, años calendario, cambios absolutos y tabla. Operadores y Áreas profundizan ranking y entidad. Actividad usa conteos y promedio por pozo y día calendario sin inferir productividad por día efectivo, altas/bajas o completaciones sin fuentes válidas.
 
-El Resumen conserva la arquitectura de cards de 003 y aplica [004-data-valuation](../../specs/004-data-valuation/spec.md) usando analytics-ui. Se reemplaza el snapshot por el candidato validado hasta agosto; septiembre parcial queda excluido. El cliente elige el máximo período aceptado y verifica cutoff, cobertura, contrato y hash.
+## Evidencia y límites
 
-`lib/metrics.ts` concentra comparaciones de cada KPI, valorización y adaptaciones parametrizadas para ambos fluidos. Volumen: tasa, volumen mensual, pozos, valor bruto estimado. Valor estimado: tasa USD/día, valor USD/mes, pozos, referencia Brent USD/bbl, evitando repetir el valor mensual en la cuarta card. La carga de precios es independiente de producción: errores de precios mantienen disponibles los agregados físicos.
+La [auditoría de datos/precios](../../docs/evidence/data-valuation/README.md) documenta conciliación y corte. La [evidencia de Resumen](../../docs/evidence/resumen/README.md) y [comparaciones/idiomas](../../docs/evidence/comparison-i18n/README.md) conserva resultados históricos; sus checks no prueban automáticamente las nuevas vistas. La integración final debe registrar nuevas capturas desktop/mobile y pruebas actuales.
 
-`public/data/prices.json` contiene la historia mensual oficial de EIA y su procedencia; `valuation-manifest.json` vincula sus bytes y el release con SHA-256. `scripts/import_brent.py` (raíz del repo) importa la respuesta HTML mensual retenida de EIA sin interpolar. `scripts/bind_valuation.py --data-dir apps/web/public/data` vuelve a ligar los artefactos después de cada actualización. No usar precios nuevos sobre toda la historia. Gas queda sin valoración hasta resolver referencia nacional y conversión energética; se explica su indisponibilidad y mantiene la UI física.
-
-Todas las cards conservan sus propias variaciones y ayuda metodológica accesible. El gráfico y rankings adaptan unidades y comparaciones al modo, con barras de participación sobre el total. `mode=volume|value` se conserva junto con fluido/mes al navegar. La fuente, estado y fechas viven en el footer desplegable. Los destinos pendientes se identifican como Próximamente.
-
-La evidencia nueva y las limitaciones de ejecución están en [data-valuation](../../docs/evidence/data-valuation/README.md). Las descripciones anteriores corresponden a la primera iteración, no a este snapshot actualizado. Harness, configuración del runner y servidor de pruebas permanecen intactos; las expectativas UI se actualizan al contrato nuevo.
-
-## Comparaciones e idiomas (005)
-
-Se aplica analytics-ui conservando los componentes y artefactos de 004. `lib/i18n.ts` centraliza ES/EN, formatos Intl y mensajes; `lib/locale.tsx` comparte el idioma entre componentes. La preferencia se guarda en `localStorage` bajo `vm-language`, con fallback español cuando almacenamiento no está disponible. Se actualizan idioma del documento, título y descripción. Nombres propios permanecen intactos.
-
-`comparison=mom|yoy` define exclusivamente la base temporal y se conserva junto con fluido/mes/modo en la URL. Por defecto interanual. KPIs, rankings, tooltip y tabla muestran sólo la comparación seleccionada e identifican el mes base. Las variaciones físicas de entidades siguen usando los campos preparados; las monetarias usan volumen y precio históricos de cada período, sin modificar datos o ranking.
-
-Rankings muestran K/M con máximo dos decimales, valor completo y unidad en tooltip. El gráfico mantiene la serie física o monetaria, eje desde cero y máximo/ticks automáticos. La etiqueta del último punto aparece arriba a su izquierda, sin repetición bajo X. Una vista de cambio porcentual o índice base 100 queda como posible futura exploración; no se trunca el eje automáticamente.
-
-Spec y evidencia: [005](../../specs/005-comparison-i18n/spec.md), [revisión UX](../../docs/evidence/comparison-i18n/README.md). Sin cambios de fuentes, pipeline, datos ni harness.
-
-## Producción
-
-La pestaña Producción usa el mismo snapshot y precios validados del Resumen, sin cambiar pipeline o fuentes. KPIs de total mensual, cambio absoluto MoM/YoY, crecimiento del acumulado enero–mes contra igual período del año anterior (requiere cobertura completa) y máximo del histórico disponible hasta cutoff. Comparación de los últimos tres años calendario, gráfico de cambios absolutos y tabla descargable CSV para el rango 12/24/36/Histórico. USD usa el precio de cada mes; gas conserva volumen con aviso de valor no disponible.
-
-Spec: [010-production-drilldown](../../specs/010-production-drilldown.md). Pruebas adicionales: desde apps/web ejecutar `node --experimental-strip-types --test tests/production.test.ts` y `npx playwright test tests/production.spec.ts` (el runner existente requiere Chromium disponible y un puerto libre mediante ESTRATO_TEST_PORT). No se modifica la configuración de tests ni el harness.
+La capa de datos tiene extracción mensual y transformación reproducible, pero no actualización/promoción end-to-end automática: [arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build del frontend.

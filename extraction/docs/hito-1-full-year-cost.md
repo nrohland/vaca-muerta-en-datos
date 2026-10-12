@@ -55,7 +55,7 @@ Precios públicos BigQuery ([cloud.google.com/bigquery/pricing](https://cloud.go
 
 ## Cadencia
 
-Cap. IV es **mensual**. Cron CI: `0 6 5 * *` (día 5, 06:00 UTC). Barrilito en UI simula intra-mes; **no** hay polling de alta frecuencia. Cada monthly reemit **vuelve a escribir** ~991k filas (TRUNCATE/DELETE/`--recreate` + append) → el ingest se cuenta **cada mes**; el storage queda ~una copia si se limpia antes.
+Cap. IV es **mensual**. Cron CI: `0 6 5 * *` (día 5, 06:00 UTC). Vaca Muerta en Datos en UI simula intra-mes; **no** hay polling de alta frecuencia. Cada monthly reemit **vuelve a escribir** ~991k filas (TRUNCATE/DELETE/`--recreate` + append) → el ingest se cuenta **cada mes**; el storage queda ~una copia si se limpia antes.
 
 ## CI (`ALLOW_FULL_YEAR_LOAD`)
 

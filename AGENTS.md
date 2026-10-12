@@ -1,101 +1,50 @@
-# AGENTS.md
+# Instrucciones de contribución — Vaca Muerta en Datos
 
-Instrucciones para **coding agents** (y humanos que implementan). El relato de producto está en [README.md](README.md). Si hay conflicto entre “código útil” y esta guía, gana esta guía.
+## Estado y alcance
 
-## 0. Qué es este repo ahora
+El repositorio contiene extracción Meltano, modelos dbt y una aplicación Next.js funcional en `apps/web/`. El Hito 3 está activo: Resumen está aprobado como base visual y la iteración autorizada completa Producción, Operadores, Áreas y Actividad. No usar las restricciones del antiguo scaffold para bloquear este trabajo.
 
-Greenfield **spec-driven**. **Hito 2 marts en `main`.** dbt Core vive en [`transform/`](transform/README.md). Meltano (Hito 1) está en [`extraction/`](extraction/README.md). **No** implementes Next.js hasta el Hito 3 ([plan.md](specs/001-vaca-muerta-pulse/plan.md)).
+El snapshot es candidato de revisión, con corte aceptado hasta agosto de 2026. No inventar aprobación, publicación ni ejecución de pruebas. Ver [README](README.md), [arquitectura](docs/architecture.md) y specs de cada iteración. Documentos de hitos anteriores conservan evidencia histórica; no son el estado de aceptación de la integración actual.
 
-`apps/web/` sigue con README de owner, vacío de código a propósito. Hay un **spike** de portada en [`apps/spike/`](apps/spike/README.md) (notebook + CSV de marts; [ADR 0002](docs/adrs/0002-ui-spike-notebook.md)) — no es el dashboard público.
+## Antes de cambiar
 
-## 1. Leé esto primero (en orden)
+1. Leer este archivo y el README.
+2. Leer la spec de la vista/capa afectada y el [modelo de datos](specs/001-vaca-muerta-pulse/data-model.md).
+3. Leer el README de la carpeta y los ADRs relevantes.
+4. Ante nuevo origen, grano, métrica o cambio de arquitectura, actualizar contrato/spec/ADR. Los cambios de copy o presentación no requieren inventar una spec nueva.
 
-1. Este archivo.
-2. [README.md](README.md) — problema, diagramas, hitos.
-3. [specs/README.md](specs/README.md) — reglas SDD.
-4. Spec activa: [specs/001-vaca-muerta-pulse/spec.md](specs/001-vaca-muerta-pulse/spec.md) y [plan.md](specs/001-vaca-muerta-pulse/plan.md).
-5. [docs/architecture.md](docs/architecture.md) + [ADR 0001](docs/adrs/0001-stack-choices.md) (+ [ADR 0002](docs/adrs/0002-ui-spike-notebook.md) si tocás el spike).
-6. El README del folder que vas a tocar (`extraction/`, `transform/`, `apps/web/`, `apps/spike/`).
-7. Si tocás granos o columnas: [data-model.md](specs/001-vaca-muerta-pulse/data-model.md). UNKNOWN no se inventan: se marcan o se confirman con evidencia (sample de source / `INFORMATION_SCHEMA`).
+La autorización y las preferencias explícitas del usuario prevalecen. Trabajar autónomamente en lo autorizado; solicitar una decisión sólo ante un bloqueo material que no pueda resolverse con evidencia.
 
-No busques la app Next todavía: no está. El spike de portada **sí** está en `apps/spike/`. Meltano **sí** está en `extraction/meltano.yml`. dbt **sí** está en `transform/dbt_project.yml`.
+## Responsabilidades
 
-## 2. Spec-Driven Development (obligatorio)
+| Ámbito | Rol | Responsabilidad |
+| --- | --- | --- |
+| `extraction/` | Data Engineer | Recursos, taps, cargas, reemisión y raw fiel a la fuente |
+| `transform/` | Analytics Engineer | Granos, conversiones, staging/intermediate/marts, tests y conciliación |
+| `apps/web/` | Frontend | Next.js/React/Recharts, componentes comunes, filtros y accesibilidad |
+| `specs/`, `docs/` | Roles pertinentes | Definiciones, decisiones y evidencia verificable |
+| Aceptación | QA | Cálculos, contrato, navegación y capturas desktop/mobile |
 
-- Cambio **grande** (nuevo tap, nuevo grano, nueva página, nuevo dataset BQ) → **actualizar spec/ADR/data-model antes** de abrir un PR de código.
-- Cambio **chico** (typo, .gitignore, copy) → no hace falta spec nueva.
-- No “completar” Hito 2 o 3 en un PR de Hito 1.
-- Checklist de Hito 1: [tasks.md](specs/001-vaca-muerta-pulse/tasks.md). Tachá ítems solo cuando estén hechos en el repo (o documentados como N/A con motivo).
+Mantener tareas de agentes en ramas o worktrees aislados; integración controlada. Un cambio de contrato entre capas debe coordinarse, no resolverse duplicando lógica en el frontend. No leer raw desde el browser.
 
-## 3. Mapa de folders y dueños
+## Sistema visual y datos
 
-| Path | Owner | Hito | Qué hay hoy |
-| --- | --- | --- | --- |
-| `specs/` | todos (AE lidera granos) | 0+ | fuente de verdad de producto |
-| `docs/` | todos (DE lidera BQ/Meltano) | 0+ | arquitectura + ADRs |
-| `extraction/` | **DE** | 1 | Meltano + tap CKAN DataStore → target-bigquery |
-| `transform/` | **AE** | 2 | dbt Core `stg` → `int` → `marts` (Barrilito `fct_barrilito_rate`) + IAM/datasets (`vm-pulse-dbt`) |
-| `apps/spike/` | AE + producto | 2→3 | notebook + CSV de marts; **no** es Hito 3 |
-| `apps/web/` | **Front** | 3 | placeholder Next + Tremor |
+Aplicar analytics-ui en las vistas analíticas: jerarquía, componentes reutilizados, escalas veraces y significado consistente entre overview y detalle. Extender `KpiCard`, `ModuleCard`, `ChartCard`, rankings y filtros existentes antes de crear componentes propios de una pestaña.
 
-No pongas modelos dbt en `extraction/`, ni taps Singer en `transform/`, ni queries a `raw_*` desde el front.
+- Petróleo azul; gas violeta; valor monetario ámbar. Variaciones positivas verdes y negativas rojas según convención explícita del usuario.
+- Mantener Resumen como base aprobada, ES/EN, temas claro/oscuro, responsive, deep links y contexto persistente.
+- Precio ausente o inválido → valor indisponible; no inventar precios de gas ni factores energéticos.
+- No confundir tasa diaria equivalente con telemetría o productividad por día efectivo. No inventar relaciones operador–área, altas/bajas o completaciones.
+- Mantener snapshot, cobertura, manifiestos y hashes consistentes. Un período parcial no se publica por ser el máximo raw.
 
-## 4. Límites de rol
+## Verificación y entrega
 
-**DE (Data Engineer)**  
-Ingesta, IAM mínimo, datasets `raw_*`, `PARTITION`/`CLUSTER`, Meltano, costos de load, no-secretos. No diseña métricas de storytelling ni componentes UI.
+Ejecutar pruebas proporcionales a los cambios: cálculos/transformaciones, contratos y navegación, typecheck/build y pruebas de navegador cuando estén disponibles. Inspeccionar capturas desktop/mobile, corregir problemas y registrar resultados reales con sus límites. No afirmar éxito de Playwright por una inspección manual.
 
-**AE (Analytics Engineer)**  
-dbt `stg` → `int` → `marts`, tests, granos, nombres de columnas de negocio. No duplica la lógica de tap. Cierra UNKNOWNs del data-model con evidencia.
+Actualizar documentación operativa si cambia cómo se ejecuta una pieza. Markdown, enlaces y Mermaid deben ser coherentes; nombres técnicos en inglés, narrativa de producto en español. Nombre oficial: **Vaca Muerta en Datos**; identificador de repositorio: `vaca-muerta-pulse`.
 
-**Front**  
-Next.js + Tremor, narrativa, filtros, accesibilidad. Lee **marts** (o API/cache acordada), nunca tablas raw. No embebe JSON de service account en el cliente.
+## Secretos y aprobación
 
-**QA**  
-Acepta contra [plan.md](specs/001-vaca-muerta-pulse/plan.md) y tests de dbt / smoke de load / UI. No “LGTM porque el linter pasó” si falta el criterio de aceptación.
+Nunca commitear `.env`, JSON de service accounts, tokens, keys ni dumps raw pesados. Nunca incluir secretos en logs, chat o cuerpos de PR. Configuración real en entorno/secret manager; ejemplos sin credenciales.
 
-Un agente que actúa en un rol **no cruza** de folder salvo un cambio de contrato documentado en spec (ej. Front necesita una columna nueva en un mart → AE + `data-model.md`).
-
-## 5. Definition of Done (cualquier PR)
-
-- [ ] Specs/ADRs tocados si cambió comportamiento, grano, stack o hito.
-- [ ] Sin secretos: no `.env`, no `*service-account*.json`, no keys en `meltano.yml` / `profiles.yml`.
-- [ ] Owner del folder correcto; un hito por PR salvo acuerdo explícito.
-- [ ] README del folder actualizado si cambió cómo se corre la pieza.
-- [ ] Criterios de aceptación del hito en `plan.md` cubiertos o listados como follow-up con issue/spec.
-- [ ] Mermaid / tablas rotas no se mergean: los diagramas del README deben seguir siendo válidos.
-- [ ] Datos crudos pesados no versionados (ver `.gitignore`).
-
-## 6. Secretos y GCP — nunca
-
-- Service account JSON: **fuera del git** (secret manager, env del runner, archivo local gitignored).
-- Variables: `BIGQUERY_PROJECT`, `GOOGLE_APPLICATION_CREDENTIALS`, tokens CKAN si existieran → `.env` gitignored. Hay `.env.example` y `extraction/.env.example` **sin valores de keys**.
-- No subas dumps de Capítulo IV. Documentá URL + resource id (`extraction/resources/cap4.yml`).
-- Si un comando imprime una key, no la dejes en logs del PR.
-
-### MUST de Nicolás (no negociable)
-
-- **Nunca** commitear `.env`, JSON de service account, tokens ni keys — ni en el diff, ni en el body del PR, ni en logs/chat.
-- Flujo de merge: **author → QA → Security Analyst → solo Nicolás mergea**. Bots y agentes **nunca** aprueban ni mergean.
-
-## 7. Cómo trabajar un hito
-
-1. Confirmá el hito en `plan.md`.
-2. Hito 1 → [tasks.md](specs/001-vaca-muerta-pulse/tasks.md) y `extraction/`.
-3. Hito 2 → [tasks.md](specs/001-vaca-muerta-pulse/tasks.md) (sección Hito 2) y `transform/`.
-4. Preferí evidencia (una query, un `meltano run` de un año, un `dbt parse` / `dbt test`) sobre prosa.
-5. Si el source no coincide con el data-model, **actualizá el data-model** (UNKNOWN → confirmado) en el mismo PR o en uno previo, no dejes columnas fantasma.
-
-## 8. Estilo de código (cuando exista)
-
-- Nombres de folders/código en **inglés**; narrativa de producto en **español** (READMEs, specs).
-- SQL: `stg_` / `int_` / `fct_` / `dim_` según [data-model.md](specs/001-vaca-muerta-pulse/data-model.md).
-- Python/Node: formateo estándar del ecosistema del hito; no mezclar package managers sin ADR.
-
-## 9. Lo que no tenés que hacer
-
-- Scaffold de Next “para adelantar” el portfolio (dbt es Hito 2, ya está).
-- Inventar granos de completaciones o IDs de empresa si el source no los confirma.
-- Apuntar el dashboard a CSVs locales como arquitectura final.
-- Snowflake, Airbyte, Streamlit u otro stack **de producto** sin un ADR que reemplace el 0001. Un spike en `apps/spike/` está cubierto por el [ADR 0002](docs/adrs/0002-ui-spike-notebook.md) y **no** es Hito 3.
-- Scrapear el HTML de consulta avanzada de SE.
+Flujo de revisión: autor → QA → Security Analyst → Nicolás decide el merge. **Agentes no aprueban ni mergean a main, publican, despliegan ni comparten externamente sin aprobación explícita.** Preparar resultados concretos y revisables antes de pedirla.

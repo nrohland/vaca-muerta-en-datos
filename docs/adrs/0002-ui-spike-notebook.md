@@ -6,7 +6,7 @@
 
 ## Contexto
 
-Hito 2 dejó marts listos (`fct_barrilito_rate`, empresa, área). Hito 3 es Next.js + Tremor. Antes de scaffold, hace falta **ver** interpolación, disclaimer y rankings con datos reales sin pelear App Router.
+Hito 2 dejó marts listos (`fct_production_rate`, empresa, área). Hito 3 es Next.js + Tremor. Antes de scaffold, hace falta **ver** interpolación, disclaimer y rankings con datos reales sin pelear App Router.
 
 ## Decisión
 
@@ -23,6 +23,6 @@ Streamlit u otro kit de charts pueden reusar el mismo `data/` si hace falta; tam
 
 - `apps/web/` sigue vacío hasta el PR de Next.
 - Aceptación Hito 3 no se tilda con este spike.
-- Un Front que copie tokens/fórmula desde el notebook **v2** (`barrilito_cuenca.ipynb`) no recalcula `6.28981077` y usa **tasa de cuenca**, no productividad.
-- El notebook v1 (`barrilito_spike.ipynb`) interpoló `sum/sum(tef)` (~260 bbl/día). Queda histórico; no copiar su `rate_bbl_dia`.
+- Un Front que copie tokens/fórmula desde el notebook **v2** (`production_basin.ipynb`) no recalcula `6.28981077` y usa **tasa de cuenca**, no productividad.
+- El notebook v1 (`production_spike.ipynb`) interpoló `sum/sum(tef)` (~260 bbl/día). Queda histórico; no copiar su `rate_bbl_dia`.
 - Si el spike se volviera el producto, haría falta un ADR que **sí** reemplace el 0001 (no es este).

@@ -1,152 +1,118 @@
-# Barrilito
+# Vaca Muerta en Datos
 
-Dashboard público de **storytelling** sobre producción y completaciones no convencionales en **Vaca Muerta** (Cuenca Neuquina, Argentina), a partir de los datos abiertos del **Capítulo IV** de la Secretaría de Energía.
+**Un producto analítico para entender cómo evoluciona la producción no convencional de Vaca Muerta, quién la impulsa y dónde se concentra.** Convierte declaraciones mensuales oficiales en métricas comparables, rankings y exploración interactiva, con trazabilidad desde la fuente hasta la pantalla.
 
-**Marca (UI / copy):** Barrilito. **Repo:** [`vaca-muerta-pulse`](https://github.com/nrohland/vaca-muerta-pulse) — el identificador GitHub **no** cambia.
+Está pensado para analistas, equipos de energía, periodistas y personas que necesitan responder preguntas de negocio sin recorrer archivos anuales ni escribir SQL. Como portfolio, demuestra un recorrido completo de ingeniería de datos, modelado analítico y diseño de producto.
 
-Este repo es un **data product** de portfolio, **spec-driven**: primero specs y ADRs, después Meltano / dbt / Next.
+> **Estado de esta entrega:** versión de revisión local, sin promoción ni despliegue automático. El snapshot candidato acepta producción hasta **agosto de 2026**; septiembre parcial se excluye. “Preliminar” indica que falta aprobación de publicación, aunque el snapshot tenga validación técnica. Los datos oficiales pueden rectificarse.
 
-> **Hito 2 (este árbol):** dbt Core en [`transform/`](transform/README.md) (`fct_barrilito_rate` + empresa/área + `fct_completions` Adjunto IV). Meltano en [`extraction/`](extraction/README.md) → BigQuery `raw_cap4_dev` (año 2025: `COUNT(*)` **991 844**, delta 0). Hito 3 parcial: [Resumen UI](apps/web/README.md), sin deploy; [evidencia](docs/evidence/resumen/README.md). Spike de portada (tasa de **cuenca**): [`apps/spike/barrilito_cuenca.ipynb`](apps/spike/barrilito_cuenca.ipynb). `dbt build` contra BQ usa SA `vm-pulse-dbt` (secret `GCP_SA_KEY_DBT`, fuera de git).
+La [auditoría y capturas de la revisión previa](docs/evidence/data-valuation/README.md) permiten inspeccionar el Resumen y la metodología. La entrega integrada de las cinco vistas debe acompañarse de capturas y resultados propios.
 
-| Si sos… | Empezá por |
-| --- | --- |
-| Humano (producto / arquitectura) | este README → [specs/001](specs/001-vaca-muerta-pulse/spec.md) → [docs/architecture.md](docs/architecture.md) |
-| Agente de código | [AGENTS.md](AGENTS.md) (orden de lectura obligatorio) |
+## Qué preguntas responde
 
----
+| Vista | Pregunta | Evidencia que ofrece |
+| --- | --- | --- |
+| **Resumen** | ¿Cuál es el nivel actual y qué cambió? | Tasa diaria equivalente, volumen mensual, pozos productivos, evolución y concentración |
+| **Producción** | ¿Cómo evoluciona petróleo o gas frente al mes anterior, al año anterior y al acumulado comparable? | Series históricas, comparación entre años, cambio absoluto y tabla descargable |
+| **Operadores** | ¿Quién produce y cómo cambia su participación? | Ranking completo, filtros y evolución por operador |
+| **Áreas** | ¿Dónde se concentra la producción y cómo evoluciona cada permiso o concesión? | Ranking, detalle temporal y relación operador–área sólo con respaldo de datos |
+| **Actividad** | ¿Cómo evoluciona la cantidad de pozos con producción y su producción media? | Pozos productivos históricos y promedio por pozo y día calendario; las definiciones limitan qué dinámica puede inferirse |
 
-## El contador (qué es y qué no)
+Las vistas comparten producto, período, volumen/valor, comparación mensual/interanual, ES/EN, tema claro/oscuro y navegación por URL. El mismo componente de KPI, card o gráfico mantiene la misma jerarquía visual. Petróleo usa azul, gas violeta, valor monetario ámbar; las variaciones positivas y negativas mantienen verde y rojo por convención del producto.
 
-La portada de Barrilito es un contador de barriles que *parece* **extrayéndose en tiempo real**.
+## Datos y límites de interpretación
 
-La verdad: Capítulo IV es **mensual** y oficial. El “live” es una **simulación honesta**: el Front interpola una tasa **bbl/día de cuenca** (`sum(prod_pet_m3) / días del mes`) calculada en el mart a partir del último mes Cap. IV. **No es telemetría** ni un sensor de pozo. `sum/sum(tef)` es productividad, no el headline.
+La fuente principal es [Capítulo IV de la Secretaría de Energía](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv). El universo es **formación Vaca Muerta + recurso no convencional**: no representa toda la Cuenca Neuquina ni toda la producción argentina.
 
-El extract Meltano sigue **mensual** (owner DE). La UI **MUST** mostrar: *simulación a partir de datos mensuales oficiales*.
+- **Petróleo:** m³ × 6,28981077 = barriles. **Gas:** miles de m³ convertidos a MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
+- **Pozos productivos:** pozos únicos con producción positiva del fluido elegido en cada mes. Un pozo puede producir ambos fluidos; los conteos no se suman.
+- **Valor USD de petróleo:** barriles × promedio mensual Brent de [EIA](https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte) del mismo mes. Es una estimación bruta de referencia, no ingresos realizados, margen ni beneficio. Sin precio válido se muestra indisponibilidad.
+- **Gas en USD:** pendiente de referencia y conversión energética válidas; no se sustituye con Brent o un precio supuesto.
+- **Actividad:** producción media por pozo y día calendario no equivale a productividad por día efectivo de operación. No se infieren altas, bajas, perforación o completaciones a partir de un conteo agregado.
+- **Frecuencia:** datos mensuales, sin telemetría ni contador en tiempo real. Las transferencias de activos y rectificativas pueden alterar comparaciones por entidad.
 
-Petróleo de source = m³. Headline = **bbl**, con `bbl = m³ × 6.28981077` (mismo factor en marts y en YAML de métricas). Detalle: [data-model.md](specs/001-vaca-muerta-pulse/data-model.md).
+La [auditoría del snapshot y la valorización](docs/evidence/data-valuation/README.md) documenta corte, cobertura, fuentes, fechas y conciliación. El [modelo de datos](specs/001-vaca-muerta-pulse/data-model.md) explicita granos y unidades.
 
----
-
-## El problema
-
-Los datos de Capítulo IV son **públicos y ricos**, pero malos para contar una historia:
-
-- CSVs anuales pesados (DDJJ abiertas y cerradas), publicados en [Datos Argentina](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv) / CKAN de Energía.
-- Grano poco obvio (pozo × mes, a veces por formación productiva).
-- Unidades mixtas (petróleo y agua en m³, gas en miles de m³).
-- Completaciones / fracturas en **otro** recurso (Adjunto IV), no siempre alineado al padrón de pozos. Rigs, Brent, exportaciones y oleoductos tampoco salen del anual de producción: ver [mapa de fuentes](specs/001-vaca-muerta-pulse/spec.md).
-- Consultas oficiales ([reporte avanzado SE](https://www.se.gob.ar/datosupstream/consulta_avanzada/reporte.php)) útiles para un pozo, no para una narrativa de cuenca.
-- El dato **no** es alta frecuencia: no hay feed público de barriles por segundo.
-
-Falta un producto que responda en minutos: *¿a qué ritmo se extrae shale en Vaca Muerta, quién produce, dónde, y cómo cambió el último año?* — sin fingir un SCADA.
-
-## Objetivos
-
-1. **Ingesta barata y reproducible** de Capítulo IV hacia BigQuery (particionado + clustered), cadencia **mensual**.
-2. **Modelo analítico** (dbt `stg` → `int` → `marts`) con granos explícitos: pozo-mes, empresa, área, completaciones, y tasa Barrilito **bbl/día**.
-3. **Dashboard público Barrilito** (Next.js + Tremor): headline = contador interpolado + disclaimer MUST; series y rankings, no un dump de tablas ni un fake de real-time.
-4. **Costo** dentro de free/cheap-tier de GCP donde se pueda (on-demand BQ, pocos full scans).
-5. **Spec-driven**: cambios grandes actualizan `specs/` y `docs/adrs/` *antes* que el código.
-
-No-goals y métricas de éxito: [spec.md](specs/001-vaca-muerta-pulse/spec.md).
-
----
-
-## Arquitectura (overview)
-
-Detalle en [docs/architecture.md](docs/architecture.md). Decisión de stack: [ADR 0001](docs/adrs/0001-stack-choices.md).
-
-### Flujo de datos
+## Arquitectura y decisiones
 
 ```mermaid
 flowchart LR
-  subgraph Fuente["Fuente pública"]
-    SE["Secretaría de Energía<br/>Capítulo IV / CKAN"]
-  end
-  subgraph DE["extraction/ · DE"]
-    M["Meltano mensual<br/>tap → target-bigquery"]
-  end
-  subgraph BQ["GCP BigQuery"]
-    RAW["raw_*<br/>PARTITION + CLUSTER"]
-    STG["stg"]
-    INT["int"]
-    MART["marts + tasa bbl/día"]
-  end
-  subgraph AE["transform/ · AE"]
-    DBT["dbt Core"]
-  end
-  subgraph Front["apps/web · Front"]
-    WEB["Barrilito<br/>Next.js + Tremor"]
-  end
-  SE --> M --> RAW
-  RAW --> DBT
-  DBT --> STG --> INT --> MART
-  MART --> WEB
+  SE["SE · Capítulo IV / CKAN / CSV"] --> EL["Meltano · extracción versionada"]
+  EL --> RAW["BigQuery · raw"]
+  RAW --> DBT["dbt Core · staging → intermediate → marts"]
+  DBT --> REL["Export candidato · cobertura + contrato + manifiesto SHA-256"]
+  EIA["EIA · Brent mensual"] --> PRICE["Importación trazable + vínculo de precios"]
+  REL --> WEB["Next.js · snapshot agregado validado"]
+  PRICE --> WEB
+  WEB --> UI["React + Recharts · componentes comunes"]
 ```
 
-### Layout del repo
-
-El folder Git sigue llamándose `vaca-muerta-pulse`. La marca de producto es Barrilito.
-
-```mermaid
-flowchart TB
-  R["vaca-muerta-pulse"]
-  R --> S["specs/ · producto Barrilito + DoD"]
-  R --> D["docs/ · arquitectura + ADRs"]
-  R --> E["extraction/ · Meltano · owner DE"]
-  R --> T["transform/ · dbt · owner AE"]
-  R --> A["apps/web/ · Next + Tremor · owner Front"]
-  S --> S1["001-vaca-muerta-pulse/"]
-  D --> ADR["adrs/0001-stack-choices.md"]
-```
-
----
-
-## Stack (objetivo)
-
-| Capa | Tecnología | Dónde | Hito |
-| --- | --- | --- | --- |
-| Specs / docs | Markdown + Mermaid | `specs/`, `docs/` | 0 |
-| Ingesta | Meltano (schedule **mensual**) | `extraction/` | 1 |
-| Warehouse | BigQuery, `PARTITION` + `CLUSTER` | GCP | 1 |
-| Transformación | dbt Core (`stg` → `int` → `marts` + tasa Barrilito) | `transform/` | **2 (ahora)** |
-| UI | Next.js + Tremor (marca Barrilito) | `apps/web/` | 3 |
-| Costo | GCP free/cheap-tier, on-demand, sin secretos en git | — | 1–3 |
-
----
-
-## Roadmap
-
-Detalle y criterios de aceptación: [plan.md](specs/001-vaca-muerta-pulse/plan.md).
-
-| Hito | Qué | Código |
+| Capa | Tecnología actual | Por qué se eligió |
 | --- | --- | --- |
-| **0** Fundación SDD | Specs, ADRs, AGENTS.md, placeholders | mergeado / PR #1 |
-| **1** Raw + Meltano | CKAN DataStore → BQ `raw_*` particionado; extract **mensual** | `extraction/` |
-| **2** dbt | `stg` → `int` → `marts` + tests + tasa **bbl/día** | `transform/` |
-| **3** Dashboard Barrilito | Contador interpolado + disclaimer MUST; Next + Tremor | `apps/web/` |
+| Extracción | Python, Meltano y Singer; tap CKAN propio | Configuración y cargas reproducibles en Git; separación entre extracción y reglas de negocio |
+| Warehouse | BigQuery con particiones y clustering | Consulta analítica sin administrar servidores; control de bytes escaneados y separación dev/candidato/prod |
+| Transformación | dbt Core, SQL, tests y seeds | Granos explícitos, conversiones únicas, conciliación y contratos revisables |
+| Publicación de datos | Agregados JSON, manifiestos y SHA-256 | El browser no necesita credenciales; recibe un snapshot consistente y verificable; promoción separada de construcción |
+| Aplicación | Next.js 16, React 19 y TypeScript 7 | Componentes tipados, navegación persistente y exportación estática |
+| Visualización | Recharts 3 y componentes propios con CSS compartido | Una línea creativa y semántica común, con control de accesibilidad y responsive |
+| Verificación | Node test runner, Playwright y axe; tests dbt y conciliación Python | Comprobar cálculos, contratos, navegación y presentación en varias pantallas |
+| Automatización | GitHub Actions | Ejecución versionada de extracción y validación de configuración; el pipeline completo aún requiere coordinación explícita |
 
-Checklist: [tasks.md](specs/001-vaca-muerta-pulse/tasks.md). Meltano: [extraction/README.md](extraction/README.md). dbt: [transform/README.md](transform/README.md).
+Tremor fue una decisión inicial de planificación; **no es una dependencia del frontend actual**. La revisión UI usa Recharts y componentes comunes, documentados en [ADR 0003](docs/adrs/0003-resumen-ui.md). Para el detalle y los compromisos de diseño: [arquitectura](docs/architecture.md), [ADRs](docs/adrs/README.md).
 
----
+## Orquestación, extracción y freshness
 
-## Cómo contribuir
+Hoy hay piezas reproducibles, pero **no se presenta como un pipeline de producción automatizado de punta a punta**.
 
-1. Leé [AGENTS.md](AGENTS.md) (roles, DoD, secretos) y la spec activa.
-2. **SDD:** si el cambio es más que un typo, actualizá `specs/` y/o un ADR *antes* del código.
-3. No implementes Next fuera del Hito 3. Meltano ya vive en `extraction/`; dbt en `transform/`; no cambies el schedule Meltano a sub-diario en un PR de UI.
-4. Nunca commitees `.env`, JSON de service accounts, ni CSVs crudos pesados.
-5. Un PR = un hito o una historia acotada; el owner del folder (DE / AE / Front) debe poder revisar en aislamiento.
-6. QA: aceptar contra los criterios de [plan.md](specs/001-vaca-muerta-pulse/plan.md), no contra “el código corre”. El contador sin disclaimer **no** acepta.
+| Etapa | Implementación actual | Límite operativo |
+| --- | --- | --- |
+| Extracción programada | GitHub Actions, día 5 de cada mes a las 06:00 UTC (03:00 en Argentina) | Default `dev`, recurso anual 2025; carga completa condicionada por `ALLOW_FULL_YEAR_LOAD=true` y secretos configurados |
+| Rectificativas | Relectura anual; limpieza explícita antes de append | Un append sin preparación puede duplicar; el año/recurso vigente debe seleccionarse expresamente |
+| Transformación | dbt reproducible sobre BigQuery | El workflow de CI hace `dbt deps` y `dbt parse`; no encadena automáticamente un `dbt build` de warehouse tras cada extracción |
+| Corte publicable | Gates de cobertura, conciliación y snapshot candidato | El mayor mes raw no se acepta automáticamente; septiembre parcial queda excluido |
+| Precios y frontend | Importación y vínculo de artefactos con manifiestos | Actualización y aprobación separadas; no deploy automático |
+| Freshness | Objetivo de ingesta dentro de 7 días de publicación | Es una aspiración documentada, sin SLA monitorizado ni enforcement automático demostrado |
 
-## Índice de specs y docs
+Se conservan fechas diferentes para período de producción, actualización de fuente, extracción, ingesta, generación y publicación. El caso de agosto mostró que el CSV estaba más actualizado que DataStore: una fecha reciente de ejecución no garantiza cobertura reciente. Ver [operación de extracción](extraction/README.md) y [auditoría](docs/evidence/data-valuation/README.md).
 
-- [specs/README.md](specs/README.md) — cómo funcionan las specs
-- [specs/001-vaca-muerta-pulse/spec.md](specs/001-vaca-muerta-pulse/spec.md) — problema, usuarios, requisitos (Barrilito)
-- [specs/001-vaca-muerta-pulse/plan.md](specs/001-vaca-muerta-pulse/plan.md) — hitos 0–3
-- [specs/001-vaca-muerta-pulse/data-model.md](specs/001-vaca-muerta-pulse/data-model.md) — granos + tasa Barrilito (DRAFT / UNKNOWN)
-- [specs/001-vaca-muerta-pulse/tasks.md](specs/001-vaca-muerta-pulse/tasks.md) — Hito 1 (año 2025) + Hito 2 (IAM + dbt Barrilito) + notas Hito 3
-- [docs/architecture.md](docs/architecture.md)
-- [docs/adrs/0001-stack-choices.md](docs/adrs/0001-stack-choices.md)
+## Ejecutar la aplicación
 
-Placeholders de implementación: [extraction/](extraction/README.md) · [transform/](transform/README.md) (Hito 2, dbt) · [apps/web/](apps/web/README.md)
+Requisitos: Node.js 22.13+ y npm; las credenciales de GCP sólo son necesarias para ejecutar las capas de datos, no para ver el snapshot de revisión.
+
+```sh
+cd apps/web
+npm ci
+npm run dev
+```
+
+Abrir `http://localhost:3000/vaca-muerta-pulse/`.
+
+```sh
+npm run typecheck
+npm test
+npm run build
+npm run test:browser
+```
+
+El runner de navegador requiere Chromium instalado (`npx playwright install chromium`). Los comandos y reportes históricos no equivalen a resultados de la integración actual: la entrega final debe adjuntar su propia evidencia. Guías específicas: [frontend](apps/web/README.md), [extracción](extraction/README.md), [transformación](transform/README.md).
+
+## Recorrer el repositorio
+
+| Directorio | Responsabilidad |
+| --- | --- |
+| `apps/web/` | Aplicación, componentes, cálculos de presentación, contrato y tests |
+| `extraction/` | Taps, recursos, contratos y preparación de cargas |
+| `transform/` | Modelos dbt, tests, seeds y operación del warehouse |
+| `scripts/` | Importación de Brent y vínculo de artefactos |
+| `specs/` | Preguntas, alcance, definiciones y criterios de aceptación |
+| `docs/adrs/` | Decisiones de arquitectura y sus motivos |
+| `docs/evidence/` | Capturas, auditorías y resultados con alcance y limitaciones |
+| `apps/spike/` | Exploración histórica; no forma parte del frontend final |
+
+El identificador del repositorio sigue siendo [`vaca-muerta-pulse`](https://github.com/nrohland/vaca-muerta-pulse); el nombre de producto es **Vaca Muerta en Datos**.
+
+## Desarrollo y revisión
+
+El proyecto usa especificaciones y ADRs para registrar cambios de fuente, grano, métricas o arquitectura. Los roles separan Data Engineering (extracción/warehouse), Analytics Engineering (modelado y calidad), frontend (producto) y QA (aceptación). [AGENTS.md](AGENTS.md) contiene las reglas de contribución.
+
+Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en ramas/PR; agentes no mergean, publican ni despliegan sin autorización. La promoción de un candidato y el cierre operativo del pipeline son pasos explícitos de aceptación.

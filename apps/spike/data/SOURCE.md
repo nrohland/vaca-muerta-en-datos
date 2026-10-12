@@ -4,7 +4,7 @@ Extracto **acotado** de marts Hito 2 (`marts_cap4_dev`). Refresh 2026-09-12 (hea
 
 | Archivo | Grano | Filas | Mart origen |
 | --- | --- | ---: | --- |
-| `headline.csv` | 1 fila Pulse | 1 | `fct_barrilito_rate` — `rate_bbl_dia` = **cuenca** (`calendar_days`, ~590 393); `productivity_bbl_dia` ≈ 260 |
+| `headline.csv` | 1 fila Pulse | 1 | `fct_production_rate` — `rate_bbl_dia` = **cuenca** (`calendar_days`, ~590 393); `productivity_bbl_dia` ≈ 260 |
 | `monthly_pulse.csv` | mes × recorte VM | 12 | suma de `fct_company_month` |
 | `company_latest.csv` | empresa × último mes | 22 | `fct_company_month` |
 | `area_latest.csv` | área × último mes | 83 | `fct_area_month` |

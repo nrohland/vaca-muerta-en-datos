@@ -1,11 +1,10 @@
-# docs/ — índice
+# Documentación — Vaca Muerta en Datos
 
-Documentación humana y de arquitectura. Las specs de producto viven en [`../specs/`](../specs/README.md).
-
-| Documento | Para qué |
+| Documento | Propósito |
 | --- | --- |
-| [architecture.md](architecture.md) | Flujo de datos, C4-ish, datasets BQ, límites de costo |
-| [adrs/](adrs/README.md) | Decisiones de stack (ADRs) |
-| [adrs/0001-stack-choices.md](adrs/0001-stack-choices.md) | Meltano, BigQuery (PARTITION + CLUSTER), dbt, Next.js + Tremor |
+| [Arquitectura](architecture.md) | Flujo actual, stack, contratos, orquestación y freshness |
+| [ADRs](adrs/README.md) | Motivos y evolución de las decisiones técnicas |
+| [Evidencia](evidence/data-valuation/README.md) | Auditoría del snapshot, corte, precios y resultados con límites |
+| [Specs](../specs/README.md) | Preguntas, definiciones y criterios de aceptación |
 
-Antes de un cambio grande de arquitectura, actualizá el ADR o creá uno nuevo (`0002-…`).
+La documentación diferencia estado implementado, evidencia histórica y tareas operativas pendientes. Antes de cambiar fuentes, métricas o granos, actualizar el contrato/spec pertinente.

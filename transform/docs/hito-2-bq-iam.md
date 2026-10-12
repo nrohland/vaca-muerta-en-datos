@@ -2,7 +2,7 @@
 
 Corrida de verificación **2026-09-10** contra el proyecto GCP de Hito 1 (`extraction/.env.example`) (location **US**).
 
-**Estado honesto (post Nico):** SA `vm-pulse-dbt` **fue creada por Nico**. Bindings OK. Secret `GCP_SA_KEY_DBT` (JSON completo; materializado a `transform/.secrets/vm-pulse-dbt.json`, gitignored). Distinto de Meltano `GCP_SA_KEY`. **No se commitearon secretos.** `dbt build` contra warehouse no se afirma acá (modelos Barrilito viven en `transform/` desde PR #10).
+**Estado honesto (post Nico):** SA `vm-pulse-dbt` **fue creada por Nico**. Bindings OK. Secret `GCP_SA_KEY_DBT` (JSON completo; materializado a `transform/.secrets/vm-pulse-dbt.json`, gitignored). Distinto de Meltano `GCP_SA_KEY`. **No se commitearon secretos.** `dbt build` contra warehouse no se afirma acá (modelos Vaca Muerta en Datos viven en `transform/` desde PR #10).
 
 Scripts: [provision_hito2_bq.sh](../scripts/provision_hito2_bq.sh) (`--verify-only` lista datasets + SA) y [materialize-dbt-sa-key.sh](../scripts/materialize-dbt-sa-key.sh) (rechaza `GCP_SA_KEY` de Meltano).
 

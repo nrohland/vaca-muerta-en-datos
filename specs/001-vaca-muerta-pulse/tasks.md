@@ -1,9 +1,10 @@
 # Tasks — Hito 1 + notas Hito 2/3
 
-Criterios de aceptación: [plan.md](plan.md). Marca UI: **Barrilito** (repo `vaca-muerta-pulse`).
+> Registro histórico de hitos. El Hito 3 está activo; los requisitos actuales (sin contador live, Recharts, ES/EN y cinco vistas) están en [spec.md](spec.md) y specs de iteración. Las casillas antiguas no acreditan aceptación de la integración actual.
+Criterios de aceptación: [plan.md](plan.md). Marca UI: **Vaca Muerta en Datos** (repo `vaca-muerta-pulse`).
 
 - **Hito 1** (abajo): owner **DE**, folder [`extraction/`](../../extraction/README.md). Cadencia extract **mensual**; no cambiar `meltano.yml` en un PR de marca/producto.
-- **Hito 2 / 3:** Hito 2 código en `transform/` (modelos Barrilito + IAM/datasets). Hito 3 Next **sin tachar**.
+- **Hito 2 / 3:** Hito 2 código en `transform/` (modelos Vaca Muerta en Datos + IAM/datasets). Hito 3 Next **sin tachar**.
 
 Tachá en el PR que complete el ítem. Año 2025 cargado 2026-09-10: `COUNT(*)` **991 844** (delta 0 vs Datastore). Evidencia: [extraction/docs/hito-1-full-year-2025-load.md](../../extraction/docs/hito-1-full-year-2025-load.md). Smoke 500 previo: [extraction/docs/hito-1-post-merge-smoke.md](../../extraction/docs/hito-1-post-merge-smoke.md).
 
@@ -66,7 +67,7 @@ Tachá en el PR que complete el ítem. Año 2025 cargado 2026-09-10: `COUNT(*)` 
 
 ## Hito 2 — IAM + datasets BQ (DE, prereq de dbt)
 
-Evidencia: [transform/docs/hito-2-bq-iam.md](../../transform/docs/hito-2-bq-iam.md). Scripts: [provision_hito2_bq.sh](../../transform/scripts/provision_hito2_bq.sh), [materialize-dbt-sa-key.sh](../../transform/scripts/materialize-dbt-sa-key.sh). SA + bindings: Nico (PR #11). Modelos Barrilito: PR #10.
+Evidencia: [transform/docs/hito-2-bq-iam.md](../../transform/docs/hito-2-bq-iam.md). Scripts: [provision_hito2_bq.sh](../../transform/scripts/provision_hito2_bq.sh), [materialize-dbt-sa-key.sh](../../transform/scripts/materialize-dbt-sa-key.sh). SA + bindings: Nico (PR #11). Modelos Vaca Muerta en Datos: PR #10.
 
 - [x] Datasets US: `stg_cap4_dev`, `int_cap4_dev`, `marts_cap4_dev`.
 - [x] `raw_cap4_dev` existe; `raw_cap4` no.
@@ -75,11 +76,11 @@ Evidencia: [transform/docs/hito-2-bq-iam.md](../../transform/docs/hito-2-bq-iam.
 - [x] Docs + `.env.example` con nombres (`DBT_BIGQUERY_PROJECT`, `DBT_DATASET_*`, `GCP_SA_KEY_DBT`).
 - [x] Default table expiration 60d en datasets dbt — documentado; Nico puede `--unset-table-expiration`.
 
-## Hito 2 — tasa Barrilito (AE, `transform/`)
+## Hito 2 — tasa Vaca Muerta en Datos (AE, `transform/`)
 
 Owner: **AE**. Contrato: [data-model.md](data-model.md) § Grano 5. Código: [`transform/`](../../transform/README.md).
 
-- [x] Mart `fct_barrilito_rate` (identificador único; alias `mart_barrilito_headline` retirado).
+- [x] Mart `fct_production_rate` (identificador único; alias `mart_production_headline` retirado).
 - [x] Grano: **una fila** = snapshot del recorte VM no conv. para el **último mes Capítulo IV** (agregado **total** Pulse, no por empresa).
 - [x] Fórmula preferida: `rate_m3_dia = sum(prod_pet_m3) / nullif(sum(tef), 0)` cuando `tef_sum > 0` (`tef_weighted`).
 - [x] Fallback: `rate_m3_dia = sum(prod_pet_m3) / days_in_month(periodo)` (`calendar_days`). Unit tests con fixtures para `tef` = 0. Warehouse 2025 Pulse: `tef` en [0, 31], 0 nulls, 6115 ceros; headline `tef_weighted`.
@@ -87,9 +88,9 @@ Owner: **AE**. Contrato: [data-model.md](data-model.md) § Grano 5. Código: [`t
 - [x] El **mismo** factor `6.28981077` en YAML de métricas (`transform/metrics.yml` + `config.meta`) y `dbt_project.yml`.
 - [x] `stg` materializa `periodo` como grano de negocio; no filtrar el mes Cap. IV por `_sdc_batched_at`.
 - [x] Source primario: `raw_cap4_dev.produccion_pozo_mes`. **`COUNT(*)` = 991844** (año 2025) — handoff DE/Tutor. Twin prod: `raw_cap4`. Este PR no re-consultó `INFORMATION_SCHEMA`.
-- [x] Test de reconciliación SQL: `prod_pet_m3` Barrilito vs suma de `fct_well_month` del mismo `periodo` (corre con `dbt test` cuando hay warehouse).
-- [x] Actualizar [data-model.md](data-model.md): contrato `fct_barrilito_rate`; tef no promovido a CONFIRMED. Sin sensores ni grano intradía.
-- [x] `dbt build` / `dbt test` contra BigQuery — 2026-09-11, SA `vm-pulse-dbt` / `GCP_SA_KEY_DBT`. `fct_well_month` **34051** filas; `fct_barrilito_rate` **1 fila** (`periodo` 2025-12-01, entonces `rate_method=tef_weighted` — **grano de portada incorrecto**). Revisión: headline = `prod / days_in_month`; ver spike `barrilito_cuenca.ipynb`. Rebuild BQ pendiente (unit tests cubren el SQL).
+- [x] Test de reconciliación SQL: `prod_pet_m3` Vaca Muerta en Datos vs suma de `fct_well_month` del mismo `periodo` (corre con `dbt test` cuando hay warehouse).
+- [x] Actualizar [data-model.md](data-model.md): contrato `fct_production_rate`; tef no promovido a CONFIRMED. Sin sensores ni grano intradía.
+- [x] `dbt build` / `dbt test` contra BigQuery — 2026-09-11, SA `vm-pulse-dbt` / `GCP_SA_KEY_DBT`. `fct_well_month` **34051** filas; `fct_production_rate` **1 fila** (`periodo` 2025-12-01, entonces `rate_method=tef_weighted` — **grano de portada incorrecto**). Revisión: headline = `prod / days_in_month`; ver spike `production_basin.ipynb`. Rebuild BQ pendiente (unit tests cubren el SQL).
 
 ## Hito 2 — marts empresa / área (AE, `transform/`)
 
@@ -102,18 +103,18 @@ Owner: **AE**. Contrato: [data-model.md](data-model.md) § Grano 2–3. Código:
 - [x] Sin `PARTITION BY periodo` (sandbox 60d). Cluster `idempresa` / `idareapermisoconcesion`.
 - [x] Tests: unique combo, not_null, relationships a dims, reconciliación `sum(prod_pet_m3)` vs `fct_well_month` por `periodo`.
 - [x] Completaciones: **no** en el PR de rankings (Adjunto IV sigue fuera del job Meltano default). Load + marts: job `cap4-fracturas` / `fct_completions`.
-- [x] Warehouse 2026-09-11 (SA `vm-pulse-dbt`, sin Meltano `GCP_SA_KEY`): `dbt build` de estos 4 modelos + tests **PASS=32** en 16.3 s. `dim_company` **24** filas; `dim_area` **83**; `fct_company_month` **242** (sparse); `fct_area_month` **981**. Dic-2025 `sum(prod_pet_m3)` = Barrilito **2 909 815.325** m³. Jobs US: company `6750284a-7942-4c4e-b97e-cc8a1c404551` (~3.5 MiB); area `caa17abd-e62f-44a0-b564-4cde970f8564` (~3.8 MiB).
+- [x] Warehouse 2026-09-11 (SA `vm-pulse-dbt`, sin Meltano `GCP_SA_KEY`): `dbt build` de estos 4 modelos + tests **PASS=32** en 16.3 s. `dim_company` **24** filas; `dim_area` **83**; `fct_company_month` **242** (sparse); `fct_area_month` **981**. Dic-2025 `sum(prod_pet_m3)` = Vaca Muerta en Datos **2 909 815.325** m³. Jobs US: company `6750284a-7942-4c4e-b97e-cc8a1c404551` (~3.5 MiB); area `caa17abd-e62f-44a0-b564-4cde970f8564` (~3.8 MiB).
 
 ---
 
-## Hito 2 — revisión grano Barrilito (AE)
+## Hito 2 — revisión grano Vaca Muerta en Datos (AE)
 
 El mart publicado el 2026-09-11 usaba `sum/sum(tef)` como `rate_bbl_dia` (~260 bbl/día = productividad). La portada pide **tasa de cuenca**.
 
 - [x] Spec + data-model: headline = `sum(prod_pet_m3) / days_in_month`; productividad en columnas aparte.
-- [x] `fct_barrilito_rate` SQL + unit tests (divergencia tef vs calendario).
-- [x] Spike `apps/spike/barrilito_cuenca.ipynb` sobre los CSV de marts.
-- [x] `dbt build --select fct_barrilito_rate` 2026-09-12: 3 unit tests PASS + model + data tests. `periodo=2025-12-01`, `rate_method=calendar_days`, `rate_bbl_dia≈590393`, `productivity_bbl_dia≈259.8`. Job model `876b1821-715d-40ce-a94e-9057c235df1c` (~2.2 MiB). CSV `headline.csv` re-exportado.
+- [x] `fct_production_rate` SQL + unit tests (divergencia tef vs calendario).
+- [x] Spike `apps/spike/production_basin.ipynb` sobre los CSV de marts.
+- [x] `dbt build --select fct_production_rate` 2026-09-12: 3 unit tests PASS + model + data tests. `periodo=2025-12-01`, `rate_method=calendar_days`, `rate_bbl_dia≈590393`, `productivity_bbl_dia≈259.8`. Job model `876b1821-715d-40ce-a94e-9057c235df1c` (~2.2 MiB). CSV `headline.csv` re-exportado.
 
 ## Hito 2 — Adjunto IV / `fct_completions` (AE + DE)
 
@@ -132,7 +133,7 @@ Owner: **DE** (job aparte) + **AE** (marts). No Next.js. No perforación / comer
 
 No implementar Next/Tremor acá ni en Hito 2. Owner: **Front**. Spec: R6 / R6b.
 
-Spike de portada (no tilda estas casillas): [`apps/spike/barrilito_cuenca.ipynb`](../../apps/spike/README.md). Tasa de cuenca + reloj diario. [ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md). El v1 (`barrilito_spike.ipynb`) no se copia al Front.
+Spike de portada (no tilda estas casillas): [`apps/spike/production_basin.ipynb`](../../apps/spike/README.md). Tasa de cuenca + reloj diario. [ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md). El v1 (`production_spike.ipynb`) no se copia al Front.
 
 - [ ] Headline = contador de barriles interpolado desde `rate_bbl_dia` del mart (aspecto “extrayéndose” en vivo).
 - [ ] Disclaimer **MUST** visible junto al contador: *simulación a partir de datos mensuales oficiales*.

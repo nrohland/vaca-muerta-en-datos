@@ -1,4 +1,4 @@
-# apps/spike — mock de portada Barrilito
+# apps/spike — mock de portada Vaca Muerta en Datos
 
 **No es Hito 3.** Owner: AE / producto. El dashboard público sigue en [`apps/web/`](../web/README.md) (Next.js + Tremor, vacío hasta el hito).
 
@@ -6,8 +6,8 @@ Este folder es un **spike**: notebooks + CSVs chicos de marts para fijar interpo
 
 | Notebook | Headline | Usar |
 | --- | --- | --- |
-| [`barrilito_cuenca.ipynb`](barrilito_cuenca.ipynb) | **bbl/día de cuenca** = `prod_pet_m3 / days_in_month` (~590k en dic-2025) | **Sí** — definición actual |
-| [`barrilito_spike.ipynb`](barrilito_spike.ipynb) | usaba `rate_bbl_dia` del mart = `prod / tef` (~260 bbl/pozo-día) | Histórico; no copiar al Front |
+| [`production_basin.ipynb`](production_basin.ipynb) | **bbl/día de cuenca** = `prod_pet_m3 / days_in_month` (~590k en dic-2025) | **Sí** — definición actual |
+| [`production_spike.ipynb`](production_spike.ipynb) | usaba `rate_bbl_dia` del mart = `prod / tef` (~260 bbl/pozo-día) | Histórico; no copiar al Front |
 
 ## Cómo correr
 
@@ -16,7 +16,7 @@ cd apps/spike
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-jupyter notebook barrilito_cuenca.ipynb
+jupyter notebook production_basin.ipynb
 ```
 
 No hace falta GCP: los CSV ya están en [`data/`](data/SOURCE.md). Cero secretos. `headline.rate_bbl_dia` es la tasa de **cuenca** (`calendar_days`).
@@ -31,7 +31,7 @@ python export_snapshots.py
 
 ## Qué queda fijado acá (v2)
 
-- Headline: `fct_barrilito_rate.rate_bbl_dia` = `prod_pet_m3 × 6.28981077 / days_in_month`.
+- Headline: `fct_production_rate.rate_bbl_dia` = `prod_pet_m3 × 6.28981077 / days_in_month`.
 - Productividad: `prod × factor / tef_sum` como KPI, **no** como ritmo del contador.
 - Reloj diario: `barriles_hoy = rate_bbl_cuenca × segundos_desde_00:00_ART / 86400`.
 - Disclaimer MUST pegado al número: *simulación a partir de datos mensuales oficiales*.

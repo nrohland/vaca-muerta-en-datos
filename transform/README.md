@@ -1,10 +1,12 @@
 # transform/ — dbt Core (Analytics Engineer)
 
-**Hito 2.** Owner: **AE** (modelos). **DE** provisionó IAM + datasets. Producto UI: **Barrilito**. Repo: `vaca-muerta-pulse`.
+> Los nombres técnicos de tasa/análisis/notebooks se normalizan en esta revisión (ADR 0004). Las ejecuciones y cifras fechadas son evidencia histórica; el renombre en Git no demuestra una migración de relaciones en BigQuery.
+> Estado operativo actual: extracción mensual configurada en GitHub Actions (día 5, 06:00 UTC), default dev/recurso 2025 y guard de carga completa. CI dbt ejecuta deps/parse, no orquestación end-to-end. La actualización candidata de agosto se operó explícitamente; freshness ≤ 7 días es objetivo sin enforcement automático demostrado. Ver [arquitectura](../docs/architecture.md) y [auditoría](../docs/evidence/data-valuation/README.md).
+**Hito 2.** Owner: **AE** (modelos). **DE** provisionó IAM + datasets. Producto UI: **Vaca Muerta en Datos**. Repo: `vaca-muerta-pulse`.
 
 dbt **Core** (gratis) + paquetes Hub. No dbt Cloud, no paquetes pagos. Meltano no se toca acá; el Front no lee `raw_*`.
 
-Contrato de granos: [data-model.md](../specs/001-vaca-muerta-pulse/data-model.md) § Grano 5. El identificador publicado es **`fct_barrilito_rate`** (el alias `mart_barrilito_headline` no se usa).
+Contrato de granos: [data-model.md](../specs/001-vaca-muerta-pulse/data-model.md) § Grano 5. El identificador publicado es **`fct_production_rate`** (el alias `mart_production_headline` no se usa).
 
 IAM / datasets (DE, PR #11): [docs/hito-2-bq-iam.md](docs/hito-2-bq-iam.md). Secret de dbt: **`GCP_SA_KEY_DBT`** (nunca `GCP_SA_KEY` de Meltano).
 
@@ -30,7 +32,7 @@ Leé **solo** marts. Headline = este mart, una fila.
 
 | | |
 | --- | --- |
-| Mart | `fct_barrilito_rate` |
+| Mart | `fct_production_rate` |
 | Dataset BQ (dev) | **`marts_cap4_dev`** |
 | Dataset BQ (prod, futuro) | `marts_cap4` |
 | Proyecto | `vaca-muerta-pulse` |
@@ -50,7 +52,7 @@ Leé **solo** marts. Headline = este mart, una fila.
 | `source_batched_at_max`, `fecha_data_max` | Frescura del load (no son el mes de producción) |
 | `is_simulation`, `disclaimer` | Siempre simulación. Copy MUST junto al contador |
 
-**Métrica:** `bbl = m³ × 6.28981077`. El mismo número vive en `var('m3_to_bbl')`, el macro `m3_to_bbl()`, [metrics.yml](metrics.yml) y `config.meta` de `fct_barrilito_rate`. **No** recalcules el factor en el browser.
+**Métrica:** `bbl = m³ × 6.28981077`. El mismo número vive en `var('m3_to_bbl')`, el macro `m3_to_bbl()`, [metrics.yml](metrics.yml) y `config.meta` de `fct_production_rate`. **No** recalcules el factor en el browser.
 
 **Disclaimer MUST (visible, no solo footer):** *simulación a partir de datos mensuales oficiales*.
 
@@ -72,14 +74,14 @@ select
   source_batched_at_max,
   fecha_data_max,
   disclaimer
-from `vaca-muerta-pulse.marts_cap4_dev.fct_barrilito_rate`;
+from `vaca-muerta-pulse.marts_cap4_dev.fct_production_rate`;
 ```
 
-Análisis compilable: [analyses/sample_barrilito_headline.sql](analyses/sample_barrilito_headline.sql).
+Análisis compilable: [analyses/sample_production_headline.sql](analyses/sample_production_headline.sql).
 
 ### Rankings empresa / área (Hito 3, no el headline)
 
-Leé estos marts para ranking y filtros. El contador interpolado **sigue** saliendo de `fct_barrilito_rate.rate_bbl_dia`.
+Leé estos marts para ranking y filtros. El contador interpolado **sigue** saliendo de `fct_production_rate.rate_bbl_dia`.
 
 | Mart | Grano | Dataset BQ (dev) |
 | --- | --- | --- |
@@ -97,7 +99,7 @@ Leé estos marts para ranking y filtros. El contador interpolado **sigue** salie
 | `fct_completions` | `id_base_fractura_adjiv` | `marts_cap4_dev` |
 | `fct_completions_month` | mes de `fecha_inicio` | `marts_cap4_dev` |
 
-Copy MUST: Adjunto IV. `cantidad_fracturas` = etapas. Join a `fct_well_month` por `idpozo` = UNKNOWN. No interpolar fracturas como el Barrilito.
+Copy MUST: Adjunto IV. `cantidad_fracturas` = etapas. Join a `fct_well_month` por `idpozo` = UNKNOWN. No interpolar fracturas como el Vaca Muerta en Datos.
 
 ```sql
 select periodo, job_count, etapas, well_count
@@ -230,17 +232,17 @@ dbt debug
 # Evitá select * de raw_*. Preferí --select acotado y dbt show --limit.
 # Antes de un scan pesado: dry-run BQ. Raw ~338 MiB; si el estimado es ≫ 1 TiB, STOP.
 # `stg+` no matchea (tags = staging). El `+` a la izquierda incluye padres.
-dbt build --select +fct_barrilito_rate
+dbt build --select +fct_production_rate
 # Rankings empresa / área (leen fct_well_month; no re-scan de raw si la tabla ya existe):
 dbt build --select dim_company dim_area fct_company_month fct_area_month
 # Adjunto IV (no es Cap. IV; pide raw fracturas_adjunto_iv):
 dbt build --select stg_fracturas_adjunto_iv+
 dbt test
-dbt show --select fct_barrilito_rate --limit 5
+dbt show --select fct_production_rate --limit 5
 dbt show --select fct_company_month --limit 5
 ```
 
-`dbt build --select fct_barrilito_rate` **verde** 2026-09-12 contra BigQuery: unit tests + model + data tests. Headline `calendar_days`, `rate_bbl_dia` ≈ 590 393 bbl/día; `productivity_bbl_dia` ≈ 259.8. Job model `876b1821-715d-40ce-a94e-9057c235df1c` (~2.2 MiB). El build 2026-09-11 con `tef_weighted` como portada quedó obsoleto. Source schema: `env_var('DBT_RAW_DATASET', 'raw_cap4_dev')` en `_sources.yml` — **no** pongas `{{ env_var() }}` dentro de `vars:` (dbt lo deja sin renderizar).
+`dbt build --select fct_production_rate` **verde** 2026-09-12 contra BigQuery: unit tests + model + data tests. Headline `calendar_days`, `rate_bbl_dia` ≈ 590 393 bbl/día; `productivity_bbl_dia` ≈ 259.8. Job model `876b1821-715d-40ce-a94e-9057c235df1c` (~2.2 MiB). El build 2026-09-11 con `tef_weighted` como portada quedó obsoleto. Source schema: `env_var('DBT_RAW_DATASET', 'raw_cap4_dev')` en `_sources.yml` — **no** pongas `{{ env_var() }}` dentro de `vars:` (dbt lo deja sin renderizar).
 
 Unit tests del mart (`test_type:unit`) también necesitan adapter BQ (tablas temporales). Están escritos; hay que correrlos con SA.
 
@@ -265,7 +267,7 @@ source raw_cap4.produccion_pozo_mes   (físico: raw_cap4_dev; twin prod: raw_cap
   → stg_produccion_pozo_mes     (view en stg_cap4_dev: cast, periodo, filtro VM, dedupe)
   → int_produccion_vm_noconv    (view en int_cap4_dev: surrogate + days_in_month)
   → fct_well_month              (tabla en marts_cap4_dev, cluster empresa/pozo; sin partition-by-periodo en sandbox 60d)
-      → fct_barrilito_rate      (1 fila en marts_cap4_dev)
+      → fct_production_rate      (1 fila en marts_cap4_dev)
       → dim_company / fct_company_month
       → dim_area / fct_area_month
 ```
@@ -302,7 +304,7 @@ Evaluator (caro; no es el `dbt build` default). Los modelos del paquete están `
 - Staging es **view**; el primer `dbt build` de `fct_well_month` lee **991844** filas de `raw_cap4_dev.produccion_pozo_mes` (año 2025, ~338 MiB). No hagas `select *` de raw.
 - Partición raw = `_sdc_batched_at` MONTH — **no** sirve para filtrar el mes Cap. IV (`periodo` vive en stg).
 - `fct_well_month` **no** se particiona por `periodo` en sandbox: el cap de 60 días vacía la tabla al escribir meses 2025. Cluster `idempresa, idpozo`.
-- Preferí dry-run BQ, `dbt show --limit`, `dbt run --select stg+`, luego `dbt build --select +fct_barrilito_rate` (el `+` a la izquierda incluye stg/int/well-month).
+- Preferí dry-run BQ, `dbt show --limit`, `dbt run --select stg+`, luego `dbt build --select +fct_production_rate` (el `+` a la izquierda incluye stg/int/well-month).
 - Recorte VM en stg (~34k well-months en el sample DataStore 2025); el scan de raw sigue siendo el año entero si la view no predica partición.
 - Si un dry-run estima ≫ 1 TiB, **STOP**.
 

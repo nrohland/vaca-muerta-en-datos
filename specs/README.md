@@ -11,7 +11,7 @@ Una carpeta `specs/NNN-slug/` describe **un producto o un cambio de producto**, 
 | `spec.md` | Problema, usuarios, requisitos, no-goals, mapa de fuentes, éxito |
 | `plan.md` | Hitos y aceptación |
 | `data-model.md` | Granos, claves, UNKNOWNs |
-| `tasks.md` | Checklist Hito 1 (año 2025 en `raw_cap4_dev`) + Hito 2 (IAM + dbt Barrilito) + notas Hito 3 |
+| `tasks.md` | Checklist Hito 1 (año 2025 en `raw_cap4_dev`) + Hito 2 (IAM + dbt Vaca Muerta en Datos) + notas Hito 3 |
 
 Opcional más adelante: `research.md`, `contracts.md` (APIs). No inventar archivos vacíos.
 
@@ -38,7 +38,7 @@ flowchart LR
 
 | ID | Producto | Estado |
 | --- | --- | --- |
-| [001-vaca-muerta-pulse](001-vaca-muerta-pulse/spec.md) | **Barrilito** (repo `vaca-muerta-pulse`) — Cap. IV, simulación mensual | Activa · Hito 2 (dbt; año 2025 en `raw_cap4_dev`; `dbt build` BQ pide `GCP_SA_KEY_DBT`) |
+| [001-vaca-muerta-pulse](001-vaca-muerta-pulse/spec.md) | **Vaca Muerta en Datos** (repo `vaca-muerta-pulse`) — Cap. IV, simulación mensual | Fundación actualizada · Hito 3 activo; ver specs de iteración y README |
 
 ## Convenciones
 

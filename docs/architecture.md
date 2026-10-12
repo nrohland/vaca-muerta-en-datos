@@ -1,137 +1,73 @@
-# Arquitectura — Vaca Muerta Pulse
+# Arquitectura — Vaca Muerta en Datos
 
-Vista C4-ish del data product. Stack y *por qué*: [ADR 0001](adrs/0001-stack-choices.md). Producto: [spec.md](../specs/001-vaca-muerta-pulse/spec.md).
+Esta arquitectura separa la obtención de datos, su semántica analítica y la presentación. El frontend consume un snapshot agregado validado; no consulta credenciales ni tablas raw desde el browser. [README](../README.md) presenta el producto y [ADRs](adrs/README.md) explican las decisiones.
 
-**Hoy (Hito 2, P0+P1 + Adjunto IV en curso):** dbt Core en `transform/` sobre raw Meltano. Source primario de stg: **`raw_cap4_dev`** (`produccion_pozo_mes` `COUNT(*)` = 991844, año 2025). Companion: `fracturas_adjunto_iv` (Adjunto IV, job `cap4-fracturas`). Prod twin: `raw_cap4`. Mart headline **`fct_barrilito_rate`**. Rankings **`fct_company_month`** / **`fct_area_month`**. Completaciones **`fct_completions`**. SA `vm-pulse-dbt` **creada por Nico**; bindings OK. Spike de portada: [`apps/spike/`](../apps/spike/README.md) ([ADR 0002](adrs/0002-ui-spike-notebook.md)). Next: Hito 3.
-
-## 1. Contexto
-
-Quién habla con el sistema.
-
-```mermaid
-flowchart LR
-  U1["Ciudadanía / prensa / analistas"]
-  U2["Contributor DE / AE / Front"]
-  SE["Secretaría de Energía<br/>Capítulo IV · datos.gob.ar / CKAN"]
-  SYS["Vaca Muerta Pulse"]
-  GCP["GCP · BigQuery + secretos fuera de git"]
-
-  U1 -->|"dashboard público"| SYS
-  U2 -->|"PRs spec-driven"| SYS
-  SE -->|"CSV / Datastore API"| SYS
-  SYS -->|"raw + marts"| GCP
-```
-
-Límites:
-
-- No autenticamos usuarios finales (producto público).
-- No somos el origen de verdad: si SE corrige una DDJJ, re-ingerimos.
-- No hay streaming; cadencia **mensual** (publicación del Capítulo IV).
-- El extract default es **solo** producción Cap. IV. Adjunto IV entra por el job **aparte** `cap4-fracturas`. Perforación, comercio exterior, ductos siguen fuera. Ver [data-model.md](../specs/001-vaca-muerta-pulse/data-model.md) § Fuentes hermanas.
-
-## 2. Contenedores
+## Flujo implementado
 
 ```mermaid
 flowchart TB
-  subgraph Browser
-    UI["apps/web<br/>Next.js + Tremor"]
-  end
-  subgraph GCP
-    BQ["BigQuery<br/>raw_* / stg / int / marts"]
-  end
-  subgraph RepoCI["Repo + CI (futuro)"]
-    MEL["extraction/<br/>Meltano"]
-    DBT["transform/<br/>dbt Core"]
-  end
-  CKAN["CKAN / CSVs anuales Capítulo IV"]
-
-  CKAN --> MEL --> BQ
-  BQ --> DBT --> BQ
-  BQ -->|"lecturas de marts"| UI
+  CAP["SE · Capítulo IV mensual"] --> MEL["Meltano / tap CKAN"]
+  CAP --> CSV["Alternativa CSV candidato ante rezago DataStore"]
+  MEL --> RAW["BigQuery raw · dev / candidato / prod"]
+  CSV --> RAW
+  RAW --> STG["dbt staging · tipos y normalización"]
+  STG --> INT["dbt intermediate · universo y unidades"]
+  INT --> MART["dbt marts · mes / operador / área / pozos"]
+  MART --> GATE["Cobertura y conciliación · meses aceptados"]
+  GATE --> RELEASE["Export agregado + contrato + manifiesto SHA-256"]
+  EIA["EIA Brent mensual"] --> IMPORT["Importación trazable · precios por mes"]
+  IMPORT --> BIND["Manifiesto de valorización ligado al release"]
+  RELEASE --> BIND
+  RELEASE --> APP["Next.js export estático · React / TypeScript"]
+  BIND --> APP
+  APP --> UI["Recharts + KPIs/cards/filtros comunes"]
 ```
 
-| Contenedor | Responsabilidad | Owner |
+El flujo tiene herramientas y controles reproducibles, pero no está encadenado automáticamente en producción de origen a publicación. La actualización candidata más reciente se operó explícitamente y dejó auditoría de sus etapas.
+
+## Capas y contratos
+
+| Capa | Contrato / responsabilidad | Justificación |
 | --- | --- | --- |
-| Meltano | Extraer, no transformar negocio | DE |
-| BigQuery `raw_*` | Landing fiel al source, particionado | DE |
-| dbt | Tipar, granos, tests, marts de storytelling | AE |
-| Next.js | Narrativa, charts, filtros | Front |
+| Fuente | Declaraciones oficiales pozo–mes; revisables | Conservar origen público y trazabilidad sin fingir tiempo real |
+| Extracción | Meltano/Singer y tap CKAN propio; recurso y año explícitos | Código versionado y relectura anual para rectificativas |
+| Raw BigQuery | Fidelidad al source; ambientes aislados | Separar investigación, candidato y producción |
+| dbt staging/intermediate | Tipos, claves, recorte y conversiones | Semántica única antes de agregar |
+| Marts | Agregados por mes, operador y área; pozos únicos por fluido | El producto usa definiciones verificables y granos estables |
+| Gate y export | Aceptación de períodos, conciliación, contrato y hashes | Separar dato existente de dato apto para revisión/publicación |
+| Precios | EIA Brent por mes y vínculo con release | Cada comparación usa su precio histórico; precios no bloquean volumen físico |
+| Frontend | Next.js 16, React 19, TypeScript 7, Recharts 3 | Export estático, componentes reutilizables y navegación persistente |
 
-El browser **no** habla con CKAN ni con `raw_*`.
+La configuración raw Meltano usa partición mensual de `_sdc_batched_at`, no de `periodo`; producción se agrupa físicamente por `empresa`, `idpozo`, `cuenca`. La fecha de negocio se normaliza en dbt. Particionar por fecha de carga no elimina por sí solo el costo de una consulta histórica de períodos: deben revisarse predicados y bytes escaneados. Detalle de datasets/IAM: [guía dbt](../transform/README.md), [evidencia Hito 2](../transform/docs/hito-2-bq-iam.md).
 
-## 3. Flujo de datos (detalle)
+El mart de tasa histórica `fct_production_rate` conserva el contrato de una fila para el último mes raw. **No define el corte de publicación actual**: el candidato acepta agosto de 2026 y excluye septiembre parcial mediante sus gates y marts de publicación. Ver [auditoría](evidence/data-valuation/README.md).
 
-```mermaid
-flowchart LR
-  subgraph Sources["Sources Nación / SE"]
-    P["Producción pozo-mes Cap. IV<br/>CKAN DataStore / CSVs por año"]
-    W["Capítulo IV - Pozos<br/>coords; no en job default"]
-    F["Adjunto IV fracturas<br/>job cap4-fracturas (aparte)"]
-  end
-  P --> TAPS
-  W --> TAPS
-  F --> TAPS
-  TAPS["Meltano taps"] --> RAW["BQ raw<br/>partition MONTH(_sdc_batched_at)<br/>prod cluster empresa/idpozo/cuenca<br/>Adjunto IV cluster idpozo/cuenca/empresa_informante"]
-  RAW --> STG["stg_*<br/>rename, types, filtros VM"]
-  STG --> INT["int_*<br/>joins, claves, unidades"]
-  INT --> M1["mart fct_well_month"]
-  M1 --> M4["mart fct_barrilito_rate"]
-  M1 --> M2["marts empresa / área"]
-  STG --> M3["mart fct_completions"]
-  M1 --> WEB["Dashboard"]
-  M2 --> WEB
-  M3 --> WEB
-  M4 --> WEB
-```
+## Modelo de negocio
 
-El nodo raw de **producción** coincide con `extraction/meltano.yml`: partición **MONTH(`_sdc_batched_at`)** (no `periodo`); cluster **`empresa`, `idpozo`, `cuenca`**. Adjunto IV: mismo MONTH de load, cluster **`idpozo`, `cuenca`, `empresa_informante`** (no hay `empresa`). Intento de producto `PARTITION BY DATE(periodo)`: [extraction/sql/intended_partition.sql](../extraction/sql/intended_partition.sql).
+El universo de producto filtra `formacion = 'vaca muerta'` y `tipo_de_recurso = 'NO CONVENCIONAL'`. No representa toda la cuenca. El factor de petróleo es m³ × 6,28981077; gas se presenta en MMm³. Tasa = volumen del mes / días calendario.
 
-Filtro de producto (CONFIRMED en sample 2025 DataStore; aplicar en `stg`/`int`, no en el tap): `formacion = 'vaca muerta'` y `tipo_de_recurso = 'NO CONVENCIONAL'`. Detalle en [data-model.md](../specs/001-vaca-muerta-pulse/data-model.md).
+Los pozos productivos tienen producción positiva del fluido en cada mes. Su promedio por pozo y día calendario es una razón entre agregados; no prueba días efectivos, declinación individual, nuevos pozos ni salidas del padrón. Adjunto IV es una fuente separada para fracturas/completaciones; no se fuerza su unión con producción si la relación no está confirmada.
 
-## 4. BigQuery — naming y físico (Hito 1 + datasets Hito 2)
+La estimación monetaria de petróleo es volumen × Brent mensual, sin deducciones comerciales ni de costos. Gas no tiene una referencia nacional/conversión energética validada para el corte actual y queda sin USD. No rellenar precios ni aplicar el precio actual a toda la historia.
 
-Nombres **confirmados**. Handoff Hito 2: `raw_cap4_dev.produccion_pozo_mes` `COUNT(*)` = **991844** (año 2025). Datasets dbt `_dev` verificados 2026-09-10 (`INFORMATION_SCHEMA.SCHEMATA` + `datasets.get`). SA `vm-pulse-dbt` **creada por Nico**; bindings OK. Evidencia: [transform/docs/hito-2-bq-iam.md](../transform/docs/hito-2-bq-iam.md).
+## Contrato de presentación
 
-| Dataset | Contenido | Quién escribe |
-| --- | --- | --- |
-| `raw_cap4_dev` | **Primario Hito 2 / stg.** Tabla `produccion_pozo_mes`, `COUNT(*)` = 991844 (año 2025, handoff DE/Tutor). Companion `fracturas_adjunto_iv` (Adjunto IV). **append** (reload = TRUNCATE o DELETE year) | Meltano (`vm-pulse-meltano`); loader Python de fracturas usa ADC/`GCP_SA_KEY_DBT` si Meltano no está |
-| `raw_cap4` | Twin de prod (mismo patrón de tabla; no es otro grano). **No existe todavía** | Meltano (prod, cuando se cree) |
-| `stg_cap4_dev` | Staging dbt (dev). Prod twin: `stg_cap4` | dbt (`vm-pulse-dbt`) |
-| `int_cap4_dev` | Intermediate dbt (dev). Prod twin: `int_cap4` | dbt (`vm-pulse-dbt`) |
-| `marts_cap4_dev` | Marts dbt (dev): `fct_barrilito_rate`, `fct_well_month`, `fct_company_month`, `fct_area_month`, dims, `fct_completions`. Prod twin: `marts_cap4` | dbt (`vm-pulse-dbt`) |
+`apps/web/lib/contract.ts` valida release, cobertura y manifiesto. Los artefactos `release.json`, `manifest.json`, `prices.json` y `valuation-manifest.json` vinculan snapshot y precios. La aprobación de publicación es un estado separado; sin aprobación válida la app muestra Preliminar.
 
-Proyecto GCP: **`vaca-muerta-pulse`**. Location: **US**.
+`dashboard-components.tsx` y CSS compartido definen el sistema de KPIs, cards, gráficos, ranking y filtros. No hay dependencia Tremor en el código actual: la propuesta inicial fue ajustada por [ADR 0003](adrs/0003-resumen-ui.md). Todas las pestañas conservan producto/período/modo/comparación en URL, junto con detalle de entidad; idioma y tema permanecen como preferencias. Azul petróleo, violeta gas y ámbar económico tienen significado estable entre vistas.
 
-Twins prod (`stg_cap4` / `int_cap4` / `marts_cap4`) = follow-up. SA dbt: `vm-pulse-dbt` (**existe**; secret `GCP_SA_KEY_DBT`). Roles: `jobUser`, `dataViewer` en `raw_cap4_dev`, `dataEditor` en stg/int/marts. Detalle: [transform/docs/hito-2-bq-iam.md](../transform/docs/hito-2-bq-iam.md).
+## Orquestación y freshness
 
-Tablas raw de hechos de producción (`produccion_pozo_mes`):
+La extracción usa [.github/workflows/extract-cap4.yml](../.github/workflows/extract-cap4.yml): cron mensual día 5, 06:00 UTC. El default programado es `dev`, con el recurso 2025 configurado. La carga anual requiere `ALLOW_FULL_YEAR_LOAD=true`; sin la variable sale antes de Meltano/BigQuery. Esto es configuración declarada, no prueba de que un runner haya consumido todos los meses recientes.
 
-- Columna de período: `periodo` DATE `YYYY-MM-01` (la arma el tap desde `anio`+`mes`).
-- **PARTITION intento de producto:** `PARTITION BY DATE(periodo)`.
-- **PARTITION que cablea z3z1ma hoy:** MONTH sobre `_sdc_batched_at`. Pre-create: [extraction/sql/create_produccion_pozo_mes.sql](../extraction/sql/create_produccion_pozo_mes.sql). Intento producto (`periodo`): [extraction/sql/intended_partition.sql](../extraction/sql/intended_partition.sql).
-- **No overwrite:** `CREATE OR REPLACE TABLE AS SELECT *` de z3z1ma @090dad06 deja `new=none` y BQ rechaza reemplazar la tabla particionada. Dev y prod hacen **append**.
-- **CLUSTER BY** (orden cableado en `meltano.yml`): `empresa`, `idpozo`, `cuenca`.
+La reemisión limpia el año/sandbox antes del append: dev utiliza TRUNCATE; prod, DELETE del año. El dispatch permite seleccionar recurso, ambiente y reemisión. Un re-run append sin limpieza puede duplicar datos.
 
-Completaciones (Adjunto IV): grano evento (`id_base_fractura_adjiv`); **no** particionar por `fecha_inicio_fractura` en sandbox. Stream en el tap, **deseleccionado** en `cap4-produccion`. Load: job `cap4-fracturas`.
+[dbt-transform.yml](../.github/workflows/dbt-transform.yml) valida dependencias y parse. No orquesta un build del warehouse después de extracción ni exportación, aprobación y deploy. Precios/exportación requieren pasos explícitos. No hay SLA automático demostrado de extremo a extremo.
 
-## 5. Costo y cuota (cheap/free-tier)
+El objetivo de freshness es ingestar dentro de siete días de publicación oficial; sigue siendo una meta sin enforcement/alerta automática implementada. Medir por separado: mes de producción, modificación del recurso, extracción, carga, generación de snapshot y publicación. Una fuente DataStore atrasada puede tener una ejecución reciente: la auditoría de octubre encontró agosto en CSV y sólo julio en DataStore. La cobertura determina el corte, no el reloj del job.
 
-- BQ on-demand: ~1 TiB query/mes y 10 GiB storage en free tier. Partitions + clustering + `dbt` incremental en Hito 2 son la defensa.
-- No BI Engine ni slots reservados en v1.
-- Meltano corre en máquina de contributor / CI barata; no un cluster 24/7.
-- Front: estático o server mínimo (Hito 3 + ADR si hay hosting).
-- Presupuesto GCP y alertas: documentado en [extraction/README.md](../extraction/README.md) (budget alert 1 / 5 USD sugerido). SA write-only a `raw_*`.
+## Seguridad, operación y próximos cierres
 
-## 6. Secretos
+Credenciales sólo en entorno/secret manager; nunca en Git o cliente. BigQuery separa roles de carga y transformación y ambientes candidatos; promoción es deliberada. El costo depende de tamaño/reemisiones/queries y no se garantiza un costo cero.
 
-Diagrama de confianza: el SA de Meltano (`vm-pulse-meltano`) escribe `raw_*`; el SA de dbt (`vm-pulse-dbt`, **creada por Nico**) lee `raw_cap4_dev` y escribe `stg_cap4_dev` / `int_cap4_dev` / `marts_cap4_dev` (prod twins sin `_dev`). Key dbt = secret `GCP_SA_KEY_DBT` (distinto de Meltano `GCP_SA_KEY`); materializar con [transform/scripts/materialize-dbt-sa-key.sh](../transform/scripts/materialize-dbt-sa-key.sh) (rechaza `GCP_SA_KEY` a propósito). Provision/re-verify: [transform/scripts/provision_hito2_bq.sh](../transform/scripts/provision_hito2_bq.sh). El runtime del front **solo lee marts**. Ningún JSON de SA en el repo. Ver [AGENTS.md](../AGENTS.md).
-
-## 7. Lo que no está en v1
-
-- CDC sub-diario, Airflow/Composer, dbt Cloud, auth de usuarios, GIS pesado, cuenca fuera de Vaca Muerta como producto (el raw puede aterrizar más amplio y filtrar en `stg`).
-- Load de fuentes hermanas restantes (perforación SESCO, comercio exterior, ductos Res. 319/93, Brent, seed Oldelval). Adjunto IV: job `cap4-fracturas` (no el default de producción).
-- Rigs live (NCS/IAPG), breakeven, o cualquier KPI que el Front invente sin mart + URL de source.
-
-## Iteración UI Resumen (2026-10-09)
-
-Por autorización del usuario, Hito 3 incorpora solo Resumen y la base local de contratos/agregados en `apps/web`. Next.js + React/Recharts con componentes reutilizables; ver [ADR 0003](adrs/0003-resumen-ui.md) y [alcance](../specs/001-vaca-muerta-pulse/resumen-ui.md). No cierra el Hito 3 ni promueve el snapshot candidato.
+Antes de operar como servicio de producción falta cerrar recurso vigente y monitoreo, encadenar extracción → dbt build/tests → gates → export, definir responsables de alertas y promover sólo con aprobación. El hosting sigue pendiente de decisión autorizada. Estos pasos operativos no se sustituyen con el build local o las capturas UI.

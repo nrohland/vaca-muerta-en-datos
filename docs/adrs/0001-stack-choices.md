@@ -1,8 +1,10 @@
 # ADR 0001 — Stack: Meltano, BigQuery (PARTITION + CLUSTER), dbt, Next.js + Tremor
 
-- **Estado:** Aceptado (Hito 0)
+- **Estado:** Aceptado (Hito 0); propuesta UI inicial ajustada por [ADR 0003](0003-resumen-ui.md).
 - **Fecha:** 2026-09-10
 - **Owners:** DE (ingesta/BQ), AE (dbt), Front (UI)
+
+> Registro de decisión inicial. El frontend actual usa Next.js + React + Recharts y componentes propios, sin Tremor. Su export estático consume snapshots agregados verificados; no lee BigQuery directamente en server components. Ver [arquitectura actual](../architecture.md).
 
 ## Contexto
 

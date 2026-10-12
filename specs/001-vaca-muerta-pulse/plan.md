@@ -1,5 +1,6 @@
 # Plan — Hitos 0–3
 
+> Registro histórico de hitos. El Hito 3 está activo; los requisitos actuales (sin contador live, Recharts, ES/EN y cinco vistas) están en [spec.md](spec.md) y specs de iteración. Las casillas antiguas no acreditan aceptación de la integración actual.
 Cortes de entrega de [spec.md](spec.md). Aceptación = checklist de QA, no “el branch mergea”.
 
 ```mermaid
@@ -11,7 +12,7 @@ flowchart LR
 
 Código por hito: `docs/specs` → `extraction/` → `transform/` → `apps/web/`. No adelantar el siguiente folder.
 
-Producto UI: **Barrilito** (repo `vaca-muerta-pulse`). El contador “live” es simulación interpolada desde un mart **bbl/día** mensual — ver [spec.md](spec.md) y [data-model.md](data-model.md).
+Producto UI: **Vaca Muerta en Datos** (repo `vaca-muerta-pulse`). El contador “live” es simulación interpolada desde un mart **bbl/día** mensual — ver [spec.md](spec.md) y [data-model.md](data-model.md).
 
 ---
 
@@ -65,11 +66,11 @@ Producto UI: **Barrilito** (repo `vaca-muerta-pulse`). El contador “live” es
 
 ## Hito 2 — dbt `stg` → `int` → `marts`
 
-**Objetivo:** granos de producto testeados, listos para UI — incluida la tasa Barrilito en **bbl/día**.
+**Objetivo:** granos de producto testeados, listos para UI — incluida la tasa Vaca Muerta en Datos en **bbl/día**.
 
 **Owner:** AE. **Folder:** `transform/`.
 
-**Incluye:** sources sobre raw, staging (rename, types, filtro VM; materializar `periodo` como grano de negocio), intermediate (claves, unidades), marts de [data-model.md](data-model.md) **incluido** el mart DRAFT de headline (`fct_barrilito_rate` / `mart_barrilito_headline`), tests, factor `bbl = m³ × 6.28981077` en SQL **y** en YAML de métricas.
+**Incluye:** sources sobre raw, staging (rename, types, filtro VM; materializar `periodo` como grano de negocio), intermediate (claves, unidades), marts de [data-model.md](data-model.md) **incluido** el mart DRAFT de headline (`fct_production_rate` / `mart_production_headline`), tests, factor `bbl = m³ × 6.28981077` en SQL **y** en YAML de métricas.
 
 **Ops BQ (2026-09-10):** datasets US `stg_cap4_dev` / `int_cap4_dev` / `marts_cap4_dev` **existen**. `raw_cap4_dev` existe; `raw_cap4` no. SA `vm-pulse-dbt` **creada por Nico**; bindings OK (`jobUser` + READER raw / WRITER stg-int-marts). Secret `GCP_SA_KEY_DBT`. Evidencia: [transform/docs/hito-2-bq-iam.md](../../transform/docs/hito-2-bq-iam.md).
 
@@ -77,25 +78,25 @@ Producto UI: **Barrilito** (repo `vaca-muerta-pulse`). El contador “live” es
 
 ### Aceptación
 
-- [x] `dbt_project.yml` + `stg` / `int` / `marts` (nombres alineados al data-model). — `stg_produccion_pozo_mes`, `stg_fracturas_adjunto_iv`, `int_produccion_vm_noconv`, `fct_well_month`, `fct_barrilito_rate`, `fct_company_month`, `dim_company`, `fct_area_month`, `dim_area`, `fct_completions`, `fct_completions_month`
+- [x] `dbt_project.yml` + `stg` / `int` / `marts` (nombres alineados al data-model). — `stg_produccion_pozo_mes`, `stg_fracturas_adjunto_iv`, `int_produccion_vm_noconv`, `fct_well_month`, `fct_production_rate`, `fct_company_month`, `dim_company`, `fct_area_month`, `dim_area`, `fct_completions`, `fct_completions_month`
 - [x] Tests `unique`/`not_null` en claves de `fct_well_month` (YAML; corren con warehouse).
 - [x] Filtro VM no convencional aplicado en `stg` y documentado (strings confirmados).
 - [x] Marts de empresa y área; grano de área ya no UNKNOWN (o P1 explícito). — `fct_company_month` + `dim_company` (grano `idempresa+periodo`); `fct_area_month` + `dim_area` (grano preferido `idareapermisoconcesion+periodo`). Estabilidad de ids entre años = UNKNOWN (solo 2025).
 - [x] Completaciones: mart **o** no-goal actualizado en spec. — **`fct_completions`** + `fct_completions_month` (Adjunto IV; no Cap. IV).
-- [x] **Mart Barrilito:** `fct_barrilito_rate`, una fila = snapshot VM no conv. último mes Cap. IV (total Pulse). Tasa **bbl/día**.
-- [x] **Fórmula (cerrada 2026-09-11, revisada 2026-09-11 noche):** headline **de cuenca** `sum(prod_pet_m3) / days_in_month` (`calendar_days`). `sum/sum(tef)` queda como `productivity_*`, no Barrilito. El check original (`tef_weighted` como portada) estaba mal de grano. Spike: [`apps/spike/barrilito_cuenca.ipynb`](../../apps/spike/barrilito_cuenca.ipynb).
+- [x] **Mart Vaca Muerta en Datos:** `fct_production_rate`, una fila = snapshot VM no conv. último mes Cap. IV (total Pulse). Tasa **bbl/día**.
+- [x] **Fórmula (cerrada 2026-09-11, revisada 2026-09-11 noche):** headline **de cuenca** `sum(prod_pet_m3) / days_in_month` (`calendar_days`). `sum/sum(tef)` queda como `productivity_*`, no Vaca Muerta en Datos. El check original (`tef_weighted` como portada) estaba mal de grano. Spike: [`apps/spike/production_basin.ipynb`](../../apps/spike/production_basin.ipynb).
 - [x] Conversión `bbl = m³ × 6.28981077` en el mart **y** en YAML de métricas (mismo factor).
 - [x] `stg` usa `periodo`. No tratar `_sdc_batched_at` como mes de producción.
-- [x] `dbt test` verde en CI o instrucciones locales inequívocas. — CI: `dbt deps` + `dbt parse`. Warehouse 2026-09-11: `dbt build --select +fct_barrilito_rate` PASS=33 y `dbt test` PASS=29 contra `raw_cap4_dev` (SA `vm-pulse-dbt`). `fct_barrilito_rate` 1 fila.
-- [x] Front puede basarse en nombres de marts documentados (`transform/README.md` + data-model), incluida la tasa Barrilito y los rankings empresa/área.
+- [x] `dbt test` verde en CI o instrucciones locales inequívocas. — CI: `dbt deps` + `dbt parse`. Warehouse 2026-09-11: `dbt build --select +fct_production_rate` PASS=33 y `dbt test` PASS=29 contra `raw_cap4_dev` (SA `vm-pulse-dbt`). `fct_production_rate` 1 fila.
+- [x] Front puede basarse en nombres de marts documentados (`transform/README.md` + data-model), incluida la tasa Vaca Muerta en Datos y los rankings empresa/área.
 
-**Spike de portada (no cierra Hito 3):** [`apps/spike/barrilito_cuenca.ipynb`](../../apps/spike/README.md) — tasa de **cuenca**. El notebook v1 (`barrilito_spike.ipynb`) usó productividad por pozo-día (~260 bbl/día) como headline; queda como archivo histórico. Interpolación = reloj diario. [ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md).
+**Spike de portada (no cierra Hito 3):** [`apps/spike/production_basin.ipynb`](../../apps/spike/README.md) — tasa de **cuenca**. El notebook v1 (`production_spike.ipynb`) usó productividad por pozo-día (~260 bbl/día) como headline; queda como archivo histórico. Interpolación = reloj diario. [ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md).
 
 ---
 
 ## Hito 3 — Dashboard Next.js + Tremor
 
-**Objetivo:** storytelling público **Barrilito** que cumple R6–R10 de la spec.
+**Objetivo:** storytelling público **Vaca Muerta en Datos** que cumple R6–R10 de la spec.
 
 **Owner:** Front. **Folder:** `apps/web/`.
 
@@ -105,7 +106,7 @@ Producto UI: **Barrilito** (repo `vaca-muerta-pulse`). El contador “live” es
 
 ### Aceptación
 
-- [ ] Portada **Barrilito:** headline = contador de barriles interpolado desde `bbl/día` del mart (último mes Cap. IV), con aspecto “extrayéndose” en vivo.
+- [ ] Portada **Vaca Muerta en Datos:** headline = contador de barriles interpolado desde `bbl/día` del mart (último mes Cap. IV), con aspecto “extrayéndose” en vivo.
 - [ ] Disclaimer **MUST** visible junto al contador: *simulación a partir de datos mensuales oficiales*. Sin ese texto, la portada no acepta.
 - [ ] Copy no afirma sensores, SCADA ni que Capítulo IV sea tiempo real / intradía.
 - [ ] KPIs y serie temporal del recorte VM además del headline.
@@ -113,7 +114,7 @@ Producto UI: **Barrilito** (repo `vaca-muerta-pulse`). El contador “live” es
 - [ ] Completaciones visibles **o** empty state honesto.
 - [ ] Unidades en UI; headline petróleo en **bbl**; no números huérfanos.
 - [ ] Sin credenciales en el bundle del cliente.
-- [ ] README de `apps/web/` con cómo correr, de qué marts depende (incl. tasa Barrilito) y el disclaimer.
+- [ ] README de `apps/web/` con cómo correr, de qué marts depende (incl. tasa Vaca Muerta en Datos) y el disclaimer.
 - [ ] Recorrido manual (o e2e mínimo) cubre portada (contador + disclaimer) + un filtro.
 
 ---

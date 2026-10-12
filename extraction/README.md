@@ -1,5 +1,6 @@
 # extraction/ — Meltano (Data Engineer)
 
+> Estado operativo actual: extracción mensual configurada en GitHub Actions (día 5, 06:00 UTC), default dev/recurso 2025 y guard de carga completa. CI dbt ejecuta deps/parse, no orquestación end-to-end. La actualización candidata de agosto se operó explícitamente; freshness ≤ 7 días es objetivo sin enforcement automático demostrado. Ver [arquitectura](../docs/architecture.md) y [auditoría](../docs/evidence/data-valuation/README.md).
 **Hito 1.** Ingesta Capítulo IV → BigQuery `raw_*`. Owner: **DE**. No hay dbt ni dashboard acá.
 
 Proyecto Meltano **adentro de este folder** (no en la raíz del git). Tap: Singer SDK contra el **CKAN DataStore** de [datos.energia.gob.ar](https://datos.energia.gob.ar) (API oficial, **sin** scraper del HTML de consulta avanzada). Loader: `target-bigquery` (z3z1ma).
@@ -106,7 +107,7 @@ export GOOGLE_APPLICATION_CREDENTIALS="$(bash scripts/materialize-sa-key.sh)"
 Workflow: [`.github/workflows/extract-cap4.yml`](../.github/workflows/extract-cap4.yml).
 
 - **`workflow_dispatch`** (manual): inputs `environment` / `year_resource_id` / `max_records` / `reemit` / `delete_year`.
-- **`schedule` mensual:** `0 6 5 * *` (día 5, 06:00 UTC). Capítulo IV es **mensual**; Barrilito en UI es simulación, no hay polling de alta frecuencia. GitHub solo corre el cron en la rama default **después de merge**. El job **sale 1 antes de Meltano/BQ** hasta `ALLOW_FULL_YEAR_LOAD=true`. Nicolás OK el costo el 2026-09-10 (medido ~338 MiB); hay que **setear la variable** en el repo para que el cron no quede rojo. Cuando esté seteada: Meltano **`dev`** (`raw_cap4_dev`) + `TRUNCATE` (o `--recreate` en sandbox) + año completo. Prod: `workflow_dispatch` `environment=prod` + `reemit=true`.
+- **`schedule` mensual:** `0 6 5 * *` (día 5, 06:00 UTC). Capítulo IV es **mensual**; Vaca Muerta en Datos en UI es simulación, no hay polling de alta frecuencia. GitHub solo corre el cron en la rama default **después de merge**. El job **sale 1 antes de Meltano/BQ** hasta `ALLOW_FULL_YEAR_LOAD=true`. Nicolás OK el costo el 2026-09-10 (medido ~338 MiB); hay que **setear la variable** en el repo para que el cron no quede rojo. Cuando esté seteada: Meltano **`dev`** (`raw_cap4_dev`) + `TRUNCATE` (o `--recreate` en sandbox) + año completo. Prod: `workflow_dispatch` `environment=prod` + `reemit=true`.
 
 Requisitos en el repo (Settings → Secrets and variables → Actions):
 
@@ -242,7 +243,7 @@ Catálogo versionado: [resources/cap4.yml](resources/cap4.yml).
 | 2020 | `c4a4a6a0-e75a-4e12-ae5c-54d53a70348c` |
 | 2019–2006 | ver `resources/cap4.yml` |
 
-CSV directo (mismo UUID):  
+CSV directo (mismo UUID):
 `https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/<uuid>/download/`
 
 Hay una familia paralela **DDJJ abiertas y cerradas** (otro UUID por año) — no es el default de Hito 1.

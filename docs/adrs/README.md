@@ -1,10 +1,12 @@
-# Architecture Decision Records (ADRs)
+# Decisiones de arquitectura
 
-Registro corto de **por qué** elegimos una pieza de stack. El **qué** operativo está en [`../architecture.md`](../architecture.md) y en las specs.
+Los ADRs conservan razones y contexto de cada decisión. La [arquitectura actual](../architecture.md) describe el estado implementado y sus límites.
 
-| ADR | Título | Estado |
+| ADR | Decisión | Estado |
 | --- | --- | --- |
-| [0001](0001-stack-choices.md) | Meltano, BigQuery partitions/clustering, dbt, Next.js + Tremor | Aceptado (Hito 0) |
-| [0002](0002-ui-spike-notebook.md) | Spike de UI en notebook (Next sigue v1) | Aceptado (spike) |
+| [0001](0001-stack-choices.md) | Meltano, BigQuery y dbt; Next/Tremor inicialmente propuesto | Aceptado Hito 0; kit UI ajustado por 0003 |
+| [0002](0002-ui-spike-notebook.md) | Notebook para explorar portada y corregir el grano de tasa | Histórico; no es el frontend final |
+| [0003](0003-resumen-ui.md) | React/Recharts y componentes comunes, snapshot verificado | Propuesto para revisión; implementación candidata |
+| [0004](0004-product-name.md) | Vaca Muerta en Datos y nombres técnicos descriptivos | Adoptado por instrucción; pendiente de integración/merge |
 
-Convención: `NNNN-kebab-title.md`, numeración monótona. Un ADR por decisión reversible-con-costo.
+Formato `NNNN-kebab-title.md`. Una nueva decisión documenta motivación, alternativas, efectos y estado real; no borra el contexto de decisiones anteriores.

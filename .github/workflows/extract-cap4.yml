@@ -38,7 +38,7 @@ on:
         description: "Year to DELETE when reemit=true and environment=prod (ignored in dev TRUNCATE)"
         type: string
         default: "2025"
-  # Capítulo IV is monthly (Barrilito UI simulates intra-month). No high-frequency polling.
+  # Capítulo IV and Vaca Muerta en Datos are monthly. No high-frequency polling.
   # Day 5 06:00 UTC. GitHub only runs this on the default branch after merge.
   # The job still no-ops (exit 1, zero BQ writes) until vars.ALLOW_FULL_YEAR_LOAD=true.
   # When unblocked: Meltano env `dev` (raw_cap4_dev) + TRUNCATE + full year (no MAX_RECORDS).

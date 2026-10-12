@@ -1,5 +1,5 @@
 -- Sample for Front/IA. Ranking of companies in a Cap. IV month.
--- Do not query raw_*. Headline Barrilito stays on fct_barrilito_rate.
+-- Do not query raw_*. Headline Vaca Muerta en Datos stays on fct_production_rate.
 
 select
     periodo,

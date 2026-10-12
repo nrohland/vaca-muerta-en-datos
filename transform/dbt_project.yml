@@ -20,7 +20,7 @@ clean-targets:
 flags:
   send_anonymous_usage_stats: false
 
-# Product: Barrilito. Repo: vaca-muerta-pulse.
+# Product: Vaca Muerta en Datos. Repo: vaca-muerta-pulse.
 # Conversion factor MUST match metrics.yml and SQL ({{ var('m3_to_bbl') }}).
 vars:
   m3_to_bbl: 6.28981077
@@ -51,7 +51,7 @@ models:
     marts:
       +materialized: table
       +schema: marts
-      +tags: ["marts", "barrilito"]
+      +tags: ["marts", "production"]
   # Package models: do not materialize on a normal `dbt build` (cost).
   logging:
     +enabled: false

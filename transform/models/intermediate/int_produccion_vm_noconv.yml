@@ -6,12 +6,12 @@ models:
       Well-month grain of the Pulse cut (already filtered in stg). Lands in
       BigQuery dataset `int_cap4_dev` (prod twin `int_cap4`) as a view.
       Adds `well_month_id` (dbt_utils surrogate of idpozo+anio+mes) and
-      `days_in_month` (calendar days of `periodo`) for Barrilito fallback and
+      `days_in_month` (calendar days of `periodo`) for Vaca Muerta en Datos fallback and
       for `fct_well_month`. Not a public contract — Front reads marts.
     columns:
       - name: well_month_id
         description: Surrogate of idpozo + anio + mes.
       - name: days_in_month
-        description: Calendar days of `periodo` (e.g. 31 for January). Fallback Barrilito denominator.
+        description: Calendar days of `periodo` (e.g. 31 for January). Fallback Vaca Muerta en Datos denominator.
       - name: periodo
         description: Business month DATE YYYY-MM-01.

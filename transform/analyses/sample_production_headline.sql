@@ -1,4 +1,4 @@
--- Sample for Front/IA. Run via `dbt compile --select sample_barrilito_headline`
+-- Sample for Front/IA. Run via `dbt compile --select sample_production_headline`
 -- or paste against the marts dataset after `dbt build`. Do not query raw_*.
 
 select
@@ -16,4 +16,4 @@ select
     fecha_data_max,
     is_simulation,
     disclaimer
-from {{ ref("fct_barrilito_rate") }}
+from {{ ref("fct_production_rate") }}

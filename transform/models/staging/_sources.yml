@@ -45,7 +45,7 @@ sources:
           - name: tef
             description: >
               Effective time. Sample 2025 suggests days (31.0 in January
-              non-conventional). Usable as Barrilito denominator = UNKNOWN
+              non-conventional). Usable as Vaca Muerta en Datos denominator = UNKNOWN
               until warehouse tests; staging casts, does not assume.
           - name: formacion
             description: "Formation name; Pulse filter uses literal `vaca muerta`."

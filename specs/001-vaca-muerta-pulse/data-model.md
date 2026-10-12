@@ -9,7 +9,7 @@ Leyenda:
 - **DRAFT** = diseño de producto; falta evidencia en warehouse / dbt.
 - **UNKNOWN** = no afirmar. Cerrar en Hito 2 con tests sobre más años o marcar no-goal.
 
-Nombres de marts (`fct_*`, `dim_*`) siguen **DRAFT** salvo los publicados en Hito 2: **`fct_production_rate`**, **`fct_well_month`**, **`fct_company_month`**, **`dim_company`**, **`fct_area_month`**, **`dim_area`**, **`fct_completions`**, **`fct_completions_month`**. El alias `mart_production_headline` no se usa.
+Nombres de marts (`fct_*`, `dim_*`) siguen **DRAFT** salvo los contratos de Hito 2, normalizados en esta rama: **`fct_production_rate`**, **`fct_well_month`**, **`fct_company_month`**, **`dim_company`**, **`fct_area_month`**, **`dim_area`**, **`fct_completions`**, **`fct_completions_month`**. El alias `mart_production_headline` no se usa. El nombre `fct_production_rate` es el contrato de código de esta revisión; su nueva relación física requiere un build/migración posterior en BigQuery. No se afirma una migración del warehouse por renombrar archivos.
 
 Datasets físicos dbt (dev, US, Hito 2 IAM): `stg_cap4_dev` / `int_cap4_dev` / `marts_cap4_dev`. Source raw Hito 2: `raw_cap4_dev`. Detalle: [transform/docs/hito-2-bq-iam.md](../../transform/docs/hito-2-bq-iam.md).
 

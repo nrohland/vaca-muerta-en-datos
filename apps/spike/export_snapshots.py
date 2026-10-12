@@ -16,7 +16,7 @@ QUERIES = {
           rate_m3_dia, rate_bbl_dia, productivity_m3_dia, productivity_bbl_dia, rate_method,
           is_simulation, disclaimer,
           source_batched_at_max, fecha_data_max
-        from `vaca-muerta-pulse.marts_cap4_dev.fct_barrilito_rate`
+        from `vaca-muerta-pulse.marts_cap4_dev.fct_production_rate`
     """,
     "monthly_pulse.csv": """
         select

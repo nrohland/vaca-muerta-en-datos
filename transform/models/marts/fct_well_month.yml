@@ -10,7 +10,7 @@ models:
       idempresa, idpozo. Not partitioned by `periodo` while the GCP sandbox
       forces 60-day partition expiration (2025 months would drop on write).
 
-      Barrilito headline (`fct_barrilito_rate`) must reconcile `prod_pet_m3`
+      Vaca Muerta en Datos headline (`fct_production_rate`) must reconcile `prod_pet_m3`
       to the sum of this table for the same `periodo`. Company / area marts
       (`fct_company_month`, `fct_area_month`) roll up from here.
       Completions live in `fct_completions` (Adjunto IV), not this mart.
@@ -40,7 +40,7 @@ models:
         description: Oil m³ for the well-month.
       - name: tef
         description: >
-          Effective time. Preferred Barrilito denominator when the monthly
+          Effective time. Preferred Vaca Muerta en Datos denominator when the monthly
           SUM over the Pulse cut is > 0. Warehouse 2025 Pulse: 0 nulls, min 0,
           max 31.0, 6115 zeros / 27936 > 0 of 34051 rows. Official dictionary
           / other years remain UNKNOWN.

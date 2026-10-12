@@ -1,5 +1,15 @@
 # transform/ — dbt Core (Analytics Engineer)
 
+Configuración local sin claves y explicación de las capas:
+[guía de dbt local](docs/local-setup.md). Usar `.venv/bin/dbt` para evitar que el
+comando global apunte a Fusion. El estado de conexión local y el de automatización
+son independientes.
+
+La guía local anterior permite OAuth sin archivo JSON. Las instrucciones de
+service-account más abajo describen la ruta con clave y la evidencia histórica
+del Hito 2; esa clave no es un requisito para desarrollo personal. Los permisos
+actuales deben comprobarse antes de una ejecución automatizada.
+
 > Los nombres técnicos de tasa/análisis/notebooks se normalizan en esta revisión (ADR 0004). Las ejecuciones y cifras fechadas son evidencia histórica; el renombre en Git no demuestra una migración de relaciones en BigQuery.
 > Estado operativo actual: extracción mensual configurada en GitHub Actions (día 5, 06:00 UTC), default dev/recurso 2025 y guard de carga completa. CI dbt ejecuta deps/parse, no orquestación end-to-end. La actualización candidata de agosto se operó explícitamente; freshness ≤ 7 días es objetivo sin enforcement automático demostrado. Ver [arquitectura](../docs/architecture.md) y [auditoría](../docs/evidence/data-valuation/README.md).
 **Hito 2.** Owner: **AE** (modelos). **DE** provisionó IAM + datasets. Producto UI: **Vaca Muerta en Datos**. Repo: `vaca-muerta-pulse`.

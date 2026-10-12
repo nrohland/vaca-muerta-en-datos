@@ -5,7 +5,7 @@ dbt_internal_packages/
 dbt_modules/
 logs/
 .user.yml
-.venv/
+.venv
 
 # Local profiles / env — never commit keys or a real profiles.yml
 profiles.yml

@@ -49,3 +49,15 @@ vaca_muerta_pulse:
       threads: 4
       job_execution_timeout_seconds: 300
       job_retries: 1
+    # ADC + short-lived service-account impersonation; no JSON key required.
+    # The caller needs Token Creator on this SA (not a project-wide grant).
+    dev_impersonated:
+      type: bigquery
+      method: oauth
+      impersonate_service_account: "{{ env_var('DBT_SERVICE_ACCOUNT', 'vm-pulse-dbt@vaca-muerta-pulse.iam.gserviceaccount.com') }}"
+      project: "{{ env_var('BIGQUERY_PROJECT', 'vaca-muerta-pulse') }}"
+      dataset: "{{ env_var('DBT_BQ_DATASET', 'stg_cap4_dev') }}"
+      location: "{{ env_var('BIGQUERY_LOCATION', 'US') }}"
+      threads: 4
+      job_execution_timeout_seconds: 300
+      job_retries: 1

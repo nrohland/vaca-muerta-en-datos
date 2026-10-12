@@ -6,7 +6,7 @@ Está pensado para analistas, equipos de energía, periodistas y personas que ne
 
 > **Estado de esta entrega:** versión de revisión local, sin promoción ni despliegue automático. El snapshot candidato acepta producción hasta **agosto de 2026**; septiembre parcial se excluye. “Preliminar” indica que falta aprobación de publicación, aunque el snapshot tenga validación técnica. Los datos oficiales pueden rectificarse.
 
-La [auditoría y capturas de la revisión previa](docs/evidence/data-valuation/README.md) permiten inspeccionar el Resumen y la metodología. La entrega integrada de las cinco vistas debe acompañarse de capturas y resultados propios.
+La [revisión integrada de las cinco vistas](docs/evidence/integrated/README.md) reúne capturas desktop/mobile, resultados de 43 tests y límites explícitos de la validación. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
 
 ## Qué preguntas responde
 

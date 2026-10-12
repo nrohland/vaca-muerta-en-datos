@@ -43,6 +43,6 @@ Producción profundiza en historia, acumulados comparables, años calendario, ca
 
 ## Evidencia y límites
 
-La [auditoría de datos/precios](../../docs/evidence/data-valuation/README.md) documenta conciliación y corte. La [evidencia de Resumen](../../docs/evidence/resumen/README.md) y [comparaciones/idiomas](../../docs/evidence/comparison-i18n/README.md) conserva resultados históricos; sus checks no prueban automáticamente las nuevas vistas. La integración final debe registrar nuevas capturas desktop/mobile y pruebas actuales.
+La [auditoría de datos/precios](../../docs/evidence/data-valuation/README.md) documenta conciliación y corte. La [evidencia de Resumen](../../docs/evidence/resumen/README.md) y [comparaciones/idiomas](../../docs/evidence/comparison-i18n/README.md) conserva resultados históricos; sus checks no prueban automáticamente las nuevas vistas. La [revisión integrada](../../docs/evidence/integrated/README.md) registra capturas desktop/mobile, tests actuales y las restricciones de Playwright/dbt del entorno.
 
 La capa de datos tiene extracción mensual y transformación reproducible, pero no actualización/promoción end-to-end automática: [arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build del frontend.

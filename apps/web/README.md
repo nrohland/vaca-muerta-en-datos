@@ -25,7 +25,7 @@ El build estático queda en `out/`. El runner de navegador requiere un entorno c
 
 ## Componentes y navegación
 
-Stack instalado: Next.js 16, React 19, TypeScript 7 y Recharts 3. Tremor pertenece al plan inicial, no al package actual. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard` y `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
+Stack instalado: Next.js 16, React 19, TypeScript 7 y Recharts 3. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard` y `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
 
 El mismo concepto mantiene color y comportamiento entre pestañas: petróleo azul, gas violeta, monetario ámbar. Variaciones positivas verdes y negativas rojas siguen la convención del producto. Rankings de participación usan escala real 0–100%; etiquetas, unidades, tooltips y tablas permiten leer cifras exactas.
 

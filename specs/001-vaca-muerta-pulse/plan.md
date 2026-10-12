@@ -7,7 +7,7 @@ Cortes de entrega de [spec.md](spec.md). Aceptación = checklist de QA, no “el
 flowchart LR
   H0["Hito 0 · SDD docs"] --> H1["Hito 1 · Meltano + BQ raw"]
   H1 --> H2["Hito 2 · dbt stg→int→marts"]
-  H2 --> H3["Hito 3 · Next.js + Tremor"]
+  H2 --> H3["Hito 3 · Next.js + Recharts"]
 ```
 
 Código por hito: `docs/specs` → `extraction/` → `transform/` → `apps/web/`. No adelantar el siguiente folder.
@@ -94,13 +94,13 @@ Producto UI: **Vaca Muerta en Datos** (repo `vaca-muerta-pulse`). El contador �
 
 ---
 
-## Hito 3 — Dashboard Next.js + Tremor
+## Hito 3 — Dashboard Next.js + Recharts
 
 **Objetivo:** storytelling público **Vaca Muerta en Datos** que cumple R6–R10 de la spec.
 
 **Owner:** Front. **Folder:** `apps/web/`.
 
-**Incluye:** app Next, Tremor, lectura de marts (server / cache), copy en español, contador interpolado + disclaimer MUST.
+**Incluye:** app Next, Recharts, lectura de marts (server / cache), copy en español, contador interpolado + disclaimer MUST.
 
 **No incluye:** redefinir granos en el cliente; queries a `raw_*`; telemetría; afirmar alta frecuencia; KPIs de rigs/Brent/export/oleoductos/breakeven como si fueran Capítulo IV (mapa de fuentes: [spec.md](spec.md)).
 

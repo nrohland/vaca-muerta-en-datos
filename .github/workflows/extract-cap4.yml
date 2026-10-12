@@ -41,7 +41,7 @@ on:
   # Capítulo IV and Vaca Muerta en Datos are monthly. No high-frequency polling.
   # Day 5 06:00 UTC. GitHub only runs this on the default branch after merge.
   # The job still no-ops (exit 1, zero BQ writes) until vars.ALLOW_FULL_YEAR_LOAD=true.
-  # When unblocked: Meltano env `dev` (raw_cap4_dev) + TRUNCATE + full year (no MAX_RECORDS).
+  # When unblocked: Meltano env `dev` (raw_cap4_dev) + DROP/CREATE + full year (no MAX_RECORDS).
   # Prod monthly: workflow_dispatch environment=prod + reemit=true (DELETE year).
   schedule:
     - cron: "0 6 5 * *"
@@ -130,8 +130,8 @@ jobs:
               echo "reemit=prod DELETE WHERE anio=$DELETE_YEAR (keeps partition+cluster + other years)"
               "${args[@]}" --delete-year "$DELETE_YEAR"
             else
-              echo "reemit=dev TRUNCATE (keeps MONTH(_sdc_batched_at)+CLUSTER; raw_cap4_dev is the one-year sandbox)"
-              "${args[@]}" --truncate
+              echo "reemit=dev DROP/CREATE (restores MONTH(_sdc_batched_at)+CLUSTER; sandbox has no DML billing)"
+              "${args[@]}" --recreate
             fi
           else
             echo "reemit=false: IF NOT EXISTS only (append; duplicates if the year is already loaded)"
@@ -156,4 +156,4 @@ jobs:
           fi
           meltano run cap4-produccion
           # Append-only (overwrite:true strips BQ partitioning on this pin).
-          # Monthly schedule TRUNCATEs/DELETEs first; bare re-runs duplicate.
+          # Monthly schedule recreates dev / DELETEs year in prod first; bare re-runs duplicate.

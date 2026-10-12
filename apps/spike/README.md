@@ -1,6 +1,6 @@
 # apps/spike — mock de portada Vaca Muerta en Datos
 
-**No es Hito 3.** Owner: AE / producto. El dashboard público sigue en [`apps/web/`](../web/README.md) (Next.js + Tremor, vacío hasta el hito).
+**No es Hito 3.** Owner: AE / producto. El dashboard público sigue en [`apps/web/`](../web/README.md) (Next.js + React + Recharts; aplicación actual implementada).
 
 Este folder es un **spike**: notebooks + CSVs chicos de marts para fijar interpolación, copy, gráficos y tokens. ADR: [0002](../../docs/adrs/0002-ui-spike-notebook.md). No reemplaza el [0001](../../docs/adrs/0001-stack-choices.md).
 

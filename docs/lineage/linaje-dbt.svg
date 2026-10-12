@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="780" viewBox="0 0 1680 780" role="img" aria-labelledby="title desc">
+<title id="title">Linaje dbt de Vaca Muerta en Datos</title>
+<desc id="desc">Fuentes de producción y fracturas alimentan staging, una transformación intermedia, hechos de pozo por mes y marts de tasa, operadores, áreas y completaciones. Dependencias verificadas entre manifest retenido y SQL actual.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8da0b2"/></marker></defs>
+<rect width="1680" height="780" rx="22" fill="#ffffff"/>
+<text x="40" y="40" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#15354a">Vaca Muerta en Datos · linaje dbt</text>
+<text x="40" y="68" font-family="Arial,sans-serif" font-size="15" fill="#526577">Dependencias del manifest dbt retenido, corroboradas contra SQL del repositorio · sin tests ni macros</text>
+<text x="40" y="110" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#5e7384">FUENTES</text>
+<text x="330" y="110" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#5e7384">STAGING</text>
+<text x="640" y="110" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#5e7384">INTERMEDIATE</text>
+<text x="970" y="110" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#5e7384">HECHOS</text>
+<text x="1300" y="110" font-family="Arial,sans-serif" font-size="12" font-weight="700" letter-spacing="1.4" fill="#5e7384">MARTS / DIMENSIONES</text>
+<path d="M1220,596 C1260.0,596 1260.0,596 1297,596" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M1220,256 C1260.0,256 1260.0,466 1297,466" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M1220,256 C1260.0,256 1260.0,316 1297,316" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M1220,256 C1260.0,256 1260.0,391 1297,391" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M1220,256 C1260.0,256 1260.0,241 1297,241" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M1220,256 C1260.0,256 1260.0,166 1297,166" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M920,256 C945.0,256 945.0,256 967,256" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M280,596 C305.0,596 305.0,596 327,596" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M280,256 C305.0,256 305.0,256 327,256" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M590,596 C780.0,596 780.0,596 967,596" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<path d="M590,256 C615.0,256 615.0,256 637,256" fill="none" stroke="#8da0b2" stroke-width="1.7" marker-end="url(#arrow)"/>
+<rect x="1300" y="440" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="472" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">dim_area</text>
+<rect x="1300" y="290" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="322" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">dim_company</text>
+<rect x="1300" y="365" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="397" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_area_month</text>
+<rect x="1300" y="215" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="247" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_company_month</text>
+<rect x="970" y="570" width="250" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1095.0" y="602" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_completions</text>
+<rect x="1300" y="570" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="602" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_completions_month</text>
+<rect x="1300" y="140" width="300" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="1450.0" y="172" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_production_rate</text>
+<rect x="970" y="230" width="250" height="52" rx="10" fill="#e5f2f6" stroke="#8aa6bd"/>
+<text x="1095.0" y="262" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fct_well_month</text>
+<rect x="640" y="230" width="280" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="780.0" y="262" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">int_produccion_vm_noconv</text>
+<rect x="40" y="570" width="240" height="52" rx="10" fill="#edf3f8" stroke="#8aa6bd"/>
+<text x="160.0" y="602" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">fracturas_adjunto_iv</text>
+<rect x="40" y="230" width="240" height="52" rx="10" fill="#edf3f8" stroke="#8aa6bd"/>
+<text x="160.0" y="262" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">produccion_pozo_mes</text>
+<rect x="330" y="570" width="260" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="460.0" y="602" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">stg_fracturas_adjunto_iv</text>
+<rect x="330" y="230" width="260" height="52" rx="10" fill="#f6f8fb" stroke="#8aa6bd"/>
+<text x="460.0" y="262" text-anchor="middle" font-family="ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" font-size="16" fill="#193349">stg_produccion_pozo_mes</text>
+<text x="40" y="680" font-family="Arial,sans-serif" font-size="15" fill="#526577">Producción: universo Vaca Muerta no convencional · grano pozo–mes → agregados. Fracturas: fuente Adjunto IV separada.</text>
+<text x="40" y="712" font-family="Arial,sans-serif" font-size="14" fill="#526577">Manifest: 2026-10-09 19:17 UTC · dbt 1.12.5 · SQL contrastado: 0316dd51cf3e · 11 modelos / 2 fuentes / 11 dependencias</text>
+<text x="40" y="739" font-family="Arial,sans-serif" font-size="13" fill="#526577">Nombre de tasa normalizado. No acredita una nueva ejecución dbt ni la migración del warehouse.</text>
+</svg>

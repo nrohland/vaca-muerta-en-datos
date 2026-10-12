@@ -6,7 +6,7 @@
 
 ## Contexto
 
-Hito 2 dejó marts listos (`fct_production_rate`, empresa, área). Hito 3 es Next.js + Tremor. Antes de scaffold, hace falta **ver** interpolación, disclaimer y rankings con datos reales sin pelear App Router.
+Hito 2 dejó marts listos (`fct_production_rate`, empresa, área). Hito 3 es Next.js + Recharts. Antes de scaffold, hace falta **ver** interpolación, disclaimer y rankings con datos reales sin pelear App Router.
 
 ## Decisión
 

@@ -58,7 +58,7 @@ Tachá en el PR que complete el ítem. Año 2025 cargado 2026-09-10: `COUNT(*)` 
 
 ## Fuera del checklist Hito 1
 
-- Modelos `stg`/`int`/`marts`, tests dbt, Tremor, hosting del front.
+- Modelos `stg`/`int`/`marts`, tests dbt, Recharts, hosting del front.
 - Convertir m³ → bbl en el tap (la conversión vive en Hito 2 + YAML).
 - Schedule Meltano sub-diario / sensores.
 - Airflow/Composer.
@@ -131,7 +131,7 @@ Owner: **DE** (job aparte) + **AE** (marts). No Next.js. No perforación / comer
 
 ## Hito 3 — contador + disclaimer (Front, `apps/web/`) — nota only
 
-No implementar Next/Tremor acá ni en Hito 2. Owner: **Front**. Spec: R6 / R6b.
+No implementar Next/Recharts acá ni en Hito 2. Owner: **Front**. Spec: R6 / R6b.
 
 Spike de portada (no tilda estas casillas): [`apps/spike/production_basin.ipynb`](../../apps/spike/README.md). Tasa de cuenca + reloj diario. [ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md). El v1 (`production_spike.ipynb`) no se copia al Front.
 

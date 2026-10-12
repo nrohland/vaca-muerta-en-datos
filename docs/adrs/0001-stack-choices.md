@@ -1,10 +1,10 @@
-# ADR 0001 — Stack: Meltano, BigQuery (PARTITION + CLUSTER), dbt, Next.js + Tremor
+# ADR 0001 — Stack: Meltano, BigQuery (PARTITION + CLUSTER), dbt, Next.js + Recharts
 
 - **Estado:** Aceptado (Hito 0); propuesta UI inicial ajustada por [ADR 0003](0003-resumen-ui.md).
 - **Fecha:** 2026-09-10
 - **Owners:** DE (ingesta/BQ), AE (dbt), Front (UI)
 
-> Registro de decisión inicial. El frontend actual usa Next.js + React + Recharts y componentes propios, sin Tremor. Su export estático consume snapshots agregados verificados; no lee BigQuery directamente en server components. Ver [arquitectura actual](../architecture.md).
+> Registro de decisión inicial. El frontend actual usa Next.js + React + Recharts y componentes propios. Su export estático consume snapshots agregados verificados; no lee BigQuery directamente en server components. Ver [arquitectura actual](../architecture.md).
 
 ## Contexto
 
@@ -19,7 +19,7 @@ Fuente: Capítulo IV (Secretaría de Energía), CSVs / CKAN, cadencia mensual, v
 | Ingesta | **Meltano** (Singer taps + `target-bigquery`) | Airbyte Cloud, scripts one-off sin job versionado, Composer |
 | Warehouse | **BigQuery** con **PARTITION** + **CLUSTER** en hechos | Snowflake, Redshift, DuckDB como sistema de record |
 | Transform | **dbt Core**, capas `stg` → `int` → `marts` | SQL suelto en notebooks, Dataform, dbt Cloud pago |
-| UI | **Next.js + Tremor** | Streamlit, Metabase público, Observable como producto final |
+| UI | **Next.js + Recharts** | Streamlit, Metabase público, Observable como producto final |
 
 Detalle de *por qué* abajo. El dibujo del flujo: [architecture.md](../architecture.md).
 
@@ -44,16 +44,16 @@ Detalle de *por qué* abajo. El dibujo del flujo: [architecture.md](../architect
 ## Por qué dbt Core (`stg` → `int` → `marts`)
 
 - Granos del spec (pozo-mes, empresa, área, completaciones) se vuelven modelos con tests (`unique`, `not_null`, accepted values para `tipo_de_recurso`).
-- `stg` = fiel al raw (rename/types/filtro VM); `int` = claves y unidades; `marts` = lo que Tremor puede contar.
+- `stg` = fiel al raw (rename/types/filtro VM); `int` = claves y unidades; `marts` = lo que Recharts puede contar.
 - dbt Core es gratis y vive en `transform/`; Cloud/Mesh no aportan en un repo solo.
 
 **Trade-off:** el primer `dbt run` sobre raw mal tipado duele — por eso Hito 1 cierra columnas reales antes del Hito 2. No “marts en el tap”.
 
-## Por qué Next.js + Tremor
+## Por qué Next.js + Recharts
 
 - Storytelling ≠ notebook: rutas, layout, performance, deploy estático o casi.
-- Tremor cubre KPI + series temporales con poco CSS custom, suficiente para producción/completaciones.
-- Next permite (Hito 3) leer marts en server components sin exponer SA al browser.
+- Recharts renderiza las series y gráficos; los KPIs, rankings, filtros y cards usan componentes React y CSS compartidos.
+- Next genera una aplicación estática que consume snapshots agregados verificados sin exponer credenciales al browser.
 
 **Trade-off:** más setup que Streamlit. Streamlit (o un notebook) acelera un spike interno; no es el artefacto de portfolio ni un front público durable. Spike vivo: [ADR 0002](0002-ui-spike-notebook.md) + [`apps/spike/`](../../apps/spike/README.md). Un cambio a otro kit de charts no exige cambiar Next si el ADR de UI se abre aparte.
 

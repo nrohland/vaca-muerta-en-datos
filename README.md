@@ -6,7 +6,7 @@ Está pensado para analistas, equipos de energía, periodistas y personas que ne
 
 > **Estado de esta entrega:** versión de revisión local, sin promoción ni despliegue automático. El snapshot candidato acepta producción hasta **agosto de 2026**; septiembre parcial se excluye. “Preliminar” indica que falta aprobación de publicación, aunque el snapshot tenga validación técnica. Los datos oficiales pueden rectificarse.
 
-La [revisión integrada de las cinco vistas](docs/evidence/integrated/README.md) reúne capturas desktop/mobile, resultados de 43 tests y límites explícitos de la validación. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
+La [revisión integrada de las cinco vistas](docs/evidence/integrated/README.md) reúne capturas desktop/mobile, resultados de 47 tests y límites explícitos de la validación. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
 
 ## Qué preguntas responde
 
@@ -27,7 +27,7 @@ La fuente principal es [Capítulo IV de la Secretaría de Energía](https://dato
 - **Petróleo:** m³ × 6,28981077 = barriles. **Gas:** miles de m³ convertidos a MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
 - **Pozos productivos:** pozos únicos con producción positiva del fluido elegido en cada mes. Un pozo puede producir ambos fluidos; los conteos no se suman.
 - **Valor USD de petróleo:** barriles × promedio mensual Brent de [EIA](https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte) del mismo mes. Es una estimación bruta de referencia, no ingresos realizados, margen ni beneficio. Sin precio válido se muestra indisponibilidad.
-- **Gas en USD:** pendiente de referencia y conversión energética válidas; no se sustituye con Brent o un precio supuesto.
+- **Gas en USD:** referencia seleccionada para validación: precio promedio ponderado de Cuenca Neuquina, contrato TOTAL, de Secretaría de Energía (Res. 1/2018), expresado en USD/MMBTU. La copia verificada llega a mayo de 2026 y usa gas normalizado a 9.300 kcal/m³; falta verificar precios hasta agosto y equivalencia con los volúmenes de Capítulo IV. Es un benchmark de cuenca, no precio realizado de Vaca Muerta. El modo USD permanece indisponible hasta cerrar ambas validaciones. Ver [investigación y contrato](docs/pricing-reference.md).
 - **Actividad:** producción media por pozo y día calendario no equivale a productividad por día efectivo de operación. No se infieren altas, bajas, perforación o completaciones a partir de un conteo agregado.
 - **Frecuencia:** datos mensuales, sin telemetría ni contador en tiempo real. Las transferencias de activos y rectificativas pueden alterar comparaciones por entidad.
 
@@ -49,16 +49,26 @@ flowchart LR
 
 | Capa | Tecnología actual | Por qué se eligió |
 | --- | --- | --- |
-| Extracción | Python, Meltano y Singer; tap CKAN propio | Configuración y cargas reproducibles en Git; separación entre extracción y reglas de negocio |
+| Extracción | Meltano con tap CKAN en Python (Singer SDK) y target BigQuery | Configuración y cargas reproducibles en Git; separación entre extracción y reglas de negocio |
 | Warehouse | BigQuery con particiones y clustering | Consulta analítica sin administrar servidores; control de bytes escaneados y separación dev/candidato/prod |
 | Transformación | dbt Core, SQL, tests y seeds | Granos explícitos, conversiones únicas, conciliación y contratos revisables |
 | Publicación de datos | Agregados JSON, manifiestos y SHA-256 | El browser no necesita credenciales; recibe un snapshot consistente y verificable; promoción separada de construcción |
 | Aplicación | Next.js 16, React 19 y TypeScript 7 | Componentes tipados, navegación persistente y exportación estática |
 | Visualización | Recharts 3 y componentes propios con CSS compartido | Una línea creativa y semántica común, con control de accesibilidad y responsive |
 | Verificación | Node test runner, Playwright y axe; tests dbt y conciliación Python | Comprobar cálculos, contratos, navegación y presentación en varias pantallas |
-| Automatización | GitHub Actions | Ejecución versionada de extracción y validación de configuración; el pipeline completo aún requiere coordinación explícita |
+| Automatización | GitHub Actions | Orquestación versionada de cargas y checks; extracción configurada y cierre operativo detallado debajo |
 
-Tremor fue una decisión inicial de planificación; **no es una dependencia del frontend actual**. La revisión UI usa Recharts y componentes comunes, documentados en [ADR 0003](docs/adrs/0003-resumen-ui.md). Para el detalle y los compromisos de diseño: [arquitectura](docs/architecture.md), [ADRs](docs/adrs/README.md).
+La UI usa Recharts y componentes comunes, documentados en [ADR 0003](docs/adrs/0003-resumen-ui.md). Para el detalle y los compromisos de diseño: [arquitectura](docs/architecture.md), [ADRs](docs/adrs/README.md).
+
+## Linaje generado desde dbt
+
+![Linaje de modelos dbt](docs/lineage/linaje-dbt.svg)
+
+El grafo deriva del manifest dbt retenido y está contrastado con el SQL presente: **11 modelos, 2 fuentes y 11 dependencias**. Se publica una vista depurada sin tests/macros ni metadatos de conexión. [Procedencia y alcance](docs/lineage/README.md). No acredita una nueva corrida de dbt ni incluye modelos de publicación candidatos ausentes de este checkout.
+
+## Precios: estado actual y arquitectura de cierre
+
+Actualmente un importador Python obtiene el histórico EIA y genera un artefacto local verificado; el navegador consume ese snapshot, no llama a EIA, y todavía calcula la estimación monetaria. Para el producto final, precios y valorización deben pasar por **ingesta → BigQuery → dbt → snapshot/API → frontend**. Un seed versionado puede servir como histórico reproducible inicial; para cotizaciones mensuales revisables, la fuente dinámica evita mantenimiento manual y permite freshness y revisiones. Los seeds se reservan para catálogos y supuestos estables. Ver [decisión de precios](docs/adrs/0005-pricing-layer.md).
 
 ## Orquestación, extracción y freshness
 
@@ -72,6 +82,10 @@ Hoy hay piezas reproducibles, pero **no se presenta como un pipeline de producci
 | Corte publicable | Gates de cobertura, conciliación y snapshot candidato | El mayor mes raw no se acepta automáticamente; septiembre parcial queda excluido |
 | Precios y frontend | Importación y vínculo de artefactos con manifiestos | Actualización y aprobación separadas; no deploy automático |
 | Freshness | Objetivo de ingesta dentro de 7 días de publicación | Es una aspiración documentada, sin SLA monitorizado ni enforcement automático demostrado |
+
+**Estado comprobado en GitHub:** ALLOW_FULL_YEAR_LOAD está habilitado y existe el secreto de extracción; falta GCP_SA_KEY_DBT. El cron del 5 de octubre falló por TRUNCATE no permitido en el sandbox sin facturación. Esta rama prepara recreación dev con el script existente; todavía no se ejecutó esa corrección en GitHub. Los modelos candidatos de publicación se mantienen en PRs de datos separados y todavía no están integrados en este árbol.
+
+**Para cerrar la operación:** integrar los modelos/exportadores revisados, resolver el fallo de extracción, configurar la identidad dbt (secreto separado o Workload Identity Federation), usar recurso/año vigente, encadenar extracción → dbt build/tests → gates de completitud/freshness → precios/release → verificación de hashes. Promoción y deploy conservan aprobación independiente. No se activó ninguna carga en esta revisión.
 
 Se conservan fechas diferentes para período de producción, actualización de fuente, extracción, ingesta, generación y publicación. El caso de agosto mostró que el CSV estaba más actualizado que DataStore: una fecha reciente de ejecución no garantiza cobertura reciente. Ver [operación de extracción](extraction/README.md) y [auditoría](docs/evidence/data-valuation/README.md).
 

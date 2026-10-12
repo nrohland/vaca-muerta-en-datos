@@ -54,7 +54,7 @@ La estimación monetaria de petróleo es volumen × Brent mensual, sin deduccion
 
 `apps/web/lib/contract.ts` valida release, cobertura y manifiesto. Los artefactos `release.json`, `manifest.json`, `prices.json` y `valuation-manifest.json` vinculan snapshot y precios. La aprobación de publicación es un estado separado; sin aprobación válida la app muestra Preliminar.
 
-`dashboard-components.tsx` y CSS compartido definen el sistema de KPIs, cards, gráficos, ranking y filtros. No hay dependencia Tremor en el código actual: la propuesta inicial fue ajustada por [ADR 0003](adrs/0003-resumen-ui.md). Todas las pestañas conservan producto/período/modo/comparación en URL, junto con detalle de entidad; idioma y tema permanecen como preferencias. Azul petróleo, violeta gas y ámbar económico tienen significado estable entre vistas.
+`dashboard-components.tsx` y CSS compartido definen el sistema de KPIs, cards, gráficos, ranking y filtros. Recharts implementa las visualizaciones del frontend; ver [ADR 0003](adrs/0003-resumen-ui.md). Todas las pestañas conservan producto/período/modo/comparación en URL, junto con detalle de entidad; idioma y tema permanecen como preferencias. Azul petróleo, violeta gas y ámbar económico tienen significado estable entre vistas.
 
 ## Orquestación y freshness
 
@@ -71,3 +71,13 @@ El objetivo de freshness es ingestar dentro de siete días de publicación ofici
 Credenciales sólo en entorno/secret manager; nunca en Git o cliente. BigQuery separa roles de carga y transformación y ambientes candidatos; promoción es deliberada. El costo depende de tamaño/reemisiones/queries y no se garantiza un costo cero.
 
 Antes de operar como servicio de producción falta cerrar recurso vigente y monitoreo, encadenar extracción → dbt build/tests → gates → export, definir responsables de alertas y promover sólo con aprobación. El hosting sigue pendiente de decisión autorizada. Estos pasos operativos no se sustituyen con el build local o las capturas UI.
+
+## Cierre de la capa de precios
+
+El flujo EIA → importador → artefacto → browser describe la entrega actual. La valoración principal debe migrar a ingesta de precios en BigQuery, modelos dbt de referencia y valorización, y export aceptado; el frontend presenta resultados y contexto. Seeds para catálogos y respaldo histórico, no cotizaciones cambiantes como mecanismo permanente. [ADR 0005](adrs/0005-pricing-layer.md).
+
+El [linaje dbt derivado de manifest](lineage/README.md) cubre modelos presentes en este árbol, no los marts candidatos de publicación pendientes en PRs de datos. Es una vista técnica diferente de la arquitectura completa.
+
+### Corrección de recarga dev preparada
+
+El run de extracción del 5 de octubre falló con 403 billingNotEnabled: TRUNCATE no está permitido en BigQuery sandbox. El script de preparación ya soporta recreación DROP/CREATE con el esquema y layout declarados. Esta rama reemplaza TRUNCATE por esa ruta sólo para dev. Prod conserva su DELETE anual y exige un proyecto/estrategia compatibles; no se habilitó facturación ni se ejecutó ninguna recarga. El último candidato publicable se conserva aunque una extracción falle.

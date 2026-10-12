@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 import { defaultHistoryRange } from "../lib/history";
 
 import { validatePrices, estimationNote, type Prices } from "../lib/metrics";
+import { OperatorsDashboard } from "./operators-dashboard";
+import { AreasDashboard } from "./areas-dashboard";
+import { ActivityDashboard } from "./activity-dashboard";
 import { ProductionDashboard } from "./production-dashboard";
 import { SummaryDashboard, GlobalFilters } from "./dashboard-components";
 import {
@@ -39,6 +42,7 @@ const initial: Selection = {
   month: "",
   operator: "",
   area: "",
+  range: defaultHistoryRange,
 };
 export default function Page() {
   const [language, setLanguage] = useState<Language>("es");
@@ -56,7 +60,7 @@ export default function Page() {
   }, []);
   useEffect(() => {
     document.documentElement.lang = language === "es" ? "es-AR" : "en-US";
-    document.title = t("Vaca Muerta en datos");
+    document.title = t("Vaca Muerta en Datos");
     document
       .querySelector('meta[name="description"]')
       ?.setAttribute(
@@ -71,11 +75,11 @@ export default function Page() {
     [loading, setLoading] = useState(true),
     [attempt, setAttempt] = useState(0),
     [selection, setSelection] = useState<Selection>(initial),
-    [range, setRange] = useState(defaultHistoryRange),
     [dark, setDark] = useState(false),
     [prices, setPrices] = useState<Prices | null>(null),
     [priceError, setPriceError] = useState("");
-  const { tab, fluid, month: period, mode, comparison } = selection;
+  const { tab, fluid, month: period, mode, comparison, range } = selection;
+  const setRange = (range: number) => update({range});
   function readUrl() {
     return readSelection(window.location.search);
   }
@@ -88,7 +92,7 @@ export default function Page() {
     }
     const url = new URL(window.location.href);
     for (const [k, v] of Object.entries(next)) {
-      if (v) url.searchParams.set(k, v);
+      if (v || k === "range") url.searchParams.set(k, String(v));
       else url.searchParams.delete(k);
     }
     window.history.pushState(null, "", url);
@@ -96,6 +100,7 @@ export default function Page() {
   }
   useEffect(() => {
     setSelection(readUrl());
+    try { setDark(localStorage.getItem("vm-theme") === "dark"); } catch {}
     const restore = () => setSelection(readUrl());
     window.addEventListener("popstate", restore);
     return () => window.removeEventListener("popstate", restore);
@@ -148,7 +153,7 @@ export default function Page() {
             };
             const url = new URL(window.location.href);
             for (const [k, v] of Object.entries(next))
-              if (v) url.searchParams.set(k, v);
+              if (v || k === "range") url.searchParams.set(k, String(v));
             window.history.replaceState(null, "", url);
             return next;
           });
@@ -236,7 +241,7 @@ export default function Page() {
               update({ tab: "summary" });
             }}
           >
-            {t("Vaca Muerta en datos")}
+            {t("Vaca Muerta en Datos")}
           </a>
           <div className="header-actions">
             <fieldset className="fluid-control language-control">
@@ -255,7 +260,7 @@ export default function Page() {
             </fieldset>
             <button
               className="theme-button"
-              onClick={() => setDark((d) => !d)}
+              onClick={() => setDark((d) => { try {localStorage.setItem("vm-theme", d ? "light" : "dark");} catch {} return !d; })}
               aria-pressed={dark}
               aria-label={t(dark ? "Modo claro" : "Modo oscuro")}
               title={t(dark ? "Modo claro" : "Modo oscuro")}
@@ -284,7 +289,7 @@ export default function Page() {
         <nav
           className="tabs"
           role="tablist"
-          aria-label={t("Vistas de Vaca Muerta en datos")}
+          aria-label={t("Vistas de Vaca Muerta en Datos")}
         >
           {tabs.map(([id, label], i) => (
             <button
@@ -375,21 +380,12 @@ export default function Page() {
                 />
               ) : tab === "production" ? (
                 <ProductionDashboard rows={rows} current={current} prices={prices} mode={mode} comparison={comparison} range={range} setRange={setRange} />
+              ) : tab === "areas" ? (
+                <AreasDashboard entities={entities} rows={rows} current={current} prices={prices} mode={mode} comparison={comparison} range={range} setRange={setRange} area={selection.area} onArea={(area) => update({area})} />
+              ) : tab === "activity" ? (
+                <ActivityDashboard entities={entities} rows={rows} current={current} prices={prices} mode={mode} comparison={comparison} range={range} setRange={setRange} />
               ) : (
-                <div className="state planned-view">
-                  <p className="eyebrow">{t("Próximamente")}</p>
-                  <h1>{destinationLabel(selection, entities, t)}</h1>
-                  <p>
-                    {t("Esta vista estará disponible en una próxima etapa.")}
-                  </p>
-                  <button
-                    onClick={() =>
-                      update({ tab: "summary", operator: "", area: "" })
-                    }
-                  >
-                    {t("Volver al Resumen")}
-                  </button>
-                </div>
+                <OperatorsDashboard entities={entities} rows={rows} current={current} prices={prices} mode={mode} comparison={comparison} range={range} setRange={setRange} operator={selection.operator} onOperator={(operator) => update({operator})} />
               )}
             </section>
           )}

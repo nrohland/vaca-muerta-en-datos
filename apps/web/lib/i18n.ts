@@ -6,14 +6,25 @@ export function readLanguage(value: string | null): Language {
 }
 // Spanish source messages are also the default locale. Variables never translate entity names.
 export const translations: Record<string, string> = {
-  "Vaca Muerta en datos": "Vaca Muerta in data",
+  "Detalle de {label}": "Details of {label}",
+  "Ver detalle": "View details",
+  "Producción acumulada del año": "Year-to-date production",
+  "Valor acumulado del año": "Year-to-date estimated value",
+  "vs. mismo acumulado de {year}": "vs. same year-to-date period in {year}",
+  "Producción física": "Physical production",
+  "Ambas series": "Both series",
+  "Series del gráfico": "Chart series",
+  "Producción · Ver detalle": "Production · View details",
+  "Actividad · Ver detalle": "Activity · View details",
+  "{section} · Ver detalle ↗": "{section} · View details ↗",
+  "Vaca Muerta en Datos": "Vaca Muerta en Datos",
   "Producción mensual de petróleo y gas de Vaca Muerta. Vista previa de agregados oficiales.":
     "Monthly oil and gas production from Vaca Muerta. Preview of official aggregates.",
   "Ir al contenido": "Skip to content",
   "Modo claro": "Light mode",
   "Modo oscuro": "Dark mode",
   Idioma: "Language",
-  "Vistas de Vaca Muerta en datos": "Vaca Muerta views",
+  "Vistas de Vaca Muerta en Datos": "Vaca Muerta views",
   Resumen: "Overview",
   Producción: "Production",
   Operadores: "Operators",

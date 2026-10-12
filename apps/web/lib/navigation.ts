@@ -16,6 +16,7 @@ export type Selection = {
   month: string;
   operator: string;
   area: string;
+  range: number;
 };
 export function readSelection(search: string): Selection {
   const p = new URLSearchParams(search);
@@ -29,6 +30,7 @@ export function readSelection(search: string): Selection {
     month: p.get("month") ?? "",
     operator: p.get("operator") ?? "",
     area: p.get("area") ?? "",
+    range: p.has("range") && [0,12,24,36].includes(Number(p.get("range"))) ? Number(p.get("range")) : 36,
   };
 }
 export function destinationLabel(

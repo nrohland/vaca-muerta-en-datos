@@ -3,6 +3,7 @@ import { useState } from "react";
 import {
   Bar,
   CartesianGrid,
+  Cell,
   ComposedChart,
   Line,
   ReferenceLine,
@@ -59,7 +60,7 @@ export function ProductionDashboard({
   const points = productionPoints(rows, fluid, period, range, prices, mode);
   const coverage = historyWindow(rows, fluid, period, range);
   const annual = yearlyComparison(rows, fluid, period, prices, mode);
-  const colors = ["var(--muted)", "var(--value-line)", "var(--accent)"];
+  const colors = monetary ? ["var(--monetary-oldest)", "var(--monetary-secondary)", "var(--value-line)"] : ["var(--year-oldest)", "var(--product-secondary)", "var(--accent)"];
   const shortMonth = (m: string) =>
     new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
       .format(new Date(`2024-${m}-01T00:00:00Z`))
@@ -197,47 +198,11 @@ export function ProductionDashboard({
             2,
             "Suma enero–mes frente al mismo período del año anterior; requiere todos los meses y precios necesarios.",
           )}
-          label={t("Crecimiento acumulado")}
-          value={
-            k.accumulatedGrowth == null
-              ? t("Sin comparador")
-              : percent(k.accumulatedGrowth, true)
-          }
-          context={t("Enero–{month} vs. {year}", {
-            month: shortMonth(period.slice(5, 7)),
-            year: Number(period.slice(0, 4)) - 1,
-          })}
-          comparisons={
-            <span className="production-neutral">
-              {t("Acumulado: {value}", { value: format(k.accumulated) })}
-            </span>
-          }
-        />
-        <KpiCard
-          {...props(
-            3,
-            "Mayor total mensual del histórico disponible hasta el mes seleccionado; no es un récord de toda la historia de Vaca Muerta.",
-          )}
-          label={t("Máximo mensual disponible")}
-          value={
-            k.maximum == null
-              ? t("No disponible")
-              : monetary || fluid === "oil"
-                ? compact(k.maximum.value)
-                : number(k.maximum.value, 2, 0)
-          }
-          unit={k.maximum == null ? undefined : unit}
-          context={
-            k.maximum
-              ? month(k.maximum.periodo)
-              : t("Histórico incompleto para valorar")
-          }
-          comparisons={
-            <span className="production-neutral">
-              {k.historyStart &&
-                t("Desde {period}", { period: historyMonth(k.historyStart) })}
-            </span>
-          }
+          label={t(monetary ? "Valor acumulado del año" : "Producción acumulada del año")}
+          value={k.accumulated == null ? t("No disponible") : monetary || fluid === "oil" ? compact(k.accumulated) : number(k.accumulated, 2, 0)}
+          unit={k.accumulated == null ? undefined : unit}
+          context={`${historyMonth(k.start)} – ${historyMonth(period)}`}
+          comparisons={<span className="production-neutral">{k.accumulatedGrowth == null ? t("Sin comparador") : percent(k.accumulatedGrowth, true)} · {t("vs. mismo acumulado de {year}", {year: Number(period.slice(0,4))-1})}</span>}
         />
       </div>
       <Evolution
@@ -379,7 +344,8 @@ export function ProductionDashboard({
                     tickMargin={10}
                   />
                   <YAxis
-                    width={52}
+                    hide
+                    width={0}
                     tickFormatter={(v) => compact(v)}
                     tick={{ fontSize: 10, fill: "var(--muted)" }}
                     tickLine={false}
@@ -399,7 +365,9 @@ export function ProductionDashboard({
                     dataKey={comparison}
                     fill="var(--accent)"
                     isAnimationActive={false}
-                  />
+                  >
+                    {points.map(p => <Cell key={p.periodo} fill={p[comparison] == null || p[comparison] === 0 ? "var(--muted)" : p[comparison]! > 0 ? "var(--delta-positive)" : "var(--delta-negative)"} />)}
+                  </Bar>
                 </ComposedChart>
               </ResponsiveContainer>
             </div>
@@ -466,12 +434,9 @@ export function ProductionDashboard({
                       unit: fluid === "oil" ? "bbl/d" : "m³/d",
                     })}
                   </th>
-                  <th scope="col">{t("Brent:")} USD/bbl</th>
-                  <th scope="col">{t("Valor estimado")} USD</th>
-                  <th scope="col">Δ MoM ({fullUnit})</th>
-                  <th scope="col">{t("Base MoM")}</th>
-                  <th scope="col">Δ YoY ({fullUnit})</th>
-                  <th scope="col">{t("Base YoY")}</th>
+                  {fluid === "oil" && <><th scope="col">{t("Brent:")} USD/bbl</th><th scope="col">{t("Valor estimado")} USD</th></>}
+                  <th scope="col">Δ {comparison === "mom" ? "MoM" : "YoY"} ({fullUnit})</th>
+                  <th scope="col">{t("Base de comparación")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -482,42 +447,11 @@ export function ProductionDashboard({
                         {historyMonth(p.periodo)}
                       </time>
                     </th>
-                    <td>
-                      {number(
-                        p.volume == null
-                          ? null
-                          : p.volume * (fluid === "gas" ? 1e6 : 1),
-                        2,
-                        0,
-                      )}
-                    </td>
-                    <td>
-                      {number(
-                        p.rate == null
-                          ? null
-                          : p.rate * (fluid === "gas" ? 1e6 : 1),
-                        2,
-                        0,
-                      )}
-                    </td>
-                    <td>{number(p.price, 2, 0)}</td>
-                    <td>{number(p.estimated, 2, 0)}</td>
-                    <td
-                      className={
-                        comparison === "mom" ? "production-selected-column" : ""
-                      }
-                    >
-                      {exact(p.mom)}
-                    </td>
-                    <td>{historyMonth(p.momBase)}</td>
-                    <td
-                      className={
-                        comparison === "yoy" ? "production-selected-column" : ""
-                      }
-                    >
-                      {exact(p.yoy)}
-                    </td>
-                    <td>{historyMonth(p.yoyBase)}</td>
+                    <td>{p.volume == null ? t("No disponible") : `${fluid === "oil" ? compact(p.volume) : compact(p.volume * 1e6)} ${fluid === "oil" ? "bbl" : "m³"}`}</td>
+                    <td>{p.rate == null ? t("No disponible") : `${fluid === "oil" ? number(p.rate, 0) : compact(p.rate * 1e6)} ${fluid === "oil" ? "bbl/d" : "m³/d"}`}</td>
+                    {fluid === "oil" && <><td>{p.price == null ? t("No disponible") : `US$ ${number(p.price, 2)}`}</td><td>{p.estimated == null ? t("No disponible") : `US$ ${compact(p.estimated)}`}</td></>}
+                    <td className="production-selected-column">{signed(p[comparison])}</td>
+                    <td>{historyMonth(p[comparison === "mom" ? "momBase" : "yoyBase"])}</td>
                   </tr>
                 ))}
               </tbody>

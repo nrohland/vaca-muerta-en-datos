@@ -77,19 +77,10 @@ test("filter matrix updates real KPIs and retains navigation state", async ({
             prices,
             mode,
           );
-          await expect(
-            page
-              .locator(".production-data tbody tr")
-              .first()
-              .locator("td")
-              .nth(comparison === "mom" ? 4 : 6),
-          ).toHaveText(
-            f.number(
-              pts.at(-1)![comparison]! * (fluid === "gas" ? 1e6 : 1),
-              2,
-              0,
-            ),
-          );
+          const last = pts.at(-1)!;
+          const delta = last[comparison];
+          const formatted = delta == null ? f.t("Sin comparador") : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${fluid === "gas" ? f.number(Math.abs(delta), 2, 0) : f.compact(Math.abs(delta))}`;
+          await expect(page.locator(".production-data tbody tr").first().locator(".production-selected-column")).toContainText(formatted);
           await expect(
             page.locator(".production-evolution .recharts-line"),
           ).toHaveCount(fluid === "gas" ? 0 : 1);

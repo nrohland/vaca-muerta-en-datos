@@ -182,8 +182,8 @@ export function KpiCard({
               <button
                 className="icon-action"
                 onClick={onDetail}
-                title={t("Detalle próximamente")}
-                aria-label={t("Próximamente: detalle de {label}", {
+                title={t("Ver detalle")}
+                aria-label={t("Detalle de {label}", {
                   label: label.toLocaleLowerCase(locale),
                 })}
               >
@@ -417,6 +417,8 @@ export function Evolution({
 }) {
   const { t, number, physical, currency, month, historyMonth } = useLocale();
   const wells = kind === "wells";
+  const [seriesView, setSeriesView] = useState<"both" | "physical" | "value">("both");
+  const showPhysical = !detailView || seriesView !== "value" || fluid === "gas" || !prices;
   const selected = historyRanges.some((n) => n === range)
     ? range
     : defaultHistoryRange;
@@ -461,7 +463,7 @@ export function Evolution({
       base: shiftMonth(point.periodo, comparisonOffset(comparison)),
     };
   });
-  const monetary = !wells && fluid === "oil" && (!detailView || series.some(p => p.estimated != null));
+  const monetary = !wells && fluid === "oil" && (!detailView || (seriesView !== "physical" && series.some(p => p.estimated != null)));
   const last = series.at(-1);
   const lastValue = monetary ? last?.estimated : last?.physical;
   return (
@@ -472,7 +474,8 @@ export function Evolution({
           : "Evolución de la producción",
       )}
       className={wells ? "evolution wells-evolution" : "evolution production-evolution"}
-      controls={!wells &&
+      controls={!wells && <>
+        {detailView && fluid === "oil" && prices && <div className="ranges series-control" role="group" aria-label={t("Series del gráfico")}>{(["both","physical","value"] as const).map(v => <button key={v} aria-pressed={seriesView === v} onClick={() => setSeriesView(v)}>{t(v === "both" ? "Ambas series" : v === "physical" ? "Producción física" : "Valor estimado")}</button>)}</div>}
         <div className="ranges" role={detailView ? "group" : undefined} aria-label={t("Período de evolución")}>
           {historyRanges.map((n) => (
             <button
@@ -483,19 +486,19 @@ export function Evolution({
               {n === 0 ? t("Histórico") : `${n}m`}
             </button>
           ))}
-        </div>
+        </div></>
       }
       action={!detailView &&
         <button className="text-action" onClick={onDetail}>
-          {t(wells ? "Actividad · Próximamente" : "Producción · Próximamente")} <span aria-hidden="true">↗</span>
+          {t(wells ? "Actividad · Ver detalle" : "Producción · Ver detalle")} <span aria-hidden="true">↗</span>
         </button>
       }
     >
       <div className="chart-legend">
-        <span>
+        {showPhysical && <span>
           <i className="legend-bar" aria-hidden="true" />
           {wells ? t("Pozos productivos") : `${t("Producción física")} · ${volumeUnit(fluid)}`}
-        </span>
+        </span>}
         {monetary && (
           <span>
             <i className="legend-line" aria-hidden="true" />
@@ -569,7 +572,7 @@ export function Evolution({
                 }
                 cursor={{ fill: "var(--chart-grid)" }}
               />
-              {wells ? <Line yAxisId="physical" dataKey="physical" type="linear" stroke="var(--accent)" strokeWidth={2.5} dot={series.length === 1 ? {r: 4} : false} activeDot={{r: 4}} connectNulls={false} isAnimationActive={false} /> : <Bar
+              {wells ? <Line yAxisId="physical" dataKey="physical" type="linear" stroke="var(--accent)" strokeWidth={2.5} dot={series.length === 1 ? {r: 4} : false} activeDot={{r: 4}} connectNulls={false} isAnimationActive={false} /> : showPhysical && <Bar
                 yAxisId="physical"
                 dataKey="physical"
                 fill="var(--accent)"
@@ -715,7 +718,7 @@ const assets: Record<string, string> = {
   PGR: "PGR.png",
   VST: "VST.svg",
 };
-const shortNames: Record<string, string> = {
+export const shortNames: Record<string, string> = {
   YPF: "YPF",
   PLUSPETROL: "Pluspetrol",
   PAL: "Pan American Energy",
@@ -726,7 +729,7 @@ const shortNames: Record<string, string> = {
   PGR: "Phoenix",
   VST: "Vista",
 };
-function OperatorLogo({ id }: { id: string }) {
+export function OperatorLogo({ id }: { id: string }) {
   const [failed, setFailed] = useState(false);
   return (
     <span
@@ -857,7 +860,7 @@ export function RankingCard({
       className={`ranking-card ${operators ? "ranking-operators" : "ranking-areas"}`}
       action={
         <button className="text-action" onClick={() => onNavigate(tab)}>
-          {t("{section} · Próximamente ↗", {
+          {t("{section} · Ver detalle ↗", {
             section: t(operators ? "Operadores" : "Áreas"),
           })}
         </button>

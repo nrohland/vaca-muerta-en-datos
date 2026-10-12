@@ -18,7 +18,7 @@ export function areaRanking(entities: Entity[], current: Row, prices: Prices|nul
   const q = (options.query??'').trim().toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
   return entities.filter(e=>e.dimension==='area' && e.fluid===current.fluid && e.periodo===current.periodo).map(e=>({entity:e, ...areaChange(e,entities,prices,mode,comparison), share: current.volume>0?e.volume/current.volume*100:null})).filter(r=> {
     const text=`${r.entity.entity_name} ${r.entity.entity_id}`.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
-    return text.includes(q) && (options.activity!=='producing'||r.entity.volume>0) && (options.activity!=='inactive'||r.entity.volume===0) && (options.direction!=='up'||r.pct!=null&&r.pct>0) && (options.direction!=='down'||r.pct!=null&&r.pct<0);
+    return text.includes(q) && (options.activity!=='producing'||r.entity.volume>0) && (options.activity!=='inactive'||r.entity.volume===0) && (options.direction!=='up'||r.delta!=null&&r.delta>0) && (options.direction!=='down'||r.delta!=null&&r.delta<0);
   }).sort((a,b)=>options.sort==='name'?a.entity.entity_name.localeCompare(b.entity.entity_name):options.sort==='wells'?b.entity.positive_producing_wells-a.entity.positive_producing_wells:options.sort==='change'?(b.pct??-Infinity)-(a.pct??-Infinity)||a.entity.volume_rank-b.entity.volume_rank:a.entity.volume_rank-b.entity.volume_rank);
 }
 export function areaPoints(entities: Entity[], rows: Row[], current: Row, id: string, range: number, prices: Prices|null, mode: Mode, comparison: Comparison) {

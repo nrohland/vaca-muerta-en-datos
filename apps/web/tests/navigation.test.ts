@@ -63,3 +63,10 @@ test("localize section destinations while preserving proper entity names", () =>
     "YPF S.A.",
   );
 });
+
+test("historical range survives URL state and rejects unsupported values", () => {
+ assert.equal(readSelection("?tab=operators&range=0&operator=YPF").range, 0);
+ assert.equal(readSelection("?range=12").range, 12);
+ assert.equal(readSelection("?range=13").range, 36);
+ assert.equal(readSelection("").range, 36);
+});

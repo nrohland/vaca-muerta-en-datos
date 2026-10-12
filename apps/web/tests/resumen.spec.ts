@@ -127,7 +127,7 @@ test("progressive destinations retain filters and entity identity through browse
   const first = prepareEntities(release.entities, "gas", "company", latest)
     .top[0];
   await page.locator(".ranking-operators .ranking-row").first().click();
-  await expect(page.locator(".planned-view")).toContainText("Próximamente");
+  await expect(page.locator(".operators-dashboard")).toBeVisible();
   expect(new URL(page.url()).searchParams.get("operator")).toBe(
     first.entity_id,
   );
@@ -135,8 +135,8 @@ test("progressive destinations retain filters and entity identity through browse
   await page.goBack();
   await ready(page);
   await page.goForward();
-  await expect(page.locator(".planned-view")).toBeVisible();
-  await page.getByRole("button", { name: "Volver al Resumen" }).click();
+  await expect(page.locator(".operators-dashboard")).toBeVisible();
+  await page.getByRole("tab", { name: "Resumen", exact: true }).click();
   await ready(page);
   const area = prepareEntities(release.entities, "gas", "area", latest).top[0];
   await page.locator(".ranking-areas .ranking-row").first().click();
@@ -145,7 +145,7 @@ test("progressive destinations retain filters and entity identity through browse
   ).toBeVisible();
   expect(new URL(page.url()).searchParams.get("area")).toBe(area.entity_id);
   await page.getByRole("tab", { name: "Producción", exact: true }).click();
-  await expect(page.locator(".planned-view")).toBeVisible();
+  await expect(page.locator(".production-dashboard")).toBeVisible();
   await page.getByRole("tab", { name: "Actividad", exact: true }).click();
   await expect(
     page.getByRole("heading", { name: "Actividad", exact: true }),
@@ -245,7 +245,7 @@ test("monetary mode updates metrics and units; gas availability and price failur
   ).toBeVisible();
   await page.locator(".ranking-operators .ranking-row").first().click();
   expect(new URL(page.url()).searchParams.get("mode")).toBe("value");
-  await page.getByRole("button", { name: "Volver al Resumen" }).click();
+  await page.getByRole("tab", { name: "Resumen", exact: true }).click();
   await page.getByRole("button", { name: "Gas", exact: true }).click();
   await expect(page.getByRole("status")).toContainText(
     "no disponible para gas",

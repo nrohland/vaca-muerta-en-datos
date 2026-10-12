@@ -130,3 +130,10 @@ El identificador del repositorio sigue siendo [`vaca-muerta-pulse`](https://gith
 El proyecto usa especificaciones y ADRs para registrar cambios de fuente, grano, métricas o arquitectura. Los roles separan Data Engineering (extracción/warehouse), Analytics Engineering (modelado y calidad), frontend (producto) y QA (aceptación). [AGENTS.md](AGENTS.md) contiene las reglas de contribución.
 
 Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en ramas/PR; agentes no mergean, publican ni despliegan sin autorización. La promoción de un candidato y el cierre operativo del pipeline son pasos explícitos de aceptación.
+
+### Pipeline candidato preparado
+
+El workflow nuevo de desarrollo encadena extracción y dbt en datasets aislados,
+con gates de cobertura/freshness y WIF separado por etapa. Está **preparado, no
+activado ni ejecutado de punta a punta**. Ver [estado y límites](pipeline/README.md).
+No constituye aún el pipeline multianual de publicación ni la migración de precios.

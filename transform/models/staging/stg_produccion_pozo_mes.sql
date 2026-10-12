@@ -64,3 +64,7 @@ with
 
 select *
 from deduped
+
+{% if target.name == 'candidate' %}
+where periodo = {{ candidate_period_sql() }}
+{% endif %}

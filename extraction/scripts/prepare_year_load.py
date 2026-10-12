@@ -103,6 +103,9 @@ def main() -> int:
     if not args.dataset:
         print("ERROR: --dataset or BIGQUERY_DATASET is required", file=sys.stderr)
         return 2
+    if args.recreate and args.dataset != 'raw_cap4_candidate_dev':
+        parser.error('--recreate is restricted to raw_cap4_candidate_dev; shared history must be preserved')
+
     exclusive = [args.truncate, args.delete_year is not None, args.recreate]
     if sum(1 for flag in exclusive if flag) > 1:
         print(

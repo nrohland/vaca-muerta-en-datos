@@ -43,8 +43,7 @@ on:
   # The job still no-ops (exit 1, zero BQ writes) until vars.ALLOW_FULL_YEAR_LOAD=true.
   # When unblocked: Meltano env `dev` (raw_cap4_dev) + DROP/CREATE + full year (no MAX_RECORDS).
   # Prod monthly: workflow_dispatch environment=prod + reemit=true (DELETE year).
-  schedule:
-    - cron: "0 6 5 * *"
+  # Legacy schedule removed: rebuilding one year could erase multi-year raw.
 
 permissions:
   contents: read
@@ -67,6 +66,15 @@ jobs:
       BIGQUERY_LOCATION: ${{ vars.BIGQUERY_LOCATION || 'US' }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Prevent destructive reload of shared dev history
+        env:
+          REEMIT: ${{ inputs.reemit }}
+        run: |
+          if [ "$MELTANO_ENVIRONMENT" = "dev" ] && [ "$REEMIT" = "true" ]; then
+            echo "::error::Shared raw_cap4_dev contains multiple years. Use the isolated candidate pipeline."
+            exit 1
+          fi
 
       - name: Block full-year load until Nicolás cost OK
         env:

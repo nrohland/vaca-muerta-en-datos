@@ -1,0 +1,143 @@
+name: Cap IV candidate pipeline (dev)
+
+on:
+  workflow_dispatch:
+    inputs:
+      resource_id:
+        description: Reviewed annual CKAN DataStore resource UUID
+        required: true
+        type: string
+      year:
+        description: Reviewed resource year
+        required: true
+        type: string
+      month:
+        description: Required complete month (1-12), not automatic publication approval
+        required: true
+        type: string
+      evidence:
+        description: Reviewed evidence JSON under pipeline/contracts/
+        required: true
+        type: string
+  schedule:
+    - cron: '0 6 5 * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cap4-candidate-dev
+  cancel-in-progress: false
+
+jobs:
+  extract:
+    if: vars.DATA_PIPELINE_ENABLED == 'true'
+    runs-on: ubuntu-latest
+    environment: data-dev-extract
+    timeout-minutes: 360
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      BIGQUERY_PROJECT: vaca-muerta-pulse
+      BIGQUERY_DATASET: raw_cap4_candidate_dev
+      BIGQUERY_LOCATION: US
+      RESOURCE_ID: ${{ inputs.resource_id || vars.DATA_RESOURCE_ID }}
+      SOURCE_YEAR: ${{ inputs.year || vars.DATA_SOURCE_YEAR }}
+      REQUIRED_MONTH: ${{ inputs.month || vars.DATA_REQUIRED_MONTH }}
+      REVIEWED_EVIDENCE: ${{ inputs.evidence || vars.DATA_REVIEWED_EVIDENCE }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validate configuration before cloud authentication
+        run: python pipeline/validate_inputs.py --vars-output pipeline-evidence/candidate-vars.json
+      - name: Install extractor
+        working-directory: extraction
+        run: |
+          python -m pip install 'meltano==4.2.2' google-cloud-bigquery requests
+          meltano install
+      - name: Capture source before extraction
+        run: |
+          mkdir -p pipeline-evidence
+          python extraction/scripts/check_ckan_snapshot.py --resource-id "$RESOURCE_ID" --year "$SOURCE_YEAR" --month "$REQUIRED_MONTH" --evidence "$REVIEWED_EVIDENCE" --output pipeline-evidence/source-before.json
+      - name: Authenticate extraction (federated identity)
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_CI_EXTRACT_SA }}
+      - name: Load isolated annual candidate
+        working-directory: extraction
+        env:
+          MELTANO_ENVIRONMENT: dev
+          TARGET_BIGQUERY_DATASET: raw_cap4_candidate_dev
+        run: |
+          set -euo pipefail
+          export TAP_CKAN_DATASTORE_PRODUCCION_RESOURCE_ID="$RESOURCE_ID"
+          unset TAP_CKAN_DATASTORE_MAX_RECORDS || true
+          python scripts/prepare_year_load.py --dataset raw_cap4_candidate_dev --recreate
+          meltano run cap4-produccion
+      - name: Capture source after extraction
+        run: python extraction/scripts/check_ckan_snapshot.py --resource-id "$RESOURCE_ID" --year "$SOURCE_YEAR" --month "$REQUIRED_MONTH" --evidence "$REVIEWED_EVIDENCE" --before pipeline-evidence/source-before.json --output pipeline-evidence/source-after.json
+      - name: Validate loaded candidate
+        run: |
+          python extraction/scripts/check_raw_snapshot.py --project "$BIGQUERY_PROJECT" --dataset "$BIGQUERY_DATASET" --resource-id "$RESOURCE_ID" --year "$SOURCE_YEAR" --month "$REQUIRED_MONTH" --evidence "$REVIEWED_EVIDENCE" --observation pipeline-evidence/source-before.json --dry-run
+          python extraction/scripts/check_raw_snapshot.py --project "$BIGQUERY_PROJECT" --dataset "$BIGQUERY_DATASET" --resource-id "$RESOURCE_ID" --year "$SOURCE_YEAR" --month "$REQUIRED_MONTH" --evidence "$REVIEWED_EVIDENCE" --observation pipeline-evidence/source-before.json > pipeline-evidence/raw-gate-result.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: candidate-extraction-checks
+          path: pipeline-evidence/*.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  transform:
+    needs: extract
+    runs-on: ubuntu-latest
+    environment: data-dev-dbt
+    timeout-minutes: 60
+    permissions:
+      contents: read
+      id-token: write
+    env:
+      DBT_RAW_DATASET: raw_cap4_candidate_dev
+      DBT_SEND_ANONYMOUS_USAGE_STATS: 'false'
+    defaults:
+      run:
+        working-directory: transform
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install pinned dbt Core
+        run: python -m pip install -r requirements.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: candidate-extraction-checks
+          path: pipeline-evidence
+      - name: Configure candidate target
+        run: cp ci-profiles.yml.example profiles.yml
+      - name: Authenticate transformation (separate identity)
+        uses: google-github-actions/auth@v3
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_CI_DBT_SA }}
+      - name: Validate project and connection
+        run: |
+          dbt deps --profiles-dir .
+          dbt parse --profiles-dir . --target candidate --vars "$(cat ../pipeline-evidence/candidate-vars.json)"
+          dbt debug --profiles-dir . --target candidate --vars "$(cat ../pipeline-evidence/candidate-vars.json)"
+      - name: Build and test candidate production marts
+        run: dbt build --profiles-dir . --target candidate --vars "$(cat ../pipeline-evidence/candidate-vars.json)" --select +fct_company_month +fct_area_month +fct_production_rate
+      - name: Extract sanitized validation summary
+        if: always()
+        run: python ../pipeline/summarize_dbt_run.py target/run_results.json ../pipeline-evidence/dbt-summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: candidate-dbt-checks
+          path: pipeline-evidence/dbt-summary.json
+          if-no-files-found: ignore
+          retention-days: 7

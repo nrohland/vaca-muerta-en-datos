@@ -743,6 +743,82 @@ function OperatorLogo({ id }: { id: string }) {
   );
 }
 
+export function RankingItem({
+  position,
+  logo,
+  name,
+  fullName,
+  production,
+  productionExact,
+  participation,
+  variation,
+  comparison,
+  comparisonPeriod,
+  onSelect,
+}: {
+  position: number;
+  logo?: ReactNode;
+  name: string;
+  fullName: string;
+  production: ReactNode;
+  productionExact: string;
+  participation: number | null;
+  variation: number | null;
+  comparison: Comparison;
+  comparisonPeriod: string;
+  onSelect: () => void;
+}) {
+  const { t, percent } = useLocale();
+  return (
+    <li>
+      <button
+        className="ranking-row ranking-item"
+        data-leader={position === 1}
+        data-has-logo={!!logo}
+        onClick={onSelect}
+      >
+        <span className="ranking-main">
+          <span className="entity-name">
+            <span className="rank">{position.toString().padStart(2, "0")}</span>
+            {logo}
+            <span className="ranking-name" title={fullName}>
+              {name}
+            </span>
+          </span>
+          <span
+            className="share-value"
+            title={t("Barras: participación en el total · escala 0–100%")}
+          >
+            <span className="sr-only">{t("Cuota")} </span>
+            {participation == null
+              ? t("No disponible")
+              : percent(participation)}
+          </span>
+        </span>
+        <span className="ranking-meta">
+          <span className="bar-value">
+            <span className="ranking-amount" title={productionExact}>
+              {production}
+            </span>
+          </span>
+          <span
+            className="yoy-value"
+            title={t("vs. {period}", { period: comparisonPeriod })}
+          >
+            <span className="ranking-comparison-label">
+              {t(comparison === "mom" ? "Mensual" : "Interanual")}
+            </span>
+            <Change value={variation} compact />
+          </span>
+        </span>
+        <span className="bar-track" aria-hidden="true">
+          <span style={{ width: `${participation ?? 0}%` }} />
+        </span>
+      </button>
+    </li>
+  );
+}
+
 export function RankingCard({
   mode,
   prices,
@@ -762,7 +838,7 @@ export function RankingCard({
   comparison: Comparison;
   onNavigate: (tab: Tab, id?: string) => void;
 }) {
-  const { t, compact, number, currency, percent, month } = useLocale();
+  const { t, compact, number, month } = useLocale();
   const operators = dimension === "company",
     tab = operators ? "operators" : "areas",
     shown = prepareEntities(entities, fluid, dimension, current.periodo).top;
@@ -784,12 +860,6 @@ export function RankingCard({
         </button>
       }
     >
-      <div className="ranking-columns" aria-hidden="true">
-        <span>{t(operators ? "Operador" : "Área")}</span>
-        <span>{t(mode === "value" ? "Valor estimado" : "Producción")}</span>
-        {operators && <span>{t("Cuota")}</span>}
-        <span>{t(comparison === "mom" ? "Mensual" : "Interanual")}</span>
-      </div>
       <ol className="ranking-list">
         {shown.map((e) => {
           // Prepared volumes retain the true total-volume denominator in both comparisons.
@@ -802,66 +872,38 @@ export function RankingCard({
           const label = operators
             ? operatorName(e.entity_id, e.entity_name)
             : e.entity_name;
+          const value = entityValue(e, prices, mode);
           return (
-            <li key={e.entity_id}>
-              <button
-                className="ranking-row"
-                onClick={() => onNavigate(tab, e.entity_id)}
-              >
-                <span className="entity-name">
-                  <span className="rank" aria-hidden="true">
-                    {e.volume_rank.toString().padStart(2, "0")}
-                  </span>
-                  {operators && <OperatorLogo id={e.entity_id} />}
-                  <span title={label}>
-                    {operators ? (shortNames[e.entity_id] ?? label) : label}
-                  </span>
-                </span>
-                <span className="bar-value">
-                  <span className="mobile-label">
-                    {t(mode === "value" ? "USD estimados" : "Producción")}
-                  </span>
-                  <span
-                    className="ranking-amount"
-                    title={
-                      mode === "value"
-                        ? `${number(entityValue(e, prices, mode), 2, 0)} USD`
-                        : `${number(entityValue(e, prices, mode), fluid === "oil" ? 0 : 2, 0)} ${volumeUnit(fluid)}`
-                    }
-                  >
-                    {compact(entityValue(e, prices, mode))}
-                    {entityValue(e, prices, mode) != null && (
-                      <span className="ranking-unit">{mode === "value" ? "USD" : volumeUnit(fluid)}</span>
-                    )}
-                  </span>
-                </span>
-                {operators && (
-                  <span className="share-value">
-                    <span className="mobile-label">{t("Cuota")}</span>
-                    {share == null ? t("No disponible") : percent(share)}
-                  </span>
-                )}
-                <span
-                  className="yoy-value"
-                  title={t("vs. {period}", {
-                    period: month(
-                      shiftMonth(current.periodo, comparisonOffset(comparison)),
-                    ),
-                  })}
-                >
-                  <span className="mobile-label">
-                    {t(comparison === "mom" ? "Mensual" : "Interanual")}
-                  </span>
-                  <Change
-                    value={entityComparison(e, prices, mode, comparison)}
-                    compact
-                  />
-                </span>
-                <span className="bar-track" aria-hidden="true">
-                  <span style={{ width: `${share ?? 0}%` }} />
-                </span>
-              </button>
-            </li>
+            <RankingItem
+              key={e.entity_id}
+              position={e.volume_rank}
+              logo={operators ? <OperatorLogo id={e.entity_id} /> : undefined}
+              name={operators ? (shortNames[e.entity_id] ?? label) : label}
+              fullName={label}
+              participation={share}
+              production={
+                <>
+                  {compact(value)}
+                  {value != null && (
+                    <span className="ranking-unit">
+                      {" "}
+                      {mode === "value" ? "USD" : volumeUnit(fluid)}
+                    </span>
+                  )}
+                </>
+              }
+              productionExact={
+                mode === "value"
+                  ? `${number(value, 2, 0)} USD`
+                  : `${number(value, fluid === "oil" ? 0 : 2, 0)} ${volumeUnit(fluid)}`
+              }
+              variation={entityComparison(e, prices, mode, comparison)}
+              comparison={comparison}
+              comparisonPeriod={month(
+                shiftMonth(current.periodo, comparisonOffset(comparison)),
+              )}
+              onSelect={() => onNavigate(tab, e.entity_id)}
+            />
           );
         })}
       </ol>

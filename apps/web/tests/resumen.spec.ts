@@ -83,8 +83,7 @@ test("real snapshot matches KPIs and both top-five rankings for oil and gas", as
           .locator(".bar-track>span")
           .evaluate((el: any) => parseFloat(el.style.width));
         expect(width).toBeCloseTo((e.volume / r.volume) * 100, 6);
-        if (dimension === "company")
-          await expect(row.locator(".share-value")).toContainText(
+        await expect(row.locator(".share-value")).toContainText(
             number((e.volume / r.volume) * 100),
           );
       }
@@ -274,7 +273,7 @@ test("language persistence, exact ranking values, selected comparisons and zero-
     .locator(".kpi-card--primary .kpi-value")
     .innerText();
   await page.getByRole("button", { name: "Mensual", exact: true }).click();
-  await expect(page.locator(".ranking-columns").first()).toContainText(
+  await expect(page.locator(".ranking-comparison-label").first()).toContainText(
     "Mensual",
   );
   await expect(page.locator(".kpi-card--primary .kpi-value")).toHaveText(
@@ -285,13 +284,13 @@ test("language persistence, exact ranking values, selected comparisons and zero-
     page.getByRole("tab", { name: "Overview", exact: true }),
   ).toBeVisible();
   await expect(page.locator("html")).toHaveAttribute("lang", "en-US");
-  await expect(page.locator(".ranking-columns").first()).toContainText(
+  await expect(page.locator(".ranking-comparison-label").first()).toContainText(
     "Monthly",
   );
   const top = prepareEntities(release.entities, "oil", "company", latest)
     .top[0];
   await expect(page.locator(".ranking-amount").first()).toHaveText(
-    formatters("en").compact(top.volume),
+    `${formatters("en").compact(top.volume)} bbl`,
   );
   await expect(page.locator(".ranking-amount").first()).toHaveAttribute(
     "title",

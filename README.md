@@ -133,6 +133,9 @@ Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en rama
 
 ### Pipeline candidato preparado
 
+Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026;
+automatización todavía desactivada. Ver [evidencia de permisos y tamaño del raw](docs/evidence/pipeline-access/README.md).
+
 El workflow nuevo de desarrollo encadena extracción y dbt en datasets aislados,
 con gates de cobertura/freshness y WIF separado por etapa. Está **preparado, no
 activado ni ejecutado de punta a punta**. Ver [estado y límites](pipeline/README.md).

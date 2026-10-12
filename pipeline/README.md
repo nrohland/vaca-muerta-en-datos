@@ -1,5 +1,11 @@
 # Pipeline candidato de desarrollo
 
+**Acceso actualizado:** el plan fue autorizado, aplicado y verificado el 12 de
+octubre de 2026. WIF y permisos por etapa/dataset están configurados; no se
+generaron claves. `DATA_PIPELINE_ENABLED` sigue en `false`. Ver
+[evidencia](../docs/evidence/pipeline-access/README.md). No repetir el script
+de provisión con `--apply`: sus recursos ya existen.
+
 Estado: código preparado, controles offline probados y consulta de raw validada
 con dry-run en BigQuery. **No está activado ni ejecutado de punta a punta.**
 

@@ -4,10 +4,11 @@ Revisión local del 11 de octubre de 2026. Cinco pestañas funcionales sobre el 
 
 ## Resultado y evidencia
 
-- `npm test`: **43/43** tests de cálculos, transformaciones, contrato, idiomas y selección URL. [Log](unit-tests.log).
+- `npm test`: **47/47** tests de cálculos, transformaciones, contrato, idiomas y selección URL. [Log](unit-tests.log).
 - `npm run typecheck` y `npm run build`: aprobados. [Build](build.log).
 - Auditoría AE independiente: rankings completos concilian en 44 meses, YTD y comparaciones con bases exactas, gas sin USD inventado. [Informe](analytics-engineering-review.md).
 - Navegador integrado: 20 estados responsive (320/390/768/1440 × 5 pestañas), gas/inglés/dark, modo USD físico no disponible, series aisladas, rangos 12/24/36/44, recarga, primer mes sin comparador, CSV y deep links/atrás/adelante. [Resultados](ui-checks.json).
+- Segunda auditoría independiente: cuatro issues corregidos; [informe](revision-final-pestanas.md) y [regresiones verificadas en navegador](regresiones-finales.json), incluida fixture de precios ausentes sin modificar el release real. Build en copia aislada de app con fuentes idénticas byte a byte.
 - Inspección visual desktop y mobile, con ajustes posteriores de contraste, jerarquía, nombres cortos, tablas fijas y grillas compactas de KPIs.
 
 | Vista | Desktop | Mobile |

@@ -46,6 +46,7 @@ import {
   historyTicks,
   defaultHistoryRange,
 } from "../lib/history";
+import { chartVisibility } from "../lib/chart-visibility";
 import { MeasurementIcon } from "./icons";
 function Comparisons({
   metric: m,
@@ -418,7 +419,6 @@ export function Evolution({
   const { t, number, physical, currency, month, historyMonth } = useLocale();
   const wells = kind === "wells";
   const [seriesView, setSeriesView] = useState<"both" | "physical" | "value">("both");
-  const showPhysical = !detailView || seriesView !== "value" || fluid === "gas" || !prices;
   const selected = historyRanges.some((n) => n === range)
     ? range
     : defaultHistoryRange;
@@ -463,7 +463,7 @@ export function Evolution({
       base: shiftMonth(point.periodo, comparisonOffset(comparison)),
     };
   });
-  const monetary = !wells && fluid === "oil" && (!detailView || (seriesView !== "physical" && series.some(p => p.estimated != null)));
+  const { showPhysical, monetary, unavailable, activeSeries } = chartVisibility({wells, fluid, detailView, selected:seriesView, hasEstimated:series.some(p => p.estimated != null)});
   const last = series.at(-1);
   const lastValue = monetary ? last?.estimated : last?.physical;
   return (
@@ -475,7 +475,7 @@ export function Evolution({
       )}
       className={wells ? "evolution wells-evolution" : "evolution production-evolution"}
       controls={!wells && <>
-        {detailView && fluid === "oil" && prices && <div className="ranges series-control" role="group" aria-label={t("Series del gráfico")}>{(["both","physical","value"] as const).map(v => <button key={v} aria-pressed={seriesView === v} onClick={() => setSeriesView(v)}>{t(v === "both" ? "Ambas series" : v === "physical" ? "Producción física" : "Valor estimado")}</button>)}</div>}
+        {detailView && fluid === "oil" && prices && <div className="ranges series-control" role="group" aria-label={t("Series del gráfico")}>{(["both","physical","value"] as const).map(v => <button key={v} aria-pressed={activeSeries === v} disabled={v !== "physical" && unavailable} onClick={() => setSeriesView(v)}>{t(v === "both" ? "Ambas series" : v === "physical" ? "Producción física" : "Valor estimado")}</button>)}</div>}
         <div className="ranges" role={detailView ? "group" : undefined} aria-label={t("Período de evolución")}>
           {historyRanges.map((n) => (
             <button
@@ -540,7 +540,7 @@ export function Evolution({
         >
           <ResponsiveContainer width="100%" height="100%">
             <ComposedChart
-              accessibilityLayer={!detailView}
+              accessibilityLayer={false}
               data={series}
               margin={{ left: 12, right: 24, top: 30, bottom: 8 }}
               barCategoryGap={coverage.requested >= 36 ? "15%" : "22%"}
@@ -626,7 +626,7 @@ export function Evolution({
           {t("Deslizá para explorar los meses →")}
         </p>
       )}
-      {!wells && !monetary && <p className="chart-context">{t(fluid === "gas" ? "Gas: valor estimado no disponible." : "Referencia de precios no disponible.")}</p>}
+      {unavailable && <p className="chart-context">{t(fluid === "gas" ? "Gas: valor estimado no disponible." : "Referencia de precios no disponible.")}</p>}
       {!detailView && <details className="data-disclosure">
         <summary>{t("Ver tabla de datos")}</summary>
         <table>

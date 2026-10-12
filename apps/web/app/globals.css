@@ -1957,7 +1957,7 @@ footer .status-badge {
 }
 .page[data-fluid] {
   --accent: var(--product-primary); --chart-production: var(--product-primary);
-  --chart-monetary: #b47b32; --monetary-secondary: #c69b61; --monetary-oldest: #a6a19a; --value-line: var(--chart-monetary);
+  --chart-monetary: #b47b32; --monetary-secondary: #c69b61; --monetary-oldest: #a99579; --value-line: var(--chart-monetary);
   --delta-positive: var(--positive); --delta-negative: var(--negative);
 }
 :root[data-theme="dark"] .page[data-fluid="oil"] {
@@ -1966,7 +1966,7 @@ footer .status-badge {
 :root[data-theme="dark"] .page[data-fluid="gas"] {
   --product-primary: #bf9fe1; --product-secondary: #896ba5; --hero: #50326b; --active-surface: #392b4a;
 }
-:root[data-theme="dark"] .page[data-fluid] { --chart-monetary: #dfb370; --monetary-secondary: #a58a62; --monetary-oldest: #8d939b; --delta-positive: var(--positive); --delta-negative: var(--negative); }
+:root[data-theme="dark"] .page[data-fluid] { --chart-monetary: #dfb370; --monetary-secondary: #a58a62; --monetary-oldest: #8f7c60; --delta-positive: var(--positive); --delta-negative: var(--negative); }
 .production-dashboard .kpi-grid { grid-template-columns: 2fr 1fr 1fr; }
 .production-data table { min-width: 760px; }
 .production-data th:first-child { position: sticky; left: 0; background: var(--surface); z-index: 2; padding-left: 12px; }

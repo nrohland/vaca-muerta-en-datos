@@ -54,7 +54,7 @@ export function ProductionDashboard({
   const shownMode = effectiveMode(mode, fluid),
     monetary = shownMode === "value";
   const unit = monetary ? "USD" : fluid === "oil" ? "bbl" : "MMm³";
-  const fullUnit = monetary ? "USD" : fluid === "oil" ? "bbl" : "m³";
+  const fullUnit = unit;
   const factor = fluid === "gas" && !monetary ? 1e6 : 1;
   const k = productionKpis(rows, fluid, period, prices, mode, comparison);
   const points = productionPoints(rows, fluid, period, range, prices, mode);

@@ -9,3 +9,7 @@ Operadores, Áreas y Actividad se implementan con specs 011–013, ámbitos aisl
 Contexto fluid/month/mode/comparison/range e identificadores vive en URL y atrás/adelante. Preferencias ES/EN y tema persistentes localmente. Gas USD: aviso y valores físicos; precios ausentes USD petróleo = indisponible, nunca cero/interpolación.
 
 Validación: cálculos y transformaciones, navegación, descarga, disponibilidad de precios, ES/EN, oil/gas, light/dark y anchos 320/390/768/1440. Capturas integradas desktop/mobile y revisión visual. No merge, publicación ni despliegue. Entrega local primero; PRs sólo sin violar límite de compartir externamente.
+
+## Cierre de QA
+
+Separar precio ausente de serie ocultada por decisión del usuario. Si una selección USD no tiene valores válidos en su ventana, conservar físico con explicación y deshabilitar opciones sin datos. Gráficos ocultos a lectores no deben ser enfocables; mantener tablas accesibles. Delta gas en tabla usa MMm³ igual a sus celdas. Cuatro regresiones unitarias y comprobación con fixture aislada; ninguna modificación de precios reales.

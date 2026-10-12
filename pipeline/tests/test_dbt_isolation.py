@@ -9,6 +9,13 @@ ROOT = Path(__file__).resolve().parents[2]
 def reject(message): raise ValueError(message)
 
 class DbtIsolation(unittest.TestCase):
+    def node(self, resource_type='model', enabled=True):
+        return SimpleNamespace(resource_type=resource_type, config=SimpleNamespace(enabled=enabled), unique_id='model.test')
+    def test_audit_schema_is_only_allowed_for_tests(self):
+        macro = self.macros('candidate')
+        self.assertEqual(macro.generate_schema_name('dbt_test__audit', self.node('test')).strip(), 'fallback')
+        with self.assertRaises(ValueError): macro.generate_schema_name('dbt_test__audit', self.node())
+        self.assertEqual(macro.generate_schema_name('meta', self.node(enabled=False)).strip(), 'fallback')
     def macros(self, name, period='2025-12-01'):
         env = Environment()
         env.globals.update(target=SimpleNamespace(name=name, schema='fallback'),
@@ -21,8 +28,8 @@ class DbtIsolation(unittest.TestCase):
     def test_candidate_cannot_write_existing_dev_or_prod(self):
         macro = self.macros('candidate')
         for layer in ['stg', 'int', 'marts']:
-            self.assertEqual(macro.generate_schema_name(layer, {}).strip(), layer+'_cap4_candidate_dev')
-        with self.assertRaises(ValueError): macro.generate_schema_name('raw_cap4_dev', {})
+            self.assertEqual(macro.generate_schema_name(layer, self.node()).strip(), layer+'_cap4_candidate_dev')
+        with self.assertRaises(ValueError): macro.generate_schema_name('raw_cap4_dev', self.node())
     def test_original_dev_and_prod_names_are_preserved(self):
         for layer in ['stg', 'int', 'marts']:
             self.assertEqual(self.macros('dev').generate_schema_name(layer, {}).strip(), layer+'_cap4_dev')

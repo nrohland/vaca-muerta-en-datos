@@ -1,0 +1,29 @@
+version: 2
+sources:
+  - name: candidate_pricing
+    database: vaca-muerta-pulse
+    schema: raw_cap4_candidate_dev
+    config:
+      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
+    tables:
+      - name: monthly_reference_price
+        description: Immutable reviewed official monthly benchmark snapshot; no seeds or forward filling.
+models:
+  - name: stg_monthly_reference_price
+    description: Same-month benchmark with currency, units, response hash and accepted cutoff.
+    columns:
+      - name: periodo
+        data_tests: [not_null, unique]
+      - name: snapshot_id
+        data_tests: [not_null]
+  - name: fct_reference_valuation_month
+    description: Candidate well-grain oil reference valuation; never realized revenue. Gas unavailable.
+    columns:
+      - name: well_month_id
+        data_tests: [not_null, unique]
+  - name: fct_reference_valuation_entity_month
+    description: Basin/company/area monthly reference values, calendar comparisons and complete YTD only.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [entity_type, entity_id, periodo]

@@ -1,0 +1,421 @@
+{
+  "results": [
+    {
+      "unique_id": "model.vaca_muerta_pulse.stg_monthly_reference_price",
+      "status": "success",
+      "execution_time": 1.4274051189422607
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "status": "success",
+      "execution_time": 1.2292759418487549
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_periodo.c844a0169d",
+      "status": "pass",
+      "execution_time": 1.8571979999542236
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_snapshot_id.e33fbd228e",
+      "status": "pass",
+      "execution_time": 1.755314826965332
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_price_contract",
+      "status": "pass",
+      "execution_time": 1.8463830947875977
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_required_price",
+      "status": "pass",
+      "execution_time": 1.753143072128296
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_stg_monthly_reference_price_periodo.83ef932fc0",
+      "status": "pass",
+      "execution_time": 1.728935956954956
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_formacion__vaca_muerta.418e3c55d1",
+      "status": "pass",
+      "execution_time": 1.9494271278381348
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_tipo_de_recurso__NO_CONVENCIONAL.d1338691a4",
+      "status": "pass",
+      "execution_time": 1.8426570892333984
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_stg_produccion_pozo_mes_idpozo__anio__mes.207ebc2835",
+      "status": "pass",
+      "execution_time": 2.3601930141448975
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_anio.38818fe703",
+      "status": "pass",
+      "execution_time": 1.732602834701538
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_idpozo.9bfb2ca424",
+      "status": "pass",
+      "execution_time": 1.8789172172546387
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_mes.666f621797",
+      "status": "pass",
+      "execution_time": 2.0268189907073975
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_periodo.b052550c7c",
+      "status": "pass",
+      "execution_time": 2.0269570350646973
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.int_produccion_vm_noconv",
+      "status": "success",
+      "execution_time": 1.3200669288635254
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_well_month",
+      "status": "success",
+      "execution_time": 3.9488391876220703
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_idareapermisoconcesion_has_one_area_name",
+      "status": "pass",
+      "execution_time": 1.6395461559295654
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_idempresa_has_one_empresa_name",
+      "status": "pass",
+      "execution_time": 1.7346551418304443
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_expectations_expect_column_values_to_be_between_fct_well_month_tef__31_5__0__tef_is_not_null.44af150677",
+      "status": "pass",
+      "execution_time": 1.6134719848632812
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_well_month_idpozo__anio__mes.ac668b86aa",
+      "status": "pass",
+      "execution_time": 1.8182079792022705
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_anio.d73e287c34",
+      "status": "pass",
+      "execution_time": 1.5364060401916504
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_idpozo.d77b1e2308",
+      "status": "pass",
+      "execution_time": 2.331761121749878
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_mes.bd385e1416",
+      "status": "pass",
+      "execution_time": 1.5955839157104492
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_periodo.5252cd78f9",
+      "status": "pass",
+      "execution_time": 1.7427639961242676
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_well_month_id.1d3ef599f9",
+      "status": "pass",
+      "execution_time": 1.731963872909546
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_well_month_well_month_id.539458cf81",
+      "status": "pass",
+      "execution_time": 1.6327488422393799
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.dim_area",
+      "status": "success",
+      "execution_time": 3.5673089027404785
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.dim_company",
+      "status": "success",
+      "execution_time": 3.1574132442474365
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_area_month",
+      "status": "success",
+      "execution_time": 3.33146595954895
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_company_month",
+      "status": "success",
+      "execution_time": 3.3132669925689697
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_headline_is_basin_calendar_not_tef",
+      "status": "pass",
+      "execution_time": 4.9133429527282715
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_calendar_when_tef_sum_zero",
+      "status": "pass",
+      "execution_time": 4.8459131717681885
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_uses_latest_cap4_month_only",
+      "status": "pass",
+      "execution_time": 4.787393093109131
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_production_rate",
+      "status": "success",
+      "execution_time": 3.023279905319214
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.oil_same_month_missing_and_invalid_are_null",
+      "status": "pass",
+      "execution_time": 5.325491905212402
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "status": "success",
+      "execution_time": 3.6468639373779297
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_area_areapermisoconcesion.452363d375",
+      "status": "pass",
+      "execution_time": 1.6819572448730469
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_area_idareapermisoconcesion.b7314313ef",
+      "status": "pass",
+      "execution_time": 1.7092268466949463
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_dim_area_idareapermisoconcesion.59ffb863fa",
+      "status": "pass",
+      "execution_time": 1.6397266387939453
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_company_empresa.a16ddc11be",
+      "status": "pass",
+      "execution_time": 1.6257350444793701
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_company_idempresa.43e49fa435",
+      "status": "pass",
+      "execution_time": 1.673172950744629
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_dim_company_idempresa.8e85f2536d",
+      "status": "pass",
+      "execution_time": 1.4299051761627197
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_area_month_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.951092004776001
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_area_month_idareapermisoconcesion__periodo.1dff08e108",
+      "status": "pass",
+      "execution_time": 1.912078857421875
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_anio.47a4dfb200",
+      "status": "pass",
+      "execution_time": 1.5591039657592773
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_area_month_id.cde79ea6a5",
+      "status": "pass",
+      "execution_time": 2.149578809738159
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_areapermisoconcesion.b2fea16c5b",
+      "status": "pass",
+      "execution_time": 1.9207301139831543
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_idareapermisoconcesion.aa91414af2",
+      "status": "pass",
+      "execution_time": 1.467763900756836
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_mes.32d95a3f88",
+      "status": "pass",
+      "execution_time": 1.6487550735473633
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_periodo.eec5ab0704",
+      "status": "pass",
+      "execution_time": 1.7641820907592773
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.relationships_fct_area_month_idareapermisoconcesion__idareapermisoconcesion__ref_dim_area_.c76e733f46",
+      "status": "pass",
+      "execution_time": 2.30804705619812
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_area_month_area_month_id.b4fd479181",
+      "status": "pass",
+      "execution_time": 1.560934066772461
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_company_month_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.9028611183166504
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_company_month_idempresa__periodo.86cb8c2303",
+      "status": "pass",
+      "execution_time": 4.394992113113403
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_anio.5b959cae54",
+      "status": "pass",
+      "execution_time": 1.5953037738800049
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_company_month_id.035adf095f",
+      "status": "pass",
+      "execution_time": 167.42708110809326
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_empresa.fa4c25b735",
+      "status": "pass",
+      "execution_time": 1.7907240390777588
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_idempresa.deacd3cef6",
+      "status": "pass",
+      "execution_time": 1.837669849395752
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_mes.f0d7ea15bd",
+      "status": "pass",
+      "execution_time": 1.6417689323425293
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_periodo.ba5e684649",
+      "status": "pass",
+      "execution_time": 2.048048257827759
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.relationships_fct_company_month_idempresa__idempresa__ref_dim_company_.fd71feaae8",
+      "status": "pass",
+      "execution_time": 1.6993968486785889
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_company_month_company_month_id.0a1e2662f8",
+      "status": "pass",
+      "execution_time": 1.8023130893707275
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_fct_production_rate_rate_method__calendar_days.081d83fb07",
+      "status": "pass",
+      "execution_time": 1.6740119457244873
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_production_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.6258840560913086
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.candidate_period_is_enforced",
+      "status": "pass",
+      "execution_time": 1.8072431087493896
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_expectations_expect_table_row_count_to_be_between_fct_production_rate_1__1.52b55c7edb",
+      "status": "pass",
+      "execution_time": 1.6408560276031494
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_bbl_dia_rate_m3_dia_var_m3_to_bbl_0_0000001.4d3d9a1b7e",
+      "status": "pass",
+      "execution_time": 1.6937930583953857
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_m3_dia_prod_pet_m3_days_in_month_0_0000001.53fb3d4c21",
+      "status": "pass",
+      "execution_time": 1.714266061782837
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_rate_bbl_dia_rate_bbl_per_day_and_rate_m3_dia_rate_m3_per_day.2ed8499256",
+      "status": "pass",
+      "execution_time": 1.6662170886993408
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_anio.86be59754c",
+      "status": "pass",
+      "execution_time": 1.7041831016540527
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_mes.e2eaf65b4f",
+      "status": "pass",
+      "execution_time": 1.588202953338623
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_periodo.21cbb42701",
+      "status": "pass",
+      "execution_time": 1.6498229503631592
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_bbl_dia.91bf6aa716",
+      "status": "pass",
+      "execution_time": 1.5098459720611572
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_method.bd0ee889f3",
+      "status": "pass",
+      "execution_time": 1.71976900100708
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_production_rate_periodo.e0661158ea",
+      "status": "pass",
+      "execution_time": 1.9789891242980957
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_reference_valuation_month_well_month_id.da561d11d2",
+      "status": "pass",
+      "execution_time": 1.6422159671783447
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_valuation_contract",
+      "status": "pass",
+      "execution_time": 1.69685697555542
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_reference_valuation_month_well_month_id.c11093a987",
+      "status": "pass",
+      "execution_time": 1.6008331775665283
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.calendar_gap_and_incomplete_ytd_are_null",
+      "status": "pass",
+      "execution_time": 5.354203224182129
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.zero_comparison_base_stays_null_with_complete_ytd",
+      "status": "pass",
+      "execution_time": 4.8674139976501465
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_reference_valuation_entity_month",
+      "status": "success",
+      "execution_time": 3.20479679107666
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_reference_valuation_entity_month_entity_type__entity_id__periodo.19387893af",
+      "status": "pass",
+      "execution_time": 1.849595069885254
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_entity_reconciliation",
+      "status": "pass",
+      "execution_time": 1.7072422504425049
+    }
+  ],
+  "status": "pass",
+  "publication_approved": false
+}

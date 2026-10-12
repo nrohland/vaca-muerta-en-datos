@@ -1,0 +1,240 @@
+{
+  "status": "pass",
+  "promotion_approved": false,
+  "resource": {
+    "mimetype": "text/csv",
+    "cache_url": null,
+    "hash": "",
+    "description": "",
+    "name": "Producci\u00f3n de Pozos de Gas y Petr\u00f3leo \u2013 2026",
+    "format": "CSV",
+    "url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+    "datastore_active": true,
+    "cache_last_updated": null,
+    "package_id": "c846e79c-026c-4040-897f-1ad3543b407c",
+    "created": "2026-02-03T16:31:04.309684",
+    "state": "active",
+    "mimetype_inner": null,
+    "last_modified": "2026-10-12T10:01:52.102938",
+    "position": 4,
+    "revision_id": "b5a636fa-3f13-4298-8837-5ee7a39b92cc",
+    "url_type": "upload",
+    "id": "fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+    "resource_type": null,
+    "size": 215289138
+  },
+  "transport": "official_download_csv",
+  "sha256_csv": "719a21cae8209d87f4c9a785c478233bdfbdba6a5f4ff3653bce9403e6ebe1fb",
+  "sha256_normalized_ndjson": "42cd060b605f96404bec409d6f9198f6fca0d046b5493b232d67af0bcb9adc57",
+  "schema": {
+    "idempresa": "text",
+    "anio": "numeric",
+    "mes": "numeric",
+    "idpozo": "numeric",
+    "prod_pet": "numeric",
+    "prod_gas": "numeric",
+    "prod_agua": "numeric",
+    "iny_agua": "numeric",
+    "iny_gas": "numeric",
+    "iny_co2": "numeric",
+    "iny_otro": "numeric",
+    "tef": "numeric",
+    "vida_util": "numeric",
+    "tipoextraccion": "text",
+    "tipoestado": "text",
+    "tipopozo": "text",
+    "observaciones": "text",
+    "fechaingreso": "timestamp",
+    "rectificado": "text",
+    "habilitado": "text",
+    "idusuario": "numeric",
+    "empresa": "text",
+    "sigla": "text",
+    "formprod": "text",
+    "profundidad": "numeric",
+    "formacion": "text",
+    "idareapermisoconcesion": "text",
+    "areapermisoconcesion": "text",
+    "idareayacimiento": "text",
+    "areayacimiento": "text",
+    "cuenca": "text",
+    "provincia": "text",
+    "tipo_de_recurso": "text",
+    "proyecto": "text",
+    "clasificacion": "text",
+    "subclasificacion": "text",
+    "sub_tipo_recurso": "text",
+    "fecha_data": "timestamp"
+  },
+  "rows": 663748,
+  "duplicate_grain": 0,
+  "period_rows": {
+    "2026-01-01": 82948,
+    "2026-02-01": 83001,
+    "2026-03-01": 83035,
+    "2026-04-01": 82949,
+    "2026-05-01": 83033,
+    "2026-06-01": 82476,
+    "2026-07-01": 82549,
+    "2026-08-01": 79576,
+    "2026-09-01": 4181
+  },
+  "vm_period_rows_for_qa": {
+    "2026-01-01": 3085,
+    "2026-02-01": 3127,
+    "2026-03-01": 3165,
+    "2026-04-01": 3217,
+    "2026-05-01": 3281,
+    "2026-06-01": 3322,
+    "2026-07-01": 3369,
+    "2026-08-01": 3404,
+    "2026-09-01": 26
+  },
+  "limitations": [
+    "Source declarations are revisable; period coverage and acceptance require downstream review.",
+    "CSV fecha_data dates become midnight timestamps without an assumed timezone.",
+    "The public portal redirects to HTTP; SHA-256 binds retained bytes and VM reconciliation, not authenticated in-transit provenance."
+  ],
+  "normalized_at": "2026-10-12T18:01:04.726919+00:00",
+  "extracted_at": "2026-10-12T18:00:41.955203+00:00",
+  "downloaded_at": "2026-10-12T18:00:41.955203+00:00",
+  "source_url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+  "download_transport": {
+    "downloaded_at": "2026-10-12T18:00:41.955203+00:00",
+    "final_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+    "transport_security": "official_public_http_redirect"
+  },
+  "metadata_final_url": "http://datos.energia.gob.ar/api/3/action/resource_show?id=fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+  "review": {
+    "accepted_periods": [
+      "2026-01-01",
+      "2026-02-01",
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01",
+      "2026-06-01",
+      "2026-07-01",
+      "2026-08-01"
+    ],
+    "vm_reconciliation": [
+      {
+        "period": "2026-01-01",
+        "fluid": "oil",
+        "volume": 18582683.91012241,
+        "rows": 3085
+      },
+      {
+        "period": "2026-01-01",
+        "fluid": "gas",
+        "volume": 2260.617979227331,
+        "rows": 3085
+      },
+      {
+        "period": "2026-02-01",
+        "fluid": "oil",
+        "volume": 16542257.043827973,
+        "rows": 3127
+      },
+      {
+        "period": "2026-02-01",
+        "fluid": "gas",
+        "volume": 2194.107979789633,
+        "rows": 3127
+      },
+      {
+        "period": "2026-03-01",
+        "fluid": "oil",
+        "volume": 18525002.1082581,
+        "rows": 3165
+      },
+      {
+        "period": "2026-03-01",
+        "fluid": "gas",
+        "volume": 2564.071366192378,
+        "rows": 3165
+      },
+      {
+        "period": "2026-04-01",
+        "fluid": "oil",
+        "volume": 18481290.807998978,
+        "rows": 3217
+      },
+      {
+        "period": "2026-04-01",
+        "fluid": "gas",
+        "volume": 2485.1170783152584,
+        "rows": 3217
+      },
+      {
+        "period": "2026-05-01",
+        "fluid": "oil",
+        "volume": 19301580.110595394,
+        "rows": 3281
+      },
+      {
+        "period": "2026-05-01",
+        "fluid": "gas",
+        "volume": 2962.415479296999,
+        "rows": 3281
+      },
+      {
+        "period": "2026-06-01",
+        "fluid": "oil",
+        "volume": 19005257.480213266,
+        "rows": 3322
+      },
+      {
+        "period": "2026-06-01",
+        "fluid": "gas",
+        "volume": 2932.907633160729,
+        "rows": 3322
+      },
+      {
+        "period": "2026-07-01",
+        "fluid": "oil",
+        "volume": 19936569.402626246,
+        "rows": 3369
+      },
+      {
+        "period": "2026-07-01",
+        "fluid": "gas",
+        "volume": 2994.3324092420708,
+        "rows": 3369
+      },
+      {
+        "period": "2026-08-01",
+        "fluid": "oil",
+        "volume": 20763871.222585436,
+        "rows": 3404
+      },
+      {
+        "period": "2026-08-01",
+        "fluid": "gas",
+        "volume": 2958.950899444006,
+        "rows": 3404
+      }
+    ],
+    "source_rows": 663748,
+    "anchor_sha256": "1bf27be1365a1520f757f7b1fa6b936a1fc07fe7f07a0f3e7a831b7bfd21688b",
+    "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+    "excluded_periods": [
+      "2026-09-01"
+    ],
+    "warnings": [
+      {
+        "field": "prod_pet",
+        "raw_value": "-0.000000000000000597557597885158",
+        "idpozo": "135614",
+        "year": "2026",
+        "month": "2",
+        "formation": "ca\u00f1adon seco",
+        "resource_type": "CONVENCIONAL",
+        "scope": "outside_vm_noconv",
+        "action": "preserved_unchanged_nonvm_floating_point_warning"
+      }
+    ],
+    "warning_count": 1,
+    "negative_tolerance_nonvm": 1e-12
+  },
+  "year": 2026
+}

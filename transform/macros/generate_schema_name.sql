@@ -8,8 +8,12 @@
             {{ custom_schema_name }}_cap4_candidate_dev
         {%- elif custom_schema_name is none -%}
             {{ target.schema }}
+        {%- elif custom_schema_name == 'dbt_test__audit' and node.resource_type == 'test' -%}
+            {{ target.schema }}
+        {%- elif node.config.enabled == false -%}
+            {{ target.schema }}
         {%- else -%}
-            {{ exceptions.raise_compiler_error('Candidate target rejects unknown schema') }}
+            {{ exceptions.raise_compiler_error('Candidate target rejects unknown schema: ' ~ custom_schema_name ~ ' / ' ~ node.unique_id) }}
         {%- endif -%}
     {%- else -%}
     {%- set is_prod = target.name == 'prod' -%}

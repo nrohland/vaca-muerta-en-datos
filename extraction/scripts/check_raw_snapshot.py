@@ -42,7 +42,10 @@ def validate_policy(profile, evidence, *, resource_id, year, month, now):
     check(extracted<=oldest<=newest<=now, 'source/load chronology invalid')
     check((now-oldest).total_seconds()<=7*86400, 'snapshot ingestion older than 7 days')
     check((now-extracted).total_seconds()<=7*86400, 'source extraction older than 7 days')
-    return {'status':'fail' if errors else 'pass','errors':errors,'publication_approved':False}
+    warnings = []
+    if profile.get('out_of_scope_roundoff_rows', 0):
+        warnings.append('Preserved tiny negative rounding values outside Vaca Muerta non-conventional scope')
+    return {'status':'fail' if errors else 'pass','errors':errors,'warnings':warnings,'publication_approved':False}
 
 
 def main():
@@ -60,6 +63,8 @@ def main():
     client=bigquery.Client(project=args.project)
     sql=f'''WITH all_rows AS (
  SELECT idpozo,anio,mes,prod_pet,prod_gas,_sdc_batched_at,
+ formacion IS NOT NULL AND tipo_de_recurso IS NOT NULL
+ AND (formacion!='vaca muerta' OR tipo_de_recurso!='NO CONVENCIONAL') AS outside_vm,
  SAFE_CAST(anio AS INT64) year_int,
  SAFE_CAST(anio AS NUMERIC) year_numeric,
  SAFE_CAST(mes AS INT64) month_int,
@@ -79,9 +84,15 @@ SELECT COUNT(*) total_table_rows,
  OR month_numeric!=month_int OR year_int IS NULL OR year_numeric IS NULL OR year_numeric!=year_int
  OR (year_int*12+month_int)>EXTRACT(YEAR FROM CURRENT_DATE('UTC'))*12+EXTRACT(MONTH FROM CURRENT_DATE('UTC'))) invalid_periods,
  COUNTIF(SAFE_CAST(prod_pet AS FLOAT64) IS NULL OR SAFE_CAST(prod_gas AS FLOAT64) IS NULL
- OR SAFE_CAST(prod_pet AS FLOAT64)<0 OR SAFE_CAST(prod_gas AS FLOAT64)<0
+ OR (SAFE_CAST(prod_pet AS FLOAT64)<0
+     AND NOT(outside_vm AND SAFE_CAST(prod_pet AS FLOAT64)>=-1e-12))
+ OR (SAFE_CAST(prod_gas AS FLOAT64)<0
+     AND NOT(outside_vm AND SAFE_CAST(prod_gas AS FLOAT64)>=-1e-12))
  OR IS_NAN(SAFE_CAST(prod_pet AS FLOAT64)) OR IS_INF(SAFE_CAST(prod_pet AS FLOAT64))
  OR IS_NAN(SAFE_CAST(prod_gas AS FLOAT64)) OR IS_INF(SAFE_CAST(prod_gas AS FLOAT64))) invalid_volumes,
+ COUNTIF(outside_vm AND (
+ (SAFE_CAST(prod_pet AS FLOAT64)<0 AND SAFE_CAST(prod_pet AS FLOAT64)>=-1e-12)
+ OR (SAFE_CAST(prod_gas AS FLOAT64)<0 AND SAFE_CAST(prod_gas AS FLOAT64)>=-1e-12))) out_of_scope_roundoff_rows,
  (SELECT COALESCE(SUM(n-1),0) FROM keys WHERE n>1) duplicate_keys FROM all_rows'''
     config=bigquery.QueryJobConfig(dry_run=args.dry_run,use_query_cache=False,maximum_bytes_billed=args.max_bytes,
       query_parameters=[bigquery.ScalarQueryParameter('year','INT64',args.year),bigquery.ScalarQueryParameter('month','INT64',args.month)])

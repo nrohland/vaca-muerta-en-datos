@@ -1,0 +1,170 @@
+{
+  "status": "pass",
+  "files": [
+    {
+      "file": "transform/models/staging/stg_produccion_pozo_mes.yml",
+      "sha256": "954365eaff684f22bd2d5fbc4d80293f8ce5ffcd4050471dcef50a25597967b3"
+    },
+    {
+      "file": "transform/models/staging/stg_produccion_pozo_mes.sql",
+      "sha256": "c82e2239e11bf4c93b02b505974f7e24305cb1c0435a012c059066318c6983bb"
+    },
+    {
+      "file": "transform/models/staging/stg_fracturas_adjunto_iv.sql",
+      "sha256": "54a3b71e15c55d5ee753f3f068aa7bf7aada9341b87ff9058d135d88c695b18e"
+    },
+    {
+      "file": "transform/models/staging/stg_fracturas_adjunto_iv.yml",
+      "sha256": "a2ac04ecd86e2a46b55af1b89b3619caedc0f978c28107ee85e9e6fdf2cf5ad0"
+    },
+    {
+      "file": "transform/models/staging/_sources.yml",
+      "sha256": "476e20fb6f8f5bd843124953dc5570ab236cf07c9ad437a20c46f82b79103721"
+    },
+    {
+      "file": "transform/models/marts/dim_area.yml",
+      "sha256": "75abdbd5cc57b60eaa814ff43eabf80eee176b4e2ab4ca7db4a1ef5d6238d02f"
+    },
+    {
+      "file": "transform/models/marts/fct_completions.yml",
+      "sha256": "5ee9f67d6cfaafe74bb45429d375d6a71b0abaa76ee5e86f910871096053410a"
+    },
+    {
+      "file": "transform/models/marts/fct_completions_month.sql",
+      "sha256": "49b23634e59b986d7853375a33eca521604fffd2769563f9083cf31d8b80403c"
+    },
+    {
+      "file": "transform/models/marts/fct_well_month.yml",
+      "sha256": "b3e710f9f3b0545654baa12b913ce8afb24a2f50733a9f52bb08d8a9f30057c6"
+    },
+    {
+      "file": "transform/models/marts/fct_completions.sql",
+      "sha256": "0c1f41bc37ea6cecb0da64ea0c797b428ff30ebb08f3ad525d4ab7c58676c74a"
+    },
+    {
+      "file": "transform/models/marts/dim_area.sql",
+      "sha256": "0a10351faf8f7785cd9455c6c908a8a79fc1c8bea2927443117b834a4c4cb4ea"
+    },
+    {
+      "file": "transform/models/marts/fct_well_month.sql",
+      "sha256": "818a5504bbc2b5353ae985d0c2c7525a7713d487b48c009af7dcbfce88a5af9b"
+    },
+    {
+      "file": "transform/models/marts/fct_area_month.yml",
+      "sha256": "bf78cb1086184d0839451dbb3c6200019573af8ca8aad775d13c78c11128d91f"
+    },
+    {
+      "file": "transform/models/marts/dim_company.sql",
+      "sha256": "4f13e716e280bac4d298fb708eecc820864a9b1a0dc6c91758f489bdc0552b82"
+    },
+    {
+      "file": "transform/models/marts/fct_company_month.yml",
+      "sha256": "a9be300215c5c094129f7942a1300e1b96c2d25b662e5f9ce86b51672688ceeb"
+    },
+    {
+      "file": "transform/models/marts/fct_production_rate.sql",
+      "sha256": "2ed575196e74ab370e58f7cc8c65b8e5b8bec8b3c7695b59dfb9e516454b224e"
+    },
+    {
+      "file": "transform/models/marts/fct_area_month.sql",
+      "sha256": "0ad5e5726289fae1d436501a6bed572066be9a404a6c96e526dce2e216501785"
+    },
+    {
+      "file": "transform/models/marts/dim_company.yml",
+      "sha256": "a349506d8be15e35e9aaac09b82a774a38b30d1a6b67ab1a5dec440b72c548f0"
+    },
+    {
+      "file": "transform/models/marts/fct_production_rate.yml",
+      "sha256": "b6ca295e1051d9e110f0f3cd13d36c4134be56747173d0fc716e8d50ede108a2"
+    },
+    {
+      "file": "transform/models/marts/fct_company_month.sql",
+      "sha256": "249e4c6f9c21c06ab6af4135e6873eba67e77670d5a70100cd41d3d92e017048"
+    },
+    {
+      "file": "transform/models/intermediate/int_produccion_vm_noconv.yml",
+      "sha256": "8ea8fb0ae145af01ccc21d02d0047233b11a6426ddc8cf292727758f0f4a1192"
+    },
+    {
+      "file": "transform/models/intermediate/int_produccion_vm_noconv.sql",
+      "sha256": "e8f75ea8102d4aa06bbe9e3c9f8c6030a2062e5d4f64444f70eb2bb82ec333a5"
+    },
+    {
+      "file": "transform/models/pricing/_pricing_unit_tests.yml",
+      "sha256": "6fa7bfe2217baea6b9895b0bfd096f17eab71274e627ab53a62f4cef0831d863"
+    },
+    {
+      "file": "transform/models/pricing/fct_reference_valuation_entity_month.sql",
+      "sha256": "1b3c59071ba9a4c8bed800c2ba5be8a24dd35ffb37f7b3e444dad476cd1a602b"
+    },
+    {
+      "file": "transform/models/pricing/fct_reference_valuation_month.sql",
+      "sha256": "51784e3674c2fff43c1c061fe83b7202bbeb4258caa04599129bec3181be401b"
+    },
+    {
+      "file": "transform/models/pricing/stg_monthly_reference_price.sql",
+      "sha256": "b8e9e164fd03b90888c3344abaa1e1943ff07bbc4e337af81caa07a1c56b222a"
+    },
+    {
+      "file": "transform/models/pricing/_pricing.yml",
+      "sha256": "1f5d16e7fe23ad4a62baf885e7102bb7eb0e2c99fa92c94ac26b78a456443703"
+    },
+    {
+      "file": "transform/macros/cap4_days_in_month.sql",
+      "sha256": "61c185b0baf1762adb2ce8d879e1bbaf253700a986f8fa129f7e76dfc772e015"
+    },
+    {
+      "file": "transform/macros/candidate_period_sql.sql",
+      "sha256": "4c8c352f19b5071e77dd90b894a6a51990d1fd6675f5ff663a5a945d5045b485"
+    },
+    {
+      "file": "transform/macros/m3_to_bbl.sql",
+      "sha256": "b935213821991fd08364b1a2b384e04a5b3b70c6765bdd5cf4aa64c243fed9e7"
+    },
+    {
+      "file": "transform/macros/generate_schema_name.sql",
+      "sha256": "ea578e28298bc3fdfec71166b684494c3308b246d435507bf21984825ec00884"
+    },
+    {
+      "file": "transform/tests/assert_company_month_reconciles_to_well_month.sql",
+      "sha256": "1ea58637c4622501777b91a3d6df65b33bacb81329542fe69e7f8c7ac42925f2"
+    },
+    {
+      "file": "transform/tests/assert_idempresa_has_one_empresa_name.sql",
+      "sha256": "fd3dc4a67885d85e9f14e8c81ba9c1e9b8722e75e51059a6a7fd37c2e851f2a8"
+    },
+    {
+      "file": "transform/tests/assert_production_reconciles_to_well_month.sql",
+      "sha256": "0f7da97b79869f3f169594851e15bb200247e4844529a33180db363ab12e67c3"
+    },
+    {
+      "file": "transform/tests/assert_idareapermisoconcesion_has_one_area_name.sql",
+      "sha256": "f7758733a94b18999292ed45d58107a03c8332717e5cbcae473d1085d5f8da0a"
+    },
+    {
+      "file": "transform/tests/candidate_period_is_enforced.sql",
+      "sha256": "fa4a7d3d9d889fba189cb00f6cb8ab707f7f57eb81f319e1a5762cd2ce1ee9bc"
+    },
+    {
+      "file": "transform/tests/assert_area_month_reconciles_to_well_month.sql",
+      "sha256": "f437642984b97b106d596575ad1b305d01c29379fa734bc730eb3ac126b44681"
+    },
+    {
+      "file": "transform/tests/pricing/reference_price_contract.sql",
+      "sha256": "b7b6c496c7e711218aebb8a1d4f5075ea2fc7b34cac4c54056a7518a1fd82362"
+    },
+    {
+      "file": "transform/tests/pricing/reference_entity_reconciliation.sql",
+      "sha256": "3828db0fa3023ad5c07cd2938bdb5afa3cabc6c6b1b3033565cb62a332232e6e"
+    },
+    {
+      "file": "transform/tests/pricing/reference_valuation_contract.sql",
+      "sha256": "c727e1333526f2d9773a07808f20a769a999e13a6670614024317f046c71824f"
+    },
+    {
+      "file": "transform/tests/pricing/reference_required_price.sql",
+      "sha256": "2046339044ce55185866d592d613de92b1588f8ddabcccfa213168864b2fd4b1"
+    }
+  ],
+  "publication_approved": false
+}

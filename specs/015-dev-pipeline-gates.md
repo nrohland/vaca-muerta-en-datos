@@ -1,58 +1,45 @@
-# Gates del pipeline dev
+# Gates del pipeline candidato de desarrollo
 
-Implementación aislada de controles, sin ingesta ni cambios warehouse. Conserva la separación DE/extracción y AE/transformación. Un resultado técnico pass no aprueba publicación, no promueve un corte y no habilita gas USD.
+Estado: implementados, con cargas reales de producción/Brent y fase de transformación validada en BigQuery aislado. Un resultado técnico pass nunca aprueba publicación, cambia el corte de la UI ni habilita gas USD.
+
+## Contrato activo de fuente
+
+`pipeline/run_candidate.py` usa el mismo `StageRunner` localmente y en GitHub. `extract` ejecuta preparación CSV, carga de producción, preparación/carga Brent, gate raw y vínculo de linaje. `transform` valida los JSON de extracción, revalida raw/linaje y ejecuta dbt parse/compile/build. No construye completaciones ni exporta el dashboard. La ruta histórica Meltano/CKAN conserva helpers de preflight, pero no es la fuente activa de este CLI.
+
+Recurso estándar CapIV 2026 `fb7a47a0-cba9-4667-a004-6f6c1c346c23`; corte fijo agosto 2026. CSV descargado/revisado: 663.748 filas, SHA-256 `719a21cae8209d87f4c9a785c478233bdfbdba6a5f4ff3653bce9403e6ebe1fb`. Dieciséis anchors enero–agosto × fluido concilian conteos y volúmenes VM con el snapshot independientemente revisado. Agosto raw 79.576 filas y VM 3.404. Septiembre raw 4.181 y VM 26: parcial, excluido del candidato. No inferir completitud desde conteo exacto, fecha reciente o máximo período.
+
+Una anomalía petrolera microscópica fuera de VM, dentro de `[-1e-12, 0)`, se conserva intacta y se advierte; no se reemplaza por cero. Cualquier negativo en VM no convencional, negativo mayor, NULL, NaN o Inf falla. El umbral es una excepción acotada de calidad raw, no una regla de valorización del producto.
 
 ## Antes de dbt
 
-`extraction/scripts/check_raw_snapshot.py` lee únicamente `produccion_pozo_mes` del dataset explícito. Año, mes y resource ID son obligatorios. Query parametrizada; identificadores validados; caché deshabilitada; presupuesto `maximum_bytes_billed` obligatorio positivo, default 1 GiB. `--dry-run` devuelve estimación y no ejecuta el gate ni concede pass. El rol requiere lectura de tabla y creación de query jobs, no permisos de escritura. No se cambia IAM aquí.
+Evidencia `official_csv_bytes`: recurso/año, hash real de bytes, extracción UTC real, counts anual/mensual, meses técnicamente aceptados y revisión de anchors. Manifest liga schema, digest CSV/NDJSON y tiempos de descarga/normalización; recibo liga job ID, destino, filas y digest. No rejuvenecer un archivo retenido usando una fecha nueva de procesamiento.
 
-La evidencia es un JSON revisado derivado de la descarga exacta del recurso anual:
+`source_csv_pipeline.py load` sólo escribe producción candidata fija con schema explícito y `WRITE_TRUNCATE` atómico. El raw retiene todas las filas del recurso anual, incluido septiembre, con `_source_sha256` por fila y timestamps de ingesta. No recrea el raw histórico multianual. Precios se cargan separadamente en `monthly_reference_price`; no hay transacción atómica de ambas tablas juntas.
 
-- `resource_id`: ID CKAN que coincida con el solicitado.
-- `year`: año solicitado.
-- `source_sha256`: SHA-256 real de bytes CSV (`hash_scope=official_csv_bytes`) o fingerprint de metadatos/esquema/conteos CKAN (`hash_scope=ckan_metadata_counts`, nunca presentado como bytes).
-- `extracted_at`: timestamp ISO con zona.
-- `year_rows`: cantidad total exacta de filas del año en ese snapshot.
-- `month_rows`: objeto período `YYYY-MM-01` → cantidad exacta de filas del mes.
-- `coverage_status`: `reviewed_complete_snapshot`.
-- `accepted_periods`: meses técnicamente revisados como completos, incluyendo el solicitado.
+`check_raw_snapshot.py` consulta la tabla entera, no sólo año/mes seleccionados. Exige total/year counts exactos, cero años ajenos o inválidos, mes requerido con cobertura revisada, claves no nulas, unicidad pozo/año/mes, períodos válidos/no futuros, volúmenes dentro de la política y timestamps presentes. MIN y MAX de ingesta deben quedar entre extracción y hora de validación; extracción y todas las filas tienen antigüedad máxima siete días. Un append de snapshots duplicados no cumple el contrato.
 
-No se genera este archivo con valores por defecto. Contar el recurso no demuestra cierre del mes: la revisión de completitud exige evidencia independiente (declarantes/cobertura, archivo completo, comparación de snapshots). El script nunca acepta el máximo raw automáticamente. Un mes parcial falla aunque su conteo coincida exactamente con la fuente. `accepted_periods` aquí es aceptación técnica de cobertura, no aprobación de promoción por el dueño.
+`verify_loaded_lineage.py` compara SHA declarado por cada fila raw con evidencia, y filas de referencia con snapshot/hash/cutoff/benchmark/moneda/unidad esperados. Exige cantidad total esperada y exactamente un precio del corte. Repetir raw y linaje después de descargar evidencia del job de extracción evita aceptar un candidato reemplazado por otra ejecución. No equivale a comparar cada valor de warehouse con los bytes CSV ni a autenticación criptográfica de HTTP.
 
-Checks: conteo anual y mensual exactos; al menos una fila del mes; unicidad pozo/año/mes; claves no nulas; meses válidos y no futuros; petróleo/gas finitos y no negativos; timestamps de carga presentes, no futuros, posteriores a extracción y con antigüedad máxima de 7 días para todas las filas del año. Se usa MIN además de MAX para no esconder un snapshot viejo detrás de una fila nueva. La extracción también debe estar dentro de 7 días. Esta exigencia implica reload completo del año verificado; no es compatible con append que acumule snapshots duplicados.
+Identificadores fijos/validados, SQL parametrizado, query cache deshabilitada y `maximum_bytes_billed=1 GiB` obligatorio. Dry-run sólo estima y no concede pass. Download ≤1 GiB y filas ≤2 millones son límites separados, no estimación de costo total. El portal oficial redirige CSV/API a HTTP público; sólo host/ruta/recurso exactos, sin credenciales ni cookies y sin redirects a destinos arbitrarios.
 
-Limitación: la tabla raw existente no incluye hash/recurso por fila. Coincidencia de identidad en evidencia + conteos no prueba identidad byte a byte del warehouse. El orquestador debe vincular evidencia inmutable al job de carga; futura tabla de auditoría puede almacenar resource/hash/job ID sin duplicar el tap. Tampoco este gate valida el orden temporal de revisiones de declaraciones. No se descartan rectificativas sin contrato.
+## Precios y transformación
 
-El gate no debe ejecutar `dbt build` completo: `fracturas_adjunto_iv` tiene una extracción separada. Ejecutar sólo modelos de producción seleccionados después de pasar este gate. Completaciones requiere su propio recurso, cobertura/freshness y revisión de join.
+Descarga fresca EIA mensual → parser revisado → NDJSON/manifest con respuesta SHA, filas SHA, retrieval real, fecha de publicación, benchmark USD/bbl y corte → loader candidato → dbt. La referencia cargada tiene 472 meses hasta agosto 2026; agosto 91,08 USD/bbl. No seeds permanentes de cotizaciones dinámicas ni live fetch del browser.
 
-## Después de transformación/export candidato
+Modelos de precios sólo habilitados con target `candidate` y `enable_candidate_pricing=true`. `candidate_period=2026-08-01` restringe producción/marts al mes aceptado, aunque raw contenga septiembre parcial. Selección incluye padres de company/area/headline/valorización y dimensiones company/area. Sin dimensiones, tests de relaciones fallan; no aceptar un subconjunto verde que omita dependencias necesarias.
 
-`transform/scripts/check_candidate.py` es un control separado: release SHA-256 ligado a manifiesto, meses aceptados contiguos, cutoffs coherentes, ambos fluidos en cada mes, sin duplicados, volúmenes finitos/no negativos, cobertura técnica explícita, rankings completos operador/área conciliados con total y cronología extracción/ingesta/generación. No altera ficheros ni estados de aprobación. La falta de precios debe conservar nulos; no se crean precios ni se habilita USD gas.
+Gates de precios: unidad/currency/benchmark válidos, precio finito >0, hash y snapshot coherentes, fechas/corte, unicidad de mes y presencia del precio requerido. Valorización usa mismo mes, convierte petróleo m³→bbl una vez y conserva NULL ante precio/volumen inválidos. Agregados requieren todas las filas disponibles. MoM/YoY usan joins calendario; base cero → porcentaje NULL. YTD exige enero–mes actual completos; un candidato sólo agosto no inventa YTD enero–agosto.
 
-Las advertencias 40 días / errores 70 días de extracción y lag económico 2/3 meses en este checker son propuesta de monitoreo mensual de un artefacto histórico de revisión, no reemplazan el gate post-load de 7 días. Son límites configurables en la función; no se activó freshness dbt global ni schedule. Para producción hay que acordar SLA y alertas por etapa; max batch reciente no equivale a período económico fresco.
+Unit tests prueban missing/invalid price, volumen negativo/cero, huecos de calendario, YTD incompleto y base cero. Tests SQL concilian operador/área/cuenca y coherencia disponibilidad/NULL. Gas PPP Neuquina/TOTAL recién descargado sigue hasta mayo, 4,01 USD/MMBTU; junio–agosto ausentes y base térmica CapIV no acreditada. Gas valorizado permanece NULL, sin forward fill ni sustitutos.
 
-## Modelos que faltan en la entrega auditada
+Cada etapa debe emitir gate nuevo `status=pass`, `publication_approved=false`, perteneciente al run. Fallo de subprocess o gate corta la cadena. Un build con resultados error/skip/warn no cumple aceptación. GitHub preserva sólo JSON reducido siete días; `dbt-summary.json` contiene ID/status/duración, no profiles, raw, logs completos, manifest completo ni credenciales.
 
-La entrega contiene `fct_well_month`, `fct_company_month`, `fct_area_month`, `fct_production_rate` (headline legacy latest raw, petróleo), dims y completaciones. No contiene los modelos de publicación historia × fluido, entidad × historia × fluido, política de períodos aceptados, grouping comercial trazable y rankings/contribuciones exportados a `release.json`. Los 88 totales y 8.936 entidades del frontend provienen de ejecución anterior de ramas #25–31, no de reconstruir esta entrega legacy. No usar `fct_production_rate` para decidir corte cuando raw tiene septiembre parcial.
+## Publicación y lo pendiente
 
-Por tanto dbt legacy pass no autoriza generación de un release nuevo equivalente al dashboard. Integrar los modelos de publicación originales y sus seeds/tests mediante comparación de contrato antes de exportar. Gas monetario permanece fuera hasta cierre de precio por mes y contrato térmico.
+La autenticación WIF está configurada por etapa/dataset sin claves nuevas; `DATA_PIPELINE_ENABLED=false` y prueba desde runner real pendiente. Schedule preparado día 5 a las 03:00 Argentina, sin merge ni activación. El código candidato no exporta ni promueve.
 
-## Verificación local
+El frontend conserva snapshot anterior multianual y valorización TypeScript. Los modelos originales historia × fluido/entidad, grouping comercial, política de meses aceptados y exportadores requieren integración/conciliación. `check_candidate.py` conserva gates de hash, cobertura, rankings completos, cronología y NULL, pero un build del candidato agosto no demuestra reconstrucción equivalente del dashboard. Completaciones y relación operador–área requieren contratos independientes. Cierre integrado queda para después de la validación real completa.
 
-18 tests offline: 10 de policy raw, 5 del preflight CKAN y 3 del candidato. Los raw cubren: happy path sin aprobación, parcial con counts exactos, diferencias de conteos, snapshot viejo oculto por max nuevo, duplicados/volúmenes/fechas/claves inválidas, load futuro/recurso distinto y timestamp sin zona. No se ejecutó BigQuery, ingesta o build dbt. La consulta debe dry-runarse contra el esquema real antes de conectar el workflow.
+## Resultado real verificado
 
-
-## Preflight CKAN anual (para workflow Meltano)
-
-Antes de extracción: `check_ckan_snapshot.py --resource-id ID --year YEAR --month MONTH --evidence REVIEWED.json --output BEFORE.json`. El archivo de revisión debe tener hash scope CKAN y fingerprint/cuentas/mes aceptado ya revisados; no reutilizar evidencia CSV o del snapshot UI. Sin esa revisión, falla cerrado.
-
-Después de carga: mismos argumentos agregando `--before BEFORE.json --output AFTER.json`. Exige resource total = conteo del año, campos esenciales, conteo mensual exacto, esquema y metadata sin cambios antes/después y respecto de revisión. Es observación acotada `limit=0`, no extracción de filas.
-
-Raw: `check_raw_snapshot.py --project PROJECT --dataset raw_cap4_candidate_dev --resource-id ID --year YEAR --month MONTH --evidence REVIEWED.json --observation BEFORE.json --max-bytes BUDGET`. Usar BEFORE para cronología: AFTER se tomó después del load. Dry run sólo estima; ejecutar gate para pass real. Fresh observation supplies extraction timestamp, while reviewed evidence keeps immutable accepted coverage and source fingerprint. Cambios de metadata sin cambio de conteo también requieren revisión; opción conservadora para evitar aceptar revisiones inadvertidas.
-
-Build seleccionado por el coordinador: `+fct_company_month +fct_area_month +fct_production_rate`, sin fracturas. Estos modelos legacy no son modelos de publicación nuevos. No activar exportación final del dashboard mientras faltan sus modelos de historia/fluido y aceptación.
-
-
-## Corrección QA: toda la tabla raw
-
-El gate ya no filtra año antes de inspeccionar: CTE `all_rows` sin WHERE incluye todas las filas. Emite `total_table_rows`, `year_rows`, `outside_year_rows` y `invalid_year_rows`. Exige tabla total igual al snapshot anual exacto y al subconjunto solicitado, cero años ajenos y cero años nulos/malformados/fraccionales/futuros. Los controles de volumen, claves, períodos, duplicados y timestamps también cubren la tabla entera. El presupuesto de escaneo sigue vigente. Tres tests de regresión prueban que counts seleccionados correctos no esconden filas ajenas, que el bucket de año inválido falla y que un total correcto no sustituye el scope anual.
+El CLI compartido `all` pasó 12 etapas reales, desde descarga hasta build. dbt completó 83 nodos: 8 tablas, 3 vistas, 66 tests de datos, 6 unit tests; cero errores/warnings/skips. Las conciliaciones pasaron y 75 pruebas offline están aprobadas. Modelos/macros/tests ejecutados tienen paridad con el árbol integrado. Preparación, carga y transformación se repitieron como una sola ejecución completa. La autenticación desde GitHub sigue pendiente. Los gates endurecidos de linaje y artefactos se repitieron sobre el candidato real y pasaron; no reemplazan la evidencia fechada del build. Ver [orquestación](../docs/evidence/orchestration/README.md).

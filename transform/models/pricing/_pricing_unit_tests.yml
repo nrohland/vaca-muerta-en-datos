@@ -1,0 +1,60 @@
+version: 2
+unit_tests:
+  - name: oil_same_month_missing_and_invalid_are_null
+    model: fct_reference_valuation_month
+    config:
+      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
+    given:
+      - input: ref('fct_well_month')
+        rows:
+          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: 10}
+          - {well_month_id: b, idpozo: 2, idempresa: A, idareapermisoconcesion: X, periodo: '2026-02-01', prod_pet_m3: 10}
+          - {well_month_id: c, idpozo: 3, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: -1}
+          - {well_month_id: d, idpozo: 4, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: 0}
+          - {well_month_id: e, idpozo: 5, idempresa: A, idareapermisoconcesion: X, periodo: '2026-03-01', prod_pet_m3: 10}
+      - input: ref('stg_monthly_reference_price')
+        rows:
+          - {product: oil, periodo: '2026-01-01', benchmark: EIA_BRENT_MONTHLY, price: 80, price_valid: true, snapshot_id: fixture, source_sha256: fixture, retrieved_at: '2026-10-12 12:00:00', source_updated_at: '2026-10-07', accepted_cutoff: '2026-08-01'}
+          - {product: oil, periodo: '2026-03-01', benchmark: EIA_BRENT_MONTHLY, price: 0, price_valid: false, snapshot_id: fixture, source_sha256: fixture, retrieved_at: '2026-10-12 12:00:00', source_updated_at: '2026-10-07', accepted_cutoff: '2026-08-01'}
+    # Native FLOAT64 product; independent reconciliation uses relative tolerance.
+    expect:
+      rows:
+        - {well_month_id: a, oil_reference_value_usd: 5031.848615999999, oil_valuation_available: true, oil_valuation_status: available, gas_valuation_available: false, gas_reference_value_usd: null}
+        - {well_month_id: b, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: missing_price, gas_valuation_available: false, gas_reference_value_usd: null}
+        - {well_month_id: c, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: invalid_volume, gas_valuation_available: false, gas_reference_value_usd: null}
+        - {well_month_id: d, oil_reference_value_usd: 0, oil_valuation_available: true, oil_valuation_status: available, gas_valuation_available: false, gas_reference_value_usd: null}
+        - {well_month_id: e, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: invalid_price, gas_valuation_available: false, gas_reference_value_usd: null}
+  - name: calendar_gap_and_incomplete_ytd_are_null
+    model: fct_reference_valuation_entity_month
+    config:
+      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
+    given:
+      - input: ref('fct_reference_valuation_month')
+        rows:
+          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', oil_volume_bbl: 1, oil_reference_value_usd: 80, oil_valuation_available: true, reference_price_usd_per_bbl: 80, snapshot_id: fixture}
+          - {well_month_id: b, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-03-01', oil_volume_bbl: 1, oil_reference_value_usd: 90, oil_valuation_available: true, reference_price_usd_per_bbl: 90, snapshot_id: fixture}
+    expect:
+      rows:
+        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
+        - {entity_type: company, entity_id: A, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
+        - {entity_type: area, entity_id: X, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
+        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
+        - {entity_type: company, entity_id: A, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
+        - {entity_type: area, entity_id: X, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
+  - name: zero_comparison_base_stays_null_with_complete_ytd
+    model: fct_reference_valuation_entity_month
+    config:
+      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
+    given:
+      - input: ref('fct_reference_valuation_month')
+        rows:
+          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', oil_volume_bbl: 0, oil_reference_value_usd: 0, oil_valuation_available: true, reference_price_usd_per_bbl: 80, snapshot_id: fixture}
+          - {well_month_id: b, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-02-01', oil_volume_bbl: 1, oil_reference_value_usd: 90, oil_valuation_available: true, reference_price_usd_per_bbl: 90, snapshot_id: fixture}
+    expect:
+      rows:
+        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
+        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}
+        - {entity_type: company, entity_id: A, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
+        - {entity_type: company, entity_id: A, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}
+        - {entity_type: area, entity_id: X, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
+        - {entity_type: area, entity_id: X, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}

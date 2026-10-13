@@ -72,7 +72,7 @@ La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, co
 
 La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** detección/aviso de nuevos meses, promoción del snapshot, hosting y operación pública. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
+**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** promoción del snapshot, hosting y operación pública. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas; sus avisos no certifican cierre oficial. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
 
 ## Ejecutar la aplicación
 
@@ -110,3 +110,5 @@ Para navegador, instalar Chromium con `npx playwright install chromium`. Para ca
 Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muerta-pulse`. [Contribución y seguridad](AGENTS.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
+
+El monitor de disponibilidad y rectificativas es independiente: revisiones diarias, histórico completo semanal y avisos deduplicados mediante Issues asignadas al propietario. `SOURCE_MONITOR_ENABLED` controla este calendario sin activar las cargas de `DATA_PIPELINE_ENABLED`. [Criterios, fallos y operación](pipeline/MONITOR.md).

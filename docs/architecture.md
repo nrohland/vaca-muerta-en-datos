@@ -65,6 +65,8 @@ Los gates distinguen mes de negocio, recuperación real, ingesta y generación d
 
 Cargas aisladas atómicas por tabla, no transacción conjunta producción/precios. El bundle se escribe en staging temporal y se mueve completo; un fallo no modifica el snapshot del repo. [Recorrido ejecutable](../pipeline/CLI.md) y [evidencia de integración](evidence/orchestration-export/README.md).
 
-El recorrido real de GitHub/WIF está [validado](evidence/github-actions/README.md). Antes de operar públicamente faltan detección de nuevos meses, promoción y activación autorizadas, responsables de atención a fallos y decisión de hosting. El código y la validación local no sustituyen esos pasos. No se habilitó facturación, cron o despliegue.
+El recorrido real de GitHub/WIF está [validado](evidence/github-actions/README.md). Antes de operar públicamente faltan promoción y activación autorizadas, responsables de atención a fallos y decisión de hosting. El código y la validación local no sustituyen esos pasos. No se habilitó facturación, cron o despliegue.
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
+
+El [monitor](../pipeline/MONITOR.md) observa producción/precios sin warehouse ni WIF. Separa estado observado de datos aceptados, conserva fingerprints agregados y avisa mediante Issues deduplicadas. Cadencia diaria, lectura histórica completa semanal y al finalizar ingesta. Señales de cobertura/estabilidad habilitan revisión; no prueban cierre oficial ni publican snapshots.

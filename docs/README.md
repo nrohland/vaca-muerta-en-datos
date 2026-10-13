@@ -6,6 +6,7 @@
 | [ADRs](adrs/README.md) | Motivos y compromisos técnicos |
 | [Linaje dbt](lineage/README.md) | Grafo generado y procedencia |
 | [Capturas V1](screenshots/README.md) | Las cinco vistas desktop/mobile |
+| [GitHub y seguridad](evidence/github-actions/README.md) | Recorrido cloud real y revisión de credenciales |
 | [Ejecución integrada](evidence/orchestration-export/README.md) | dbt, export, consumidor y límites |
 | [Revisión frontend](evidence/snapshot-integration/README.md) | Cálculos, navegación y capturas |
 | [Fuente histórica](evidence/historical-source/README.md) | Cobertura y rectificativas |

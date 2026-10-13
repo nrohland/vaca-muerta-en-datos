@@ -6,7 +6,7 @@ Pensado para analistas, equipos de energía y periodistas. Como portfolio, muest
 
 ![Resumen de Vaca Muerta en Datos](docs/screenshots/resumen.jpg)
 
-**Estado:** V1 integrada y validada localmente, con 44 meses de enero de 2023 a agosto de 2026. Versión preliminar sin promoción pública aprobada. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
+**Estado:** V1 integrada y validada localmente y en GitHub, con 44 meses de enero de 2023 a agosto de 2026. Versión preliminar sin promoción pública aprobada. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
 
 ## Qué preguntas responde
 
@@ -72,7 +72,7 @@ La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, co
 
 La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-**Límites pendientes:** comprobar GitHub/WIF en un runner real después de promoción autorizada; definir hosting y operación pública. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
+**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** detección/aviso de nuevos meses, promoción del snapshot, hosting y operación pública. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
 
 ## Ejecutar la aplicación
 

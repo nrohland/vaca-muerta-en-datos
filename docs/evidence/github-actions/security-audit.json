@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-13",
+  "main_commit": "7dbc1d98c33f3e68c6bb786c19f2c6b871097032",
+  "scanner": "gitleaks 8.30.1 official checksum verified",
+  "reachable_commits": 132,
+  "current_tree_findings": 0,
+  "historical_candidates": 2,
+  "historical_confirmed_secrets": 0,
+  "historical_false_positive_reason": "Google API enum values privateKeyType/keyAlgorithm; no credential material",
+  "completed_run_logs_scanned": 39,
+  "unavailable_logs": [],
+  "log_findings": 0,
+  "extraction_artifact_findings": 0,
+  "github_secret_alerts": 0,
+  "github_secret_scanning": "enabled",
+  "github_push_protection": "enabled",
+  "current_pipeline_final_logs_artifacts": "scanned; no findings",
+  "pipeline_artifacts_findings": 0
+}

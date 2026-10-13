@@ -1,6 +1,6 @@
 # ADR 0006 — Pipeline candidato aislado
 
-**Estado:** implementado y validado localmente; runner GitHub pendiente.
+**Estado:** implementado y validado localmente y en GitHub.
 
 ## Contexto
 
@@ -20,4 +20,4 @@ El export lee marts, reconstruye cotizaciones desde la misma carga y liga manifi
 
 Aislamiento permite validar sin reemplazar datasets compartidos. Preparación pública precede WIF; uploads sólo metadata JSON sanitizada. Sin cambios IAM, push, promoción o despliegue implícitos. El recorrido integrado local pasó nueve etapas y 106/106 nodos dbt limpios; reutilizó carga fresca aceptada, no una nueva descarga/ingesta. [Evidencia](../evidence/orchestration-export/README.md).
 
-Antes de operación pública falta comprobar WIF y el pipeline en runner GitHub tras promoción autorizada. No ampliar permisos ni confianza de rama para simular la prueba.
+WIF y el pipeline pasaron en [runner GitHub real](../evidence/github-actions/README.md). Antes de operación pública faltan detección/aceptación de nuevos meses, promoción de snapshots y hosting. No ampliar permisos ni confianza de rama para simular la prueba.

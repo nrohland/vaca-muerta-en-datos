@@ -18,7 +18,7 @@ flowchart LR
   CHECK --> WEB["Next.js · componentes React/Recharts"]
 ```
 
-El CLI encadena transformación histórica, export y validación del contrato frontend. GitHub tiene preparación pública antes de WIF, identidades de carga/dbt separadas y tests/build del consumidor; permanece desactivado. La promoción pública es una decisión independiente, no una etapa implícita de construcción.
+El CLI encadena transformación histórica, export y validación del contrato frontend. GitHub tiene preparación pública antes de WIF, identidades de carga/dbt separadas y tests/build del consumidor; su calendario permanece desactivado. La promoción pública es una decisión independiente, no una etapa implícita de construcción.
 
 ## Capas y motivos
 
@@ -65,6 +65,6 @@ Los gates distinguen mes de negocio, recuperación real, ingesta y generación d
 
 Cargas aisladas atómicas por tabla, no transacción conjunta producción/precios. El bundle se escribe en staging temporal y se mueve completo; un fallo no modifica el snapshot del repo. [Recorrido ejecutable](../pipeline/CLI.md) y [evidencia de integración](evidence/orchestration-export/README.md).
 
-Antes de operar públicamente falta la ejecución real de GitHub/WIF, promoción y activación autorizadas, responsables de atención a fallos y decisión de hosting. El código y la validación local no sustituyen esos pasos. No se habilitó facturación, cron o despliegue.
+El recorrido real de GitHub/WIF está [validado](evidence/github-actions/README.md). Antes de operar públicamente faltan detección de nuevos meses, promoción y activación autorizadas, responsables de atención a fallos y decisión de hosting. El código y la validación local no sustituyen esos pasos. No se habilitó facturación, cron o despliegue.
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.

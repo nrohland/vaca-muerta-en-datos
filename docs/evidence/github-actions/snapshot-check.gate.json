@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "publication_approved": false,
+  "data_sha256": "1733f539eea0f45a150c7d9ca9dd872249b7a7f59e60f0e3a783f0a6bf8ce6a6",
+  "months": 44,
+  "production_rows": 88,
+  "entity_rows": 10208,
+  "prices_sha256": "324fe9f5c395a873eb8fb32385b5b916624414665346fbcf3ee0021a72dca2a7"
+}

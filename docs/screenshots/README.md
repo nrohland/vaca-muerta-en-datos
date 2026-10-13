@@ -31,4 +31,3 @@ Snapshot histórico revisado: enero 2023–agosto 2026. Desktop ES/claro y mobil
 ![actividad desktop](actividad.jpg)
 
 ![actividad mobile](actividad-mobile.jpg)
-

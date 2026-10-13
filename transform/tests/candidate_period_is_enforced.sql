@@ -8,7 +8,7 @@ with headline as (
 )
 select 'unexpected_well_month' as error
 from {{ ref('fct_well_month') }}
-where periodo != {{ candidate_period_sql() }} or periodo is null
+where periodo not between {{ candidate_start_period_sql() }} and {{ candidate_period_sql() }} or periodo is null
 union all
 select 'headline_missing_or_wrong_period'
 from headline

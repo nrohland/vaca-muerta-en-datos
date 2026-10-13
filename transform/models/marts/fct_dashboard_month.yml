@@ -1,0 +1,46 @@
+version: 2
+models:
+  - name: fct_dashboard_month
+    description: >-
+      Candidate dashboard at fluid/dimension/entity/month grain. Calendar MoM/YoY,
+      complete YTD, commercial operator presentation and estimated reference USD
+      are persisted here. Gas uses the documented Henry Hub energy scenario.
+      Technical coverage is separate from owner approval to publish.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [fluid, dimension, entity_id, periodo]
+    columns:
+      - name: fluid
+        description: oil or gas; wells producing both are counted separately by fluid.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [oil, gas]
+      - name: dimension
+        description: Basin, reviewed commercial company, or declared concession area.
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [basin, company, area]
+      - name: entity_id
+        description: Stable entity identifier; missing declarations use an explicit sentinel.
+        data_tests: [not_null]
+      - name: periodo
+        description: First day of an explicitly accepted calendar month.
+        data_tests: [not_null]
+      - name: volume
+        description: Physical monthly volume; bbl for oil and million m3 for gas.
+        data_tests: [not_null]
+      - name: rate
+        description: Monthly volume divided by calendar days; not operating-day productivity.
+      - name: estimated_value_usd
+        description: Same-month reference valuation; NULL if inputs are unavailable.
+      - name: estimated_ytd_value_usd
+        description: January through selected month USD only when every month is present and valid.
+      - name: energy_basis
+        description: Versioned gas energy reference scenario; not measured Argentine calorific value.
+      - name: positive_producing_wells
+        description: Distinct wells with strictly positive production for the chosen fluid.

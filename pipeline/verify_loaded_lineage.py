@@ -51,10 +51,22 @@ def verify(directory):
     source = json.loads((directory/'source-evidence.json').read_text())
     price = json.loads((directory/'price-manifest.json').read_text())
     products = validate_price_manifest(price)
+    historical = source.get('schema_version') == 2
+    if historical:
+        from check_raw_history import check_artifact
+        check_artifact(source)
     if not re.fullmatch('[a-f0-9]{64}', source['source_sha256']):
         raise ValueError('Reviewed content fingerprint required')
     parameters = [bigquery.ScalarQueryParameter('source_sha', 'STRING', source['source_sha256']),
                   bigquery.ScalarQueryParameter('cutoff', 'DATE', price['cutoff'])]
+    source_valid = '_source_sha256 = @source_sha'
+    if historical:
+        source_clauses = []
+        for value in source['sources']:
+            year = value['year']
+            parameters.append(bigquery.ScalarQueryParameter('source_'+str(year), 'STRING', value['source_sha256']))
+            source_clauses.append(f'(anio = {year} AND _source_sha256 = @source_{year})')
+        source_valid = ' OR '.join(source_clauses)
     clauses = []
     for product, (benchmark, unit, url, basis) in REFERENCES.items():
         meta = products[product]
@@ -67,7 +79,7 @@ def verify(directory):
         clauses.append(f"(product = '{product}' AND benchmark = '{benchmark}' AND UPPER(price_unit) = '{unit.upper()}' AND {energy} AND source_sha256 = @{product}_sha AND snapshot_id = @{product}_sha AND source_url = @{product}_url AND source_updated_at = @{product}_updated AND retrieved_at = @{product}_retrieved)")
     valid_reference = ' OR '.join(clauses)
     sql = """WITH source AS (
-      SELECT COUNT(*) n, COUNTIF(_source_sha256 IS NULL OR _source_sha256 != @source_sha) mismatched
+      SELECT COUNT(*) n, COUNTIF(NOT COALESCE((""" + source_valid + """), FALSE)) mismatched
       FROM `vaca-muerta-pulse.raw_cap4_candidate_dev.produccion_pozo_mes`
     ), price AS (
       SELECT COUNT(*) n,
@@ -89,7 +101,7 @@ def verify(directory):
     job = client.query(sql, job_config=bigquery.QueryJobConfig(maximum_bytes_billed=1024**3,
                        use_query_cache=False, query_parameters=parameters))
     row = dict(next(iter(job.result(timeout=120))))
-    passed = (row['source_rows'] == source['year_rows'] and row['price_rows'] == price['row_count']
+    passed = (row['source_rows'] == (source['total_rows'] if historical else source['year_rows']) and row['price_rows'] == price['row_count']
               and row['source_mismatched_rows'] == 0 and row['price_mismatched_rows'] == 0
               and row['oil_rows'] == products['oil']['row_count']
               and row['gas_rows'] == products['gas']['row_count']

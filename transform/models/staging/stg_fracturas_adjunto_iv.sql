@@ -1,3 +1,4 @@
+{{ config(enabled=target.name != 'candidate' or var('enable_completions', false)) }}
 {{ config(materialized="view", tags=["staging", "adjunto_iv"]) }}
 {# Adjunto IV jobs. Pulse filter mirrors production: Vaca Muerta + no convencional.
    Business event date = fecha_inicio_fractura. Source anio/mes/periodo may be

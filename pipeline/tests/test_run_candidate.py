@@ -45,8 +45,19 @@ class CandidateCLITests(unittest.TestCase):
 
     def test_transform_never_plans_a_load_or_download(self):
         stages=candidate.plan(self.args())
-        self.assertEqual([s.name for s in stages],['artifact-check','raw-revalidate','loaded-revalidate','dbt-parse','dbt-compile','dbt-build'])
+        self.assertEqual([s.name for s in stages],['artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build'])
         self.assertTrue(all(s.environment['DBT_RAW_DATASET']==candidate.DATASET for s in stages))
+
+    def test_history_stage_argument_survives_every_subprocess(self):
+        args=self.args('all');args.history=True;args.source_inbound=self.path/'inbound'
+        stages=candidate.plan(args)
+        self.assertTrue(all('--history' in s.argv for s in stages))
+        self.assertTrue(all('--source-inbound' in s.argv for s in stages))
+
+    def test_single_annual_artifact_is_not_accepted_as_history(self):
+        path=self.artifacts()
+        with self.assertRaises((ValueError, KeyError)):
+            candidate.assert_extract_artifact(path,history=True)
 
     def test_extract_never_plans_dbt(self):
         stages=candidate.plan(self.args('extract'))
@@ -93,6 +104,15 @@ class CandidateCLITests(unittest.TestCase):
         self.assertIn('maximum_bytes_billed: 1073741824',profile)
         self.assertIn('target: candidate',profile)
         self.assertNotIn('keyfile',profile);self.assertNotIn('service-account',profile)
+
+    def test_freshness_stage_rejects_warnings(self):
+        args=self.args();args.stage='dbt-source-freshness';args.run_dir.mkdir()
+        target=args.run_dir/'dbt-target';target.mkdir()
+        (target/'sources.json').write_text(json.dumps({'results':[{'status':'pass'},{'status':'warn'}]}))
+        with patch.object(candidate.subprocess,'run',return_value=subprocess.CompletedProcess([],0)) as process:
+            with self.assertRaisesRegex(ValueError,'freshness must pass'):
+                candidate.execute_stage(args)
+            self.assertEqual(process.call_args.args[0][1:3],['source','freshness'])
 
     def test_dbt_build_enables_prices_and_rejects_skipped_results(self):
         args=self.args();args.stage='dbt-build';args.run_dir.mkdir();target=args.run_dir/'dbt-target';target.mkdir()

@@ -148,3 +148,9 @@ Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026; auto
 La referencia activa de gas es Henry Hub internacional. Se ingieren 356 meses hasta agosto, junto con 472 de Brent, con metadatos y hashes por fuente. La equivalencia energética es un supuesto versionado EIA, explicitado en la UI; no una medición de gas argentino. [Metodología](specs/017-international-gas-reference.md). La evidencia anterior de gas indisponible corresponde a la fase previa a esta decisión.
 
 Validación posterior con gas: 88 nodos dbt (11 modelos, 67 tests de datos, 10 unit tests), conciliación independiente y paridad del total de agosto con la UI. [Resultados y capturas](docs/evidence/gas-reference/README.md).
+
+### Histórico y calidad de dbt validados
+
+El 13 de octubre se validó el rango candidato enero 2023–agosto 2026: 106 nodos distintos aprobados entre build, reparación focalizada y tests de claves. Freshness pasó para producción y precios. `audit_helper` confirmó 112.506 filas físicas coincidentes y 24 incorporaciones explicadas por la clasificación oficial del pozo documentado. `dbt_project_evaluator` se ejecuta localmente sobre metadata: 75 resultados aprobados, tres advertencias de estructura/fanout y cero errores. Los reportes de rendimiento usan tiempos, bytes y slot-ms reales del adaptador BigQuery.
+
+[Resultados y límites](docs/evidence/historical-dbt/README.md), [operación de herramientas](transform/docs/quality-and-performance.md). El snapshot del frontend todavía no fue reemplazado; export, consumidor y QA integrado son la siguiente etapa. No se activó facturación ni automatización.

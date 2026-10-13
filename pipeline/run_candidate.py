@@ -50,23 +50,38 @@ def run_json(argv, cwd):
     raise ValueError('Helper did not return a JSON object')
 
 
-def assert_extract_artifact(directory):
+def assert_extract_artifact(directory, history=False):
     evidence = load_json(directory/'source-evidence.json')
     manifest = load_json(directory/'source-manifest.json')
     receipt = load_json(directory/'source-load.json')
     price = load_json(directory/'price-manifest.json')
     price_receipt = load_json(directory/'price-load.json')
-    if (evidence.get('resource_id') != RESOURCE or evidence.get('year') != 2026
-        or evidence.get('hash_scope') != 'official_csv_bytes'
-        or evidence.get('coverage_status') != 'reviewed_complete_snapshot'
-        or evidence.get('accepted_periods') != [f'2026-{m:02d}-01' for m in range(1,9)]
-        or manifest.get('status') != 'pass' or receipt.get('status') != 'pass'
-        or receipt.get('source_sha256') != evidence.get('source_sha256')
-        or manifest.get('sha256_csv') != evidence.get('source_sha256')
-        or receipt.get('rows') != evidence.get('year_rows')
-        or receipt.get('destination') != f'{PROJECT}.{DATASET}.produccion_pozo_mes'
-        or receipt.get('publication_approved') is not False):
-        raise ValueError('Extraction artifact source lineage differs')
+    if history:
+        from check_raw_history import check_artifact
+        check_artifact(evidence)
+        expected_hashes = {str(v['year']):v['source_sha256'] for v in evidence['sources']}
+        if (manifest.get('status') != 'pass' or manifest.get('schema_version') != 2
+            or manifest.get('source_hashes') != expected_hashes
+            or manifest.get('source_sha256') != evidence['source_sha256']
+            or receipt.get('status') != 'pass' or receipt.get('source_sha256') != evidence['source_sha256']
+            or receipt.get('source_hashes') != expected_hashes
+            or receipt.get('rows') != evidence['total_rows']
+            or not receipt.get('job_id')
+            or receipt.get('destination') != f'{PROJECT}.{DATASET}.produccion_pozo_mes'
+            or receipt.get('publication_approved') is not False):
+            raise ValueError('Historical extraction artifact source lineage differs')
+    else:
+        if (evidence.get('resource_id') != RESOURCE or evidence.get('year') != 2026
+            or evidence.get('hash_scope') != 'official_csv_bytes'
+            or evidence.get('coverage_status') != 'reviewed_complete_snapshot'
+            or evidence.get('accepted_periods') != [f'2026-{m:02d}-01' for m in range(1,9)]
+            or manifest.get('status') != 'pass' or receipt.get('status') != 'pass'
+            or receipt.get('source_sha256') != evidence.get('source_sha256')
+            or manifest.get('sha256_csv') != evidence.get('source_sha256')
+            or receipt.get('rows') != evidence.get('year_rows')
+            or receipt.get('destination') != f'{PROJECT}.{DATASET}.produccion_pozo_mes'
+            or receipt.get('publication_approved') is not False):
+            raise ValueError('Extraction artifact source lineage differs')
     products = validate_price_manifest(price)
     if (price_receipt.get('table') != f'{PROJECT}.{DATASET}.monthly_reference_price'
         or price_receipt.get('rows') != price['row_count']
@@ -115,8 +130,17 @@ def execute_stage(args):
     contract = root/'extraction/contracts/production_csv.json'
     python = args.python
     report = {}
+    history = getattr(args, 'history', False)
     if args.stage == 'source-prepare':
-        report = run_json([python,str(root/'extraction/scripts/source_csv_pipeline.py'),'prepare',
+        if history:
+            argv = [python,str(root/'extraction/scripts/source_history_pipeline.py'),'prepare',
+                '--contract',str(contract),'--anchor-release',str(root/'docs/evidence/historical-source/physical-anchors.json'),
+                '--output',str(candidate)]
+            if getattr(args, 'source_inbound', None):
+                argv += ['--inbound',str(args.source_inbound.resolve())]
+            report = run_json(argv,root)
+        else:
+            report = run_json([python,str(root/'extraction/scripts/source_csv_pipeline.py'),'prepare',
             '--resource-id',RESOURCE,'--year','2026','--month','8','--contract',str(contract),
             '--anchor-release',str(root/'apps/web/public/data/release.json'),'--output',str(candidate)],root)
         if report.get('status') != 'pass' or report.get('publication_approved') is not False:
@@ -124,7 +148,7 @@ def execute_stage(args):
         write_report(out/'source-evidence.json',load_json(candidate/'evidence.json'))
         write_report(out/'source-manifest.json',load_json(candidate/'manifest.json'))
     elif args.stage == 'source-load':
-        report = run_json([python,str(root/'extraction/scripts/source_csv_pipeline.py'),'load',
+        report = run_json([python,str(root/('extraction/scripts/source_history_pipeline.py' if history else 'extraction/scripts/source_csv_pipeline.py')),'load',
             '--project',PROJECT,'--dataset',DATASET,'--candidate',str(candidate),'--contract',str(contract)],root)
         if report.get('status') != 'pass' or report.get('publication_approved') is not False:
             raise ValueError('Source load gate rejected')
@@ -172,14 +196,17 @@ def execute_stage(args):
         write_report(out/'price-load.json',receipt)
         report = normalized_report(receipt)
     elif args.stage == 'artifact-check':
-        assert_extract_artifact(artifact)
+        assert_extract_artifact(artifact, history=history)
         # Only reviewed metadata crosses runner boundaries, never raw data.
         for name in ('source-evidence','source-manifest','source-load','price-manifest','price-load'):
             write_report(out/f'{name}.json',load_json(artifact/f'{name}.json'))
         configure_profile(out)
         report = normalized_report({'phase':'transform','candidate_period':CUTOFF})
     elif args.stage in ('raw-gate','raw-revalidate'):
-        report = run_json([python,str(root/'extraction/scripts/check_raw_snapshot.py'),
+        if history:
+            report = run_json([python,str(root/'pipeline/check_raw_history.py'),'--artifact',str(out)],root)
+        else:
+            report = run_json([python,str(root/'extraction/scripts/check_raw_snapshot.py'),
             '--project',PROJECT,'--dataset',DATASET,'--resource-id',RESOURCE,'--year','2026','--month','8',
             '--evidence',str(out/'source-evidence.json'),'--max-bytes',str(BUDGET)],root)
         if report.get('status') != 'pass' or report.get('publication_approved') is not False:
@@ -192,20 +219,37 @@ def execute_stage(args):
     elif args.stage.startswith('dbt-'):
         action = args.stage.removeprefix('dbt-')
         project = args.dbt_project_dir.resolve() if args.dbt_project_dir else root/'transform'
-        argv = [args.dbt_bin,action,'--project-dir',str(project),'--profiles-dir',str(out/'profiles'),
+        command = ['source','freshness'] if action == 'source-freshness' else [action]
+        argv = [args.dbt_bin,*command,'--project-dir',str(project),'--profiles-dir',str(out/'profiles'),
                 '--target','candidate','--target-path',str(out/'dbt-target'),'--log-path',str(out/'dbt-logs'),
-                '--vars',json.dumps({'candidate_period':CUTOFF,'enable_candidate_pricing':True})]
+                '--vars',json.dumps({'candidate_period':CUTOFF,'enable_candidate_pricing':True,
+                    **({'candidate_start_period':'2023-01-01','enable_dashboard_export':True} if history else {})})]
+        if action == 'source-freshness':
+            argv += ['--select','source:raw_cap4.produccion_pozo_mes','source:candidate_pricing.monthly_reference_price']
         if action in ('compile','build'):
-            argv += ['--select',*SELECTION]
+            argv += ['--select',*SELECTION,*(['+fct_dashboard_month'] if history else [])]
         result = subprocess.run(argv,cwd=project,check=False)
         if result.returncode:
             raise ValueError('dbt stage failed')
+        if action == 'source-freshness':
+            freshness = load_json(out/'dbt-target/sources.json')
+            if len(freshness.get('results',[])) != 2 or any(r['status'] != 'pass' for r in freshness['results']):
+                raise ValueError('dbt source freshness must pass for both production and prices')
+            write_report(out/'source-freshness.json',normalized_report({'results':[{k:r.get(k) for k in ('unique_id','status','max_loaded_at','snapshotted_at')} for r in freshness['results']]}))
         if action == 'build':
             raw = load_json(out/'dbt-target/run_results.json')
             results = [{k:r.get(k) for k in ('unique_id','status','execution_time')} for r in raw['results']]
             if not results or any(r['status'] not in ('success','pass') for r in results):
                 raise ValueError('dbt result contains errors/skips/warnings')
-            write_report(out/'dbt-summary.json',normalized_report({'results':results}))
+            from report_dbt_performance import summarize, render
+            performance = summarize(raw)
+            write_report(out/'performance.json',performance)
+            (out/'performance.html').write_text(render(performance))
+            evidence = load_json(out/'source-evidence.json') if history else {}
+            price = load_json(out/'price-manifest.json') if history else {}
+            write_report(out/'dbt-summary.json',normalized_report({'results':results,
+                **({'inputs':{'source_sha256':evidence['source_sha256'],
+                             'price_rows_sha256':price['rows_sha256']}} if history else {})}))
         report = normalized_report({'action':action})
     else:
         raise ValueError('Unknown candidate stage')
@@ -215,12 +259,16 @@ def execute_stage(args):
 def plan(args):
     stages = []
     extract = ['source-prepare','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
-    transform = ['artifact-check','raw-revalidate','loaded-revalidate','dbt-parse','dbt-compile','dbt-build']
+    transform = ['artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
     names = extract if args.phase == 'extract' else transform if args.phase == 'transform' else extract+transform
     for name in names:
         argv = [args.python,str(Path(__file__).resolve()),args.phase,'--repo',str(args.repo.resolve()),
                 '--run-dir',str(args.run_dir.resolve()),'--scratch-dir',str(args.scratch_dir.resolve()),
                 '--python',args.python,'--dbt-bin',args.dbt_bin,'--stage',name]
+        if getattr(args, 'history', False):
+            argv += ['--history']
+        if getattr(args, 'source_inbound', None):
+            argv += ['--source-inbound',str(args.source_inbound.resolve())]
         if args.extract_artifact:
             argv += ['--extract-artifact',str(args.extract_artifact.resolve())]
         if args.dbt_project_dir:
@@ -244,6 +292,8 @@ def main():
     parser.add_argument('--python',default=sys.executable)
     parser.add_argument('--dbt-bin',default='dbt')
     parser.add_argument('--dbt-project-dir',type=Path)
+    parser.add_argument('--history',action='store_true',help='Explicit reviewed 2023-01 through 2026-08 history candidate')
+    parser.add_argument('--source-inbound',type=Path,help='Retained official annual CSV bytes with original retrieval metadata')
     parser.add_argument('--stage',help=argparse.SUPPRESS)
     args = parser.parse_args()
     if args.phase == 'transform' and not args.extract_artifact:

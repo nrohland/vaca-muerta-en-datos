@@ -1,6 +1,4 @@
-{# Distinct permiso/concesión areas in the Pulse cut. Grain = one row per
-   idareapermisoconcesion. Inter-year id stability remains UNKNOWN (only
-   2025 is loaded). #}
+{# Dimension name uses latest observed period; conflicting names inside one ID/month remain a test failure. #}
 {{
     config(
         materialized="table",
@@ -10,7 +8,7 @@
 
 select
     idareapermisoconcesion,
-    any_value(areapermisoconcesion) as areapermisoconcesion,
+    array_agg(areapermisoconcesion ignore nulls order by periodo desc, areapermisoconcesion limit 1)[safe_offset(0)] as areapermisoconcesion,
     count(distinct idpozo) as well_count,
     count(distinct idempresa) as company_count,
     min(periodo) as first_periodo,

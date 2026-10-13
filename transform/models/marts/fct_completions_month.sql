@@ -1,3 +1,4 @@
+{{ config(enabled=target.name != 'candidate' or var('enable_completions', false)) }}
 {# Monthly rollup of Adjunto IV jobs by fecha_inicio (not source_periodo). #}
 {{
     config(

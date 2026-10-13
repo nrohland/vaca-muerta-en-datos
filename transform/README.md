@@ -1,3 +1,5 @@
+> Actualización 13 de octubre de 2026: histórico candidato validado para enero 2023–agosto 2026, con referencias Brent/Henry Hub. Hay controles de freshness, diff de datos y arquitectura local. Ver [calidad y rendimiento](docs/quality-and-performance.md) y [evidencia histórica](../docs/evidence/historical-dbt/README.md). Las secciones de hitos anteriores describen su alcance original; no acreditan operación actual ni promoción.
+
 # transform/ — dbt Core (Analytics Engineer)
 
 Configuración local sin claves y explicación de las capas:

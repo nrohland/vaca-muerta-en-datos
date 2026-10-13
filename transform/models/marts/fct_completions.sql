@@ -1,3 +1,4 @@
+{{ config(enabled=target.name != 'candidate' or var('enable_completions', false)) }}
 {# Adjunto IV completions. Not Cap. IV. No PARTITION BY fecha_inicio in
    sandbox (2006–2025 would expire). Cluster idpozo like well-month. #}
 {{

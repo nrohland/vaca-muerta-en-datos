@@ -56,11 +56,16 @@ models:
   logging:
     +enabled: false
   dbt_project_evaluator:
-    +enabled: false
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
+    +schema: stg
 
 seeds:
+  vaca_muerta_pulse:
+    +schema: marts
+    +enabled: "{{ target.name == 'candidate' and var('enable_dashboard_export', false) }}"
   dbt_project_evaluator:
-    +enabled: false
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
+    +schema: stg
 
 # Event-logging hooks that CREATE SCHEMA/TABLE in BQ stay commented.
 # To enable: see README.md (run-operation logging.create_audit_table).

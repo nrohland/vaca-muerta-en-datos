@@ -1,6 +1,4 @@
-{# Distinct operators in the Pulse cut. Grain = one row per idempresa.
-   Names are any_value from fct_well_month; a singular test fails if one
-   idempresa maps to more than one empresa string in the same warehouse. #}
+{# Dimension name uses latest observed period; conflicting names inside one ID/month remain a test failure. #}
 {{
     config(
         materialized="table",
@@ -10,7 +8,7 @@
 
 select
     idempresa,
-    any_value(empresa) as empresa,
+    array_agg(empresa ignore nulls order by periodo desc, empresa limit 1)[safe_offset(0)] as empresa,
     count(distinct idpozo) as well_count,
     min(periodo) as first_periodo,
     max(periodo) as last_periodo

@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "unique_id": "source.vaca_muerta_pulse.candidate_pricing.monthly_reference_price",
+      "status": "pass",
+      "max_loaded_at": "2026-10-12T22:59:21.033339+00:00",
+      "snapshotted_at": "2026-10-13T18:42:40.290809+00:00"
+    },
+    {
+      "unique_id": "source.vaca_muerta_pulse.raw_cap4.produccion_pozo_mes",
+      "status": "pass",
+      "max_loaded_at": "2026-10-13T16:42:44.782963+00:00",
+      "snapshotted_at": "2026-10-13T18:42:42.218305+00:00"
+    }
+  ],
+  "status": "pass",
+  "publication_approved": false
+}

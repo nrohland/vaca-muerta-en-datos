@@ -1,10 +1,13 @@
-# Architecture Decision Records (ADRs)
+# Decisiones de arquitectura
 
-Registro corto de **por qué** elegimos una pieza de stack. El **qué** operativo está en [`../architecture.md`](../architecture.md) y en las specs.
+Los ADRs explican elecciones y compromisos del candidato vigente. El historial Git conserva las decisiones iniciales y sus cambios; [arquitectura](../architecture.md) describe la implementación actual.
 
-| ADR | Título | Estado |
+| ADR | Decisión | Estado |
 | --- | --- | --- |
-| [0001](0001-stack-choices.md) | Meltano, BigQuery partitions/clustering, dbt, Next.js + Tremor | Aceptado (Hito 0) |
-| [0002](0002-ui-spike-notebook.md) | Spike de UI en notebook (Next sigue v1) | Aceptado (spike) |
+| [0001](0001-stack-choices.md) | Python, BigQuery, dbt y Next.js/Recharts | Implementado; elección inicial de extracción reemplazada |
+| [0003](0003-resumen-ui.md) | Componentes comunes y snapshot verificado | Implementado en V1 candidata |
+| [0004](0004-product-name.md) | Vaca Muerta en Datos | Adoptado |
+| [0005](0005-pricing-layer.md) | Precios dinámicos y valorización en dbt | Implementado con Brent y Henry Hub |
+| [0006](0006-candidate-pipeline.md) | CSV oficial, aislamiento y gates | Implementado; runner GitHub pendiente |
 
-Convención: `NNNN-kebab-title.md`, numeración monótona. Un ADR por decisión reversible-con-costo.
+Cambios de fuente, grano, métricas o arquitectura deben actualizar la decisión y su contrato. El ADR 0002 y el prototipo notebook se retiraron del árbol vigente.

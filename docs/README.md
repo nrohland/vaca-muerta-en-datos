@@ -1,11 +1,16 @@
-# docs/ — índice
+# Documentación — Vaca Muerta en Datos
 
-Documentación humana y de arquitectura. Las specs de producto viven en [`../specs/`](../specs/README.md).
-
-| Documento | Para qué |
+| Documento | Propósito |
 | --- | --- |
-| [architecture.md](architecture.md) | Flujo de datos, C4-ish, datasets BQ, límites de costo |
-| [adrs/](adrs/README.md) | Decisiones de stack (ADRs) |
-| [adrs/0001-stack-choices.md](adrs/0001-stack-choices.md) | Meltano, BigQuery (PARTITION + CLUSTER), dbt, Next.js + Tremor |
+| [Arquitectura](architecture.md) | Flujo, decisiones, contratos y freshness |
+| [ADRs](adrs/README.md) | Motivos y compromisos técnicos |
+| [Linaje dbt](lineage/README.md) | Grafo generado y procedencia |
+| [Capturas V1](screenshots/README.md) | Las cinco vistas desktop/mobile |
+| [Ejecución integrada](evidence/orchestration-export/README.md) | dbt, export, consumidor y límites |
+| [Revisión frontend](evidence/snapshot-integration/README.md) | Cálculos, navegación y capturas |
+| [Fuente histórica](evidence/historical-source/README.md) | Cobertura y rectificativas |
+| [Calidad dbt](evidence/historical-dbt/README.md) | Auditoría física, arquitectura y rendimiento |
+| [Acceso](evidence/pipeline-access/README.md) | Permisos y tamaño de raw |
+| [Contratos](../specs/README.md) | Alcance y definiciones |
 
-Antes de un cambio grande de arquitectura, actualizá el ADR o creá uno nuevo (`0002-…`).
+El árbol vigente conserva documentación de V1 y evidencia necesaria para auditarla. Prototipos y evidencia superada permanecen en el historial, con copia local previa a la limpieza fuera del repo. Publicación, cron y despliegue siguen sujetos a aprobación.

@@ -1,0 +1,2 @@
+# Preserve the official asset bytes and its documented CRLF line endings.
+public/operators/YPF.svg -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

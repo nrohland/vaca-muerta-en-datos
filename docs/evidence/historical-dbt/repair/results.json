@@ -1,0 +1,73 @@
+{
+  "invocation_id": "6fb1ca87-dbcf-4f4a-9019-179123a68086",
+  "results": [
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "execution_time": 10.83755898475647,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (10.3k rows, 25.6 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 10296,
+        "bytes_processed": 26873310,
+        "bytes_billed": 31457280,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "504612c4-95ce-4c0c-830f-826545b62a6c",
+        "slot_ms": 373373
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_contract",
+      "status": "pass",
+      "execution_time": 3.354301929473877,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 999.2 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 1023176,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "cd53a6d9-7f71-46bb-a6f2-2ec12559755e",
+        "slot_ms": 26
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_months",
+      "status": "pass",
+      "execution_time": 1.6759839057922363,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 278.8 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 285472,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "972b426b-1cac-4f23-bad9-4abdcfbb1c6c",
+        "slot_ms": 12
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_reconciles",
+      "status": "pass",
+      "execution_time": 2.033881902694702,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 359.2 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 367840,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "543af62c-7a5d-4459-9c6d-8667e6e4441f",
+        "slot_ms": 24
+      }
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+version: 2
+sources:
+- name: candidate_pricing
+  database: vaca-muerta-pulse
+  schema: raw_cap4_candidate_dev
+  config:
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  tables:
+  - name: monthly_reference_price
+    description: Immutable reviewed dual-product EIA benchmark snapshot; gas energy
+      is an explicit US-average reference scenario.
+    config:
+      loaded_at_field: retrieved_at
+      freshness:
+        warn_after:
+          count: 5
+          period: day
+        error_after:
+          count: 7
+          period: day
+  description: Official monthly Brent and Henry Hub snapshots with per-product fingerprints
+    and documented gas energy scenario.
+models:
+- name: stg_monthly_reference_price
+  description: Product-month benchmark with currency, units, response hash, accepted
+    cutoff and explicit gas scenario basis.
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - product
+        - periodo
+  columns:
+  - name: periodo
+    data_tests:
+    - not_null
+  - name: snapshot_id
+    data_tests:
+    - not_null
+- name: fct_reference_valuation_month
+  description: Candidate well-grain oil Brent and gas Henry Hub reference valuation;
+    gas energy is a fixed US-average scenario, never measured Vaca Muerta heating
+    value or realized revenue.
+  columns:
+  - name: well_month_id
+    data_tests:
+    - not_null
+    - unique
+- name: fct_reference_valuation_entity_month
+  description: Basin/company/area dual-product reference values, exact calendar comparisons
+    and complete YTD only; gas scenario metadata persists.
+  data_tests:
+  - dbt_utils.unique_combination_of_columns:
+      arguments:
+        combination_of_columns:
+        - entity_type
+        - entity_id
+        - periodo

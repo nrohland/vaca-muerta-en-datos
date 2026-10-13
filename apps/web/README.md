@@ -1,31 +1,54 @@
-# apps/web — Next.js + Tremor (Front)
+# Frontend — Vaca Muerta en Datos
 
-**Estado:** placeholder. No hay app todavía. Eso es **Hito 3**.
+Aplicación Next.js de revisión con Resumen como base aprobada y vistas de Producción, Operadores, Áreas y Actividad. Usa agregados reales del snapshot candidato y componentes compartidos; no necesita credenciales del warehouse para ejecutarse. El alcance y los resultados de cada iteración se documentan en `specs/` y `docs/evidence/`.
 
-**Owner:** Front. Ver [AGENTS.md](../../AGENTS.md).
+## Ejecutar
 
-**Marca UI:** **Barrilito** (el repo se sigue llamando `vaca-muerta-pulse`).
+Node.js 22.13+ y npm. Desde `apps/web`:
 
-Acá va a vivir el dashboard público (Next.js App Router + Tremor).
+```sh
+npm ci
+npm run dev
+```
 
-## Headline (Hito 3 — no hay código en este folder todavía)
+Abrir `http://localhost:3000/vaca-muerta-pulse/`.
 
-- Leer del mart **`fct_barrilito_rate`** en dataset **`marts_cap4_dev`** (prod futuro: `marts_cap4`): columna **`rate_bbl_dia`**. Contrato: [transform/README.md](../../transform/README.md).
-- Interpolar un contador de barriles “extrayéndose” (aspecto live). Capítulo IV es **mensual**; esto **no** es telemetría.
-- **MUST** disclaimer visible junto al contador: *simulación a partir de datos mensuales oficiales*.
-- Factor `bbl = m³ × 6.28981077`: lo aplica el mart, no el cliente. No inventar sensores ni queries a `raw_*`.
+```sh
+npm run typecheck
+npm test
+npm run build
+npx playwright install chromium
+npm run test:browser
+```
 
-Contrato con datos (Hito 2+): leer **marts** de BigQuery (o una capa cacheada), nunca `raw_*`. Relato: [spec.md](../../specs/001-vaca-muerta-pulse/spec.md). Fórmula: [data-model.md](../../specs/001-vaca-muerta-pulse/data-model.md).
+El build estático queda en `out/`. El runner de navegador requiere un entorno compatible y un puerto disponible. `EVIDENCE_DIR` permite dirigir las capturas; los reportes de evidencia deben indicar qué suite y qué inspección visual se ejecutaron realmente. No hay despliegue automático.
 
-Hasta Hito 3:
+## Componentes y navegación
 
-- no scaffold de Next “por si acaso”
-- no copiar secretos de GCP al front; si hay queries, service role en server / vistas públicas
+Stack instalado: Next.js 16, React 19, TypeScript 7 y Recharts 3. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard` y `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
 
-Decisiones de interpolación / paleta / empty de completaciones: spike [`apps/spike/`](../spike/README.md) ([ADR 0002](../../docs/adrs/0002-ui-spike-notebook.md)). No cierra este hito.
+El mismo concepto mantiene color y comportamiento entre pestañas: petróleo azul, gas violeta, monetario ámbar. Variaciones positivas verdes y negativas rojas siguen la convención del producto. Rankings de participación usan escala real 0–100%; etiquetas, unidades, tooltips y tablas permiten leer cifras exactas.
 
-Referencias:
+`lib/navigation.ts` conserva fluido, período, modo volumen/valor y comparación MoM/YoY, además de vista e ID de entidad en deep links. `lib/i18n.ts` y `lib/locale.tsx` centralizan ES/EN y formatos Intl; la preferencia de idioma tiene fallback español. Las vistas mantienen claro/oscuro, navegación atrás/adelante y responsive.
 
-- [docs/architecture.md](../../docs/architecture.md)
-- [docs/adrs/0001-stack-choices.md](../../docs/adrs/0001-stack-choices.md)
-- [specs/001-vaca-muerta-pulse/plan.md](../../specs/001-vaca-muerta-pulse/plan.md)
+## Contrato de datos
+
+`lib/contract.ts` verifica release, SHA-256, manifiesto, cobertura y corte antes de mostrar métricas. `public/data/release.json` contiene agregados, nunca registros raw. El candidato acepta **agosto de 2026** como máximo; septiembre parcial queda excluido. Sin un `approval.json` válido se muestra **Preliminar**. Validación técnica no equivale a aprobación de publicación.
+
+Petróleo: bbl y bbl/d; gas: MMm³ y MMm³/d. Tasa = volumen mensual / días calendario. Pozos productivos = IDs únicos con producción positiva del fluido. No hay contador live. Permisos/concesiones y transferencias pueden afectar rankings.
+
+`lib/metrics.ts` lee los valores USD ya calculados por dbt: mensual, diario, bases exactas MoM/YoY y YTD de calendario completo. El release declara productor `dbt` y modelo `fct_dashboard_month`; la UI no multiplica volumen por precio. `prices.json` contiene Brent y Henry Hub oficiales para mostrar las cotizaciones y metodología; `valuation-manifest.json` liga sus bytes con el release. Gas USD explicita el escenario energético EIA de 1.036 BTU/pie³, no calorificidad medida de Vaca Muerta ni ingresos realizados. Sin valor persistido válido se muestra indisponibilidad; un fallo del archivo auxiliar de cotizaciones no borra valores ya validados en el snapshot.
+
+Producción profundiza en historia, acumulados comparables, años calendario, cambios absolutos y tabla. Operadores y Áreas profundizan ranking y entidad. Actividad usa conteos y promedio por pozo y día calendario sin inferir productividad por día efectivo, altas/bajas o completaciones sin fuentes válidas.
+
+## Evidencia y límites
+
+La [revisión actual](../../docs/evidence/snapshot-integration/README.md) registra cálculos, navegación, capturas desktop/mobile y restricciones de Playwright. La [orquestación/export](../../docs/evidence/orchestration-export/README.md) valida el consumidor sobre el bundle generado. [Capturas de las cinco vistas](../../docs/screenshots/README.md).
+
+La extracción y transformación son reproducibles; promoción pública independiente y runner real pendientes. [Arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build.
+
+## Conexión histórica validada
+
+El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca y 10.208 de entidades; pesa 16,75 MiB sin comprimir. Se conserva el grano ID × fluido × mes y los ceros explícitos de entidades ausentes dentro de meses técnicamente aceptados. “Áreas reportadas” cuenta sólo áreas con registros del mes, aunque el ranking conserve todo el catálogo histórico. [Resultados actuales y límites](../../docs/evidence/snapshot-integration/README.md).
+
+`apps/web/scripts/check_snapshot.mjs --data-dir ...` valida bundles generados con los contratos del consumidor y sus hashes antes de copiar assets a un checkout temporal de CI. El pipeline histórico ejecuta ese checker después de exportar; el workflow continúa con typecheck/tests/build sin despliegue.

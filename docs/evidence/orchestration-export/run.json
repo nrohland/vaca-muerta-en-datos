@@ -1,0 +1,71 @@
+{
+  "started_at": "2026-10-13T18:42:18.793566+00:00",
+  "status": "passed",
+  "publication_approved": false,
+  "stages": [
+    {
+      "name": "artifact-check",
+      "started_at": "2026-10-13T18:42:18.794158+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:18.921681+00:00"
+    },
+    {
+      "name": "raw-revalidate",
+      "started_at": "2026-10-13T18:42:18.922425+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:26.877550+00:00"
+    },
+    {
+      "name": "loaded-revalidate",
+      "started_at": "2026-10-13T18:42:26.879471+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:31.671902+00:00"
+    },
+    {
+      "name": "dbt-source-freshness",
+      "started_at": "2026-10-13T18:42:31.672465+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:44.493604+00:00"
+    },
+    {
+      "name": "dbt-parse",
+      "started_at": "2026-10-13T18:42:44.494201+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:47.488405+00:00"
+    },
+    {
+      "name": "dbt-compile",
+      "started_at": "2026-10-13T18:42:47.488858+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:42:54.310157+00:00"
+    },
+    {
+      "name": "dbt-build",
+      "started_at": "2026-10-13T18:42:54.310699+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:47:31.683379+00:00"
+    },
+    {
+      "name": "dashboard-export",
+      "started_at": "2026-10-13T18:47:31.684226+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:47:52.221645+00:00"
+    },
+    {
+      "name": "snapshot-check",
+      "started_at": "2026-10-13T18:47:52.222349+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-13T18:47:52.730010+00:00"
+    }
+  ],
+  "finished_at": "2026-10-13T18:47:52.730504+00:00"
+}

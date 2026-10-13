@@ -13,8 +13,8 @@ models:
 
       Volumes are sums of well-month. `wells_with_oil` is distinct wells
       with `prod_pet_m3 > 0` that month (not new wells — that remains
-      UNKNOWN). Not the Barrilito headline; Front ranks from this mart
-      and still interpolates the counter from `fct_barrilito_rate`.
+      UNKNOWN). Not the Vaca Muerta en Datos headline; Front ranks from this mart
+      and still interpolates the counter from `fct_production_rate`.
     columns:
       - name: company_month_id
         description: Surrogate of idempresa + periodo.
@@ -60,7 +60,7 @@ models:
       - name: prod_agua_m3
         description: Sum of well-month water m³.
       - name: tef_sum
-        description: Sum of tef. Preferred Barrilito denominator lives on the headline mart.
+        description: Sum of tef. Preferred Vaca Muerta en Datos denominator lives on the headline mart.
       - name: source_batched_at_max
         description: Max Singer batch timestamp in this company-month (freshness, not Cap. IV month).
       - name: fecha_data_max

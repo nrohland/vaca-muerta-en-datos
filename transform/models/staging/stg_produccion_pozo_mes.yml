@@ -3,7 +3,7 @@ version: 2
 models:
   - name: stg_produccion_pozo_mes
     description: >
-      Staging of Capítulo IV well-month production for Barrilito / Pulse.
+      Staging of Capítulo IV well-month production for Vaca Muerta en Datos / Pulse.
 
       **Grain after this model:** one row = `idpozo` × `anio` × `mes` inside
       the product cut. 2025 DataStore had 0 duplicates on that key; other
@@ -46,7 +46,7 @@ models:
       - name: tef
         description: >
           Effective time, cast to FLOAT64. Plausible days in 2025 sample;
-          quality as Barrilito denominator remains UNKNOWN.
+          quality as Vaca Muerta en Datos denominator remains UNKNOWN.
       - name: formacion
         description: After the product filter this is `vaca muerta`.
         data_tests:

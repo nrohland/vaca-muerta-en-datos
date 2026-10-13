@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "invocation_id": "fc0f8baf-9e88-4f64-b986-9ac463527e94",
+  "wall_seconds": 16.451769,
+  "totals": {
+    "bytes_processed": 725648,
+    "bytes_billed": 83886080,
+    "slot_ms": 73
+  },
+  "node_count": 8,
+  "metrics_available": {
+    "bytes_processed": 8,
+    "bytes_billed": 8,
+    "slot_ms": 8
+  },
+  "models": [],
+  "slowest_nodes": [
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_volume.da60612825",
+      "status": "pass",
+      "seconds": 3.5214571952819824,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "0483121a-1d8d-4273-8b6a-99e3bc8ddd29",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_dimension__basin__company__area.86d612b04d",
+      "status": "pass",
+      "seconds": 2.1286051273345947,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "03528880-ae6d-45c4-9667-88e1f386dbb0",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_dimension.12b471f41c",
+      "status": "pass",
+      "seconds": 2.092845916748047,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "bbee37d8-2232-49e1-bc9b-46f388a03d46",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_fluid.8a32736446",
+      "status": "pass",
+      "seconds": 1.8028149604797363,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 2,
+      "job_id": "b40ee17b-a7b8-443c-a1cf-d6dbd1dc866e",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_entity_id.657afc6b38",
+      "status": "pass",
+      "seconds": 1.779792070388794,
+      "bytes_processed": 58168,
+      "bytes_billed": 10485760,
+      "slot_ms": 46,
+      "job_id": "d3fd6588-29ec-4e04-88ee-34d4d9db6bb3",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_fluid__oil__gas.199899208f",
+      "status": "pass",
+      "seconds": 1.741253137588501,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "02de2fff-8ecf-4dcf-95b5-a2df95c34236",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_periodo.26eb65dc70",
+      "status": "pass",
+      "seconds": 1.7238028049468994,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "971a6dfb-2db7-4f57-945e-f37f9d265f43",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_dashboard_month_fluid__dimension__entity_id__periodo.bdf8ea9deb",
+      "status": "pass",
+      "seconds": 1.6102488040924072,
+      "bytes_processed": 261272,
+      "bytes_billed": 10485760,
+      "slot_ms": 10,
+      "job_id": "a2fc084f-9d64-4faf-8089-72153590de18",
+      "resource_type": "test"
+    }
+  ],
+  "nodes": [
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_dimension__basin__company__area.86d612b04d",
+      "status": "pass",
+      "seconds": 2.1286051273345947,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "03528880-ae6d-45c4-9667-88e1f386dbb0",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_fluid__oil__gas.199899208f",
+      "status": "pass",
+      "seconds": 1.741253137588501,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "02de2fff-8ecf-4dcf-95b5-a2df95c34236",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_dashboard_month_fluid__dimension__entity_id__periodo.bdf8ea9deb",
+      "status": "pass",
+      "seconds": 1.6102488040924072,
+      "bytes_processed": 261272,
+      "bytes_billed": 10485760,
+      "slot_ms": 10,
+      "job_id": "a2fc084f-9d64-4faf-8089-72153590de18",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_dimension.12b471f41c",
+      "status": "pass",
+      "seconds": 2.092845916748047,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "bbee37d8-2232-49e1-bc9b-46f388a03d46",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_entity_id.657afc6b38",
+      "status": "pass",
+      "seconds": 1.779792070388794,
+      "bytes_processed": 58168,
+      "bytes_billed": 10485760,
+      "slot_ms": 46,
+      "job_id": "d3fd6588-29ec-4e04-88ee-34d4d9db6bb3",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_fluid.8a32736446",
+      "status": "pass",
+      "seconds": 1.8028149604797363,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 2,
+      "job_id": "b40ee17b-a7b8-443c-a1cf-d6dbd1dc866e",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_periodo.26eb65dc70",
+      "status": "pass",
+      "seconds": 1.7238028049468994,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "971a6dfb-2db7-4f57-945e-f37f9d265f43",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_volume.da60612825",
+      "status": "pass",
+      "seconds": 3.5214571952819824,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "0483121a-1d8d-4273-8b6a-99e3bc8ddd29",
+      "resource_type": "test"
+    }
+  ],
+  "limitations": [
+    "One execution, not a statistically comparable performance baseline.",
+    "Missing adapter metrics remain null; totals include only reported values.",
+    "Bytes billed are not a monetary charge; no pricing assumption is applied.",
+    "A view CREATE with zero processed bytes does not measure its downstream query cost."
+  ]
+}

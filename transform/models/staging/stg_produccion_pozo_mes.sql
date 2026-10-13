@@ -64,3 +64,7 @@ with
 
 select *
 from deduped
+
+{% if target.name == 'candidate' %}
+where periodo between {{ candidate_start_period_sql() }} and {{ candidate_period_sql() }}
+{% endif %}

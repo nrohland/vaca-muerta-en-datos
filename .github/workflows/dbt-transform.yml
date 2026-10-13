@@ -1,36 +1,47 @@
-name: dbt transform
-
-# Parse + deps only. No BigQuery, no secrets, no dbt build.
+name: V1 checks
 
 on:
   pull_request:
-    paths:
-      - "transform/**"
-      - ".github/workflows/dbt-transform.yml"
   push:
     branches: [main]
-    paths:
-      - "transform/**"
-      - ".github/workflows/dbt-transform.yml"
+
+permissions:
+  contents: read
 
 jobs:
-  parse:
+  validate:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: transform
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: Install dbt Core
-        run: pip install -r requirements.txt
-      - name: Dummy profiles (placeholders only)
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.13.1"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install dependencies
         run: |
-          mkdir -p "$HOME/.dbt"
-          cp profiles.yml.example "$HOME/.dbt/profiles.yml"
-      - name: dbt deps
-        run: dbt deps --profiles-dir "$HOME/.dbt"
-      - name: dbt parse
-        run: dbt parse --profiles-dir "$HOME/.dbt"
+          pip install -r transform/requirements.txt
+          npm --prefix apps/web ci
+      - name: Offline data contracts and guards
+        run: |
+          python -m unittest discover -s extraction/tests
+          python -m unittest discover -s pipeline/tests
+          python -m unittest discover -s transform/tests_python
+      - name: Parse historical dbt without warehouse access
+        working-directory: transform
+        env:
+          DBT_RAW_DATASET: raw_cap4_candidate_dev
+        run: |
+          mkdir -p "$RUNNER_TEMP/vm-dbt-profile"
+          cp ci-profiles.yml.example "$RUNNER_TEMP/vm-dbt-profile/profiles.yml"
+          dbt deps --profiles-dir "$RUNNER_TEMP/vm-dbt-profile"
+          dbt parse --profiles-dir "$RUNNER_TEMP/vm-dbt-profile" --target candidate --vars '{enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}'
+      - name: Frontend contracts and static build
+        run: |
+          node --experimental-strip-types apps/web/scripts/check_snapshot.mjs --data-dir apps/web/public/data
+          npm --prefix apps/web run typecheck
+          npm --prefix apps/web test
+          npm --prefix apps/web run build

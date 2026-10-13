@@ -1,0 +1,17 @@
+version: 2
+seeds:
+  - name: operator_groups
+    description: Reviewed constant presentation mapping; no acquired vendor history restatement.
+    config:
+      column_types:
+        legal_operator_id: string
+        operator_group_id: string
+        operator_group_name: string
+        valid_from: string
+        valid_to: string
+        rule_version: string
+    columns:
+      - name: legal_operator_id
+        data_tests: [unique, not_null]
+      - name: operator_group_id
+        data_tests: [not_null]

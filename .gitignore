@@ -86,3 +86,7 @@ Thumbs.db
 *.csv.gz
 data/raw/
 data/tmp/
+
+# Generated WIF credentials
+gha-creds-*.json
+pipeline-evidence/

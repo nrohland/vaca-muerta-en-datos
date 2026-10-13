@@ -29,6 +29,17 @@ class WorkflowContract(unittest.TestCase):
         self.assertNotEqual(*accounts)
         self.assertFalse(any('deploy' in s.get('uses','') for j in jobs.values() for s in j['steps']))
 
+    def test_manual_main_run_does_not_enable_schedule_or_branch_access(self):
+        guard=self.workflow['jobs']['extract']['if']
+        for ref, event, enabled, expected in [
+            ('refs/heads/main','workflow_dispatch','false',True),
+            ('refs/heads/main','schedule','false',False),
+            ('refs/heads/main','schedule','true',True),
+            ('refs/heads/feat/dashboard-integrated','workflow_dispatch','true',False),
+            ('refs/heads/feat/dashboard-integrated','workflow_dispatch','false',False)]:
+            expression=guard.replace('github.ref',repr(ref)).replace('github.event_name',repr(event)).replace('vars.DATA_PIPELINE_ENABLED',repr(enabled)).replace('&&',' and ').replace('||',' or ')
+            self.assertEqual(eval(expression,{'__builtins__':{}}),expected)
+
     def test_public_preparation_precedes_auth_and_frontend_follows_transform(self):
         extract=self.workflow['jobs']['extract']['steps']
         prep=next(i for i,s in enumerate(extract) if 'run_candidate.py prepare ' in s.get('run',''))

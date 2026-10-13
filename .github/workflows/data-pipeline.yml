@@ -14,7 +14,8 @@ concurrency:
 
 jobs:
   extract:
-    if: vars.DATA_PIPELINE_ENABLED == 'true' && github.ref == 'refs/heads/main'
+    # Manual validation on main is independent of the disabled recurring schedule.
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.DATA_PIPELINE_ENABLED == 'true')
     runs-on: ubuntu-latest
     environment: data-dev-extract
     timeout-minutes: 60

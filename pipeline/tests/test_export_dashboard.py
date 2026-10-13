@@ -3,6 +3,10 @@ from pathlib import Path
 import unittest
 import hashlib
 import copy
+import sys
+sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
+import json
+from datetime import date,datetime,timezone
 
 path=Path(__file__).resolve().parents[1]/'export_dashboard.py'
 spec=importlib.util.spec_from_file_location('export_dashboard',path);module=importlib.util.module_from_spec(spec);spec.loader.exec_module(module)
@@ -44,6 +48,33 @@ class ExportDashboard(unittest.TestCase):
   self.assertEqual(sum(r['volume'] for r in actual['entities']),sum(r['volume'] for r in base['entities']))
   bad=copy.deepcopy(revision);bad['transfers'][0]['new_company_id']='PAL'
   with self.assertRaises(ValueError):module.reviewed_assignments(base,bad,data,source)
+ def test_current_dbt_baseline_does_not_reapply_migration(self):
+  base={'schema_version':1,'status':'candidate','valuation':{'producer':'dbt','model':'fct_dashboard_month'},'production':[],'entities':[]}
+  data=module.json_bytes(base);manifest={'data_sha256':hashlib.sha256(data).hexdigest(),'source':{'accepted_periods':['2026-08-01']}}
+  source={'accepted_periods':['2026-08-01']}
+  self.assertEqual(module.baseline_for_export(data,manifest,source),base)
+  with self.assertRaisesRegex(ValueError,'binding'):module.baseline_for_export(data+b' ',manifest,source)
+  with self.assertRaisesRegex(ValueError,'together'):module.baseline_for_export(data,manifest,source,revision={})
+  legacy=module.json_bytes({**base,'valuation':{}});manifest['data_sha256']=hashlib.sha256(legacy).hexdigest()
+  with self.assertRaisesRegex(ValueError,'reviewed dbt'):module.baseline_for_export(legacy,manifest,source)
+
+ def test_prices_are_exported_from_exact_loaded_rows_without_revaluation(self):
+  from verify_loaded_lineage import REFERENCES
+  stamp=datetime.now(timezone.utc).isoformat();rows=[];products={}
+  for product,(benchmark,unit,url,basis) in REFERENCES.items():
+   rows.append(dict(product=product,periodo='2026-08-01',benchmark=benchmark,price=2.78 if product=='gas' else 91.08,currency='USD',price_unit=unit,source_url=url,source_sha256='a'*64,source_updated_at=stamp[:10],retrieved_at=stamp,accepted_cutoff='2026-08-01',snapshot_id='a'*64,energy_basis=basis))
+   products[product]=dict(product=product,benchmark=benchmark,price_unit=unit,source_url=url,energy_basis=basis,currency='USD',cutoff='2026-08-01',retrieved_at=stamp,source_updated_at=stamp[:10],row_count=1,response_sha256='a'*64,snapshot_id='a'*64)
+  checksum=hashlib.sha256(''.join(json.dumps(r,sort_keys=True)+'\n' for r in rows).encode()).hexdigest()
+  manifest=dict(schema_version=2,cutoff='2026-08-01',gas_valuation_enabled=True,gas_valuation_kind='international_reference_scenario',products=products,row_count=2,retrieved_at=stamp,rows_sha256=checksum)
+  asset=module.price_asset(list(reversed(rows)),manifest)
+  self.assertEqual(asset['gas']['source']['unit'],'USD/MMBtu')
+  self.assertEqual(asset['prices'][0]['usd_per_bbl'],91.08);self.assertEqual(asset['gas']['prices'][0]['usd_per_mmbtu'],2.78)
+  module.verify_quotes([{'fluid':'oil','periodo':date(2026,8,1),'price_usd_per_unit':91.08}],asset)
+  with self.assertRaisesRegex(ValueError,'Mart quote'):
+   module.verify_quotes([{'fluid':'oil','periodo':date(2026,8,1),'price_usd_per_unit':90.}],asset)
+  rows[0]['price']=1
+  with self.assertRaisesRegex(ValueError,'exact extraction'):module.price_asset(rows,manifest)
+
  def rows(self):
   rows=[]
   for fluid in ['oil','gas']:

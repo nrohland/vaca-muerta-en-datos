@@ -50,3 +50,5 @@ La capa de datos tiene extracción mensual y transformación reproducible, pero 
 ## Conexión histórica validada
 
 El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca y 10.208 de entidades; pesa 16,75 MiB sin comprimir. Se conserva el grano ID × fluido × mes y los ceros explícitos de entidades ausentes dentro de meses técnicamente aceptados. “Áreas reportadas” cuenta sólo áreas con registros del mes, aunque el ranking conserve todo el catálogo histórico. [Resultados actuales y límites](../../docs/evidence/snapshot-integration/README.md).
+
+`apps/web/scripts/check_snapshot.mjs --data-dir ...` valida bundles generados con los contratos del consumidor y sus hashes antes de copiar assets a un checkout temporal de CI. El pipeline histórico ejecuta ese checker después de exportar; el workflow continúa con typecheck/tests/build sin despliegue.

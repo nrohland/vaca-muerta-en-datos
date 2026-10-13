@@ -26,4 +26,4 @@ Tests dbt nuevos: contrato de filas, cobertura de meses, conciliación física/m
 
 El baseline retenido excluía el pozo 164323 por clasificación convencional. La fuente oficial lo reclasifica no convencional en 24 meses de 2024–2025 sin cambiar sus volúmenes individuales. También revisa IDs de área en 96 registros mensuales de 2025 (48 grupos), sin cambiar operador ni volumen: AVI→AVN, MBE→MBE1 y LTAC→LTI/LTII. Ambas revisiones se comparan explícitamente; toda diferencia restante sigue bloqueando. Conversión de petróleo exacta del contrato: 6,28981077 bbl/m³.
 
-El export está validado como comando explícito. `run_candidate.py` todavía termina en dbt-build; no se presenta como promoción automatizada. [Evidencia de integración](../docs/evidence/snapshot-integration/README.md).
+El CLI histórico ejecuta dashboard-export y snapshot-check después del build aceptado. El baseline dbt actual se liga a su manifiesto y no reaplica las correcciones iniciales; las dos revisiones siguen disponibles para la migración original. El workflow valida y construye el consumidor, sin promover ni publicar. [Evidencia de integración](../docs/evidence/snapshot-integration/README.md).

@@ -1,0 +1,134 @@
+{
+  "manifest_sha256": "e90087f8c9c0aee0602f158993e6115b0e4136a78edaf0ef942737c114ac3a6a",
+  "generated_at": "2026-10-13T18:42:56.258554Z",
+  "dbt_version": "1.12.5",
+  "counts": {
+    "model": 12,
+    "source": 2,
+    "seed": 1
+  },
+  "edges": [
+    [
+      "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "model.vaca_muerta_pulse.fct_dashboard_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "model.vaca_muerta_pulse.fct_reference_valuation_entity_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.dim_area"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.dim_company"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.fct_area_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.fct_company_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.fct_dashboard_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.fct_production_rate"
+    ],
+    [
+      "model.vaca_muerta_pulse.fct_well_month",
+      "model.vaca_muerta_pulse.fct_reference_valuation_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.int_produccion_vm_noconv",
+      "model.vaca_muerta_pulse.fct_well_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.stg_monthly_reference_price",
+      "model.vaca_muerta_pulse.fct_reference_valuation_month"
+    ],
+    [
+      "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "model.vaca_muerta_pulse.int_produccion_vm_noconv"
+    ],
+    [
+      "seed.vaca_muerta_pulse.operator_groups",
+      "model.vaca_muerta_pulse.fct_dashboard_month"
+    ],
+    [
+      "source.vaca_muerta_pulse.candidate_pricing.monthly_reference_price",
+      "model.vaca_muerta_pulse.stg_monthly_reference_price"
+    ],
+    [
+      "source.vaca_muerta_pulse.raw_cap4.produccion_pozo_mes",
+      "model.vaca_muerta_pulse.stg_produccion_pozo_mes"
+    ]
+  ],
+  "nodes": {
+    "model.vaca_muerta_pulse.stg_produccion_pozo_mes": {
+      "name": "stg_produccion_pozo_mes",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.dim_area": {
+      "name": "dim_area",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_dashboard_month": {
+      "name": "fct_dashboard_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_well_month": {
+      "name": "fct_well_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.dim_company": {
+      "name": "dim_company",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_production_rate": {
+      "name": "fct_production_rate",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_area_month": {
+      "name": "fct_area_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_company_month": {
+      "name": "fct_company_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.int_produccion_vm_noconv": {
+      "name": "int_produccion_vm_noconv",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_reference_valuation_entity_month": {
+      "name": "fct_reference_valuation_entity_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.fct_reference_valuation_month": {
+      "name": "fct_reference_valuation_month",
+      "resource_type": "model"
+    },
+    "model.vaca_muerta_pulse.stg_monthly_reference_price": {
+      "name": "stg_monthly_reference_price",
+      "resource_type": "model"
+    },
+    "seed.vaca_muerta_pulse.operator_groups": {
+      "name": "operator_groups",
+      "resource_type": "seed"
+    },
+    "source.vaca_muerta_pulse.raw_cap4.produccion_pozo_mes": {
+      "name": "produccion_pozo_mes",
+      "resource_type": "source"
+    },
+    "source.vaca_muerta_pulse.candidate_pricing.monthly_reference_price": {
+      "name": "monthly_reference_price",
+      "resource_type": "source"
+    }
+  }
+}

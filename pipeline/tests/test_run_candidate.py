@@ -54,6 +54,38 @@ class CandidateCLITests(unittest.TestCase):
         self.assertTrue(all('--history' in s.argv for s in stages))
         self.assertTrue(all('--source-inbound' in s.argv for s in stages))
 
+    def test_history_transform_exports_only_after_successful_build(self):
+        args=self.args();args.history=True
+        stages=candidate.plan(args)
+        self.assertEqual([s.name for s in stages][-3:],['dbt-build','dashboard-export','snapshot-check'])
+        calls=[]
+        def execute(argv,**kwargs):
+            name=argv[argv.index('--stage')+1];calls.append(name)
+            if name=='dbt-build':return subprocess.CompletedProcess(argv,1)
+            (args.run_dir/(name+'.gate.json')).write_text(json.dumps({'status':'pass','publication_approved':False}))
+            return subprocess.CompletedProcess(argv,0)
+        self.assertEqual(candidate.run(stages,args.run_dir,execute=execute)['status'],'failed')
+        self.assertNotIn('dashboard-export',calls)
+
+    def test_export_failure_does_not_reach_frontend_contract(self):
+        args=self.args('export');args.history=True;args.transform_artifact=self.path/'accepted-dbt'
+        stages=candidate.plan(args);self.assertEqual([s.name for s in stages],['artifact-check','dashboard-export','snapshot-check'])
+        calls=[]
+        def execute(argv,**kwargs):
+            name=argv[argv.index('--stage')+1];calls.append(name)
+            if name=='dashboard-export':return subprocess.CompletedProcess(argv,1)
+            (args.run_dir/(name+'.gate.json')).write_text(json.dumps({'status':'pass','publication_approved':False}))
+            return subprocess.CompletedProcess(argv,0)
+        self.assertEqual(candidate.run(stages,args.run_dir,execute=execute)['status'],'failed')
+        self.assertNotIn('snapshot-check',calls)
+
+    def test_prepare_is_public_only_and_load_is_separate_without_dbt(self):
+        self.assertEqual([s.name for s in candidate.plan(self.args('prepare'))],['source-prepare','price-prepare'])
+        args=self.args('load');args.prepared_artifact=self.path/'prepared'
+        stages=candidate.plan(args)
+        self.assertEqual([s.name for s in stages],['prepared-check','source-load','price-load','raw-gate','loaded-lineage'])
+        self.assertTrue(all('--prepared-artifact' in s.argv for s in stages))
+
     def test_single_annual_artifact_is_not_accepted_as_history(self):
         path=self.artifacts()
         with self.assertRaises((ValueError, KeyError)):

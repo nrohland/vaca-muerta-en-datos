@@ -1,83 +1,68 @@
 # Arquitectura — Vaca Muerta en Datos
 
-Esta arquitectura separa la obtención de datos, su semántica analítica y la presentación. El frontend consume un snapshot agregado validado; no consulta credenciales ni tablas raw desde el browser. [README](../README.md) presenta el producto y [ADRs](adrs/README.md) explican las decisiones.
+La arquitectura separa fuente, semántica analítica y presentación. Python obtiene snapshots oficiales; BigQuery conserva datos aislados y dbt construye reglas y agregados verificables. El frontend consume JSON de revisión, sin credenciales ni consultas raw desde el browser. [Producto y preguntas](../README.md), [decisiones](adrs/README.md) y [linaje real](lineage/README.md).
 
-## Flujo implementado
+## Recorrido implementado
 
 ```mermaid
-flowchart TB
-  CAP["SE · Capítulo IV mensual"] --> MEL["Meltano / tap CKAN"]
-  CAP --> CSV["Alternativa CSV candidato ante rezago DataStore"]
-  MEL --> RAW["BigQuery raw · dev / candidato / prod"]
-  CSV --> RAW
-  RAW --> STG["dbt staging · tipos y normalización"]
-  STG --> INT["dbt intermediate · universo y unidades"]
-  INT --> MART["dbt marts · mes / operador / área / pozos"]
-  MART --> GATE["Cobertura y conciliación · meses aceptados"]
-  GATE --> RELEASE["Export agregado + contrato + manifiesto SHA-256"]
-  EIA["EIA Brent mensual"] --> IMPORT["Importación trazable · precios por mes"]
-  IMPORT --> BIND["Manifiesto de valorización ligado al release"]
-  RELEASE --> BIND
-  RELEASE --> APP["Next.js export estático · React / TypeScript"]
-  BIND --> APP
-  APP --> UI["Recharts + KPIs/cards/filtros comunes"]
+flowchart LR
+  SE["Capítulo IV · cuatro CSV oficiales"] --> PY["Python · esquema, hashes y cobertura"]
+  EIA["EIA · Brent y Henry Hub mensuales"] --> PY
+  PY --> RAW["BigQuery · raw candidato aislado"]
+  RAW --> STG["dbt staging · tipos y claves"]
+  STG --> INT["Intermediate · universo y reglas"]
+  INT --> MART["Marts · pozos, entidades y USD"]
+  MART --> GATE["Tests, frescura y conciliación"]
+  GATE --> EXPORT["Export agregado y manifiestos"]
+  EXPORT --> CHECK["Contrato del consumidor + hashes"]
+  CHECK --> WEB["Next.js · componentes React/Recharts"]
 ```
 
-El flujo tiene herramientas y controles reproducibles, pero no está encadenado automáticamente en producción de origen a publicación. La actualización candidata más reciente se operó explícitamente y dejó auditoría de sus etapas.
+El CLI encadena transformación histórica, export y validación del contrato frontend. GitHub tiene preparación pública antes de WIF, identidades de carga/dbt separadas y tests/build del consumidor; permanece desactivado. La promoción pública es una decisión independiente, no una etapa implícita de construcción.
 
-## Capas y contratos
+## Capas y motivos
 
-| Capa | Contrato / responsabilidad | Justificación |
+| Capa | Implementación | Motivo |
 | --- | --- | --- |
-| Fuente | Declaraciones oficiales pozo–mes; revisables | Conservar origen público y trazabilidad sin fingir tiempo real |
-| Extracción | Meltano/Singer y tap CKAN propio; recurso y año explícitos | Código versionado y relectura anual para rectificativas |
-| Raw BigQuery | Fidelidad al source; ambientes aislados | Separar investigación, candidato y producción |
-| dbt staging/intermediate | Tipos, claves, recorte y conversiones | Semántica única antes de agregar |
-| Marts | Agregados por mes, operador y área; pozos únicos por fluido | El producto usa definiciones verificables y granos estables |
-| Gate y export | Aceptación de períodos, conciliación, contrato y hashes | Separar dato existente de dato apto para revisión/publicación |
-| Precios | EIA Brent por mes y vínculo con release | Cada comparación usa su precio histórico; precios no bloquean volumen físico |
-| Frontend | Next.js 16, React 19, TypeScript 7, Recharts 3 | Export estático, componentes reutilizables y navegación persistente |
+| Fuente | Declaraciones oficiales pozo × mes y cotizaciones EIA | Datos públicos revisables, sin inferir telemetría ni ingresos |
+| Extracción | Python, contratos y snapshots de CSV/HTML | CSV oficial mostró más cobertura que DataStore; controlar rectificativas y cambios de esquema. Meltano/Singer queda como ruta histórica fuera del CLI actual |
+| Raw | BigQuery candidato aislado, partición por ingesta y clustering | Fidelidad al source y separación de permisos; carga atómica por tabla |
+| Staging | Tipos, claves y nombres normalizados | Resolver formato de origen antes de reglas de negocio |
+| Intermediate | Universo VM no convencional y reglas reutilizadas | Una sola definición evita filtros/conversiones distintos entre marts |
+| Marts | Grano pozo × mes, dimensiones y agregados | Reglas auditables de pozos únicos, tasas, comparaciones exactas y YTD |
+| Precios | Brent/Henry Hub en raw y dbt de valorización | Cotizaciones cambiantes no se mantienen como seeds; seeds para catálogos estables |
+| Export | fct_dashboard_month + cotizaciones de la misma carga | Evitar aritmética monetaria duplicada y ligar fuente, build y consumidor |
+| UI | Next.js 16, React 19, TypeScript 7, Recharts 3 | Export estático y componentes/filtros comunes sin secretos cloud |
+| Gates | Python, dbt, contrato Node y tests/build frontend | Una falla bloquea el siguiente paso; aprobación/publish separado |
 
-La configuración raw Meltano usa partición mensual de `_sdc_batched_at`, no de `periodo`; producción se agrupa físicamente por `empresa`, `idpozo`, `cuenca`. La fecha de negocio se normaliza en dbt. Particionar por fecha de carga no elimina por sí solo el costo de una consulta histórica de períodos: deben revisarse predicados y bytes escaneados. Detalle de datasets/IAM: [guía dbt](../transform/README.md), [evidencia Hito 2](../transform/docs/hito-2-bq-iam.md).
+Raw se particiona por `_sdc_batched_at`, no por el mes de producción: particionar marts históricos por `periodo` en el sandbox de 60 días podía eliminar datos recién construidos. Los marts usan clustering. Las métricas de performance registran bytes, tiempos y slot-ms reales; una vista CREATE con cero bytes no garantiza costo nulo de sus consultas. [Calidad y rendimiento](../transform/docs/quality-and-performance.md).
 
-El mart de tasa histórica `fct_production_rate` conserva el contrato de una fila para el último mes raw. **No define el corte de publicación actual**: el candidato acepta agosto de 2026 y excluye septiembre parcial mediante sus gates y marts de publicación. Ver [auditoría](evidence/data-valuation/README.md).
+Staging puede alimentar directamente un mart: intermediate se usa cuando hay transformación reutilizable que separar. Aquí `stg_monthly_reference_price` valida referencias a grano producto × mes; `fct_reference_valuation_month` las cruza con producción y calcula valores a grano pozo × mes. Esa dependencia directa es intencional.
 
-## Modelo de negocio
+## Semántica del producto
 
-El universo de producto filtra `formacion = 'vaca muerta'` y `tipo_de_recurso = 'NO CONVENCIONAL'`. No representa toda la cuenca. El factor de petróleo es m³ × 6,28981077; gas se presenta en MMm³. Tasa = volumen del mes / días calendario.
+Universo: `formacion = 'vaca muerta'` y `tipo_de_recurso = 'NO CONVENCIONAL'`, no toda la Cuenca Neuquina. Corte aceptado fijo enero 2023–agosto 2026; septiembre parcial queda fuera. Petróleo m³ × 6,28981077 → bbl; gas miles de m³ → MMm³. Tasa = volumen / días calendario.
 
-Los pozos productivos tienen producción positiva del fluido en cada mes. Su promedio por pozo y día calendario es una razón entre agregados; no prueba días efectivos, declinación individual, nuevos pozos ni salidas del padrón. Adjunto IV es una fuente separada para fracturas/completaciones; no se fuerza su unión con producción si la relación no está confirmada.
+Pozos productivos = IDs únicos con volumen positivo del fluido en el mes; los conteos petróleo/gas no se suman. Cambio neto es diferencia de conteos, no altas/bajas. Promedio diario por pozo no mide días efectivos, declinación de pozos comparables o eficiencia. No se infiere relación operador–área contemporánea desde agregados marginales; completaciones están fuera de esta entrega.
 
-La estimación monetaria de petróleo es volumen × Brent mensual, sin deducciones comerciales ni de costos. Gas no tiene una referencia nacional/conversión energética validada para el corte actual y queda sin USD. No rellenar precios ni aplicar el precio actual a toda la historia.
+USD es estimación de referencia calculada por dbt: Brent mensual USD/bbl para petróleo; Henry Hub mensual USD/MMBtu para gas. Gas usa escenario EIA de 1.036 BTU/pie³ (0,03658599472346218 MMBtu/m³), no calorificidad medida de Vaca Muerta. No son ingresos, márgenes o precios realizados. Faltantes → NULL, sin relleno; base cero → porcentaje NULL; YTD sólo con calendario completo.
 
-## Contrato de presentación
+El mart persiste fluido × dimensión × ID × mes. Los ceros explícitos de entidades ausentes pertenecen a meses de cuenca aceptados; huecos fuera de cobertura siguen sin dato. “Áreas reportadas” cuenta registros actuales, no todo el catálogo histórico. PCN/PLU → Pluspetrol es el único agrupamiento comercial explícito; se conserva procedencia legal y no se reatribuye historia de vendedores adquiridos.
 
-`apps/web/lib/contract.ts` valida release, cobertura y manifiesto. Los artefactos `release.json`, `manifest.json`, `prices.json` y `valuation-manifest.json` vinculan snapshot y precios. La aprobación de publicación es un estado separado; sin aprobación válida la app muestra Preliminar.
+## Contrato frontend y seguridad
 
-`dashboard-components.tsx` y CSS compartido definen el sistema de KPIs, cards, gráficos, ranking y filtros. Recharts implementa las visualizaciones del frontend; ver [ADR 0003](adrs/0003-resumen-ui.md). Todas las pestañas conservan producto/período/modo/comparación en URL, junto con detalle de entidad; idioma y tema permanecen como preferencias. Azul petróleo, violeta gas y ámbar económico tienen significado estable entre vistas.
+`release.json`, `manifest.json`, `prices.json` y `valuation-manifest.json` forman un bundle con SHA-256. `check_snapshot.mjs` utiliza los contratos del consumidor antes de que CI lo copie a su checkout temporal. `publication_approved=false`; sin aprobación independiente válida la app muestra Preliminar.
 
-## Orquestación y freshness
+KPIs, cards, barras y filtros compartidos mantienen identidad visual: petróleo azul, gas violeta, dinero ámbar, variación verde/rojo. ES/EN, tema y contexto de producto/período/modo/comparación se conservan al navegar y recargar; detalles tienen deep links. Resumen conserva la base aprobada.
 
-La extracción usa [.github/workflows/extract-cap4.yml](../.github/workflows/extract-cap4.yml): cron mensual día 5, 06:00 UTC. El default programado es `dev`, con el recurso 2025 configurado. La carga anual requiere `ALLOW_FULL_YEAR_LOAD=true`; sin la variable sale antes de Meltano/BigQuery. Esto es configuración declarada, no prueba de que un runner haya consumido todos los meses recientes.
+WIF/ADC sólo en el entorno, sin claves en Git ni cliente. SA de extracción escribe raw candidato; SA dbt lee raw y construye staging/intermediate/marts candidatos. Se mantienen restricciones de repo, main, workflow y ambientes. CI conserva sólo JSON reducidos, sin raw, perfiles, logs de conexiones, manifest dbt completo ni builds. No hay push, deploy o cambios IAM en el pipeline.
 
-La reemisión limpia el año/sandbox antes del append: dev utiliza TRUNCATE; prod, DELETE del año. El dispatch permite seleccionar recurso, ambiente y reemisión. Un re-run append sin limpieza puede duplicar datos.
+## Frecuencia, freshness y aceptación
 
-[dbt-transform.yml](../.github/workflows/dbt-transform.yml) valida dependencias y parse. No orquesta un build del warehouse después de extracción ni exportación, aprobación y deploy. Precios/exportación requieren pasos explícitos. No hay SLA automático demostrado de extremo a extremo.
+La frecuencia de datos es mensual. Cron preparado día 5 a las 03:00 Argentina; `DATA_PIPELINE_ENABLED=false`. No se asume que la fuente publique ese día ni que el mayor mes disponible sea completo.
 
-El objetivo de freshness es ingestar dentro de siete días de publicación oficial; sigue siendo una meta sin enforcement/alerta automática implementada. Medir por separado: mes de producción, modificación del recurso, extracción, carga, generación de snapshot y publicación. Una fuente DataStore atrasada puede tener una ejecución reciente: la auditoría de octubre encontró agosto en CSV y sólo julio en DataStore. La cobertura determina el corte, no el reloj del job.
+Los gates distinguen mes de negocio, recuperación real, ingesta y generación del snapshot. Frescura operativa máxima siete días; warning dbt a cinco días también detiene el CLI. No se rejuvenecen fuentes retenidas. Recuperación reciente no equivale a frescura económica ni cobertura: ambas se verifican aparte.
 
-## Seguridad, operación y próximos cierres
+Cargas aisladas atómicas por tabla, no transacción conjunta producción/precios. El bundle se escribe en staging temporal y se mueve completo; un fallo no modifica el snapshot del repo. [Recorrido ejecutable](../pipeline/CLI.md) y [evidencia de integración](evidence/orchestration-export/README.md).
 
-Credenciales sólo en entorno/secret manager; nunca en Git o cliente. BigQuery separa roles de carga y transformación y ambientes candidatos; promoción es deliberada. El costo depende de tamaño/reemisiones/queries y no se garantiza un costo cero.
-
-Antes de operar como servicio de producción falta cerrar recurso vigente y monitoreo, encadenar extracción → dbt build/tests → gates → export, definir responsables de alertas y promover sólo con aprobación. El hosting sigue pendiente de decisión autorizada. Estos pasos operativos no se sustituyen con el build local o las capturas UI.
-
-## Cierre de la capa de precios
-
-El flujo EIA → importador → artefacto → browser describe la entrega actual. La valoración principal debe migrar a ingesta de precios en BigQuery, modelos dbt de referencia y valorización, y export aceptado; el frontend presenta resultados y contexto. Seeds para catálogos y respaldo histórico, no cotizaciones cambiantes como mecanismo permanente. [ADR 0005](adrs/0005-pricing-layer.md).
-
-El [linaje dbt derivado de manifest](lineage/README.md) cubre modelos presentes en este árbol, no los marts candidatos de publicación pendientes en PRs de datos. Es una vista técnica diferente de la arquitectura completa.
-
-### Corrección de recarga dev preparada
-
-El run de extracción del 5 de octubre falló con 403 billingNotEnabled: TRUNCATE no está permitido en BigQuery sandbox. El script de preparación ya soporta recreación DROP/CREATE con el esquema y layout declarados. Esta rama reemplaza TRUNCATE por esa ruta sólo para dev. Prod conserva su DELETE anual y exige un proyecto/estrategia compatibles; no se habilitó facturación ni se ejecutó ninguna recarga. El último candidato publicable se conserva aunque una extracción falle.
+Antes de operar públicamente falta la ejecución real de GitHub/WIF, promoción y activación autorizadas, responsables de atención a fallos y decisión de hosting. El código y la validación local no sustituyen esos pasos. No se habilitó facturación, cron o despliegue.

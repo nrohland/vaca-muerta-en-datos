@@ -131,7 +131,16 @@ def execute_stage(args):
     python = args.python
     report = {}
     history = getattr(args, 'history', False)
-    if args.stage == 'source-prepare':
+    if args.stage == 'prepared-check':
+        prepared=args.prepared_artifact.resolve()
+        previous=load_json(prepared/'run.json')
+        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['source-prepare','price-prepare']:
+            raise ValueError('Preparation run must pass before loads')
+        validate_price_manifest(load_json(prepared/'price-manifest.json'))
+        for name in ('source-evidence','source-manifest','price-manifest'):
+            write_report(out/f'{name}.json',load_json(prepared/f'{name}.json'))
+        report=normalized_report({'phase':'load'})
+    elif args.stage == 'source-prepare':
         if history:
             argv = [python,str(root/'extraction/scripts/source_history_pipeline.py'),'prepare',
                 '--contract',str(contract),'--anchor-release',str(root/'docs/evidence/historical-source/physical-anchors.json'),
@@ -216,6 +225,20 @@ def execute_stage(args):
                            '--artifact',str(out)],root)
         if report.get('status') != 'pass' or report.get('publication_approved') is not False:
             raise ValueError('Warehouse content lineage rejected')
+    elif args.stage == 'dashboard-export':
+        summary=(args.transform_artifact.resolve()/'dbt-summary.json') if getattr(args,'transform_artifact',None) else out/'dbt-summary.json'
+        report=run_json([python,str(root/'pipeline/export_dashboard.py'),
+            '--baseline',str(root/'apps/web/public/data/release.json'),
+            '--manifest',str(root/'apps/web/public/data/manifest.json'),
+            '--dbt-summary',str(summary),'--extract-artifact',str(out),
+            '--output',str(out/'dashboard')],root)
+        if report.get('status')!='pass' or report.get('publication_approved') is not False:
+            raise ValueError('Dashboard export rejected')
+    elif args.stage == 'snapshot-check':
+        report=run_json([getattr(args,'node','node'),'--experimental-strip-types',
+            str(root/'apps/web/scripts/check_snapshot.mjs'),'--data-dir',str(out/'dashboard')],root)
+        if report.get('status')!='pass' or report.get('publication_approved') is not False:
+            raise ValueError('Frontend snapshot contract rejected')
     elif args.stage.startswith('dbt-'):
         action = args.stage.removeprefix('dbt-')
         project = args.dbt_project_dir.resolve() if args.dbt_project_dir else root/'transform'
@@ -260,7 +283,12 @@ def plan(args):
     stages = []
     extract = ['source-prepare','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
     transform = ['artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
-    names = extract if args.phase == 'extract' else transform if args.phase == 'transform' else extract+transform
+    if getattr(args,'history',False): transform += ['dashboard-export','snapshot-check']
+    plans={'prepare':['source-prepare','price-prepare'],
+        'load':['prepared-check','source-load','price-load','raw-gate','loaded-lineage'],
+        'extract':extract,'transform':transform,'all':extract+transform,
+        'export':['artifact-check','dashboard-export','snapshot-check']}
+    names=plans[args.phase]
     for name in names:
         argv = [args.python,str(Path(__file__).resolve()),args.phase,'--repo',str(args.repo.resolve()),
                 '--run-dir',str(args.run_dir.resolve()),'--scratch-dir',str(args.scratch_dir.resolve()),
@@ -271,6 +299,10 @@ def plan(args):
             argv += ['--source-inbound',str(args.source_inbound.resolve())]
         if args.extract_artifact:
             argv += ['--extract-artifact',str(args.extract_artifact.resolve())]
+        for option in ('prepared_artifact','transform_artifact'):
+            value=getattr(args,option,None)
+            if value: argv += ['--'+option.replace('_','-'),str(value.resolve())]
+        argv += ['--node',getattr(args,'node','node')]
         if args.dbt_project_dir:
             argv += ['--dbt-project-dir',str(args.dbt_project_dir.resolve())]
         stages.append(Stage(name=name,argv=tuple(argv),cwd=args.repo.resolve(),
@@ -284,10 +316,13 @@ def plan(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase',choices=['extract','transform','all'])
+    parser.add_argument('phase',choices=['prepare','load','extract','transform','export','all'])
     parser.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[1])
     parser.add_argument('--run-dir',type=Path,required=True)
     parser.add_argument('--extract-artifact',type=Path)
+    parser.add_argument('--prepared-artifact',type=Path)
+    parser.add_argument('--transform-artifact',type=Path)
+    parser.add_argument('--node',default='node')
     parser.add_argument('--scratch-dir',type=Path)
     parser.add_argument('--python',default=sys.executable)
     parser.add_argument('--dbt-bin',default='dbt')
@@ -296,7 +331,11 @@ def main():
     parser.add_argument('--source-inbound',type=Path,help='Retained official annual CSV bytes with original retrieval metadata')
     parser.add_argument('--stage',help=argparse.SUPPRESS)
     args = parser.parse_args()
-    if args.phase == 'transform' and not args.extract_artifact:
+    if args.phase == 'load' and (not args.prepared_artifact or not args.scratch_dir):
+        parser.error('load requires --prepared-artifact and the original --scratch-dir')
+    if args.phase == 'export' and (not args.history or not args.transform_artifact):
+        parser.error('export requires --history and --transform-artifact with accepted dbt-summary.json')
+    if args.phase in ('transform','export') and not args.extract_artifact:
         parser.error('transform requires --extract-artifact metadata directory')
     if args.scratch_dir is None:
         args.scratch_dir = Path(tempfile.mkdtemp(prefix='vm-candidate-'))

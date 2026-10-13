@@ -14,6 +14,7 @@ Estas especificaciones documentan preguntas, granos, semántica y aceptación. E
 | [Precios](016-candidate-pricing.md) | Cotizaciones dinámicas y valorización |
 | [Gas internacional](017-international-gas-reference.md) | Henry Hub y supuesto energético |
 | [Export histórico](018-historical-dashboard-export.md) | Contrato frontend y conciliación |
+| [Monitor](020-source-monitor.md) | Disponibilidad, estabilidad, rectificativas y avisos |
 | [Fuente histórica](019-historical-source-candidate.md) | Cuatro CSV, revisiones y corte aceptado |
 
 Los planes de hitos, checklists antiguos y specs de iteraciones visuales superadas se retiraron del árbol actual y permanecen en Git. Antes de cambiar una regla, actualizar su contrato y pruebas. No inventar definiciones para fuentes ausentes.

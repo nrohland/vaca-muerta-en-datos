@@ -198,6 +198,8 @@ def compare(state, observations, prices, as_of):
                  'previous_review_status':previous.get('review_status') if previous else None,
                  'observations':1 if not previous or changed else previous['observations']+int(moment(timestamp)>moment(previous['observed_at']))}
         result['periods'][period] = entry
+        if period in accepted and not fresh_profile['rows']:
+            event('source_quality_failure',period,None,fresh_profile['fingerprint'],{'reason':'accepted_month_missing'})
         if fresh_profile['duplicate_rows']:
             event('source_quality_failure',period,None,fresh_profile['fingerprint'],{'reason':'duplicate_well_month'})
     for period, entry in sorted(result['periods'].items()):
@@ -243,7 +245,9 @@ def bootstrap(observations, release, prices):
     for row in release['production']:
         values = observations[row['periodo']]['profile']
         volume = float(Decimal(values['oil_m3'])*Decimal('6.28981077')) if row['fluid']=='oil' else float(Decimal(values['gas_km3'])/1000)
-        if abs(volume-row['volume']) > max(1e-6, abs(volume)*1e-10) or values[row['fluid']+'_wells'] != row['positive_producing_wells']:
+        if (abs(volume-row['volume']) > max(1e-6, abs(volume)*1e-10)
+            or values[row['fluid']+'_wells'] != row['positive_producing_wells']
+            or values['vm_rows'] != row['reported_well_rows']):
             raise ValueError('Monitoring seed differs from reviewed physical snapshot')
     return {'schema_version':VERSION,'policy':POLICY,'accepted_periods':accepted,
             'periods':{p:{**observations[p], 'stable_since':observations[p]['observed_at'], 'observations':1} for p in accepted},

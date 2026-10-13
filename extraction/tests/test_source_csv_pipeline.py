@@ -53,6 +53,28 @@ class SourcePipelineTests(unittest.TestCase):
             f.write('another formation,CONVENCIONAL,2026,1,-0.000000000002,0\n')
         with self.assertRaises(ValueError): source.review_csv(csv_path, release, 2026, 1)
 
+    def test_history_policy_preserves_negative_outside_product(self):
+        csv_path, release = self.fixture()
+        with csv_path.open('a') as f:
+            f.write('sierras blancas,CONVENCIONAL,2026,1,-0.01,-0.01\n')
+        before = csv_path.read_bytes()
+        result = source.review_csv(csv_path,release,2026,1,allow_out_of_scope_negative=True)
+        self.assertEqual(result['warning_count'],2)
+        self.assertEqual(result['negative_policy'],'strict_vm_preserve_flag_outside_product')
+        self.assertEqual(csv_path.read_bytes(),before)
+        self.assertTrue(all(w['scope']=='outside_vm_noconv' for w in result['warnings']))
+
+    def test_history_policy_still_rejects_vm_negative(self):
+        with self.assertRaisesRegex(ValueError,'Invalid raw'):
+            source.review_csv(*self.fixture(negative=True),2026,1,allow_out_of_scope_negative=True)
+
+    def test_history_policy_rejects_nonfinite_outside_product(self):
+        csv_path, release = self.fixture()
+        with csv_path.open('a') as f:
+            f.write('sierras blancas,CONVENCIONAL,2026,1,nan,0\n')
+        with self.assertRaisesRegex(ValueError,'Invalid raw'):
+            source.review_csv(csv_path,release,2026,1,allow_out_of_scope_negative=True)
+
     def test_vm_rounding_negative_has_no_exception(self):
         csv_path, release = self.fixture()
         text = csv_path.read_text().replace('2026,1,1,2', '2026,1,-0.0000000000000006,2')

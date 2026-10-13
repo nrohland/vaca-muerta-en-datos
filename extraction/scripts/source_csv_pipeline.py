@@ -64,7 +64,7 @@ def fetch(url, output):
             'transport_security': 'https' if urlparse(response.url).scheme == 'https' else 'official_public_http_redirect'}
 
 
-def review_csv(source, release, year, cutoff):
+def review_csv(source, release, year, cutoff, *, allow_out_of_scope_negative=False):
     """Accepted snapshot anchors VM counts and volumes; no newest-month inference."""
     rows = defaultdict(lambda: {'rows': 0, 'oil_m3': 0.0, 'gas_km3': 0.0})
     total = 0
@@ -77,13 +77,15 @@ def review_csv(source, release, year, cutoff):
             is_vm = row['formacion'] == 'vaca muerta' and row['tipo_de_recurso'] == 'NO CONVENCIONAL'
             for field in ('prod_pet', 'prod_gas'):
                 value = float(row[field])
-                if not math.isfinite(value) or value < -1e-12 or (value < 0 and is_vm):
+                if (not math.isfinite(value) or (value < 0 and is_vm)
+                    or (value < -1e-12 and not allow_out_of_scope_negative)):
                     raise ValueError('Invalid raw production volume')
                 if value < 0:
                     anomalies.append({'field':field, 'raw_value':row[field], 'idpozo':row.get('idpozo'),
                                       'year':row['anio'], 'month':row['mes'], 'formation':row['formacion'],
                                       'resource_type':row['tipo_de_recurso'], 'scope':'outside_vm_noconv',
-                                      'action':'preserved_unchanged_nonvm_floating_point_warning'})
+                                      'action':('preserved_unchanged_outside_product_negative' if allow_out_of_scope_negative
+                                                else 'preserved_unchanged_nonvm_floating_point_warning')})
             if is_vm:
                 period = f"{int(row['anio']):04d}-{int(row['mes']):02d}-01"
                 metric = rows[period]
@@ -107,7 +109,8 @@ def review_csv(source, release, year, cutoff):
             'source_rows': total, 'anchor_sha256': digest(release),
             'basis': 'VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained',
             'excluded_periods': sorted(set(rows)-set(accepted)), 'warnings':anomalies,
-            'warning_count':len(anomalies), 'negative_tolerance_nonvm':1e-12}
+            'warning_count':len(anomalies), 'negative_tolerance_nonvm':None if allow_out_of_scope_negative else 1e-12,
+            'negative_policy': 'strict_vm_preserve_flag_outside_product' if allow_out_of_scope_negative else 'strict_all_with_nonvm_roundoff_tolerance'}
 
 
 def prepare_stage(args):

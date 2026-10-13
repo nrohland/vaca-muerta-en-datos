@@ -1,0 +1,713 @@
+{
+  "schema_version": 1,
+  "status": "technically_reviewed_candidate",
+  "publication_approved": false,
+  "production": [
+    {
+      "periodo": "2023-01-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1847,
+      "positive_producing_wells": 1453,
+      "volume": 1571.9983177939996
+    },
+    {
+      "periodo": "2023-02-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1873,
+      "positive_producing_wells": 1443,
+      "volume": 1465.4738523790024
+    },
+    {
+      "periodo": "2023-03-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1891,
+      "positive_producing_wells": 1452,
+      "volume": 1629.5823210889996
+    },
+    {
+      "periodo": "2023-04-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1911,
+      "positive_producing_wells": 1464,
+      "volume": 1559.3392413223805
+    },
+    {
+      "periodo": "2023-05-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1937,
+      "positive_producing_wells": 1517,
+      "volume": 1795.7838497486832
+    },
+    {
+      "periodo": "2023-06-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1978,
+      "positive_producing_wells": 1525,
+      "volume": 1868.5334196830504
+    },
+    {
+      "periodo": "2023-07-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 1998,
+      "positive_producing_wells": 1551,
+      "volume": 2011.2411268800388
+    },
+    {
+      "periodo": "2023-08-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2031,
+      "positive_producing_wells": 1566,
+      "volume": 2124.189102052611
+    },
+    {
+      "periodo": "2023-09-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2061,
+      "positive_producing_wells": 1591,
+      "volume": 2022.3632412242434
+    },
+    {
+      "periodo": "2023-10-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2085,
+      "positive_producing_wells": 1615,
+      "volume": 1769.2515795070003
+    },
+    {
+      "periodo": "2023-11-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2126,
+      "positive_producing_wells": 1633,
+      "volume": 1766.5491858770029
+    },
+    {
+      "periodo": "2023-12-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2173,
+      "positive_producing_wells": 1661,
+      "volume": 1587.1207540290015
+    },
+    {
+      "periodo": "2024-01-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2200,
+      "positive_producing_wells": 1683,
+      "volume": 1754.326860137
+    },
+    {
+      "periodo": "2024-02-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2237,
+      "positive_producing_wells": 1716,
+      "volume": 1791.241668484736
+    },
+    {
+      "periodo": "2024-03-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2268,
+      "positive_producing_wells": 1764,
+      "volume": 1946.6887452958229
+    },
+    {
+      "periodo": "2024-04-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2300,
+      "positive_producing_wells": 1790,
+      "volume": 1936.5324978090334
+    },
+    {
+      "periodo": "2024-05-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2342,
+      "positive_producing_wells": 1845,
+      "volume": 2411.4715399976403
+    },
+    {
+      "periodo": "2024-06-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2367,
+      "positive_producing_wells": 1887,
+      "volume": 2345.8367147503836
+    },
+    {
+      "periodo": "2024-07-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2414,
+      "positive_producing_wells": 1925,
+      "volume": 2574.0943129933025
+    },
+    {
+      "periodo": "2024-08-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2463,
+      "positive_producing_wells": 1981,
+      "volume": 2604.9761511633164
+    },
+    {
+      "periodo": "2024-09-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2346,
+      "positive_producing_wells": 1896,
+      "volume": 2349.6091743548623
+    },
+    {
+      "periodo": "2024-10-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2525,
+      "positive_producing_wells": 2016,
+      "volume": 2010.2153023499777
+    },
+    {
+      "periodo": "2024-11-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2554,
+      "positive_producing_wells": 2021,
+      "volume": 1864.553096595963
+    },
+    {
+      "periodo": "2024-12-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2570,
+      "positive_producing_wells": 2039,
+      "volume": 1907.4408448127604
+    },
+    {
+      "periodo": "2025-01-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2609,
+      "positive_producing_wells": 2113,
+      "volume": 2131.1787453020993
+    },
+    {
+      "periodo": "2025-02-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2652,
+      "positive_producing_wells": 2115,
+      "volume": 2082.262010411402
+    },
+    {
+      "periodo": "2025-03-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2684,
+      "positive_producing_wells": 2145,
+      "volume": 2069.6325796218193
+    },
+    {
+      "periodo": "2025-04-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2728,
+      "positive_producing_wells": 2201,
+      "volume": 2078.2847218246843
+    },
+    {
+      "periodo": "2025-05-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2782,
+      "positive_producing_wells": 2232,
+      "volume": 2470.9158998110383
+    },
+    {
+      "periodo": "2025-06-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2825,
+      "positive_producing_wells": 2312,
+      "volume": 2661.5892393152144
+    },
+    {
+      "periodo": "2025-07-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2862,
+      "positive_producing_wells": 2359,
+      "volume": 2829.2065059133984
+    },
+    {
+      "periodo": "2025-08-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2914,
+      "positive_producing_wells": 2394,
+      "volume": 2796.4712854855616
+    },
+    {
+      "periodo": "2025-09-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2947,
+      "positive_producing_wells": 2430,
+      "volume": 2261.4520050071314
+    },
+    {
+      "periodo": "2025-10-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 2990,
+      "positive_producing_wells": 2452,
+      "volume": 2011.0847133320126
+    },
+    {
+      "periodo": "2025-11-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3017,
+      "positive_producing_wells": 2455,
+      "volume": 1922.6986634221776
+    },
+    {
+      "periodo": "2025-12-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3053,
+      "positive_producing_wells": 2515,
+      "volume": 2255.8002819491708
+    },
+    {
+      "periodo": "2026-01-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3085,
+      "positive_producing_wells": 2542,
+      "volume": 2260.617979227331
+    },
+    {
+      "periodo": "2026-02-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3127,
+      "positive_producing_wells": 2588,
+      "volume": 2194.107979789633
+    },
+    {
+      "periodo": "2026-03-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3165,
+      "positive_producing_wells": 2658,
+      "volume": 2564.071366192378
+    },
+    {
+      "periodo": "2026-04-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3217,
+      "positive_producing_wells": 2704,
+      "volume": 2485.1170783152584
+    },
+    {
+      "periodo": "2026-05-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3281,
+      "positive_producing_wells": 2771,
+      "volume": 2962.415479296999
+    },
+    {
+      "periodo": "2026-06-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3322,
+      "positive_producing_wells": 2783,
+      "volume": 2932.907633160729
+    },
+    {
+      "periodo": "2026-07-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3369,
+      "positive_producing_wells": 2836,
+      "volume": 2994.3324092420708
+    },
+    {
+      "periodo": "2026-08-01",
+      "fluid": "gas",
+      "is_complete": true,
+      "reported_well_rows": 3404,
+      "positive_producing_wells": 2884,
+      "volume": 2958.950899444006
+    },
+    {
+      "periodo": "2023-01-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1847,
+      "positive_producing_wells": 1309,
+      "volume": 8821970.66681225
+    },
+    {
+      "periodo": "2023-02-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1873,
+      "positive_producing_wells": 1312,
+      "volume": 8199889.943211073
+    },
+    {
+      "periodo": "2023-03-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1891,
+      "positive_producing_wells": 1322,
+      "volume": 9313517.590414064
+    },
+    {
+      "periodo": "2023-04-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1911,
+      "positive_producing_wells": 1323,
+      "volume": 8863272.260556078
+    },
+    {
+      "periodo": "2023-05-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1937,
+      "positive_producing_wells": 1353,
+      "volume": 9175311.34602552
+    },
+    {
+      "periodo": "2023-06-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1978,
+      "positive_producing_wells": 1370,
+      "volume": 8711542.740664164
+    },
+    {
+      "periodo": "2023-07-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 1998,
+      "positive_producing_wells": 1389,
+      "volume": 9011944.186706416
+    },
+    {
+      "periodo": "2023-08-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2031,
+      "positive_producing_wells": 1402,
+      "volume": 9202956.254064795
+    },
+    {
+      "periodo": "2023-09-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2061,
+      "positive_producing_wells": 1430,
+      "volume": 9143833.028994445
+    },
+    {
+      "periodo": "2023-10-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2085,
+      "positive_producing_wells": 1474,
+      "volume": 10019289.28861239
+    },
+    {
+      "periodo": "2023-11-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2126,
+      "positive_producing_wells": 1490,
+      "volume": 10178071.230104603
+    },
+    {
+      "periodo": "2023-12-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2173,
+      "positive_producing_wells": 1516,
+      "volume": 10903547.219505563
+    },
+    {
+      "periodo": "2024-01-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2200,
+      "positive_producing_wells": 1547,
+      "volume": 10704598.707958473
+    },
+    {
+      "periodo": "2024-02-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2237,
+      "positive_producing_wells": 1568,
+      "volume": 10226354.081032693
+    },
+    {
+      "periodo": "2024-03-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2268,
+      "positive_producing_wells": 1615,
+      "volume": 11167988.579719376
+    },
+    {
+      "periodo": "2024-04-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2300,
+      "positive_producing_wells": 1634,
+      "volume": 10889223.350567777
+    },
+    {
+      "periodo": "2024-05-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2342,
+      "positive_producing_wells": 1696,
+      "volume": 11347659.14582079
+    },
+    {
+      "periodo": "2024-06-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2367,
+      "positive_producing_wells": 1735,
+      "volume": 11191707.324604873
+    },
+    {
+      "periodo": "2024-07-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2414,
+      "positive_producing_wells": 1767,
+      "volume": 11960791.547239931
+    },
+    {
+      "periodo": "2024-08-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2463,
+      "positive_producing_wells": 1816,
+      "volume": 12471293.183577461
+    },
+    {
+      "periodo": "2024-09-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2346,
+      "positive_producing_wells": 1734,
+      "volume": 11560228.32283518
+    },
+    {
+      "periodo": "2024-10-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2525,
+      "positive_producing_wells": 1860,
+      "volume": 13062857.951493634
+    },
+    {
+      "periodo": "2024-11-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2554,
+      "positive_producing_wells": 1848,
+      "volume": 13116113.90593294
+    },
+    {
+      "periodo": "2024-12-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2570,
+      "positive_producing_wells": 1882,
+      "volume": 13869107.683327215
+    },
+    {
+      "periodo": "2025-01-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2609,
+      "positive_producing_wells": 1952,
+      "volume": 13711779.944538461
+    },
+    {
+      "periodo": "2025-02-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2652,
+      "positive_producing_wells": 1960,
+      "volume": 12406378.27036953
+    },
+    {
+      "periodo": "2025-03-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2684,
+      "positive_producing_wells": 1985,
+      "volume": 13831823.994921591
+    },
+    {
+      "periodo": "2025-04-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2728,
+      "positive_producing_wells": 2030,
+      "volume": 13246304.737001926
+    },
+    {
+      "periodo": "2025-05-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2782,
+      "positive_producing_wells": 2069,
+      "volume": 13882015.98337089
+    },
+    {
+      "periodo": "2025-06-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2825,
+      "positive_producing_wells": 2146,
+      "volume": 14283842.78287388
+    },
+    {
+      "periodo": "2025-07-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2862,
+      "positive_producing_wells": 2188,
+      "volume": 15767051.10275584
+    },
+    {
+      "periodo": "2025-08-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2914,
+      "positive_producing_wells": 2214,
+      "volume": 16323168.831256812
+    },
+    {
+      "periodo": "2025-09-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2947,
+      "positive_producing_wells": 2247,
+      "volume": 16402583.702750716
+    },
+    {
+      "periodo": "2025-10-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 2990,
+      "positive_producing_wells": 2287,
+      "volume": 17617682.844927292
+    },
+    {
+      "periodo": "2025-11-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3017,
+      "positive_producing_wells": 2301,
+      "volume": 17301878.6443301
+    },
+    {
+      "periodo": "2025-12-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3053,
+      "positive_producing_wells": 2355,
+      "volume": 18302187.771592326
+    },
+    {
+      "periodo": "2026-01-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3085,
+      "positive_producing_wells": 2379,
+      "volume": 18582683.91012241
+    },
+    {
+      "periodo": "2026-02-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3127,
+      "positive_producing_wells": 2411,
+      "volume": 16542257.043827973
+    },
+    {
+      "periodo": "2026-03-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3165,
+      "positive_producing_wells": 2461,
+      "volume": 18525002.1082581
+    },
+    {
+      "periodo": "2026-04-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3217,
+      "positive_producing_wells": 2506,
+      "volume": 18481290.807998978
+    },
+    {
+      "periodo": "2026-05-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3281,
+      "positive_producing_wells": 2556,
+      "volume": 19301580.110595394
+    },
+    {
+      "periodo": "2026-06-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3322,
+      "positive_producing_wells": 2585,
+      "volume": 19005257.480213266
+    },
+    {
+      "periodo": "2026-07-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3369,
+      "positive_producing_wells": 2633,
+      "volume": 19936569.402626246
+    },
+    {
+      "periodo": "2026-08-01",
+      "fluid": "oil",
+      "is_complete": true,
+      "reported_well_rows": 3404,
+      "positive_producing_wells": 2678,
+      "volume": 20763871.222585436
+    }
+  ],
+  "baseline_sha256": "1bf27be1365a1520f757f7b1fa6b936a1fc07fe7f07a0f3e7a831b7bfd21688b",
+  "revision": "well_164323_resource_classification_csv_vs_retained_raw"
+}

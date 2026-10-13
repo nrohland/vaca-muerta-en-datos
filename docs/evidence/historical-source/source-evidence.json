@@ -1,0 +1,1710 @@
+{
+  "schema_version": 2,
+  "start_period": "2023-01-01",
+  "cutoff": "2026-08-01",
+  "sources": [
+    {
+      "year": 2023,
+      "resource_id": "231c39b3-e81e-4398-af8d-b115807f2c25",
+      "source_sha256": "acb887f8255134fbea1b954e472e21ccb02e70ce82d595d11be80b9d2e870a40",
+      "extracted_at": "2026-10-13T14:41:31.167486+00:00",
+      "year_rows": 974971,
+      "month_rows": {
+        "2023-01-01": 80833,
+        "2023-02-01": 80912,
+        "2023-03-01": 80969,
+        "2023-04-01": 81048,
+        "2023-05-01": 81133,
+        "2023-06-01": 81240,
+        "2023-07-01": 81312,
+        "2023-08-01": 81349,
+        "2023-09-01": 81431,
+        "2023-10-01": 81496,
+        "2023-11-01": 81561,
+        "2023-12-01": 81687
+      },
+      "review": {
+        "accepted_periods": [
+          "2023-01-01",
+          "2023-02-01",
+          "2023-03-01",
+          "2023-04-01",
+          "2023-05-01",
+          "2023-06-01",
+          "2023-07-01",
+          "2023-08-01",
+          "2023-09-01",
+          "2023-10-01",
+          "2023-11-01",
+          "2023-12-01"
+        ],
+        "vm_reconciliation": [
+          {
+            "period": "2023-01-01",
+            "fluid": "oil",
+            "volume": 8821970.66681225,
+            "rows": 1847
+          },
+          {
+            "period": "2023-01-01",
+            "fluid": "gas",
+            "volume": 1571.9983177939996,
+            "rows": 1847
+          },
+          {
+            "period": "2023-02-01",
+            "fluid": "oil",
+            "volume": 8199889.943211073,
+            "rows": 1873
+          },
+          {
+            "period": "2023-02-01",
+            "fluid": "gas",
+            "volume": 1465.4738523790024,
+            "rows": 1873
+          },
+          {
+            "period": "2023-03-01",
+            "fluid": "oil",
+            "volume": 9313517.590414064,
+            "rows": 1891
+          },
+          {
+            "period": "2023-03-01",
+            "fluid": "gas",
+            "volume": 1629.5823210889996,
+            "rows": 1891
+          },
+          {
+            "period": "2023-04-01",
+            "fluid": "oil",
+            "volume": 8863272.260556078,
+            "rows": 1911
+          },
+          {
+            "period": "2023-04-01",
+            "fluid": "gas",
+            "volume": 1559.3392413223805,
+            "rows": 1911
+          },
+          {
+            "period": "2023-05-01",
+            "fluid": "oil",
+            "volume": 9175311.34602552,
+            "rows": 1937
+          },
+          {
+            "period": "2023-05-01",
+            "fluid": "gas",
+            "volume": 1795.7838497486832,
+            "rows": 1937
+          },
+          {
+            "period": "2023-06-01",
+            "fluid": "oil",
+            "volume": 8711542.740664164,
+            "rows": 1978
+          },
+          {
+            "period": "2023-06-01",
+            "fluid": "gas",
+            "volume": 1868.5334196830504,
+            "rows": 1978
+          },
+          {
+            "period": "2023-07-01",
+            "fluid": "oil",
+            "volume": 9011944.186706416,
+            "rows": 1998
+          },
+          {
+            "period": "2023-07-01",
+            "fluid": "gas",
+            "volume": 2011.2411268800388,
+            "rows": 1998
+          },
+          {
+            "period": "2023-08-01",
+            "fluid": "oil",
+            "volume": 9202956.254064795,
+            "rows": 2031
+          },
+          {
+            "period": "2023-08-01",
+            "fluid": "gas",
+            "volume": 2124.189102052611,
+            "rows": 2031
+          },
+          {
+            "period": "2023-09-01",
+            "fluid": "oil",
+            "volume": 9143833.028994445,
+            "rows": 2061
+          },
+          {
+            "period": "2023-09-01",
+            "fluid": "gas",
+            "volume": 2022.3632412242434,
+            "rows": 2061
+          },
+          {
+            "period": "2023-10-01",
+            "fluid": "oil",
+            "volume": 10019289.28861239,
+            "rows": 2085
+          },
+          {
+            "period": "2023-10-01",
+            "fluid": "gas",
+            "volume": 1769.2515795070003,
+            "rows": 2085
+          },
+          {
+            "period": "2023-11-01",
+            "fluid": "oil",
+            "volume": 10178071.230104603,
+            "rows": 2126
+          },
+          {
+            "period": "2023-11-01",
+            "fluid": "gas",
+            "volume": 1766.5491858770029,
+            "rows": 2126
+          },
+          {
+            "period": "2023-12-01",
+            "fluid": "oil",
+            "volume": 10903547.219505563,
+            "rows": 2173
+          },
+          {
+            "period": "2023-12-01",
+            "fluid": "gas",
+            "volume": 1587.1207540290015,
+            "rows": 2173
+          }
+        ],
+        "source_rows": 974971,
+        "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+        "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+        "excluded_periods": [],
+        "warnings": [],
+        "warning_count": 0,
+        "negative_tolerance_nonvm": null,
+        "negative_policy": "strict_vm_preserve_flag_outside_product"
+      },
+      "source_url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/231c39b3-e81e-4398-af8d-b115807f2c25/download/produccin-de-pozos-de-gas-y-petrleo-2023.csv",
+      "final_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/231c39b3-e81e-4398-af8d-b115807f2c25/download/produccin-de-pozos-de-gas-y-petrleo-2023.csv",
+      "transport_security": "official_public_http_redirect"
+    },
+    {
+      "year": 2024,
+      "resource_id": "43a09dce-1742-44d0-bc13-f193deaab563",
+      "source_sha256": "2c3e2f6ec26840266c92aea509acf7677daf146d52e58bbd794a976b96e29cba",
+      "extracted_at": "2026-10-13T14:41:22.902614+00:00",
+      "year_rows": 983551,
+      "month_rows": {
+        "2024-01-01": 81572,
+        "2024-02-01": 81649,
+        "2024-03-01": 81720,
+        "2024-04-01": 81797,
+        "2024-05-01": 81883,
+        "2024-06-01": 81934,
+        "2024-07-01": 82008,
+        "2024-08-01": 82104,
+        "2024-09-01": 81994,
+        "2024-10-01": 82223,
+        "2024-11-01": 82316,
+        "2024-12-01": 82351
+      },
+      "review": {
+        "accepted_periods": [
+          "2024-01-01",
+          "2024-02-01",
+          "2024-03-01",
+          "2024-04-01",
+          "2024-05-01",
+          "2024-06-01",
+          "2024-07-01",
+          "2024-08-01",
+          "2024-09-01",
+          "2024-10-01",
+          "2024-11-01",
+          "2024-12-01"
+        ],
+        "vm_reconciliation": [
+          {
+            "period": "2024-01-01",
+            "fluid": "oil",
+            "volume": 10704598.707958473,
+            "rows": 2200
+          },
+          {
+            "period": "2024-01-01",
+            "fluid": "gas",
+            "volume": 1754.326860137,
+            "rows": 2200
+          },
+          {
+            "period": "2024-02-01",
+            "fluid": "oil",
+            "volume": 10226354.081032693,
+            "rows": 2237
+          },
+          {
+            "period": "2024-02-01",
+            "fluid": "gas",
+            "volume": 1791.241668484736,
+            "rows": 2237
+          },
+          {
+            "period": "2024-03-01",
+            "fluid": "oil",
+            "volume": 11167988.579719376,
+            "rows": 2268
+          },
+          {
+            "period": "2024-03-01",
+            "fluid": "gas",
+            "volume": 1946.6887452958229,
+            "rows": 2268
+          },
+          {
+            "period": "2024-04-01",
+            "fluid": "oil",
+            "volume": 10889223.350567777,
+            "rows": 2300
+          },
+          {
+            "period": "2024-04-01",
+            "fluid": "gas",
+            "volume": 1936.5324978090334,
+            "rows": 2300
+          },
+          {
+            "period": "2024-05-01",
+            "fluid": "oil",
+            "volume": 11347659.14582079,
+            "rows": 2342
+          },
+          {
+            "period": "2024-05-01",
+            "fluid": "gas",
+            "volume": 2411.4715399976403,
+            "rows": 2342
+          },
+          {
+            "period": "2024-06-01",
+            "fluid": "oil",
+            "volume": 11191707.324604873,
+            "rows": 2367
+          },
+          {
+            "period": "2024-06-01",
+            "fluid": "gas",
+            "volume": 2345.8367147503836,
+            "rows": 2367
+          },
+          {
+            "period": "2024-07-01",
+            "fluid": "oil",
+            "volume": 11960791.547239931,
+            "rows": 2414
+          },
+          {
+            "period": "2024-07-01",
+            "fluid": "gas",
+            "volume": 2574.0943129933025,
+            "rows": 2414
+          },
+          {
+            "period": "2024-08-01",
+            "fluid": "oil",
+            "volume": 12471293.183577461,
+            "rows": 2463
+          },
+          {
+            "period": "2024-08-01",
+            "fluid": "gas",
+            "volume": 2604.9761511633164,
+            "rows": 2463
+          },
+          {
+            "period": "2024-09-01",
+            "fluid": "oil",
+            "volume": 11560228.32283518,
+            "rows": 2346
+          },
+          {
+            "period": "2024-09-01",
+            "fluid": "gas",
+            "volume": 2349.6091743548623,
+            "rows": 2346
+          },
+          {
+            "period": "2024-10-01",
+            "fluid": "oil",
+            "volume": 13062857.951493634,
+            "rows": 2525
+          },
+          {
+            "period": "2024-10-01",
+            "fluid": "gas",
+            "volume": 2010.2153023499777,
+            "rows": 2525
+          },
+          {
+            "period": "2024-11-01",
+            "fluid": "oil",
+            "volume": 13116113.90593294,
+            "rows": 2554
+          },
+          {
+            "period": "2024-11-01",
+            "fluid": "gas",
+            "volume": 1864.553096595963,
+            "rows": 2554
+          },
+          {
+            "period": "2024-12-01",
+            "fluid": "oil",
+            "volume": 13869107.683327215,
+            "rows": 2570
+          },
+          {
+            "period": "2024-12-01",
+            "fluid": "gas",
+            "volume": 1907.4408448127604,
+            "rows": 2570
+          }
+        ],
+        "source_rows": 983551,
+        "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+        "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+        "excluded_periods": [],
+        "warnings": [
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.01",
+            "idpozo": "134542",
+            "year": "2024",
+            "month": "4",
+            "formation": "sierras blancas",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_gas",
+            "raw_value": "-0.01",
+            "idpozo": "134542",
+            "year": "2024",
+            "month": "4",
+            "formation": "sierras blancas",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          }
+        ],
+        "warning_count": 2,
+        "negative_tolerance_nonvm": null,
+        "negative_policy": "strict_vm_preserve_flag_outside_product"
+      },
+      "source_url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/43a09dce-1742-44d0-bc13-f193deaab563/download/produccin-de-pozos-de-gas-y-petrleo-2024.csv",
+      "final_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/43a09dce-1742-44d0-bc13-f193deaab563/download/produccin-de-pozos-de-gas-y-petrleo-2024.csv",
+      "transport_security": "official_public_http_redirect"
+    },
+    {
+      "year": 2025,
+      "resource_id": "d774b5d7-0756-48fe-88f2-8729b57b22da",
+      "source_sha256": "01cc0ae6e549e02ff4206002d1de0ac11e7dcdff5fcc72d969717897667dad69",
+      "extracted_at": "2026-10-13T14:41:34.614428+00:00",
+      "year_rows": 991936,
+      "month_rows": {
+        "2025-01-01": 82412,
+        "2025-02-01": 82490,
+        "2025-03-01": 82556,
+        "2025-04-01": 82651,
+        "2025-05-01": 82734,
+        "2025-06-01": 82804,
+        "2025-07-01": 82184,
+        "2025-08-01": 82659,
+        "2025-09-01": 82846,
+        "2025-10-01": 82829,
+        "2025-11-01": 82881,
+        "2025-12-01": 82890
+      },
+      "review": {
+        "accepted_periods": [
+          "2025-01-01",
+          "2025-02-01",
+          "2025-03-01",
+          "2025-04-01",
+          "2025-05-01",
+          "2025-06-01",
+          "2025-07-01",
+          "2025-08-01",
+          "2025-09-01",
+          "2025-10-01",
+          "2025-11-01",
+          "2025-12-01"
+        ],
+        "vm_reconciliation": [
+          {
+            "period": "2025-01-01",
+            "fluid": "oil",
+            "volume": 13711779.944538461,
+            "rows": 2609
+          },
+          {
+            "period": "2025-01-01",
+            "fluid": "gas",
+            "volume": 2131.1787453020993,
+            "rows": 2609
+          },
+          {
+            "period": "2025-02-01",
+            "fluid": "oil",
+            "volume": 12406378.27036953,
+            "rows": 2652
+          },
+          {
+            "period": "2025-02-01",
+            "fluid": "gas",
+            "volume": 2082.262010411402,
+            "rows": 2652
+          },
+          {
+            "period": "2025-03-01",
+            "fluid": "oil",
+            "volume": 13831823.994921591,
+            "rows": 2684
+          },
+          {
+            "period": "2025-03-01",
+            "fluid": "gas",
+            "volume": 2069.6325796218193,
+            "rows": 2684
+          },
+          {
+            "period": "2025-04-01",
+            "fluid": "oil",
+            "volume": 13246304.737001926,
+            "rows": 2728
+          },
+          {
+            "period": "2025-04-01",
+            "fluid": "gas",
+            "volume": 2078.2847218246843,
+            "rows": 2728
+          },
+          {
+            "period": "2025-05-01",
+            "fluid": "oil",
+            "volume": 13882015.98337089,
+            "rows": 2782
+          },
+          {
+            "period": "2025-05-01",
+            "fluid": "gas",
+            "volume": 2470.9158998110383,
+            "rows": 2782
+          },
+          {
+            "period": "2025-06-01",
+            "fluid": "oil",
+            "volume": 14283842.78287388,
+            "rows": 2825
+          },
+          {
+            "period": "2025-06-01",
+            "fluid": "gas",
+            "volume": 2661.5892393152144,
+            "rows": 2825
+          },
+          {
+            "period": "2025-07-01",
+            "fluid": "oil",
+            "volume": 15767051.10275584,
+            "rows": 2862
+          },
+          {
+            "period": "2025-07-01",
+            "fluid": "gas",
+            "volume": 2829.2065059133984,
+            "rows": 2862
+          },
+          {
+            "period": "2025-08-01",
+            "fluid": "oil",
+            "volume": 16323168.831256812,
+            "rows": 2914
+          },
+          {
+            "period": "2025-08-01",
+            "fluid": "gas",
+            "volume": 2796.4712854855616,
+            "rows": 2914
+          },
+          {
+            "period": "2025-09-01",
+            "fluid": "oil",
+            "volume": 16402583.702750716,
+            "rows": 2947
+          },
+          {
+            "period": "2025-09-01",
+            "fluid": "gas",
+            "volume": 2261.4520050071314,
+            "rows": 2947
+          },
+          {
+            "period": "2025-10-01",
+            "fluid": "oil",
+            "volume": 17617682.844927292,
+            "rows": 2990
+          },
+          {
+            "period": "2025-10-01",
+            "fluid": "gas",
+            "volume": 2011.0847133320126,
+            "rows": 2990
+          },
+          {
+            "period": "2025-11-01",
+            "fluid": "oil",
+            "volume": 17301878.6443301,
+            "rows": 3017
+          },
+          {
+            "period": "2025-11-01",
+            "fluid": "gas",
+            "volume": 1922.6986634221776,
+            "rows": 3017
+          },
+          {
+            "period": "2025-12-01",
+            "fluid": "oil",
+            "volume": 18302187.771592326,
+            "rows": 3053
+          },
+          {
+            "period": "2025-12-01",
+            "fluid": "gas",
+            "volume": 2255.8002819491708,
+            "rows": 3053
+          }
+        ],
+        "source_rows": 991936,
+        "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+        "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+        "excluded_periods": [],
+        "warnings": [
+          {
+            "field": "prod_gas",
+            "raw_value": "-0.4366",
+            "idpozo": "137676",
+            "year": "2025",
+            "month": "4",
+            "formation": "mulichinco",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_gas",
+            "raw_value": "-0.8416",
+            "idpozo": "153368",
+            "year": "2025",
+            "month": "4",
+            "formation": "mulichinco",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.00001",
+            "idpozo": "157691",
+            "year": "2025",
+            "month": "11",
+            "formation": "basamento",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.05",
+            "idpozo": "153774",
+            "year": "2025",
+            "month": "9",
+            "formation": "centenario",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_gas",
+            "raw_value": "-0.01",
+            "idpozo": "153774",
+            "year": "2025",
+            "month": "9",
+            "formation": "centenario",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.05",
+            "idpozo": "157592",
+            "year": "2025",
+            "month": "9",
+            "formation": "lajas",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_gas",
+            "raw_value": "-8.09",
+            "idpozo": "157592",
+            "year": "2025",
+            "month": "9",
+            "formation": "lajas",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.08",
+            "idpozo": "50649",
+            "year": "2025",
+            "month": "9",
+            "formation": "lotena",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_gas",
+            "raw_value": "-12.14",
+            "idpozo": "50649",
+            "year": "2025",
+            "month": "9",
+            "formation": "lotena",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          },
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.01",
+            "idpozo": "153775",
+            "year": "2025",
+            "month": "9",
+            "formation": "mulichinco",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          }
+        ],
+        "warning_count": 10,
+        "negative_tolerance_nonvm": null,
+        "negative_policy": "strict_vm_preserve_flag_outside_product"
+      },
+      "source_url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/d774b5d7-0756-48fe-88f2-8729b57b22da/download/produccin-de-pozos-de-gas-y-petrleo-2025.csv",
+      "final_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/d774b5d7-0756-48fe-88f2-8729b57b22da/download/produccin-de-pozos-de-gas-y-petrleo-2025.csv",
+      "transport_security": "official_public_http_redirect"
+    },
+    {
+      "year": 2026,
+      "resource_id": "fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+      "source_sha256": "7978a52c7ed409e78a32d08440c2c1fbdd5af6df74ea5b73d8cdcad4f4e7ec73",
+      "extracted_at": "2026-10-13T14:41:07.672014+00:00",
+      "year_rows": 663755,
+      "month_rows": {
+        "2026-01-01": 82948,
+        "2026-02-01": 83001,
+        "2026-03-01": 83035,
+        "2026-04-01": 82949,
+        "2026-05-01": 83033,
+        "2026-06-01": 82476,
+        "2026-07-01": 82549,
+        "2026-08-01": 79576,
+        "2026-09-01": 4188
+      },
+      "review": {
+        "accepted_periods": [
+          "2026-01-01",
+          "2026-02-01",
+          "2026-03-01",
+          "2026-04-01",
+          "2026-05-01",
+          "2026-06-01",
+          "2026-07-01",
+          "2026-08-01"
+        ],
+        "vm_reconciliation": [
+          {
+            "period": "2026-01-01",
+            "fluid": "oil",
+            "volume": 18582683.91012241,
+            "rows": 3085
+          },
+          {
+            "period": "2026-01-01",
+            "fluid": "gas",
+            "volume": 2260.617979227331,
+            "rows": 3085
+          },
+          {
+            "period": "2026-02-01",
+            "fluid": "oil",
+            "volume": 16542257.043827973,
+            "rows": 3127
+          },
+          {
+            "period": "2026-02-01",
+            "fluid": "gas",
+            "volume": 2194.107979789633,
+            "rows": 3127
+          },
+          {
+            "period": "2026-03-01",
+            "fluid": "oil",
+            "volume": 18525002.1082581,
+            "rows": 3165
+          },
+          {
+            "period": "2026-03-01",
+            "fluid": "gas",
+            "volume": 2564.071366192378,
+            "rows": 3165
+          },
+          {
+            "period": "2026-04-01",
+            "fluid": "oil",
+            "volume": 18481290.807998978,
+            "rows": 3217
+          },
+          {
+            "period": "2026-04-01",
+            "fluid": "gas",
+            "volume": 2485.1170783152584,
+            "rows": 3217
+          },
+          {
+            "period": "2026-05-01",
+            "fluid": "oil",
+            "volume": 19301580.110595394,
+            "rows": 3281
+          },
+          {
+            "period": "2026-05-01",
+            "fluid": "gas",
+            "volume": 2962.415479296999,
+            "rows": 3281
+          },
+          {
+            "period": "2026-06-01",
+            "fluid": "oil",
+            "volume": 19005257.480213266,
+            "rows": 3322
+          },
+          {
+            "period": "2026-06-01",
+            "fluid": "gas",
+            "volume": 2932.907633160729,
+            "rows": 3322
+          },
+          {
+            "period": "2026-07-01",
+            "fluid": "oil",
+            "volume": 19936569.402626246,
+            "rows": 3369
+          },
+          {
+            "period": "2026-07-01",
+            "fluid": "gas",
+            "volume": 2994.3324092420708,
+            "rows": 3369
+          },
+          {
+            "period": "2026-08-01",
+            "fluid": "oil",
+            "volume": 20763871.222585436,
+            "rows": 3404
+          },
+          {
+            "period": "2026-08-01",
+            "fluid": "gas",
+            "volume": 2958.950899444006,
+            "rows": 3404
+          }
+        ],
+        "source_rows": 663755,
+        "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+        "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+        "excluded_periods": [
+          "2026-09-01"
+        ],
+        "warnings": [
+          {
+            "field": "prod_pet",
+            "raw_value": "-0.000000000000000597557597885158",
+            "idpozo": "135614",
+            "year": "2026",
+            "month": "2",
+            "formation": "ca\u00f1adon seco",
+            "resource_type": "CONVENCIONAL",
+            "scope": "outside_vm_noconv",
+            "action": "preserved_unchanged_outside_product_negative"
+          }
+        ],
+        "warning_count": 1,
+        "negative_tolerance_nonvm": null,
+        "negative_policy": "strict_vm_preserve_flag_outside_product"
+      },
+      "source_url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+      "final_url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+      "transport_security": "official_public_http_redirect"
+    }
+  ],
+  "total_rows": 3614213,
+  "accepted_periods": [
+    "2023-01-01",
+    "2023-02-01",
+    "2023-03-01",
+    "2023-04-01",
+    "2023-05-01",
+    "2023-06-01",
+    "2023-07-01",
+    "2023-08-01",
+    "2023-09-01",
+    "2023-10-01",
+    "2023-11-01",
+    "2023-12-01",
+    "2024-01-01",
+    "2024-02-01",
+    "2024-03-01",
+    "2024-04-01",
+    "2024-05-01",
+    "2024-06-01",
+    "2024-07-01",
+    "2024-08-01",
+    "2024-09-01",
+    "2024-10-01",
+    "2024-11-01",
+    "2024-12-01",
+    "2025-01-01",
+    "2025-02-01",
+    "2025-03-01",
+    "2025-04-01",
+    "2025-05-01",
+    "2025-06-01",
+    "2025-07-01",
+    "2025-08-01",
+    "2025-09-01",
+    "2025-10-01",
+    "2025-11-01",
+    "2025-12-01",
+    "2026-01-01",
+    "2026-02-01",
+    "2026-03-01",
+    "2026-04-01",
+    "2026-05-01",
+    "2026-06-01",
+    "2026-07-01",
+    "2026-08-01"
+  ],
+  "source_sha256": "bbda8d6de8a3b7f8ff8f3a325be6f04442dae5e1a0df415471066046152d9a05",
+  "extracted_at": "2026-10-13T14:41:07.672014+00:00",
+  "hash_scope": "official_csv_bundle",
+  "coverage_status": "reviewed_complete_snapshot",
+  "reviews": [
+    {
+      "year": 2023,
+      "accepted_periods": [
+        "2023-01-01",
+        "2023-02-01",
+        "2023-03-01",
+        "2023-04-01",
+        "2023-05-01",
+        "2023-06-01",
+        "2023-07-01",
+        "2023-08-01",
+        "2023-09-01",
+        "2023-10-01",
+        "2023-11-01",
+        "2023-12-01"
+      ],
+      "vm_reconciliation": [
+        {
+          "period": "2023-01-01",
+          "fluid": "oil",
+          "volume": 8821970.66681225,
+          "rows": 1847
+        },
+        {
+          "period": "2023-01-01",
+          "fluid": "gas",
+          "volume": 1571.9983177939996,
+          "rows": 1847
+        },
+        {
+          "period": "2023-02-01",
+          "fluid": "oil",
+          "volume": 8199889.943211073,
+          "rows": 1873
+        },
+        {
+          "period": "2023-02-01",
+          "fluid": "gas",
+          "volume": 1465.4738523790024,
+          "rows": 1873
+        },
+        {
+          "period": "2023-03-01",
+          "fluid": "oil",
+          "volume": 9313517.590414064,
+          "rows": 1891
+        },
+        {
+          "period": "2023-03-01",
+          "fluid": "gas",
+          "volume": 1629.5823210889996,
+          "rows": 1891
+        },
+        {
+          "period": "2023-04-01",
+          "fluid": "oil",
+          "volume": 8863272.260556078,
+          "rows": 1911
+        },
+        {
+          "period": "2023-04-01",
+          "fluid": "gas",
+          "volume": 1559.3392413223805,
+          "rows": 1911
+        },
+        {
+          "period": "2023-05-01",
+          "fluid": "oil",
+          "volume": 9175311.34602552,
+          "rows": 1937
+        },
+        {
+          "period": "2023-05-01",
+          "fluid": "gas",
+          "volume": 1795.7838497486832,
+          "rows": 1937
+        },
+        {
+          "period": "2023-06-01",
+          "fluid": "oil",
+          "volume": 8711542.740664164,
+          "rows": 1978
+        },
+        {
+          "period": "2023-06-01",
+          "fluid": "gas",
+          "volume": 1868.5334196830504,
+          "rows": 1978
+        },
+        {
+          "period": "2023-07-01",
+          "fluid": "oil",
+          "volume": 9011944.186706416,
+          "rows": 1998
+        },
+        {
+          "period": "2023-07-01",
+          "fluid": "gas",
+          "volume": 2011.2411268800388,
+          "rows": 1998
+        },
+        {
+          "period": "2023-08-01",
+          "fluid": "oil",
+          "volume": 9202956.254064795,
+          "rows": 2031
+        },
+        {
+          "period": "2023-08-01",
+          "fluid": "gas",
+          "volume": 2124.189102052611,
+          "rows": 2031
+        },
+        {
+          "period": "2023-09-01",
+          "fluid": "oil",
+          "volume": 9143833.028994445,
+          "rows": 2061
+        },
+        {
+          "period": "2023-09-01",
+          "fluid": "gas",
+          "volume": 2022.3632412242434,
+          "rows": 2061
+        },
+        {
+          "period": "2023-10-01",
+          "fluid": "oil",
+          "volume": 10019289.28861239,
+          "rows": 2085
+        },
+        {
+          "period": "2023-10-01",
+          "fluid": "gas",
+          "volume": 1769.2515795070003,
+          "rows": 2085
+        },
+        {
+          "period": "2023-11-01",
+          "fluid": "oil",
+          "volume": 10178071.230104603,
+          "rows": 2126
+        },
+        {
+          "period": "2023-11-01",
+          "fluid": "gas",
+          "volume": 1766.5491858770029,
+          "rows": 2126
+        },
+        {
+          "period": "2023-12-01",
+          "fluid": "oil",
+          "volume": 10903547.219505563,
+          "rows": 2173
+        },
+        {
+          "period": "2023-12-01",
+          "fluid": "gas",
+          "volume": 1587.1207540290015,
+          "rows": 2173
+        }
+      ],
+      "source_rows": 974971,
+      "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+      "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+      "excluded_periods": [],
+      "warnings": [],
+      "warning_count": 0,
+      "negative_tolerance_nonvm": null,
+      "negative_policy": "strict_vm_preserve_flag_outside_product"
+    },
+    {
+      "year": 2024,
+      "accepted_periods": [
+        "2024-01-01",
+        "2024-02-01",
+        "2024-03-01",
+        "2024-04-01",
+        "2024-05-01",
+        "2024-06-01",
+        "2024-07-01",
+        "2024-08-01",
+        "2024-09-01",
+        "2024-10-01",
+        "2024-11-01",
+        "2024-12-01"
+      ],
+      "vm_reconciliation": [
+        {
+          "period": "2024-01-01",
+          "fluid": "oil",
+          "volume": 10704598.707958473,
+          "rows": 2200
+        },
+        {
+          "period": "2024-01-01",
+          "fluid": "gas",
+          "volume": 1754.326860137,
+          "rows": 2200
+        },
+        {
+          "period": "2024-02-01",
+          "fluid": "oil",
+          "volume": 10226354.081032693,
+          "rows": 2237
+        },
+        {
+          "period": "2024-02-01",
+          "fluid": "gas",
+          "volume": 1791.241668484736,
+          "rows": 2237
+        },
+        {
+          "period": "2024-03-01",
+          "fluid": "oil",
+          "volume": 11167988.579719376,
+          "rows": 2268
+        },
+        {
+          "period": "2024-03-01",
+          "fluid": "gas",
+          "volume": 1946.6887452958229,
+          "rows": 2268
+        },
+        {
+          "period": "2024-04-01",
+          "fluid": "oil",
+          "volume": 10889223.350567777,
+          "rows": 2300
+        },
+        {
+          "period": "2024-04-01",
+          "fluid": "gas",
+          "volume": 1936.5324978090334,
+          "rows": 2300
+        },
+        {
+          "period": "2024-05-01",
+          "fluid": "oil",
+          "volume": 11347659.14582079,
+          "rows": 2342
+        },
+        {
+          "period": "2024-05-01",
+          "fluid": "gas",
+          "volume": 2411.4715399976403,
+          "rows": 2342
+        },
+        {
+          "period": "2024-06-01",
+          "fluid": "oil",
+          "volume": 11191707.324604873,
+          "rows": 2367
+        },
+        {
+          "period": "2024-06-01",
+          "fluid": "gas",
+          "volume": 2345.8367147503836,
+          "rows": 2367
+        },
+        {
+          "period": "2024-07-01",
+          "fluid": "oil",
+          "volume": 11960791.547239931,
+          "rows": 2414
+        },
+        {
+          "period": "2024-07-01",
+          "fluid": "gas",
+          "volume": 2574.0943129933025,
+          "rows": 2414
+        },
+        {
+          "period": "2024-08-01",
+          "fluid": "oil",
+          "volume": 12471293.183577461,
+          "rows": 2463
+        },
+        {
+          "period": "2024-08-01",
+          "fluid": "gas",
+          "volume": 2604.9761511633164,
+          "rows": 2463
+        },
+        {
+          "period": "2024-09-01",
+          "fluid": "oil",
+          "volume": 11560228.32283518,
+          "rows": 2346
+        },
+        {
+          "period": "2024-09-01",
+          "fluid": "gas",
+          "volume": 2349.6091743548623,
+          "rows": 2346
+        },
+        {
+          "period": "2024-10-01",
+          "fluid": "oil",
+          "volume": 13062857.951493634,
+          "rows": 2525
+        },
+        {
+          "period": "2024-10-01",
+          "fluid": "gas",
+          "volume": 2010.2153023499777,
+          "rows": 2525
+        },
+        {
+          "period": "2024-11-01",
+          "fluid": "oil",
+          "volume": 13116113.90593294,
+          "rows": 2554
+        },
+        {
+          "period": "2024-11-01",
+          "fluid": "gas",
+          "volume": 1864.553096595963,
+          "rows": 2554
+        },
+        {
+          "period": "2024-12-01",
+          "fluid": "oil",
+          "volume": 13869107.683327215,
+          "rows": 2570
+        },
+        {
+          "period": "2024-12-01",
+          "fluid": "gas",
+          "volume": 1907.4408448127604,
+          "rows": 2570
+        }
+      ],
+      "source_rows": 983551,
+      "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+      "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+      "excluded_periods": [],
+      "warnings": [
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.01",
+          "idpozo": "134542",
+          "year": "2024",
+          "month": "4",
+          "formation": "sierras blancas",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_gas",
+          "raw_value": "-0.01",
+          "idpozo": "134542",
+          "year": "2024",
+          "month": "4",
+          "formation": "sierras blancas",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        }
+      ],
+      "warning_count": 2,
+      "negative_tolerance_nonvm": null,
+      "negative_policy": "strict_vm_preserve_flag_outside_product"
+    },
+    {
+      "year": 2025,
+      "accepted_periods": [
+        "2025-01-01",
+        "2025-02-01",
+        "2025-03-01",
+        "2025-04-01",
+        "2025-05-01",
+        "2025-06-01",
+        "2025-07-01",
+        "2025-08-01",
+        "2025-09-01",
+        "2025-10-01",
+        "2025-11-01",
+        "2025-12-01"
+      ],
+      "vm_reconciliation": [
+        {
+          "period": "2025-01-01",
+          "fluid": "oil",
+          "volume": 13711779.944538461,
+          "rows": 2609
+        },
+        {
+          "period": "2025-01-01",
+          "fluid": "gas",
+          "volume": 2131.1787453020993,
+          "rows": 2609
+        },
+        {
+          "period": "2025-02-01",
+          "fluid": "oil",
+          "volume": 12406378.27036953,
+          "rows": 2652
+        },
+        {
+          "period": "2025-02-01",
+          "fluid": "gas",
+          "volume": 2082.262010411402,
+          "rows": 2652
+        },
+        {
+          "period": "2025-03-01",
+          "fluid": "oil",
+          "volume": 13831823.994921591,
+          "rows": 2684
+        },
+        {
+          "period": "2025-03-01",
+          "fluid": "gas",
+          "volume": 2069.6325796218193,
+          "rows": 2684
+        },
+        {
+          "period": "2025-04-01",
+          "fluid": "oil",
+          "volume": 13246304.737001926,
+          "rows": 2728
+        },
+        {
+          "period": "2025-04-01",
+          "fluid": "gas",
+          "volume": 2078.2847218246843,
+          "rows": 2728
+        },
+        {
+          "period": "2025-05-01",
+          "fluid": "oil",
+          "volume": 13882015.98337089,
+          "rows": 2782
+        },
+        {
+          "period": "2025-05-01",
+          "fluid": "gas",
+          "volume": 2470.9158998110383,
+          "rows": 2782
+        },
+        {
+          "period": "2025-06-01",
+          "fluid": "oil",
+          "volume": 14283842.78287388,
+          "rows": 2825
+        },
+        {
+          "period": "2025-06-01",
+          "fluid": "gas",
+          "volume": 2661.5892393152144,
+          "rows": 2825
+        },
+        {
+          "period": "2025-07-01",
+          "fluid": "oil",
+          "volume": 15767051.10275584,
+          "rows": 2862
+        },
+        {
+          "period": "2025-07-01",
+          "fluid": "gas",
+          "volume": 2829.2065059133984,
+          "rows": 2862
+        },
+        {
+          "period": "2025-08-01",
+          "fluid": "oil",
+          "volume": 16323168.831256812,
+          "rows": 2914
+        },
+        {
+          "period": "2025-08-01",
+          "fluid": "gas",
+          "volume": 2796.4712854855616,
+          "rows": 2914
+        },
+        {
+          "period": "2025-09-01",
+          "fluid": "oil",
+          "volume": 16402583.702750716,
+          "rows": 2947
+        },
+        {
+          "period": "2025-09-01",
+          "fluid": "gas",
+          "volume": 2261.4520050071314,
+          "rows": 2947
+        },
+        {
+          "period": "2025-10-01",
+          "fluid": "oil",
+          "volume": 17617682.844927292,
+          "rows": 2990
+        },
+        {
+          "period": "2025-10-01",
+          "fluid": "gas",
+          "volume": 2011.0847133320126,
+          "rows": 2990
+        },
+        {
+          "period": "2025-11-01",
+          "fluid": "oil",
+          "volume": 17301878.6443301,
+          "rows": 3017
+        },
+        {
+          "period": "2025-11-01",
+          "fluid": "gas",
+          "volume": 1922.6986634221776,
+          "rows": 3017
+        },
+        {
+          "period": "2025-12-01",
+          "fluid": "oil",
+          "volume": 18302187.771592326,
+          "rows": 3053
+        },
+        {
+          "period": "2025-12-01",
+          "fluid": "gas",
+          "volume": 2255.8002819491708,
+          "rows": 3053
+        }
+      ],
+      "source_rows": 991936,
+      "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+      "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+      "excluded_periods": [],
+      "warnings": [
+        {
+          "field": "prod_gas",
+          "raw_value": "-0.4366",
+          "idpozo": "137676",
+          "year": "2025",
+          "month": "4",
+          "formation": "mulichinco",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_gas",
+          "raw_value": "-0.8416",
+          "idpozo": "153368",
+          "year": "2025",
+          "month": "4",
+          "formation": "mulichinco",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.00001",
+          "idpozo": "157691",
+          "year": "2025",
+          "month": "11",
+          "formation": "basamento",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.05",
+          "idpozo": "153774",
+          "year": "2025",
+          "month": "9",
+          "formation": "centenario",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_gas",
+          "raw_value": "-0.01",
+          "idpozo": "153774",
+          "year": "2025",
+          "month": "9",
+          "formation": "centenario",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.05",
+          "idpozo": "157592",
+          "year": "2025",
+          "month": "9",
+          "formation": "lajas",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_gas",
+          "raw_value": "-8.09",
+          "idpozo": "157592",
+          "year": "2025",
+          "month": "9",
+          "formation": "lajas",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.08",
+          "idpozo": "50649",
+          "year": "2025",
+          "month": "9",
+          "formation": "lotena",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_gas",
+          "raw_value": "-12.14",
+          "idpozo": "50649",
+          "year": "2025",
+          "month": "9",
+          "formation": "lotena",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        },
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.01",
+          "idpozo": "153775",
+          "year": "2025",
+          "month": "9",
+          "formation": "mulichinco",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        }
+      ],
+      "warning_count": 10,
+      "negative_tolerance_nonvm": null,
+      "negative_policy": "strict_vm_preserve_flag_outside_product"
+    },
+    {
+      "year": 2026,
+      "accepted_periods": [
+        "2026-01-01",
+        "2026-02-01",
+        "2026-03-01",
+        "2026-04-01",
+        "2026-05-01",
+        "2026-06-01",
+        "2026-07-01",
+        "2026-08-01"
+      ],
+      "vm_reconciliation": [
+        {
+          "period": "2026-01-01",
+          "fluid": "oil",
+          "volume": 18582683.91012241,
+          "rows": 3085
+        },
+        {
+          "period": "2026-01-01",
+          "fluid": "gas",
+          "volume": 2260.617979227331,
+          "rows": 3085
+        },
+        {
+          "period": "2026-02-01",
+          "fluid": "oil",
+          "volume": 16542257.043827973,
+          "rows": 3127
+        },
+        {
+          "period": "2026-02-01",
+          "fluid": "gas",
+          "volume": 2194.107979789633,
+          "rows": 3127
+        },
+        {
+          "period": "2026-03-01",
+          "fluid": "oil",
+          "volume": 18525002.1082581,
+          "rows": 3165
+        },
+        {
+          "period": "2026-03-01",
+          "fluid": "gas",
+          "volume": 2564.071366192378,
+          "rows": 3165
+        },
+        {
+          "period": "2026-04-01",
+          "fluid": "oil",
+          "volume": 18481290.807998978,
+          "rows": 3217
+        },
+        {
+          "period": "2026-04-01",
+          "fluid": "gas",
+          "volume": 2485.1170783152584,
+          "rows": 3217
+        },
+        {
+          "period": "2026-05-01",
+          "fluid": "oil",
+          "volume": 19301580.110595394,
+          "rows": 3281
+        },
+        {
+          "period": "2026-05-01",
+          "fluid": "gas",
+          "volume": 2962.415479296999,
+          "rows": 3281
+        },
+        {
+          "period": "2026-06-01",
+          "fluid": "oil",
+          "volume": 19005257.480213266,
+          "rows": 3322
+        },
+        {
+          "period": "2026-06-01",
+          "fluid": "gas",
+          "volume": 2932.907633160729,
+          "rows": 3322
+        },
+        {
+          "period": "2026-07-01",
+          "fluid": "oil",
+          "volume": 19936569.402626246,
+          "rows": 3369
+        },
+        {
+          "period": "2026-07-01",
+          "fluid": "gas",
+          "volume": 2994.3324092420708,
+          "rows": 3369
+        },
+        {
+          "period": "2026-08-01",
+          "fluid": "oil",
+          "volume": 20763871.222585436,
+          "rows": 3404
+        },
+        {
+          "period": "2026-08-01",
+          "fluid": "gas",
+          "volume": 2958.950899444006,
+          "rows": 3404
+        }
+      ],
+      "source_rows": 663755,
+      "anchor_sha256": "ae6ec4a7090ae5f9e72fd819c7004f8d2494621f58d80d5e0f0ee11f06ef1197",
+      "basis": "VM counts and both-fluid totals reconciled to independently reviewed snapshot; raw revisions outside VM retained",
+      "excluded_periods": [
+        "2026-09-01"
+      ],
+      "warnings": [
+        {
+          "field": "prod_pet",
+          "raw_value": "-0.000000000000000597557597885158",
+          "idpozo": "135614",
+          "year": "2026",
+          "month": "2",
+          "formation": "ca\u00f1adon seco",
+          "resource_type": "CONVENCIONAL",
+          "scope": "outside_vm_noconv",
+          "action": "preserved_unchanged_outside_product_negative"
+        }
+      ],
+      "warning_count": 1,
+      "negative_tolerance_nonvm": null,
+      "negative_policy": "strict_vm_preserve_flag_outside_product"
+    }
+  ],
+  "publication_approved": false
+}

@@ -1,0 +1,11 @@
+{
+  "status": "pass",
+  "tests": 51,
+  "scope": "extraction unit regressions; real warehouse reconciliation is separate",
+  "file_sha256": {
+    "extraction/scripts/source_csv_pipeline.py": "452ef5e79fbe3be55b0e06b6e279125191c3ab89e053c5a4670a8acee35b0e8f",
+    "extraction/scripts/source_history_pipeline.py": "af798e01da798fe8efddaa84a1720826a7d32372ee92e4534f569b811760eff0",
+    "extraction/tests/test_source_csv_pipeline.py": "81789cbcd5c2c12ddee0d57be66e5fd2a1f1b7e25d1f3f34bdf42f526cb13cd5",
+    "extraction/tests/test_source_history_pipeline.py": "89ea2e4b6459ef7ce29ea97920f951f839f117883c01ca4f7eaf008d1f1a0d22"
+  }
+}

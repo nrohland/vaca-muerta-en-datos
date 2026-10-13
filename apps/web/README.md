@@ -37,7 +37,7 @@ El mismo concepto mantiene color y comportamiento entre pestañas: petróleo azu
 
 Petróleo: bbl y bbl/d; gas: MMm³ y MMm³/d. Tasa = volumen mensual / días calendario. Pozos productivos = IDs únicos con producción positiva del fluido. No hay contador live. Permisos/concesiones y transferencias pueden afectar rankings.
 
-`lib/metrics.ts` separa comparaciones y valorización de la presentación. Brent mensual EIA está en `prices.json`; `valuation-manifest.json` vincula sus bytes con el release. `scripts/import_brent.py` y `scripts/bind_valuation.py` de la raíz permiten importar y ligar artefactos. Cada período usa su precio; faltantes no se rellenan. Gas mantiene métricas físicas y explica la indisponibilidad de USD. Un error de precios no bloquea la lectura de volumen físico.
+`lib/metrics.ts` lee los valores USD ya calculados por dbt: mensual, diario, bases exactas MoM/YoY y YTD de calendario completo. El release declara productor `dbt` y modelo `fct_dashboard_month`; la UI no multiplica volumen por precio. `prices.json` contiene Brent y Henry Hub oficiales para mostrar las cotizaciones y metodología; `valuation-manifest.json` liga sus bytes con el release. Gas USD explicita el escenario energético EIA de 1.036 BTU/pie³, no calorificidad medida de Vaca Muerta ni ingresos realizados. Sin valor persistido válido se muestra indisponibilidad; un fallo del archivo auxiliar de cotizaciones no borra valores ya validados en el snapshot.
 
 Producción profundiza en historia, acumulados comparables, años calendario, cambios absolutos y tabla. Operadores y Áreas profundizan ranking y entidad. Actividad usa conteos y promedio por pozo y día calendario sin inferir productividad por día efectivo, altas/bajas o completaciones sin fuentes válidas.
 
@@ -46,3 +46,7 @@ Producción profundiza en historia, acumulados comparables, años calendario, ca
 La [auditoría de datos/precios](../../docs/evidence/data-valuation/README.md) documenta conciliación y corte. La [evidencia de Resumen](../../docs/evidence/resumen/README.md) y [comparaciones/idiomas](../../docs/evidence/comparison-i18n/README.md) conserva resultados históricos; sus checks no prueban automáticamente las nuevas vistas. La [revisión integrada](../../docs/evidence/integrated/README.md) registra capturas desktop/mobile, tests actuales y las restricciones de Playwright/dbt del entorno.
 
 La capa de datos tiene extracción mensual y transformación reproducible, pero no actualización/promoción end-to-end automática: [arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build del frontend.
+
+## Conexión histórica validada
+
+El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca y 10.208 de entidades; pesa 16,75 MiB sin comprimir. Se conserva el grano ID × fluido × mes y los ceros explícitos de entidades ausentes dentro de meses técnicamente aceptados. “Áreas reportadas” cuenta sólo áreas con registros del mes, aunque el ranking conserve todo el catálogo histórico. [Resultados actuales y límites](../../docs/evidence/snapshot-integration/README.md).

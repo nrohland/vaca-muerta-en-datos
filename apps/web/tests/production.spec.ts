@@ -67,7 +67,7 @@ test("filter matrix updates real KPIs and retains navigation state", async ({
           await expect(
             page.locator(".production-dashboard .kpi-card--primary .kpi-value"),
           ).toContainText(
-            fluid === "gas" ? f.number(k.value, 2, 0) : f.compact(k.value),
+            fluid === "gas" && mode === "volume" ? f.number(k.value, 2, 0) : f.compact(k.value),
           );
           const pts = productionPoints(
             rows,
@@ -79,11 +79,11 @@ test("filter matrix updates real KPIs and retains navigation state", async ({
           );
           const last = pts.at(-1)!;
           const delta = last[comparison];
-          const formatted = delta == null ? f.t("Sin comparador") : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${fluid === "gas" ? f.number(Math.abs(delta), 2, 0) : f.compact(Math.abs(delta))}`;
+          const formatted = delta == null ? f.t("Sin comparador") : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${fluid === "gas" && mode === "volume" ? f.number(Math.abs(delta), 2, 0) : f.compact(Math.abs(delta))}`;
           await expect(page.locator(".production-data tbody tr").first().locator(".production-selected-column")).toContainText(formatted);
           await expect(
             page.locator(".production-evolution .recharts-line"),
-          ).toHaveCount(fluid === "gas" ? 0 : 1);
+          ).toHaveCount(1);
         }
   }
   await page.getByRole("tab", { name: "Overview", exact: true }).click();
@@ -134,7 +134,7 @@ test("first month has no fabricated comparison or future observations", async ({
     page.locator(".production-annual tbody tr").nth(1),
   ).toContainText("No disponible");
 });
-test("missing prices preserve physical data and hide monetary series", async ({
+test("reference asset failure preserves validated warehouse values", async ({
   page,
 }) => {
   await page.route("**/data/prices.json", (route) =>
@@ -144,11 +144,10 @@ test("missing prices preserve physical data and hide monetary series", async ({
   await expect(page.locator(".production-data tbody tr")).toHaveCount(36);
   await expect(
     page.locator(".production-evolution .recharts-line"),
-  ).toHaveCount(0);
+  ).toHaveCount(1);
   await page.getByRole("button", { name: "Valor USD", exact: true }).click();
-  await expect(page.locator(".kpi-card--primary")).toContainText(
-    "No disponible",
-  );
+  await expect(page.locator(".kpi-card--primary")).toContainText("USD");
+  await expect(page.locator(".kpi-card--primary")).not.toContainText("No disponible");
 });
 test("responsive page and ES/EN light/dark accessibility", async ({ page }) => {
   await page.goto(base);

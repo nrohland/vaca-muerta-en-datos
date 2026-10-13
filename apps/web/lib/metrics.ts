@@ -81,16 +81,11 @@ export function referencePrice(
   const price = fluid === "oil" ? prices?.prices.find(p => p.periodo === period)?.usd_per_bbl : g?.status === "available" ? g.prices.find(p => p.periodo === period)?.usd_per_mmbtu : null;
   return typeof price === "number" && Number.isFinite(price) && price > 0 ? price : null;
 }
-export function valuedVolume(
-  volume: number | null | undefined,
-  fluid: Fluid,
-  period: string,
-  prices: Prices | null,
-) {
-  const price = referencePrice(prices, period, fluid);
-  if (volume == null || price == null || !Number.isFinite(volume) || volume < 0) return null;
-  const value = volume * price * (fluid === "gas" ? 1e6 * GAS_M3_TO_MMBTU : 1);
-  return Number.isFinite(value) ? value : null;
+// Values are produced by validated dbt marts. Missing legacy fields stay unavailable.
+export function warehouseValue(row: Row | undefined, daily = false): number | null {
+  if (!row || !["estimated_reference", "estimated_reference_scenario"].includes(String(row.valuation_method))) return null;
+  const value = row[daily ? "estimated_daily_value_usd" : "estimated_value_usd"];
+  return typeof value === "number" && Number.isFinite(value) && value >= 0 ? value : null;
 }
 export function metric(
   row: Row,
@@ -122,12 +117,7 @@ export function metric(
     if (!r) return null;
     if (kind === "wells") return r.positive_producing_wells;
     if (kind === "estimate" || mode === "value") {
-      const v = valuedVolume(r.volume, r.fluid, r.periodo, prices);
-      return v == null
-        ? null
-        : kind === "rate"
-          ? v / daysInMonth(r.periodo)
-          : v;
+      return warehouseValue(r, kind === "rate");
     }
     return r[kind];
   };
@@ -140,38 +130,16 @@ export function metric(
 }
 export function entityValue(e: Entity, prices: Prices | null, mode: Mode) {
   return mode === "value"
-    ? valuedVolume(e.volume, e.fluid, e.periodo, prices)
+    ? warehouseValue(e)
     : e.volume;
 }
 export function entityYoY(e: Entity, prices: Prices | null, mode: Mode) {
-  if (mode === "volume") return e.yoy_volume_pct;
-  return change(
-    entityValue(e, prices, mode),
-    valuedVolume(
-      e.yoy_volume as number | null,
-      e.fluid,
-      shiftMonth(e.periodo, -12),
-      prices,
-    ),
-  );
+  return mode === "volume" ? e.yoy_volume_pct : change(warehouseValue(e), numericBase(e.yoy_estimated_value_usd));
 }
-export function entityComparison(
-  e: Entity,
-  prices: Prices | null,
-  mode: Mode,
-  comparison: Comparison,
-) {
+const numericBase = (v: unknown) => typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : null;
+export function entityComparison(e: Entity, prices: Prices | null, mode: Mode, comparison: Comparison) {
   if (comparison === "yoy") return entityYoY(e, prices, mode);
-  if (mode === "volume") return e.mom_volume_pct as number | null;
-  return change(
-    entityValue(e, prices, mode),
-    valuedVolume(
-      e.mom_volume as number | null,
-      e.fluid,
-      shiftMonth(e.periodo, -1),
-      prices,
-    ),
-  );
+  return mode === "volume" ? e.mom_volume_pct as number | null : change(warehouseValue(e), numericBase(e.mom_estimated_value_usd));
 }
 // Nonnegative quantities always retain an honest zero origin. Recharts chooses nice ticks.
 export const nonnegativeDomain: [number, "auto"] = [0, "auto"];

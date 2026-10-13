@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
   "status": "candidate",
-  "release_sha256": "1bf27be1365a1520f757f7b1fa6b936a1fc07fe7f07a0f3e7a831b7bfd21688b",
+  "release_sha256": "ce6056ff9fd00e1816048b2f7c9e32685b6440981c72d83b43d2b4ea77113690",
   "prices_sha256": "25710ec34eb76fe375cc1e2e6f45392a5953abf961d92a7211da7b32246edb00",
-  "generated_at": "2026-10-12T23:02:00.628448+00:00",
+  "generated_at": "2026-10-13T17:50:14.799704+00:00",
   "missing_oil_price_periods": [],
   "missing_gas_price_periods": [],
   "method": "Oil: monthly bbl × same-month EIA Brent USD/bbl. Gas: reported m3 × reference-scenario MMBtu/m3 × same-month EIA Henry Hub USD/MMBtu; daily = monthly value / calendar days. Estimated reference values, not realized revenues or measured VM gas energy.",

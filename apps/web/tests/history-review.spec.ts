@@ -67,7 +67,7 @@ test("desktop historical coverage, simplified backs and ES/EN themes", async ({
             .click();
         await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(44);
         await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(
-          fluid === "oil" ? 1 : 0,
+          1,
         );
         expect(
           await page.evaluate(

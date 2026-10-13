@@ -6,7 +6,8 @@ export type Row = { fluid: Fluid; periodo: string; volume_unit: string; rate: nu
 export type Entity = Row & { dimension: Dimension; entity_id: string; entity_name: string; volume_rank: number; yoy_contribution_selected: boolean; yoy_rest_rate_delta: number | null };
 export type AssetRef = {path:string;sha256:string;bytes:number;compression?:'gzip'};
 export type Grouping = {rule_version:string;seed_sha256:string;mappings:{legal_operator_id:string;operator_group_id:string;operator_group_name:string;valid_from:string;valid_to:string}[]};
-export type Release = { schema_version: 1; status: 'candidate'; production: Row[]; entities: Entity[]; map?:{schema_version:1;index:AssetRef};operator_grouping?:Grouping };
+export type Valuation = {schema_version:1;producer:'dbt';energy_basis_scenario:string;m3_to_mmbtu_scenario:number};
+export type Release = { valuation?:Valuation; schema_version: 1; status: 'candidate'; production: Row[]; entities: Entity[]; map?:{schema_version:1;index:AssetRef};operator_grouping?:Grouping };
 export type Manifest = { schema_version: 1; status: 'candidate'; version: string; data_sha256: string; generated_at: string; source: { data_kind: 'official'; ingested_at?: string; published_at?: string | null; approved_period: string; accepted_periods: string[]; accepted_at: string; commit: string; resources: { id: string; url: string; sha256?: string; hash_unavailable_reason?: string; source_last_modified?: string; extracted_at?: string; year?: number }[]; snapshot_revisions_note: string } };
 const numeric = ['volume','rate','yoy_volume','yoy_rate','mom_volume','mom_rate','yoy_volume_delta','yoy_rate_delta','mom_volume_delta','mom_rate_delta','yoy_volume_pct','yoy_rate_pct','mom_volume_pct','mom_rate_pct'];
 const concentration = ['top5_company_share_pct','yoy_top5_company_share_pct','top5_company_share_yoy_pp','top5_area_share_pct','yoy_top5_area_share_pct','top5_area_share_yoy_pp'];
@@ -28,8 +29,21 @@ function row(v: unknown, entity: boolean) {
   assert(Number.isInteger(v.volume_rank) && Number(v.volume_rank) >= 1 && typeof v.yoy_contribution_selected === 'boolean', 'Ranking inválido');
  } else assert(Number.isInteger(v.days_in_month) && Number(v.days_in_month) >= 28 && Number(v.days_in_month) <= 31 && typeof v.source_loaded_at === 'string', 'Mes inválido');
 }
+function valuationRow(r: Row) {
+ const keys = ['estimated_value_usd','estimated_daily_value_usd','mom_estimated_value_usd','yoy_estimated_value_usd','estimated_ytd_value_usd','yoy_estimated_ytd_value_usd','price_usd_per_unit'];
+ assert(keys.every(k => k in r && (r[k] === null || finite(r[k]) && Number(r[k]) >= 0)), 'Valor monetario dbt inválido');
+ assert(r.price_unit === (r.fluid === 'oil' ? 'USD/bbl' : 'USD/MMBtu'), 'Unidad monetaria inválida');
+ const available = r.valuation_method === (r.fluid === 'oil' ? 'estimated_reference' : 'estimated_reference_scenario');
+ assert(available || r.valuation_method === 'unavailable', 'Método monetario inválido');
+ assert(available ? finite(r.estimated_value_usd) && finite(r.estimated_daily_value_usd) && finite(r.price_usd_per_unit) && Number(r.price_usd_per_unit) > 0 : r.estimated_value_usd === null && r.estimated_daily_value_usd === null, 'Disponibilidad monetaria inconsistente');
+ assert(r.energy_basis === (r.fluid === 'gas' ? 'EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1' : null), 'Escenario energético inválido');
+}
 export function validateRelease(v: unknown): Release {
  assert(record(v) && v.schema_version === 1 && v.status === 'candidate' && Array.isArray(v.production) && Array.isArray(v.entities), 'Contrato de release inválido');
+ if (v.valuation !== undefined) {
+  const m=v.valuation; assert(record(m)&&m.schema_version===1&&m.producer==='dbt'&&m.energy_basis_scenario==='EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1'&&finite(m.m3_to_mmbtu_scenario)&&Math.abs(Number(m.m3_to_mmbtu_scenario)-1036/0.028316846592/1e6)<1e-12,'Productor monetario inválido');
+  for(const r of [...v.production,...v.entities]) { assert(record(r),'Fila inválida'); valuationRow(r as Row); }
+ } else assert([...v.production,...v.entities].every(r=>record(r)&&['estimated_value_usd','estimated_daily_value_usd','mom_estimated_value_usd','yoy_estimated_value_usd','valuation_method'].every(k=>r[k]===undefined)),'Valor monetario sin productor dbt');
  const seen = new Set<string>();
  for (const r of v.production) { row(r,false); const k = `${r.fluid}/${r.periodo}`; assert(!seen.has(k),'Mes duplicado'); seen.add(k); }
  const entities = new Set<string>();

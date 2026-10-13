@@ -8,7 +8,7 @@ import {
   effectiveMode,
   referencePrice,
   shiftMonth,
-  valuedVolume,
+  warehouseValue,
   type Comparison,
   type Mode,
   type Prices,
@@ -21,7 +21,7 @@ export function productionValue(
 ): number | null {
   if (!row) return null;
   return mode === "value"
-    ? valuedVolume(row.volume, row.fluid, row.periodo, prices)
+    ? warehouseValue(row)
     : row.volume;
 }
 export function absoluteChange(value: number | null, base: number | null) {
@@ -57,7 +57,7 @@ export function productionPoints(
       volume: row?.volume ?? null,
       rate: row?.rate ?? null,
       price: row ? referencePrice(prices, periodo, fluid) : null,
-      estimated: row ? valuedVolume(row.volume, fluid, periodo, prices) : null,
+      estimated: row ? warehouseValue(row) : null,
       value,
       momBase,
       yoyBase,
@@ -105,8 +105,13 @@ export function productionKpis(
       ? null
       : values.reduce<number>((sum, v) => sum + v!, 0);
   };
-  const accumulated = sumYear(0),
-    previousAccumulated = sumYear(-12);
+  const selected = history.find(r => r.periodo === period);
+  const monetaryYtd = (key: string) => {
+    const v = selected?.[key];
+    return typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : null;
+  };
+  const accumulated = shownMode === "value" ? monetaryYtd("estimated_ytd_value_usd") : sumYear(0),
+    previousAccumulated = shownMode === "value" ? monetaryYtd("yoy_estimated_ytd_value_usd") : sumYear(-12);
   const candidates = history.map((r) => ({
     periodo: r.periodo,
     value: productionValue(r, prices, shownMode),

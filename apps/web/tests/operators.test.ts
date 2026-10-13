@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {validateRelease,type Entity,type Row} from '../lib/contract.ts';
-import {validatePrices,valuedVolume,type Prices} from '../lib/metrics.ts';
+import {validatePrices,warehouseValue,type Prices} from '../lib/metrics.ts';
 import {filterOperators,operatorRanking,operatorHistory,operatorCsv} from '../lib/operator-analysis.ts';
 const release=validateRelease(JSON.parse(readFileSync(new URL('../public/data/release.json',import.meta.url),'utf8')));
 const prices=validatePrices(JSON.parse(readFileSync(new URL('../public/data/prices.json',import.meta.url),'utf8')));
@@ -13,11 +13,10 @@ test('full operator ranking reconciles basin volumes and uses real total shares 
 test('exact calendar comparisons independently reproduce prepared monthly and yearly changes',()=>{
  for(const current of release.production)for(const comparison of ['mom','yoy'] as const){for(const e of operatorRanking(release.entities,current,prices,'volume',comparison)){const prepared=e.entity[`${comparison}_volume_pct`];if(e.pct==null)assert.equal(prepared,null);else close(e.pct,Number(prepared));}}
 });
-test('each oil observation and comparator uses its own valid historical price; gas uses only a valid reference scenario',()=>{
+test('operator valuation reads warehouse values and calendar entity bases without price arithmetic',()=>{
  const current=release.production.find(r=>r.fluid==='oil'&&r.periodo==='2026-08-01')!;
- for(const e of operatorRanking(release.entities,current,prices,'value','yoy')){close(e.value!,e.entity.volume*prices.prices.find(p=>p.periodo===current.periodo)!.usd_per_bbl);const base=release.entities.find(r=>r.dimension==='company'&&r.fluid==='oil'&&r.entity_id===e.entity.entity_id&&r.periodo===e.basePeriod);assert.equal(e.baseValue,base?base.volume*prices.prices.find(p=>p.periodo===e.basePeriod)!.usd_per_bbl:null);}
- const gas=release.production.find(r=>r.fluid==='gas'&&r.periodo===current.periodo)!;assert.ok(operatorRanking(release.entities,gas,prices,'value','mom').every(e=>e.value===valuedVolume(e.entity.volume,'gas',gas.periodo,prices)));
- const missing={...prices,prices:prices.prices.filter(p=>p.periodo!==current.periodo)};assert.ok(operatorRanking(release.entities,current,missing,'value','mom').every(e=>e.value==null&&e.delta==null&&e.pct==null));
+ for(const e of operatorRanking(release.entities,current,prices,'value','yoy')){assert.equal(e.value,warehouseValue(e.entity));const base=release.entities.find(r=>r.dimension==='company'&&r.fluid==='oil'&&r.entity_id===e.entity.entity_id&&r.periodo===e.basePeriod);assert.equal(e.baseValue,warehouseValue(base));}
+ const missing=release.entities.map(e=>({...e,estimated_value_usd:null,valuation_method:'unavailable'}));assert.ok(operatorRanking(missing,current,prices,'value','mom').every(e=>e.value==null&&e.delta==null&&e.pct==null));
 });
 const template=release.entities.find(e=>e.dimension==='company'&&e.fluid==='oil')!;
 const ent=(periodo:string,volume:number,id='TEST')=>({...template,periodo,volume,entity_id:id,entity_name:'Operador Ágil',volume_rank:1}) as Entity;
@@ -34,5 +33,5 @@ test('operator history preserves calendar holes, selection isolation and CSV emp
  const points=operatorHistory(entries,rows,'oil','2025-03-01',0,'TEST',null,'volume','mom');assert.equal(points.length,3);assert.equal(points[1].volume,null);assert.equal(points[1].value,null);assert.equal(points[2].baseValue,null);assert.equal(points[2].delta,null);assert.equal(points[2].share,15);const lines=operatorCsv(points,'oil','volume').split('\n');assert.equal(lines[2],'2025-02-01,,,,,2025-01-01,10,,');
 });
 test('gas CSV converts physical MMm3 to m3 without inventing USD prices',()=>{
- const gas={...template,entity_id:'TEST',fluid:'gas',periodo:'2025-01-01',volume:2} as Entity;const basin={...row('2025-01-01'),fluid:'gas',volume:10} as Row;const points=operatorHistory([gas],[basin],'gas','2025-01-01',0,'TEST',null,'value','yoy');assert.match(operatorCsv(points,'gas','value'),/volume_m3,selected_usd/);assert.match(operatorCsv(points,'gas','value'),/2025-01-01,2000000,,20/);
+ const gas={...template,entity_id:'TEST',fluid:'gas',periodo:'2025-01-01',volume:2,estimated_value_usd:null,valuation_method:'unavailable'} as Entity;const basin={...row('2025-01-01'),fluid:'gas',volume:10} as Row;const points=operatorHistory([gas],[basin],'gas','2025-01-01',0,'TEST',null,'value','yoy');assert.match(operatorCsv(points,'gas','value'),/volume_m3,selected_usd/);assert.match(operatorCsv(points,'gas','value'),/2025-01-01,2000000,,20/);
 });

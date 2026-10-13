@@ -1,56 +1,20 @@
-import {operatorHistory,operatorCsv} from '../lib/operator-analysis.ts';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {GAS_ENERGY_BASIS,GAS_M3_TO_MMBTU,validatePrices,valuedVolume,referencePrice,metric,type Prices} from '../lib/metrics.ts';
+import {GAS_ENERGY_BASIS,GAS_M3_TO_MMBTU,validatePrices,warehouseValue,referencePrice,metric,type Prices} from '../lib/metrics.ts';
 import {productionPoints,productionCsv} from '../lib/production.ts';
 import {readSelection} from '../lib/navigation.ts';
 import {chartVisibility} from '../lib/chart-visibility.ts';
-import {validateRelease} from '../lib/contract.ts';
-
+import {validateRelease,type Row} from '../lib/contract.ts';
+import {operatorHistory,operatorCsv} from '../lib/operator-analysis.ts';
 const oil=JSON.parse(readFileSync(new URL('../public/data/prices.json',import.meta.url),'utf8'));
 const release=validateRelease(JSON.parse(readFileSync(new URL('../public/data/release.json',import.meta.url),'utf8')));
-const fixture=():Prices=>validatePrices({...oil,gas:{status:'available',interpretation:'reference_scenario',source:{...oil.source,series:'Henry Hub Natural Gas Spot Price',url:'https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm',unit:'USD/MMBtu'},
-  prices:[{periodo:'2026-07-01',usd_per_mmbtu:2},{periodo:'2026-08-01',usd_per_mmbtu:3}],
-  conversion:{energy_basis:GAS_ENERGY_BASIS,m3_to_mmbtu:GAS_M3_TO_MMBTU,btu_per_cubic_foot:1036,source_url:'https://www.eia.gov/tools/faqs/faq.php?id=45&t=8',interpretation:'scenario'},reviewed_sources:[]}});
-
-test('gas MMm3 is converted through m3 and MMBtu once, keeping physical zero',()=>{
- const p=fixture();const expected=1000/0.028316846592*1036/1e6*3;
- assert.ok(Math.abs(valuedVolume(0.001,'gas','2026-08-01',p)!-expected)<1e-10);
- assert.equal(valuedVolume(0,'gas','2026-08-01',p),0);
- assert.equal(valuedVolume(-1,'gas','2026-08-01',p),null);
- assert.equal(valuedVolume(Number.NaN,'gas','2026-08-01',p),null);assert.equal(valuedVolume(Number.MAX_VALUE,'gas','2026-08-01',p),null);
-});
-test('missing gas price remains null without borrowing neighboring months',()=>{
- const p=fixture();assert.equal(referencePrice(p,'2026-06-01','gas'),null);
- assert.equal(valuedVolume(1,'gas','2026-06-01',p),null);
- assert.equal(valuedVolume(1,'gas','2026-08-01',null),null);
-});
-test('unreviewed energy basis and changed conversion factor are rejected',()=>{
- for(const key of ['energy_basis','m3_to_mmbtu'] as const){const p=structuredClone(fixture()) as any;p.gas.conversion[key]=key==='energy_basis'?'MEASURED_VM':1;
- assert.throws(()=>validatePrices(p));assert.equal(valuedVolume(1,'gas','2026-08-01',p),null);}
-});
-test('gas comparisons use both physical volumes and each exact monthly price',()=>{
- const p=fixture(),current=release.production.find(r=>r.fluid==='gas'&&r.periodo==='2026-08-01')!,base=release.production.find(r=>r.fluid==='gas'&&r.periodo==='2026-07-01')!;
- const result=metric(current,release.production,p,'volume','value');
- assert.ok(Math.abs(result.mom!-((current.volume*3)/(base.volume*2)-1)*100)<1e-9);
- assert.equal(result.yoy,null);
-});
-test('gas USD deep link and chart selection remain available while missing months stay empty in CSV',()=>{
- const p=fixture();assert.equal(readSelection('?fluid=gas&mode=value&tab=production&month=2026-08-01').mode,'value');
- const visible=chartVisibility({wells:false,fluid:'gas',detailView:true,selected:'value',hasEstimated:true});assert.equal(visible.monetary,true);assert.equal(visible.showPhysical,false);
- const points=productionPoints(release.production,'gas','2026-08-01',12,p,'value');assert.equal(points.find(r=>r.periodo==='2026-06-01')!.value,null);
- const csv=productionCsv(points,'gas','value');assert.match(csv,/henry_hub_USD_per_MMBtu/);assert.match(csv,/USD_estimated/);assert.match(csv,/energy_basis_scenario/);assert.match(csv,/EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1/);
-});
-test('duplicate months and zero/invalid Henry Hub quotes never validate',()=>{
- const p=fixture() as any;p.gas.prices.push(p.gas.prices[0]);assert.throws(()=>validatePrices(p));
- const zero=fixture() as any;zero.gas.prices[0].usd_per_mmbtu=0;assert.throws(()=>validatePrices(zero));assert.equal(valuedVolume(1,'gas','2026-07-01',zero),null);
-});
-
-test('operator CSV carries gas reference metadata and leaves missing valuations empty',()=>{
- const p=fixture();const entity=release.entities.find(e=>e.dimension==='company'&&e.fluid==='gas'&&e.periodo==='2026-08-01'&&e.volume>0)!;
- const points=operatorHistory(release.entities,release.production,'gas','2026-08-01',12,entity.entity_id,p,'value','mom');
- const lines=operatorCsv(points,'gas','value').split('\n');assert.match(lines[0],/benchmark,energy_basis_scenario,m3_to_mmbtu_scenario$/);
- assert.match(lines.find(line=>line.startsWith('2026-08-01,'))!,/EIA_HENRY_HUB_MONTHLY,EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1/);
- const missing=lines.find(line=>line.startsWith('2026-06-01,'))!.split(',');assert.equal(missing[2],'');assert.deepEqual(missing.slice(-3),['','','']);
-});
+const fixture=():Prices=>validatePrices({...oil,gas:{status:'available',interpretation:'reference_scenario',source:{...oil.source,series:'Henry Hub Natural Gas Spot Price',url:'https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm',unit:'USD/MMBtu'},prices:[{periodo:'2026-07-01',usd_per_mmbtu:2},{periodo:'2026-08-01',usd_per_mmbtu:3}],conversion:{energy_basis:GAS_ENERGY_BASIS,m3_to_mmbtu:GAS_M3_TO_MMBTU,btu_per_cubic_foot:1036,source_url:'https://www.eia.gov/energyexplained/units-and-calculators/energy-conversion-calculators.php',interpretation:'scenario'},reviewed_sources:[]}});
+const rows=()=>[{...release.production.find(r=>r.fluid==='gas')!,periodo:'2026-07-01',estimated_value_usd:200,estimated_daily_value_usd:6,valuation_method:'estimated_reference_scenario'},{...release.production.find(r=>r.fluid==='gas')!,periodo:'2026-08-01',estimated_value_usd:300,estimated_daily_value_usd:9,valuation_method:'estimated_reference_scenario'}] as Row[];
+test('gas value is read from warehouse without repeating energetic conversion',()=>{const r=rows()[1];assert.equal(warehouseValue(r),300);assert.equal(warehouseValue({...r,volume:1e20}),300);assert.equal(warehouseValue({...r,estimated_value_usd:0}),0);});
+test('missing warehouse gas value stays unavailable with a valid monthly quote',()=>{const r={...rows()[1],estimated_value_usd:null};assert.equal(referencePrice(fixture(),r.periodo,'gas'),3);assert.equal(warehouseValue(r),null);assert.equal(metric(r,[r],fixture(),'estimate').value,null);});
+test('unreviewed energy basis and conversion changes are rejected in price metadata',()=>{for(const key of ['energy_basis','m3_to_mmbtu'] as const){const p=structuredClone(fixture()) as any;p.gas.conversion[key]=key==='energy_basis'?'MEASURED_VM':1;assert.throws(()=>validatePrices(p));}});
+test('gas comparisons use exported same-calendar-month values and preserve absent yearly base',()=>{const r=rows();assert.equal(metric(r[1],r,fixture(),'volume','value').mom,50);assert.equal(metric(r[1],r,fixture(),'volume','value').yoy,null);});
+test('gas USD navigation and CSV preserve gaps and explicit scenario',()=>{const p=fixture();assert.equal(readSelection('?fluid=gas&mode=value&tab=production&month=2026-08-01').mode,'value');assert.equal(chartVisibility({wells:false,fluid:'gas',detailView:true,selected:'value',hasEstimated:true}).monetary,true);const points=productionPoints(rows(),'gas','2026-08-01',12,p,'value');const csv=productionCsv(points,'gas','value');assert.match(csv,/henry_hub_USD_per_MMBtu/);assert.match(csv,/USD_estimated/);assert.match(csv,/EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1/);});
+test('duplicate months and invalid Henry Hub quotes do not validate',()=>{const p=fixture() as any;p.gas.prices.push(p.gas.prices[0]);assert.throws(()=>validatePrices(p));const zero=fixture() as any;zero.gas.prices[0].usd_per_mmbtu=0;assert.throws(()=>validatePrices(zero));});
+test('operator CSV carries scenario metadata only for exported non-null values',()=>{const p=fixture();const e={...release.entities.find(e=>e.dimension==='company'&&e.fluid==='gas')!,periodo:'2026-08-01',estimated_value_usd:300,valuation_method:'estimated_reference_scenario'};const points=operatorHistory([e],rows(),'gas','2026-08-01',12,e.entity_id,p,'value','mom');const lines=operatorCsv(points,'gas','value').split('\n');assert.match(lines[0],/benchmark,energy_basis_scenario,m3_to_mmbtu_scenario$/);assert.match(lines.find(l=>l.startsWith('2026-08-01,'))!,/EIA_HENRY_HUB_MONTHLY,EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1/);assert.deepEqual(lines.find(l=>l.startsWith('2026-07-01,'))!.split(',').slice(-3),['','','']);});

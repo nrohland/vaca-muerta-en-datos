@@ -6,7 +6,7 @@ Está pensado para analistas, equipos de energía, periodistas y personas que ne
 
 > **Estado de esta entrega:** versión de revisión local, sin promoción ni despliegue automático. El snapshot candidato acepta producción hasta **agosto de 2026**; septiembre parcial se excluye. “Preliminar” indica que falta aprobación de publicación, aunque el snapshot tenga validación técnica. Los datos oficiales pueden rectificarse.
 
-La [revisión integrada de las cinco vistas](docs/evidence/integrated/README.md) reúne capturas desktop/mobile, resultados de 47 tests y límites explícitos de la validación. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
+La [conexión histórica del frontend](docs/evidence/snapshot-integration/README.md) registra 59 tests frontend y 17 del exportador aprobados, capturas desktop/mobile y revisión de las cinco pestañas. Playwright está bloqueado por permisos de procesos de macOS; la revisión en navegador integrado se documenta por separado. La [revisión integrada anterior](docs/evidence/integrated/README.md) conserva evidencia histórica. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
 
 ## Qué preguntas responde
 
@@ -44,8 +44,8 @@ flowchart LR
   PX --> RAW
   RAW --> DBT["dbt Core · staging → intermediate → marts + valorización"]
   DBT --> CHECK["Tests · cobertura · frescura · linaje"]
-  CHECK -. "pendiente de cierre integrado" .-> REL["Export candidato · contrato + manifiesto SHA-256"]
-  REL -. "promoción con aprobación" .-> WEB["Next.js · snapshot agregado validado"]
+  CHECK --> REL["Export candidato · contrato + manifiesto SHA-256"]
+  REL --> WEB["Next.js · snapshot agregado validado"]
   WEB --> UI["React + Recharts · componentes comunes"]
   LEGACY["Meltano / Singer · extracción histórica CKAN"] -. "ruta conservada, fuera del CLI candidato" .-> RAWOLD["BigQuery · histórico compartido"]
 ```
@@ -53,7 +53,7 @@ flowchart LR
 | Capa | Tecnología actual | Por qué se eligió |
 | --- | --- | --- |
 | Extracción candidata | CLI Python sobre CSV oficial anual y HTML EIA; Meltano/Singer se conserva para la ruta histórica CKAN | CSV comprobado más completo que DataStore; contratos, snapshots y hashes reproducibles sin trasladar reglas al browser |
-| Warehouse | BigQuery con particiones y clustering | Consulta analítica sin administrar servidores; control de bytes escaneados y separación dev/candidato/prod |
+| Warehouse | BigQuery con clustering; particiones diferidas en el sandbox | Consulta analítica sin administrar servidores; control de bytes escaneados y separación dev/candidato/prod |
 | Transformación | dbt Core, SQL, tests y seeds | Granos explícitos, conversiones únicas, conciliación y contratos revisables |
 | Publicación de datos | Agregados JSON, manifiestos y SHA-256 | El browser no necesita credenciales; recibe un snapshot consistente y verificable; promoción separada de construcción |
 | Aplicación | Next.js 16, React 19 y TypeScript 7 | Componentes tipados, navegación persistente y exportación estática |
@@ -73,7 +73,7 @@ El grafo deriva del manifest dbt retenido y está contrastado con el SQL present
 
 La capa candidata ya implementa **fuente dinámica → raw BigQuery → dbt → valorización**. El 12 de octubre se descargó Brent oficial nuevamente, se verificó su hash y se cargaron 472 meses hasta agosto de 2026 en `raw_cap4_candidate_dev.monthly_reference_price`. Agosto: 91,08 USD/bbl. dbt construye valor bruto de referencia por pozo y entidad, comparaciones contra meses calendario y YTD únicamente si está completo; precios o volúmenes inválidos quedan NULL. No son ingresos realizados. Ver [contrato de precios](specs/016-candidate-pricing.md) y [revalidación oficial](docs/pricing/revalidation-2026-10-12.md).
 
-**El frontend todavía usa el snapshot de revisión anterior y calcula la valorización en TypeScript.** No hace llamadas a EIA. Migrar su consumo al mart validado y exportar historia multianual pertenece al cierre integrado, aún pendiente. Las cotizaciones revisables no se mantienen como seeds permanentes: los seeds se reservan para catálogos y supuestos estables. Gas USD usa Henry Hub con escenario energético EIA documentado; sin forward fill ni sustitutos silenciosos.
+**El frontend consume el export histórico validado de `fct_dashboard_month`: 44 meses y 10.296 filas agregadas.** dbt persiste valores USD mensuales, diarios, bases de comparación y YTD completo. El navegador presenta esos valores y calcula formatos/diferencias de presentación; no multiplica volumen por precio ni llama a EIA o BigQuery. El export y la conexión local están comprobados; la promoción pública sigue requiriendo aprobación. Las cotizaciones revisables no se mantienen como seeds permanentes: los seeds se reservan para catálogos y supuestos estables. Gas USD usa Henry Hub con escenario energético EIA documentado; sin forward fill ni sustitutos silenciosos.
 
 ## Orquestación, extracción y freshness
 
@@ -81,13 +81,13 @@ El [CLI compartido](pipeline/CLI.md) ejecuta las mismas etapas localmente y en G
 
 | Etapa | Implementación actual | Límite operativo |
 | --- | --- | --- |
-| Fuente de producción | CSV estándar oficial 2026; 663.748 filas descargadas, SHA-256 y esquema revisados | Contrato fijo 2026/agosto; no selecciona el último mes automáticamente. DataStore no reproduce agosto |
-| Cobertura | 16 conciliaciones enero–agosto × petróleo/gas contra el snapshot revisado | Septiembre parcial queda excluido. Esto no constituye aprobación de publicación |
+| Fuente de producción | Cuatro CSV estándar oficiales 2023–2026; 3.614.213 filas nacionales, esquema y hashes revisados | Corte fijo agosto 2026; no selecciona ni acepta el último mes automáticamente |
+| Cobertura | 88 conciliaciones enero 2023–agosto 2026 × petróleo/gas, más entidades y revisiones documentadas de clasificación/área | Septiembre parcial queda excluido. Esto no constituye aprobación de publicación |
 | Carga | `WRITE_TRUNCATE` atómico por tabla aislada; identidad/hash por fila y recibo de job | No reemplaza el histórico compartido. Producción y precio son cargas separadas, no una transacción conjunta |
-| Transformación | dbt con producción, dimensiones y precios seleccionados; datasets staging/intermediate/marts candidatos | Build real aprobado: 88 nodos con Brent y Henry Hub sin errores, warnings ni skips; candidato sólo agosto, sin completaciones ni publicación multianual |
+| Transformación | dbt con producción, dimensiones y precios seleccionados; datasets staging/intermediate/marts candidatos | Histórico aceptado: 106 nodos distintos entre build inicial, reparación focalizada y tests adicionales; no fue una única corrida limpia. Sin completaciones |
 | Freshness y linaje | Extracción e ingesta ≤7 días, cronología, conteos, SHA/corte y unidades revalidados antes de dbt | Frescura de carga no equivale a frescura económica. No se verifica cada valor de warehouse contra bytes CSV sólo por comprobar SHA declarado |
 | Acceso | WIF configurado y cuentas separadas de extracción/dbt, permisos por dataset | Sin claves nuevas ni secretos públicos. Falta prueba desde GitHub; no se habilitó facturación |
-| Frontend y promoción | Snapshot anterior conservado; no export ni deploy desde el CLI | Cierre integrado y publicación requieren revisión y aprobación independientes |
+| Frontend y promoción | Export histórico y consumidor dbt conectados localmente; comando de export separado del CLI | No hay promoción, despliegue ni activación automática; aprobación pública independiente |
 
 Cada consulta tiene presupuesto máximo de **1 GiB**, la descarga máximo 1 GiB y la fuente máximo dos millones de filas; esos límites no son una estimación de costo total. La evidencia de GitHub conserva siete días sólo JSON reducido: no sube raw, perfiles, credenciales ni logs completos dbt. Un error, skip o warning dbt impide aceptar el resultado de transformación. Una anomalía microscópica fuera de Vaca Muerta, dentro de `[-1e-12, 0)`, se preserva como advertencia; cualquier negativo en el universo de producto falla.
 
@@ -95,7 +95,7 @@ El portal oficial redirige CSV/API a HTTP público. Se restringen host/ruta/recu
 
 **Validación real comprobada:** el CLI compartido `all` pasó sus 12 etapas, desde descarga/carga de producción y precios hasta transformación en BigQuery; dbt completó 83 nodos (8 tablas, 3 vistas, 66 tests de datos y 6 unit tests), sin errores, warnings ni skips. Las conciliaciones también pasaron y hay 75 pruebas offline aprobadas. El recorrido completo de extracción y transformación se repitió en una sola ejecución real y pasó. Ver [evidencia de orquestación](docs/evidence/orchestration/README.md).
 
-**Lo pendiente:** comprobar WIF y el mismo recorrido desde un runner de GitHub, integrar historia/fluido y exportadores, conectar el frontend al candidato validado y realizar el cierre visual/documental. No se mergeó, activó ni desplegó esta automatización.
+**Lo pendiente:** probar WIF y el recorrido desde un runner real de GitHub, coordinar el export con el CLI/workflow y cerrar la documentación global de V1. Historia, precios y conexión local del frontend ya están validados; el export sigue siendo una etapa explícita. No se mergeó, activó ni desplegó esta automatización.
 
 ## Ejecutar la aplicación
 
@@ -141,7 +141,7 @@ Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en rama
 
 ### Pipeline candidato en validación
 
-Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026; automatización todavía desactivada. Producción y Brent ya se cargaron en raw candidato aislado y la fase real de transformación pasó con 83 nodos dbt aprobados. Ver [CLI compartido](pipeline/CLI.md) y [evidencia de permisos y tamaño del raw](docs/evidence/pipeline-access/README.md). Esta etapa no cambia el snapshot de la aplicación ni constituye aún el pipeline multianual de publicación.
+Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026; automatización todavía desactivada. Producción y Brent ya se cargaron en raw candidato aislado y la fase real de transformación pasó con 83 nodos dbt aprobados. Ver [CLI compartido](pipeline/CLI.md) y [evidencia de permisos y tamaño del raw](docs/evidence/pipeline-access/README.md). Esta evidencia corresponde a la etapa inicial. El snapshot histórico de la aplicación se actualizó posteriormente con aceptación técnica; no se publicó.
 
 ### Referencia de gas definida
 
@@ -154,3 +154,7 @@ Validación posterior con gas: 88 nodos dbt (11 modelos, 67 tests de datos, 10 u
 El 13 de octubre se validó el rango candidato enero 2023–agosto 2026: 106 nodos distintos aprobados entre build, reparación focalizada y tests de claves. Freshness pasó para producción y precios. `audit_helper` confirmó 112.506 filas físicas coincidentes y 24 incorporaciones explicadas por la clasificación oficial del pozo documentado. `dbt_project_evaluator` se ejecuta localmente sobre metadata: 75 resultados aprobados, tres advertencias de estructura/fanout y cero errores. Los reportes de rendimiento usan tiempos, bytes y slot-ms reales del adaptador BigQuery.
 
 [Resultados y límites](docs/evidence/historical-dbt/README.md), [operación de herramientas](transform/docs/quality-and-performance.md). El snapshot del frontend todavía no fue reemplazado; export, consumidor y QA integrado son la siguiente etapa. No se activó facturación ni automatización.
+
+## Snapshot histórico conectado al frontend
+
+El 13 de octubre se exportaron 10.296 agregados de `fct_dashboard_month` y se conectaron las cinco pestañas al candidato de 44 meses. Valores USD persistidos en dbt, 59 tests frontend y 17 del exportador aprobados, typecheck/build correctos y revisión visual desktop/mobile. [Resultado y límites](docs/evidence/snapshot-integration/README.md). Esta aceptación técnica local no implica publicación.

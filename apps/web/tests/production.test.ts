@@ -9,7 +9,7 @@ import {
   absoluteChange,
 } from "../lib/production.ts";
 import { validateRelease, type Row } from "../lib/contract.ts";
-import { validatePrices, shiftMonth, valuedVolume, change } from "../lib/metrics.ts";
+import { validatePrices, shiftMonth, warehouseValue, change } from "../lib/metrics.ts";
 const release = validateRelease(
   JSON.parse(
     readFileSync(
@@ -59,8 +59,8 @@ test("absolute volume changes reconcile with every prepared MoM/YoY delta; monet
           if (mode === "volume")
             close(p[c], r[`${c}_volume_delta`] as number | null);
           else {
-            const cv = valuedVolume(r.volume, fluid, p.periodo, prices);
-            const bv = b ? valuedVolume(b.volume, fluid, b.periodo, prices) : null;
+            const cv = warehouseValue(r);
+            const bv = b ? warehouseValue(b) : null;
             close(p[c], cv == null || bv == null ? null : cv - bv);
           }
         }
@@ -79,7 +79,7 @@ test("YTD sums exact January–selected months and peak excludes future data", (
         "yoy",
       );
       const sum = (year: string) => {
-        const values = release.production.filter(r => r.fluid === fluid && r.periodo.startsWith(year) && r.periodo.slice(5,7) <= "08").map(r => mode === "value" ? valuedVolume(r.volume, fluid, r.periodo, prices) : r.volume);
+        const values = release.production.filter(r => r.fluid === fluid && r.periodo.startsWith(year) && r.periodo.slice(5,7) <= "08").map(r => mode === "value" ? warehouseValue(r) : r.volume);
         return values.some(v => v == null) ? null : values.reduce<number>((s,v) => s+v!,0);
       };
       close(k.accumulated, sum("2026"));
@@ -133,7 +133,7 @@ test("missing months, missing prices and a zero base preserve honest nulls and s
     prices: prices.prices.filter((p) => p.periodo !== "2026-07-01"),
   };
   const k = productionKpis(
-    release.production,
+    release.production.map(r => r.periodo === "2026-07-01" ? {...r,estimated_value_usd:null,estimated_daily_value_usd:null,valuation_method:"unavailable"} : r.periodo === "2026-08-01" ? {...r,estimated_ytd_value_usd:null,yoy_estimated_ytd_value_usd:null} : r),
     "oil",
     "2026-08-01",
     missing,
@@ -163,7 +163,7 @@ test("missing months, missing prices and a zero base preserve honest nulls and s
       null,
       "value",
     ).at(-1)!.estimated,
-    null,
+    warehouseValue(release.production.find(r=>r.fluid==="oil"&&r.periodo==="2026-08-01")),
   );
   const gas = productionPoints(
     release.production,

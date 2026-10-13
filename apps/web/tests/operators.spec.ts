@@ -30,14 +30,14 @@ test('complete ranking filters without changing total share and supports URL dri
  await page.getByRole('button',{name:'Restablecer filtros'}).click();
  await expect(page.locator('.operators-ranking-list > li')).toHaveCount(entries.length);
 });
-test('gas USD keeps physical units and English detail survives reload',async({page})=>{
+test('gas USD uses warehouse values and English detail survives reload',async({page})=>{
  await page.goto(base+'&fluid=gas&mode=value&comparison=mom&operator=YPF');
  await expect(page.locator('.operators-dashboard')).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('No hay precio validado para gas');
- await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-value')).toContainText('MMm³');
+ await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
+ await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-value')).toContainText('USD');
  await page.getByRole('button',{name:'English',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('No validated gas price');
+ await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
  await page.reload();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
  await expect(page).toHaveURL(/operator=YPF/);

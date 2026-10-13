@@ -247,11 +247,9 @@ test("monetary mode updates metrics and units; gas availability and price failur
   expect(new URL(page.url()).searchParams.get("mode")).toBe("value");
   await page.getByRole("tab", { name: "Resumen", exact: true }).click();
   await page.getByRole("button", { name: "Gas", exact: true }).click();
-  await expect(page.getByRole("status")).toContainText(
-    "no disponible para gas",
-  );
+  await expect(page.locator(".availability-note")).toContainText("Henry Hub");
   await expect(page.locator(".kpi-card--primary .kpi-value")).toContainText(
-    "MMm³/d",
+    "USD/d",
   );
   await page.route("**/data/prices.json", (route) =>
     route.fulfill({ status: 404 }),

@@ -101,12 +101,8 @@ test("monthly and yearly entity comparisons use exact calendar bases and same-pe
         entityComparison(e, prices, "volume", c),
         e[`${c}_volume_pct`],
       );
-      const p = e.fluid === "oil" ? prices.prices.find((p) => p.periodo === e.periodo)?.usd_per_bbl : prices.gas.status === "available" ? prices.gas.prices.find(p => p.periodo === e.periodo)?.usd_per_mmbtu : null;
-      const bp = e.fluid === "oil" ? prices.prices.find(p => p.periodo === basePeriod)?.usd_per_bbl : prices.gas.status === "available" ? prices.gas.prices.find(p => p.periodo === basePeriod)?.usd_per_mmbtu : null;
-      const expected =
-        rawBase != null && rawBase > 0 && p && bp
-          ? ((e.volume * p) / (rawBase * bp) - 1) * 100
-          : null;
+      const v = e.estimated_value_usd as number|null|undefined, bv=e[`${c}_estimated_value_usd`] as number|null|undefined;
+      const expected = v!=null && bv!=null && bv>0 ? (v/bv-1)*100 : null;
       const actual = entityComparison(e, prices, "value", c);
       if (expected == null) assert.equal(actual, null);
       else assert.ok(Math.abs(actual! - expected) < 1e-9);

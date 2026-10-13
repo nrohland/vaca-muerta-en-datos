@@ -2,7 +2,7 @@
 
 ## Estado y alcance
 
-El repositorio contiene extracción Meltano, modelos dbt y una aplicación Next.js funcional en `apps/web/`. El Hito 3 está activo: Resumen está aprobado como base visual y la iteración autorizada completa Producción, Operadores, Áreas y Actividad. No usar las restricciones del antiguo scaffold para bloquear este trabajo.
+El repositorio contiene extracción candidata Python (ruta Meltano/Singer histórica conservada), modelos dbt y una aplicación Next.js funcional en `apps/web/`. El Hito 3 está activo: Resumen está aprobado como base visual y la iteración autorizada completa Producción, Operadores, Áreas y Actividad. No usar las restricciones del antiguo scaffold para bloquear este trabajo.
 
 El snapshot es candidato de revisión, con corte aceptado hasta agosto de 2026. No inventar aprobación, publicación ni ejecución de pruebas. Ver [README](README.md), [arquitectura](docs/architecture.md) y specs de cada iteración. Documentos de hitos anteriores conservan evidencia histórica; no son el estado de aceptación de la integración actual.
 

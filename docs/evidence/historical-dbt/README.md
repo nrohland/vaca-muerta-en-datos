@@ -10,4 +10,4 @@ Histórico candidato enero 2023–agosto 2026 verificado en BigQuery. **106 nodo
 
 **Rendimiento medido:** tiempos de nodo, bytes y slot-ms del adaptador BigQuery. [Primera corrida](initial/performance.html), [modelo reparado](repair/performance.html), [claves dashboard](dashboard_keys/performance.html), [claves intermedio](intermediate_keys/performance.html). No hay baseline estadístico comparable.
 
-La UI y su snapshot todavía no se reemplazaron. Export y consumidor son la siguiente etapa. GitHub WIF desde runner sigue pendiente; no hubo main, activación ni despliegue.
+Esta auditoría corresponde a la etapa histórica previa. Después se conectó el frontend y pasó una corrida integrada limpia: [estado actual](../orchestration-export/README.md). GitHub WIF desde runner sigue pendiente; no hubo main, activación ni despliegue.

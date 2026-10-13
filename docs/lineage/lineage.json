@@ -130,5 +130,6 @@
       "name": "monthly_reference_price",
       "resource_type": "source"
     }
-  }
+  },
+  "edge_count": 15
 }

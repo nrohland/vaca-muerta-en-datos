@@ -29,7 +29,7 @@ Los resultados son recomendaciones del paquete, no una medición de velocidad en
 
 Fuentes de producción y precios declaran warning a cinco días y error a siete días usando el timestamp de llegada/recuperación. Se ejecuta antes del build con `dbt source freshness`, además de los gates estrictos de hashes, cronología y recuperación independiente por producto. Un warning no acepta el candidato.
 
-Freshness técnica no implica que el mes económico sea reciente ni completo. El corte aceptado sigue siendo agosto de 2026; no se publica septiembre por ser el máximo raw. Completaciones/Adjunto IV están desactivadas en el candidato salvo activación explícita con su contrato propio.
+Freshness técnica no implica que el mes económico sea reciente ni completo. El corte aceptado sigue siendo agosto de 2026; no se publica septiembre por ser el máximo raw. Completaciones/Adjunto IV están fuera de V1; los prototipos se retiraron y una incorporación futura requiere contrato y validación propios.
 
 ## Rendimiento y límites
 

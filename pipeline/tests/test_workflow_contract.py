@@ -41,4 +41,16 @@ class WorkflowContract(unittest.TestCase):
         self.assertLess(build,frontend)
         self.assertIn('vm-transform/dashboard/release.json',transform[frontend]['run'])
 
+    def test_pr_checks_have_no_cloud_identity_or_publication(self):
+        path=Path(__file__).resolve().parents[2]/'.github/workflows/dbt-transform.yml'
+        workflow=yaml.load(path.read_text(),Loader=yaml.BaseLoader)
+        self.assertEqual(workflow['permissions'],{'contents':'read'})
+        self.assertIn('pull_request',workflow['on'])
+        steps=workflow['jobs']['validate']['steps']
+        text=path.read_text()
+        for forbidden in ('id-token','google-github-actions/auth','secrets.','dbt build','deploy','git push'):
+            self.assertNotIn(forbidden,text)
+        self.assertTrue(any('dbt parse' in step.get('run','') for step in steps))
+        self.assertTrue(any('check_snapshot.mjs' in step.get('run','') for step in steps))
+
 if __name__=='__main__':unittest.main()

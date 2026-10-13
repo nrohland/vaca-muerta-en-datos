@@ -25,10 +25,10 @@ El CLI encadena transformación histórica, export y validación del contrato fr
 | Capa | Implementación | Motivo |
 | --- | --- | --- |
 | Fuente | Declaraciones oficiales pozo × mes y cotizaciones EIA | Datos públicos revisables, sin inferir telemetría ni ingresos |
-| Extracción | Python, contratos y snapshots de CSV/HTML | CSV oficial mostró más cobertura que DataStore; controlar rectificativas y cambios de esquema. Meltano/Singer queda como ruta histórica fuera del CLI actual |
+| Extracción | Python, contratos y snapshots de CSV/HTML | CSV oficial mostró más cobertura que DataStore; controlar rectificativas y cambios de esquema |
 | Raw | BigQuery candidato aislado, partición por ingesta y clustering | Fidelidad al source y separación de permisos; carga atómica por tabla |
-| Staging | Tipos, claves y nombres normalizados | Resolver formato de origen antes de reglas de negocio |
-| Intermediate | Universo VM no convencional y reglas reutilizadas | Una sola definición evita filtros/conversiones distintos entre marts |
+| Staging | Tipos, claves, nombres y filtro VM no convencional | Resolver formato de origen antes de reglas de negocio |
+| Intermediate | Clave pozo × mes y días calendario | Una sola definición evita filtros/conversiones distintos entre marts |
 | Marts | Grano pozo × mes, dimensiones y agregados | Reglas auditables de pozos únicos, tasas, comparaciones exactas y YTD |
 | Precios | Brent/Henry Hub en raw y dbt de valorización | Cotizaciones cambiantes no se mantienen como seeds; seeds para catálogos estables |
 | Export | fct_dashboard_month + cotizaciones de la misma carga | Evitar aritmética monetaria duplicada y ligar fuente, build y consumidor |

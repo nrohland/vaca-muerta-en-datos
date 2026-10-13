@@ -58,7 +58,7 @@ def main():
     raw=a.manifest.read_bytes();manifest=json.loads(raw);g=graph(manifest)
     a.output.mkdir(parents=True,exist_ok=True)
     metadata={'manifest_sha256':hashlib.sha256(raw).hexdigest(),'generated_at':manifest['metadata']['generated_at'],
-      'dbt_version':manifest['metadata']['dbt_version'],'counts':{kind:sum(n['resource_type']==kind for n in g['nodes'].values()) for kind in ('model','source','seed')},'edges':len(g['edges'])}
+      'dbt_version':manifest['metadata']['dbt_version'],'counts':{kind:sum(n['resource_type']==kind for n in g['nodes'].values()) for kind in ('model','source','seed')},'edge_count':len(g['edges'])}
     (a.output/'linaje-dbt.svg').write_text(svg(g));(a.output/'lineage.json').write_text(json.dumps({**metadata,**g},indent=2)+'\n')
     print(json.dumps(metadata))
 if __name__=='__main__':main()

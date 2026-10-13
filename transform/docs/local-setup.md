@@ -23,25 +23,13 @@ No copiar tokens ni archivos de credenciales al repositorio o al chat.
 sin ejecutar SQL en BigQuery. Una conexión local válida no demuestra que CI esté
 configurado ni que los marts estén actualizados.
 
-## Identidad de ejecución
+## Identidad candidata
 
-- Desarrollo personal: `dev_oauth`, con la identidad del usuario autenticado.
-- Ejecución con permisos de dbt: `dev_impersonated`, con ADC y la cuenta
-  `vm-pulse-dbt@vaca-muerta-pulse.iam.gserviceaccount.com`. Requiere que el usuario
-  tenga `roles/iam.serviceAccountTokenCreator` **sobre esa cuenta**, no sobre todo
-  el proyecto. Este perfil no concede el permiso por sí mismo.
-- GitHub Actions: requiere su propia autenticación. Las credenciales locales no
-  se transfieren al runner. El CI actual sólo ejecuta `deps` y `parse`.
-  Preferir federación de identidad para automatización; no reutilizar la cuenta
-  de extracción ni subir una clave como solución implícita.
+Para el histórico, copiar `ci-profiles.yml.example` como `profiles.yml` en un directorio externo al repo y usar `--profiles-dir /ruta/perfil --target candidate`. Autenticar con ADC/WIF de la identidad autorizada y fijar `DBT_RAW_DATASET=raw_cap4_candidate_dev`. El CLI crea el perfil de transformación aislado y establece sus variables; preferir ese recorrido a comandos de build manuales. [Guía CLI](../../pipeline/CLI.md).
 
-Ambos perfiles locales apuntan a desarrollo: `raw_cap4_dev` → `stg_cap4_dev` →
-`int_cap4_dev` → `marts_cap4_dev`, en `vaca-muerta-pulse`, región `US`.
-El perfil `prod` existente no debe ejecutarse por accidente.
+Los perfiles `dev_oauth`/`dev_impersonated` del ejemplo anterior apuntan a datasets compartidos; no son la ruta de aceptación histórica y no deben usarse para reemplazarlos. `debug` verifica conectividad, sin construir modelos. WIF de GitHub tiene identidades separadas y restricciones main/workflow/ambiente; el workflow de datos está desactivado y su primera ejecución real sigue pendiente.
 
-Antes de construir marts, comprobar cobertura del raw y confirmar qué modelos
-de publicación están integrados. Un `dbt build` exitoso no aprueba automáticamente
-un nuevo snapshot ni lo publica en la aplicación.
+El workflow de checks de PR ejecuta pruebas offline, parse y build frontend, sin autenticación cloud ni ejecución SQL. Una conexión local no demuestra operación del runner ni aprobación del snapshot.
 
 ## Por qué staging e intermediate
 

@@ -1,9 +1,9 @@
-# ADR 0003 — Resumen modular con React y Recharts
+# ADR 0003 — Componentes analíticos con React y Recharts
 
-Estado: propuesto para revisión. Fecha: 2026-10-09.
+**Estado:** implementado en V1 candidata. Resumen conserva la base aprobada.
 
-El usuario autoriza llevar el frontend local al repositorio y rediseñar únicamente Resumen con analytics-ui. Conservamos Next.js y la biblioteca Recharts del frontend local, con cards reutilizables y tokens CSS compartidos. Este ADR acota la excepción al stack UI del ADR 0001. No cambia ingesta, warehouse, dbt ni fórmulas.
+Next.js y Recharts utilizan cards, KPIs, rankings, gráficos y filtros React reutilizados, con tokens CSS para temas y responsive. analytics-ui guía jerarquía y escalas. Las cinco pestañas mantienen petróleo azul, gas violeta, dinero ámbar y variaciones verde/rojo.
 
-La skill adjunta define estructura independiente del tema. El primer nivel muestra tasa actual, variaciones, pozos, evolución y rankings; las vistas profundas quedan pendientes. Los agregados cacheados del export candidato se verifican con SHA-256 y manifiesto antes de mostrarse. Se conserva la señal Preliminar y la validación del sidecar de aprobación.
+El snapshot agregado se verifica con SHA-256 y manifiestos antes de mostrar métricas. La navegación conserva contexto y ofrece deep links; ES/EN y light/dark comparten estructura. Preliminar comunica ausencia de aprobación pública, independientemente de aceptación técnica.
 
-Consecuencia: el PR introduce la base funcional local necesaria para revisar Resumen; no incorpora la implementación local de mapas u operadores. Hito 3 permanece abierto. Spec: ../../specs/001-vaca-muerta-pulse/resumen-ui.md.
+La elección ofrece control de layout y semántica, con mantenimiento propio de accesibilidad, tooltips y responsive. [Integración](../../specs/014-integrated-dashboard.md), [frontend](../../apps/web/README.md) y [capturas](../screenshots/README.md).

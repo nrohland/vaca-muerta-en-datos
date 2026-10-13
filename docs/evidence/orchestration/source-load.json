@@ -1,9 +1,0 @@
-{
-  "status": "pass",
-  "job_id": "csv_candidate_719a21cae8209d87f4c9a785_7993c221eeba",
-  "source_sha256": "719a21cae8209d87f4c9a785c478233bdfbdba6a5f4ff3653bce9403e6ebe1fb",
-  "rows": 663748,
-  "destination": "vaca-muerta-pulse.raw_cap4_candidate_dev.produccion_pozo_mes",
-  "loaded_at": "2026-10-12T22:27:38.631108+00:00",
-  "publication_approved": false
-}

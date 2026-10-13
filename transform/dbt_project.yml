@@ -21,7 +21,7 @@ flags:
   send_anonymous_usage_stats: false
 
 # Product: Vaca Muerta en Datos. Repo: vaca-muerta-pulse.
-# Conversion factor MUST match metrics.yml and SQL ({{ var('m3_to_bbl') }}).
+# Conversion factor shared by SQL and dashboard contracts ({{ var('m3_to_bbl') }}).
 vars:
   m3_to_bbl: 6.28981077
   vm_formacion: "vaca muerta"
@@ -58,6 +58,11 @@ models:
   dbt_project_evaluator:
     +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
     +schema: stg
+
+# Keep evaluator tests aligned with its disabled models outside the DuckDB audit.
+data_tests:
+  dbt_project_evaluator:
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
 
 seeds:
   vaca_muerta_pulse:

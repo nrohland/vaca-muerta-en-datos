@@ -1,56 +1,19 @@
-# Specs — cómo funcionan en este repo
+# Contratos y alcance de V1
 
-Este repo es **spec-driven** (SDD): la spec se actualiza **antes** (o en el mismo PR, primero en el diff) de código grande. Los agentes empiezan por [AGENTS.md](../AGENTS.md).
+Estas especificaciones documentan preguntas, granos, semántica y aceptación. El README raíz resume el estado integrado; un resultado de una iteración anterior no equivale a aceptación pública.
 
-## Qué es una spec
-
-Una carpeta `specs/NNN-slug/` describe **un producto o un cambio de producto**, no un ticket aislado.
-
-| Archivo | Contenido |
+| Contrato | Alcance |
 | --- | --- |
-| `spec.md` | Problema, usuarios, requisitos, no-goals, mapa de fuentes, éxito |
-| `plan.md` | Hitos y aceptación |
-| `data-model.md` | Granos, claves, UNKNOWNs |
-| `tasks.md` | Checklist Hito 1 (año 2025 en `raw_cap4_dev`) + Hito 2 (IAM + dbt Vaca Muerta en Datos) + notas Hito 3 |
+| [Modelo de datos](001-vaca-muerta-pulse/data-model.md) | Granos y definiciones de origen; los contratos históricos y de export precisan la implementación vigente |
+| [Producción](010-production-drilldown.md) | Historia, comparaciones, KPIs y tabla |
+| [Operadores](011-operators.md) | Ranking y detalle |
+| [Áreas](012-areas.md) | Ranking y detalle, límites de relaciones |
+| [Actividad](013-activity.md) | Pozos productivos y dinámica respaldada |
+| [Integración](014-integrated-dashboard.md) | Componentes, navegación y revisión común |
+| [Gates](015-dev-pipeline-gates.md) | Base de controles; el CLI histórico amplía el recorrido |
+| [Precios](016-candidate-pricing.md) | Cotizaciones dinámicas y valorización |
+| [Gas internacional](017-international-gas-reference.md) | Henry Hub y supuesto energético |
+| [Export histórico](018-historical-dashboard-export.md) | Contrato frontend y conciliación |
+| [Fuente histórica](019-historical-source-candidate.md) | Cuatro CSV, revisiones y corte aceptado |
 
-Opcional más adelante: `research.md`, `contracts.md` (APIs). No inventar archivos vacíos.
-
-## Flujo de trabajo
-
-```mermaid
-flowchart LR
-  P["Problema"] --> S["spec.md"]
-  S --> M["data-model.md"]
-  S --> H["plan.md hitos"]
-  H --> T["tasks.md"]
-  T --> C["código del hito"]
-  C --> A["aceptación plan.md"]
-  A -->|"delta de grano/stack"| S
-```
-
-1. Si el trabajo **cambia** usuarios, alcance o métricas → `spec.md`.
-2. Si cambia grano, fuente o columnas → `data-model.md` (cerrar UNKNOWN con evidencia).
-3. Si cambia el corte de hitos → `plan.md`.
-4. Implementación: tachar `tasks.md`; no agregar Next fuera del Hito 3.
-5. Stack → [docs/adrs/](../docs/adrs/README.md), no un párrafo suelto en un modelo.
-
-## Specs activas
-
-| ID | Producto | Estado |
-| --- | --- | --- |
-| [001-vaca-muerta-pulse](001-vaca-muerta-pulse/spec.md) | **Vaca Muerta en Datos** (repo `vaca-muerta-pulse`) — Cap. IV, simulación mensual | Fundación actualizada · Hito 3 activo; ver specs de iteración y README |
-
-## Convenciones
-
-- IDs: `001`, `002`, … sin reusar.
-- Español para relato de producto; identificadores técnicos en inglés (`fct_well_month`).
-- **UNKNOWN** en mayúsculas cuando el source no está confirmado. Prohibido rellenar con “supongo que idpozo es único”.
-- Un PR de Hito 1 no abre `002-…` salvo un corte de producto real.
-
-## Relación con el código
-
-| Código | Spec que debe coincidir |
-| --- | --- |
-| `extraction/` | plan Hito 1 + tasks + architecture raw |
-| `transform/` | data-model + plan Hito 2 |
-| `apps/web/` | spec requisitos de UI + plan Hito 3 |
+Los planes de hitos, checklists antiguos y specs de iteraciones visuales superadas se retiraron del árbol actual y permanecen en Git. Antes de cambiar una regla, actualizar su contrato y pruebas. No inventar definiciones para fuentes ausentes.

@@ -1,10 +1,10 @@
 # ADR 0005 — Precios y valorización en la capa de datos
 
-Estado: implementado en candidato; decisión de gas internacional autorizada el 12 de octubre de 2026. Validación y alcance actual en spec 017 y evidencia de gas.
+Estado: implementado en candidato; decisión de gas internacional autorizada el 12 de octubre de 2026. Validación y alcance actual en spec 017 y evidencia de orquestación/export.
 
 ## Problema
 
-Los volúmenes están modelados en dbt, pero el snapshot de precios llega al frontend como un artefacto independiente y la valoración principal se calcula en TypeScript. Esto fragmenta la definición de la métrica y dificulta reproducir una publicación completa desde la misma cadena de datos.
+La primera versión modelaba volúmenes en dbt, pero llevaba precios al frontend como artefacto independiente y calculaba la valoración principal en TypeScript. Esto fragmenta la definición de la métrica y dificulta reproducir una publicación completa desde la misma cadena de datos.
 
 ## Decisión
 
@@ -22,4 +22,4 @@ Tests de unicidad/unidades/precios/cobertura, snapshot revisions, gates de fresh
 
 ## Estado actual verificable
 
-El browser consume precios desde un snapshot local verificado y no hace llamadas a EIA. La lógica de valoración de esta entrega todavía vive en TypeScript. La ingesta y transformación candidatas se ejecutan en desarrollo. El consumidor multianual usa todavía cálculo TypeScript compartido con factor/criterio equivalentes; la migración total de exportadores pertenece al cierre integrado. No hubo despliegue.
+El browser consume el export de `fct_dashboard_month`, con importes USD, bases exactas y YTD persistidos en dbt. Las cotizaciones del bundle se reconstruyen desde la misma carga raw y se ligan por hashes. El consumidor no multiplica volumen por precio. El recorrido histórico de transformación/export/contrato y build está validado localmente; runner GitHub y promoción pública pendientes. [Evidencia](../evidence/orchestration-export/README.md).

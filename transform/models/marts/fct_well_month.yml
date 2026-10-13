@@ -13,7 +13,7 @@ models:
       Vaca Muerta en Datos headline (`fct_production_rate`) must reconcile `prod_pet_m3`
       to the sum of this table for the same `periodo`. Company / area marts
       (`fct_company_month`, `fct_area_month`) roll up from here.
-      Completions live in `fct_completions` (Adjunto IV), not this mart.
+      Completions are outside V1; this mart contains production declarations only.
     columns:
       - name: well_month_id
         description: Surrogate of idpozo + anio + mes.

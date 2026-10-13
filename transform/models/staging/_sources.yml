@@ -13,13 +13,13 @@ sources:
       is filtered in staging; raw remains faithful to the source.
     columns:
     - name: idpozo
-      description: Well id by productive formation (integer in tap).
+      description: Well id by productive formation (integer in source).
     - name: anio
       description: DDJJ year.
     - name: mes
       description: DDJJ month (1–12).
     - name: periodo
-      description: 'First day of the DDJJ month. Added by the tap from anio+mes. Staging
+      description: 'First day of the DDJJ month. Added by the Python loader from anio+mes. Staging
         coalesces this if null. Never treat `_sdc_batched_at` as this value.
 
         '
@@ -32,11 +32,11 @@ sources:
 
         '
     - name: formacion
-      description: Formation name; Pulse filter uses literal `vaca muerta`.
+      description: Formation name; Product filter uses literal `vaca muerta`.
     - name: tipo_de_recurso
-      description: Resource type; Pulse filter uses `NO CONVENCIONAL`.
+      description: Resource type; Product filter uses `NO CONVENCIONAL`.
     - name: _sdc_batched_at
-      description: Meltano/Singer batch timestamp. Raw partition column. Not Cap.
+      description: Python loader batch timestamp. Raw partition column. Not Cap.
         IV month.
     - name: rectificado
       description: '`t`/`f` rectificativa flag. Rare `t` in 2025 sample.'
@@ -49,35 +49,3 @@ sources:
         error_after:
           count: 7
           period: day
-  - name: fracturas_adjunto_iv
-    description: 'Adjunto IV fracture jobs landed from CKAN DataStore resource `2280ad92-6ed3-403e-a095-50139863ab0d`
-      (~4890 rows full resource). Stream `fracturas_adjunto_iv`. **Not** in `cap4-produccion`.
-      Job `cap4-fracturas` or `scripts/load_fracturas_datastore.py`.
-
-      Grain CONFIRMED unique on `id_base_fractura_adjiv` (4890 = row count at harvest).
-      Pulse filter is in staging, not here. Cluster: `idpozo, cuenca, empresa_informante`.
-      Partition: MONTH(`_sdc_batched_at`) — not `fecha_inicio_fractura`.
-
-      '
-    columns:
-    - name: id_base_fractura_adjiv
-      description: Job id (integer in tap). Grain of the resource.
-    - name: idpozo
-      description: Well id. Join to production = UNKNOWN quality.
-    - name: formacion_productiva
-      description: Formation; Pulse filter uses literal `vaca muerta`.
-    - name: tipo_reservorio
-      description: Reservoir type; Pulse filter uses `NO CONVENCIONAL`.
-    - name: cantidad_fracturas
-      description: Stage count for the job.
-    - name: fecha_inicio_fractura
-      description: Fracture start. Staging DATE `fecha_inicio` comes from here.
-    - name: empresa_informante
-      description: Operator name on Adjunto IV. There is no `empresa` column.
-    - name: anio
-      description: Source year. UNKNOWN carga vs inicio — staging keeps as source_anio.
-    - name: _sdc_batched_at
-      description: Loader batch timestamp. Raw partition column. Not fracture date.
-    config:
-      enabled: '{{ target.name != ''candidate'' or var(''enable_completions'', false)
-        }}'

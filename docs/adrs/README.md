@@ -1,13 +1,13 @@
 # Decisiones de arquitectura
 
-Los ADRs conservan razones y contexto de cada decisión. La [arquitectura actual](../architecture.md) describe el estado implementado y sus límites.
+Los ADRs explican elecciones y compromisos del candidato vigente. El historial Git conserva las decisiones iniciales y sus cambios; [arquitectura](../architecture.md) describe la implementación actual.
 
 | ADR | Decisión | Estado |
 | --- | --- | --- |
-| [0001](0001-stack-choices.md) | Meltano, BigQuery y dbt; Next/React/Recharts vigente | Aceptado Hito 0; kit UI ajustado por 0003 |
-| [0002](0002-ui-spike-notebook.md) | Notebook para explorar portada y corregir el grano de tasa | Histórico; no es el frontend final |
-| [0003](0003-resumen-ui.md) | React/Recharts y componentes comunes, snapshot verificado | Propuesto para revisión; implementación candidata |
-| [0004](0004-product-name.md) | Vaca Muerta en Datos y nombres técnicos descriptivos | Adoptado por instrucción; pendiente de integración/merge |
-| [0005](0005-pricing-layer.md) | Precios dinámicos y valoración en la capa de datos | Diseño definido; implementación pendiente |
+| [0001](0001-stack-choices.md) | Python, BigQuery, dbt y Next.js/Recharts | Implementado; elección inicial de extracción reemplazada |
+| [0003](0003-resumen-ui.md) | Componentes comunes y snapshot verificado | Implementado en V1 candidata |
+| [0004](0004-product-name.md) | Vaca Muerta en Datos | Adoptado |
+| [0005](0005-pricing-layer.md) | Precios dinámicos y valorización en dbt | Implementado con Brent y Henry Hub |
+| [0006](0006-candidate-pipeline.md) | CSV oficial, aislamiento y gates | Implementado; runner GitHub pendiente |
 
-Formato `NNNN-kebab-title.md`. Una nueva decisión documenta motivación, alternativas, efectos y estado real; no borra el contexto de decisiones anteriores.
+Cambios de fuente, grano, métricas o arquitectura deben actualizar la decisión y su contrato. El ADR 0002 y el prototipo notebook se retiraron del árbol vigente.

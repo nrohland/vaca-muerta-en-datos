@@ -1,105 +1,82 @@
 # Vaca Muerta en Datos
 
-**Un producto analítico para entender cómo evoluciona la producción no convencional de Vaca Muerta, quién la impulsa y dónde se concentra.** Convierte declaraciones mensuales oficiales en métricas comparables, rankings y exploración interactiva, con trazabilidad desde la fuente hasta la pantalla.
+**Un producto analítico para entender cómo evoluciona la producción no convencional de Vaca Muerta, quién la impulsa y dónde se concentra.** Transforma declaraciones mensuales oficiales en métricas comparables, rankings y exploración interactiva, con trazabilidad desde la fuente hasta la pantalla.
 
-Está pensado para analistas, equipos de energía, periodistas y personas que necesitan responder preguntas de negocio sin recorrer archivos anuales ni escribir SQL. Como portfolio, demuestra un recorrido completo de ingeniería de datos, modelado analítico y diseño de producto.
+Pensado para analistas, equipos de energía y periodistas. Como portfolio, muestra un recorrido completo de ingeniería de datos, modelado analítico y diseño de producto.
 
-> **Estado de esta entrega:** versión de revisión local, sin promoción ni despliegue automático. El snapshot candidato acepta producción hasta **agosto de 2026**; septiembre parcial se excluye. “Preliminar” indica que falta aprobación de publicación, aunque el snapshot tenga validación técnica. Los datos oficiales pueden rectificarse.
+![Resumen de Vaca Muerta en Datos](docs/screenshots/resumen.jpg)
 
-La [conexión histórica del frontend](docs/evidence/snapshot-integration/README.md) registra 59 tests frontend y 17 del exportador aprobados, capturas desktop/mobile y revisión de las cinco pestañas. Playwright está bloqueado por permisos de procesos de macOS; la revisión en navegador integrado se documenta por separado. La [revisión integrada anterior](docs/evidence/integrated/README.md) conserva evidencia histórica. La [auditoría del snapshot y los precios](docs/evidence/data-valuation/README.md) permite recorrer la trazabilidad de datos.
+**Estado:** V1 integrada y validada localmente, con 44 meses de enero de 2023 a agosto de 2026. Versión preliminar sin promoción pública aprobada. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
 
 ## Qué preguntas responde
 
-| Vista | Pregunta | Evidencia que ofrece |
-| --- | --- | --- |
-| **Resumen** | ¿Cuál es el nivel actual y qué cambió? | Tasa diaria equivalente, volumen mensual, pozos productivos, evolución y concentración |
-| **Producción** | ¿Cómo evoluciona petróleo o gas frente al mes anterior, al año anterior y al acumulado comparable? | Series históricas, comparación entre años, cambio absoluto y tabla descargable |
-| **Operadores** | ¿Quién produce y cómo cambia su participación? | Ranking completo, filtros y evolución por operador |
-| **Áreas** | ¿Dónde se concentra la producción y cómo evoluciona cada permiso o concesión? | Ranking, detalle temporal y relación operador–área sólo con respaldo de datos |
-| **Actividad** | ¿Cómo evoluciona la cantidad de pozos con producción y su producción media? | Pozos productivos históricos y promedio por pozo y día calendario; las definiciones limitan qué dinámica puede inferirse |
+| Vista | Preguntas y herramientas |
+| --- | --- |
+| Resumen | ¿Cuál es el nivel actual y qué cambió? KPIs, evolución y concentración. |
+| Producción | ¿Cómo evoluciona cada fluido? Comparación entre años, cambio absoluto, acumulados y tabla descargable. |
+| Operadores | ¿Quién produce y cómo cambia su participación? Ranking completo, búsqueda y evolución por operador. |
+| Áreas | ¿Dónde se concentra la producción? Ranking y evolución por permiso o concesión. |
+| Actividad | ¿Cuántos pozos tienen producción y cómo cambia el promedio por pozo? Historia, cambio neto y tasa por día calendario. |
 
-Las vistas comparten producto, período, volumen/valor, comparación mensual/interanual, ES/EN, tema claro/oscuro y navegación por URL. El mismo componente de KPI, card o gráfico mantiene la misma jerarquía visual. Petróleo usa azul, gas violeta, valor monetario ámbar; las variaciones positivas y negativas mantienen verde y rojo por convención del producto.
+Las cinco vistas comparten componentes, filtros y contexto persistente: petróleo/gas, período, volumen/valor USD, comparación mensual/interanual, ES/EN, light/dark y enlaces a detalles. Petróleo azul, gas violeta, dinero ámbar y variaciones verde/rojo conservan su significado en todo el dashboard. [Capturas desktop y mobile](docs/screenshots/README.md).
 
-## Datos y límites de interpretación
+## Datos, precios y definiciones
 
-La fuente principal es [Capítulo IV de la Secretaría de Energía](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv). El universo es **formación Vaca Muerta + recurso no convencional**: no representa toda la Cuenca Neuquina ni toda la producción argentina.
+La fuente principal es [Capítulo IV de la Secretaría de Energía](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv). El universo combina **formación Vaca Muerta y recurso no convencional**; no representa toda la Cuenca Neuquina. Cuatro CSV oficiales anuales contienen 3.614.213 registros nacionales, de los que dbt obtiene el universo y los agregados del producto.
 
-- **Petróleo:** m³ × 6,28981077 = barriles. **Gas:** miles de m³ convertidos a MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
-- **Pozos productivos:** pozos únicos con producción positiva del fluido elegido en cada mes. Un pozo puede producir ambos fluidos; los conteos no se suman.
-- **Valor USD de petróleo:** barriles × promedio mensual Brent de [EIA](https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte) del mismo mes. Es una estimación bruta de referencia, no ingresos realizados, margen ni beneficio. Sin precio válido se muestra indisponibilidad.
-- **Valor USD de gas:** referencia internacional **Henry Hub mensual de EIA**, del mismo mes. Volumen m³ × equivalencia energética de referencia × USD/MMBtu. La equivalencia es el escenario fijo EIA de 1.036 BTU/pie³ (promedio estadounidense estimado 2026), **no el poder calorífico medido de Vaca Muerta**. El selector Gas USD muestra valor estimado y explicita el supuesto; no representa ingresos realizados. Sin precio válido → indisponibilidad. Ver [contrato y metodología](specs/017-international-gas-reference.md).
+- **Petróleo:** m³ × 6,28981077 → barriles. **Gas:** miles de m³ → MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
+- **Pozos productivos:** IDs únicos con volumen positivo del fluido en cada mes. Los conteos petróleo/gas no se suman.
+- **USD de petróleo:** producción × [Brent mensual EIA](https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte).
+- **USD de gas:** volumen × equivalencia energética × [Henry Hub mensual EIA](https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm). El escenario usa 1.036 BTU/pie³, equivalente a 0,03658599472346218 MMBtu/m³; es un supuesto de referencia estadounidense, no calorificidad medida de Vaca Muerta. [Metodología](specs/017-international-gas-reference.md).
 
-- **Actividad:** producción media por pozo y día calendario no equivale a productividad por día efectivo de operación. No se infieren altas, bajas, perforación o completaciones a partir de un conteo agregado.
-- **Frecuencia:** datos mensuales, sin telemetría ni contador en tiempo real. Las transferencias de activos y rectificativas pueden alterar comparaciones por entidad.
+USD representa **valor bruto estimado con referencias internacionales**, no ingresos realizados, márgenes ni precios locales. Los precios cambiantes se extraen y cargan a BigQuery; dbt calcula la valorización. No son seeds ni se calculan en Next.js. Sin precio válido → valor indisponible; no hay relleno silencioso. Los seeds contienen catálogos estables.
 
-La [auditoría del snapshot y la valorización](docs/evidence/data-valuation/README.md) documenta corte, cobertura, fuentes, fechas y conciliación. El [modelo de datos](specs/001-vaca-muerta-pulse/data-model.md) explicita granos y unidades.
+Actividad muestra producción media por pozo y día calendario, no productividad por día efectivo. El cambio neto de conteos no identifica altas o bajas. No se presentan completaciones, mapa ni relaciones operador–área actuales sin respaldo suficiente. [Contrato histórico](specs/019-historical-source-candidate.md).
 
-## Arquitectura y decisiones
+## Arquitectura y razones
 
 ```mermaid
 flowchart LR
-  SE["SE · CSV oficial anual Capítulo IV"] --> EX["Python · descarga + contrato + conciliación"]
-  EIA["EIA · Brent + Henry Hub mensual oficial"] --> PX["Python · snapshot de precio + hash + corte"]
-  EX --> RAW["BigQuery · raw candidato aislado"]
-  PX --> RAW
-  RAW --> DBT["dbt Core · staging → intermediate → marts + valorización"]
-  DBT --> CHECK["Tests · cobertura · frescura · linaje"]
-  CHECK --> REL["Export candidato · contrato + manifiesto SHA-256"]
-  REL --> WEB["Next.js · snapshot agregado validado"]
-  WEB --> UI["React + Recharts · componentes comunes"]
-  LEGACY["Meltano / Singer · extracción histórica CKAN"] -. "ruta conservada, fuera del CLI candidato" .-> RAWOLD["BigQuery · histórico compartido"]
+  SE["CSV oficiales · Capítulo IV"] --> PY["Python · extracción y contratos"]
+  EIA["EIA · Brent y Henry Hub"] --> PY
+  PY --> RAW["BigQuery · raw candidato aislado"]
+  RAW --> DBT["dbt · staging / intermediate / marts"]
+  DBT --> QA["Tests · freshness · conciliación"]
+  QA --> JSON["Snapshot agregado + manifiestos SHA-256"]
+  JSON --> UI["Next.js / React / Recharts"]
 ```
 
-| Capa | Tecnología actual | Por qué se eligió |
+| Capa | Elección | Motivo |
 | --- | --- | --- |
-| Extracción candidata | CLI Python sobre CSV oficial anual y HTML EIA; Meltano/Singer se conserva para la ruta histórica CKAN | CSV comprobado más completo que DataStore; contratos, snapshots y hashes reproducibles sin trasladar reglas al browser |
-| Warehouse | BigQuery con clustering; particiones diferidas en el sandbox | Consulta analítica sin administrar servidores; control de bytes escaneados y separación dev/candidato/prod |
-| Transformación | dbt Core, SQL, tests y seeds | Granos explícitos, conversiones únicas, conciliación y contratos revisables |
-| Publicación de datos | Agregados JSON, manifiestos y SHA-256 | El browser no necesita credenciales; recibe un snapshot consistente y verificable; promoción separada de construcción |
-| Aplicación | Next.js 16, React 19 y TypeScript 7 | Componentes tipados, navegación persistente y exportación estática |
-| Visualización | Recharts 3 y componentes propios con CSS compartido | Una línea creativa y semántica común, con control de accesibilidad y responsive |
-| Verificación | Node test runner, Playwright y axe; tests dbt y conciliación Python | Comprobar cálculos, contratos, navegación y presentación en varias pantallas |
-| Automatización | CLI compartido Python y GitHub Actions con WIF | Mismos controles localmente y en runner; permisos separados por etapa, sin claves permanentes; activación pendiente |
+| Extracción | Python 3.12, CSV oficiales y HTML EIA | Control explícito de esquema, cobertura, rectificativas y hashes. El CSV comprobado tiene mayor cobertura que DataStore. |
+| Warehouse | BigQuery | Consultas analíticas sin administrar servidores, aislamiento de permisos y medición de bytes. Raw particionado por ingesta; marts con clustering para conservar historia en el sandbox. |
+| Modelado | dbt Core + SQL | Granos y unidades únicos, linaje, tests y conciliación. Intermediate se usa para reglas reutilizadas; staging puede alimentar directamente un mart. |
+| Entrega | JSON agregado y manifiestos | El browser recibe un snapshot consistente sin credenciales ni consultas al warehouse. Construcción y promoción se separan. |
+| Aplicación | Next.js 16, React 19, TypeScript 7, Recharts 3 | Componentes tipados, navegación persistente, export estático y semántica visual compartida. |
+| Automatización | CLI Python + GitHub Actions con WIF | Mismos controles localmente y en runner, identidades por etapa y sin claves permanentes. |
+| Calidad | dbt tests, audit_helper, dbt_project_evaluator, Python, Node y Playwright | Validar datos, arquitectura, contratos y UI; rendimiento medido con tiempos, bytes y slot-ms reales. |
 
-La UI usa Recharts y componentes comunes, documentados en [ADR 0003](docs/adrs/0003-resumen-ui.md). Para el detalle y los compromisos de diseño: [arquitectura](docs/architecture.md), [ADRs](docs/adrs/README.md).
+[Arquitectura detallada](docs/architecture.md) · [Decisiones](docs/adrs/README.md) · [Calidad y rendimiento](transform/docs/quality-and-performance.md).
 
-## Linaje generado desde dbt
+## Linaje real de dbt
 
-![Linaje de modelos dbt](docs/lineage/linaje-dbt.svg)
+![Linaje dbt](docs/lineage/linaje-dbt.svg)
 
-El grafo procede del manifest real del candidato histórico: **12 modelos, 2 fuentes, 1 seed y [['model.vaca_muerta_pulse.fct_reference_valuation_month', 'model.vaca_muerta_pulse.fct_dashboard_month'], ['model.vaca_muerta_pulse.fct_reference_valuation_month', 'model.vaca_muerta_pulse.fct_reference_valuation_entity_month'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.dim_area'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.dim_company'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.fct_area_month'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.fct_company_month'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.fct_dashboard_month'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.fct_production_rate'], ['model.vaca_muerta_pulse.fct_well_month', 'model.vaca_muerta_pulse.fct_reference_valuation_month'], ['model.vaca_muerta_pulse.int_produccion_vm_noconv', 'model.vaca_muerta_pulse.fct_well_month'], ['model.vaca_muerta_pulse.stg_monthly_reference_price', 'model.vaca_muerta_pulse.fct_reference_valuation_month'], ['model.vaca_muerta_pulse.stg_produccion_pozo_mes', 'model.vaca_muerta_pulse.int_produccion_vm_noconv'], ['seed.vaca_muerta_pulse.operator_groups', 'model.vaca_muerta_pulse.fct_dashboard_month'], ['source.vaca_muerta_pulse.candidate_pricing.monthly_reference_price', 'model.vaca_muerta_pulse.stg_monthly_reference_price'], ['source.vaca_muerta_pulse.raw_cap4.produccion_pozo_mes', 'model.vaca_muerta_pulse.stg_produccion_pozo_mes']] dependencias**. Incluye precios y `fct_dashboard_month`; se exportan sólo nombres lógicos y relaciones. [Procedencia y regeneración](docs/lineage/README.md) y [resultados de ejecución](docs/evidence/orchestration-export/README.md).
+Generado desde el manifest de la ejecución aceptada: **12 modelos, 2 fuentes, 1 seed y 15 dependencias**. Se exportan nombres lógicos y relaciones, sin conexiones ni credenciales. [Procedencia y regeneración](docs/lineage/README.md).
 
-## Precios: implementación candidata y consumidor actual
+## Orquestación, frecuencia y freshness
 
-La capa candidata ya implementa **fuente dinámica → raw BigQuery → dbt → valorización**. El 12 de octubre se descargó Brent oficial nuevamente, se verificó su hash y se cargaron 472 meses hasta agosto de 2026 en `raw_cap4_candidate_dev.monthly_reference_price`. Agosto: 91,08 USD/bbl. dbt construye valor bruto de referencia por pozo y entidad, comparaciones contra meses calendario y YTD únicamente si está completo; precios o volúmenes inválidos quedan NULL. No son ingresos realizados. Ver [contrato de precios](specs/016-candidate-pricing.md) y [revalidación oficial](docs/pricing/revalidation-2026-10-12.md).
+El [CLI compartido](pipeline/CLI.md) prepara fuentes públicas, carga tablas candidatas, verifica linaje y frescura, ejecuta dbt y exporta/valida el snapshot. Cada fallo bloquea las etapas posteriores. El export se instala completo en una carpeta separada; no promueve automáticamente datos al repo o al sitio.
 
-**El frontend consume el export histórico validado de `fct_dashboard_month`: 44 meses y 10.296 filas agregadas.** dbt persiste valores USD mensuales, diarios, bases de comparación y YTD completo. El navegador presenta esos valores y calcula formatos/diferencias de presentación; no multiplica volumen por precio ni llama a EIA o BigQuery. El export y la conexión local están comprobados; la promoción pública sigue requiriendo aprobación. Las cotizaciones revisables no se mantienen como seeds permanentes: los seeds se reservan para catálogos y supuestos estables. Gas USD usa Henry Hub con escenario energético EIA documentado; sin forward fill ni sustitutos silenciosos.
+La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, con **`DATA_PIPELINE_ENABLED=false`**. No se presupone que la fuente publique ese día. Frescura operativa máxima de siete días; el warning dbt desde cinco días también detiene el pipeline. Se distinguen recuperación, ingesta, mes de negocio y cobertura: descargar hoy no vuelve completo el último mes.
 
-## Orquestación, extracción y freshness
+La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-El [CLI compartido](pipeline/CLI.md) ejecuta las mismas etapas localmente y en GitHub: descarga/revisión → cargas candidatas → gates de raw y linaje → dbt parse/compile/build/tests. El workflow está preparado, **`DATA_PIPELINE_ENABLED=false`**, y todavía no se comprobó desde un runner real. El calendario previsto es día 5 de cada mes a las **03:00 de Argentina**; no demuestra que la fuente publique ese día.
-
-| Etapa | Implementación actual | Límite operativo |
-| --- | --- | --- |
-| Fuente de producción | Cuatro CSV estándar oficiales 2023–2026; 3.614.213 filas nacionales, esquema y hashes revisados | Corte fijo agosto 2026; no selecciona ni acepta el último mes automáticamente |
-| Cobertura | 88 conciliaciones enero 2023–agosto 2026 × petróleo/gas, más entidades y revisiones documentadas de clasificación/área | Septiembre parcial queda excluido. Esto no constituye aprobación de publicación |
-| Carga | `WRITE_TRUNCATE` atómico por tabla aislada; identidad/hash por fila y recibo de job | No reemplaza el histórico compartido. Producción y precio son cargas separadas, no una transacción conjunta |
-| Transformación | dbt con producción, dimensiones y precios seleccionados; datasets staging/intermediate/marts candidatos | Histórico aceptado: 106 nodos distintos entre build inicial, reparación focalizada y tests adicionales; no fue una única corrida limpia. Sin completaciones |
-| Freshness y linaje | Extracción e ingesta ≤7 días, cronología, conteos, SHA/corte y unidades revalidados antes de dbt | Frescura de carga no equivale a frescura económica. No se verifica cada valor de warehouse contra bytes CSV sólo por comprobar SHA declarado |
-| Acceso | WIF configurado y cuentas separadas de extracción/dbt, permisos por dataset | Sin claves nuevas ni secretos públicos. Falta prueba desde GitHub; no se habilitó facturación |
-| Frontend y promoción | Export y contrato frontend integrados al CLI histórico; workflow construye el consumidor en un checkout temporal | No hay promoción, despliegue ni activación automática; aprobación pública independiente |
-
-Cada consulta tiene presupuesto máximo de **1 GiB**, la descarga máximo 1 GiB y la fuente máximo dos millones de filas; esos límites no son una estimación de costo total. La evidencia de GitHub conserva siete días sólo JSON reducido: no sube raw, perfiles, credenciales ni logs completos dbt. Un error, skip o warning dbt impide aceptar el resultado de transformación. Una anomalía microscópica fuera de Vaca Muerta, dentro de `[-1e-12, 0)`, se preserva como advertencia; cualquier negativo en el universo de producto falla.
-
-El portal oficial redirige CSV/API a HTTP público. Se restringen host/ruta/recurso y no se envían credenciales; el hash demuestra identidad de bytes retenidos, no autenticidad criptográfica del transporte. Ver [evidencia de fuente](docs/evidence/source-candidate/README.md), [decisión del pipeline](docs/adrs/0006-candidate-pipeline.md) y [gates](specs/015-dev-pipeline-gates.md).
-
-**Validación real comprobada:** el CLI compartido `all` pasó sus 12 etapas, desde descarga/carga de producción y precios hasta transformación en BigQuery; dbt completó 83 nodos (8 tablas, 3 vistas, 66 tests de datos y 6 unit tests), sin errores, warnings ni skips. Las conciliaciones también pasaron y hay 75 pruebas offline aprobadas. El recorrido completo de extracción y transformación se repitió en una sola ejecución real y pasó. Ver [evidencia de orquestación](docs/evidence/orchestration/README.md).
-
-**Lo pendiente:** probar WIF y el recorrido desde un runner real de GitHub, cerrar la documentación global de V1. Historia, precios y conexión local del frontend ya están validados; el export ya es una etapa del CLI histórico. No se mergeó, activó ni desplegó esta automatización.
+**Límites pendientes:** comprobar GitHub/WIF en un runner real después de promoción autorizada; definir hosting y operación pública. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
 
 ## Ejecutar la aplicación
 
-Requisitos: Node.js 22.13+ y npm; las credenciales de GCP sólo son necesarias para ejecutar las capas de datos, no para ver el snapshot de revisión.
+Node.js 22.13+ y npm. El snapshot está incluido; no hace falta acceso a GCP para abrirlo.
 
 ```sh
 cd apps/web
@@ -116,45 +93,18 @@ npm run build
 npm run test:browser
 ```
 
-El runner de navegador requiere Chromium instalado (`npx playwright install chromium`). Los comandos y reportes históricos no equivalen a resultados de la integración actual: la entrega final debe adjuntar su propia evidencia. Guías específicas: [frontend](apps/web/README.md), [extracción](extraction/README.md), [transformación](transform/README.md).
+Para navegador, instalar Chromium con `npx playwright install chromium`. Para capas de datos, ver [extracción](extraction/README.md), [dbt](transform/README.md) y [pipeline](pipeline/README.md). Las etapas cloud requieren ADC/WIF; nunca keys en Git.
 
-## Recorrer el repositorio
+## Recorrer el repo
 
-| Directorio | Responsabilidad |
+| Ruta | Responsabilidad |
 | --- | --- |
-| `apps/web/` | Aplicación, componentes, cálculos de presentación, contrato y tests |
-| `extraction/` | Taps, recursos, contratos y preparación de cargas |
-| `transform/` | Modelos dbt, tests, seeds y operación del warehouse |
-| `scripts/` | Importación de Brent y vínculo de artefactos |
-| `specs/` | Preguntas, alcance, definiciones y criterios de aceptación |
-| `docs/adrs/` | Decisiones de arquitectura y sus motivos |
-| `docs/evidence/` | Capturas, auditorías y resultados con alcance y limitaciones |
-| `apps/spike/` | Exploración histórica; no forma parte del frontend final |
+| `apps/web/` | Producto, componentes comunes, contratos y pruebas frontend. |
+| `extraction/` | Contratos, extracción Python y carga candidata. |
+| `transform/` | Modelos, seeds, tests, calidad y linaje dbt. |
+| `pipeline/` | Coordinación, gates, export y pruebas de integración. |
+| `scripts/` | Extracción y carga de referencias de precio. |
+| `specs/` | Alcance, preguntas, definiciones y contratos vigentes. |
+| `docs/` | Arquitectura, decisiones, evidencia y capturas de V1. |
 
-El identificador del repositorio sigue siendo [`vaca-muerta-pulse`](https://github.com/nrohland/vaca-muerta-pulse); el nombre de producto es **Vaca Muerta en Datos**.
-
-## Desarrollo y revisión
-
-El proyecto usa especificaciones y ADRs para registrar cambios de fuente, grano, métricas o arquitectura. Los roles separan Data Engineering (extracción/warehouse), Analytics Engineering (modelado y calidad), frontend (producto) y QA (aceptación). [AGENTS.md](AGENTS.md) contiene las reglas de contribución.
-
-Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en ramas/PR; agentes no mergean, publican ni despliegan sin autorización. La promoción de un candidato y el cierre operativo del pipeline son pasos explícitos de aceptación.
-
-### Pipeline candidato en validación
-
-Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026; automatización todavía desactivada. Producción y Brent ya se cargaron en raw candidato aislado y la fase real de transformación pasó con 83 nodos dbt aprobados. Ver [CLI compartido](pipeline/CLI.md) y [evidencia de permisos y tamaño del raw](docs/evidence/pipeline-access/README.md). Esta evidencia corresponde a la etapa inicial. El snapshot histórico de la aplicación se actualizó posteriormente con aceptación técnica; no se publicó.
-
-### Referencia de gas definida
-
-La referencia activa de gas es Henry Hub internacional. Se ingieren 356 meses hasta agosto, junto con 472 de Brent, con metadatos y hashes por fuente. La equivalencia energética es un supuesto versionado EIA, explicitado en la UI; no una medición de gas argentino. [Metodología](specs/017-international-gas-reference.md). La evidencia anterior de gas indisponible corresponde a la fase previa a esta decisión.
-
-Validación posterior con gas: 88 nodos dbt (11 modelos, 67 tests de datos, 10 unit tests), conciliación independiente y paridad del total de agosto con la UI. [Resultados y capturas](docs/evidence/gas-reference/README.md).
-
-### Histórico y calidad de dbt validados
-
-El 13 de octubre se validó el rango candidato enero 2023–agosto 2026: 106 nodos distintos aprobados entre build, reparación focalizada y tests de claves. Freshness pasó para producción y precios. `audit_helper` confirmó 112.506 filas físicas coincidentes y 24 incorporaciones explicadas por la clasificación oficial del pozo documentado. `dbt_project_evaluator` se ejecuta localmente sobre metadata: 75 resultados aprobados, tres advertencias de estructura/fanout y cero errores. Los reportes de rendimiento usan tiempos, bytes y slot-ms reales del adaptador BigQuery.
-
-[Resultados y límites](docs/evidence/historical-dbt/README.md), [operación de herramientas](transform/docs/quality-and-performance.md). El snapshot del frontend todavía no fue reemplazado; export, consumidor y QA integrado son la siguiente etapa. No se activó facturación ni automatización.
-
-## Snapshot histórico conectado al frontend
-
-El 13 de octubre se exportaron 10.296 agregados de `fct_dashboard_month` y se conectaron las cinco pestañas al candidato de 44 meses. Valores USD persistidos en dbt, 59 tests frontend y 17 del exportador aprobados, typecheck/build correctos y revisión visual desktop/mobile. [Resultado y límites](docs/evidence/snapshot-integration/README.md). Esta aceptación técnica local no implica publicación.
+Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muerta-pulse`. [Contribución y seguridad](AGENTS.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.

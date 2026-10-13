@@ -41,7 +41,7 @@ jobs:
           dbt parse --profiles-dir "$RUNNER_TEMP/vm-dbt-profile" --target candidate --vars '{enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}'
       - name: Frontend contracts and static build
         run: |
-          node apps/web/scripts/check_snapshot.mjs --data-dir apps/web/public/data
+          node --experimental-strip-types apps/web/scripts/check_snapshot.mjs --data-dir apps/web/public/data
           npm --prefix apps/web run typecheck
           npm --prefix apps/web test
           npm --prefix apps/web run build

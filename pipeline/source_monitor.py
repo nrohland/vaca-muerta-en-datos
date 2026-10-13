@@ -359,9 +359,10 @@ def run(args):
         except Exception as error: errors.append({'source':'catalogue','code':type(error).__name__,'source_fingerprint':'unavailable'})
         result, report = compare(state,observations,quotes,datetime.now(timezone.utc))
         report['events'].extend(catalogue_events)
-        if errors:
+        quality_failures=[e for e in report['events'] if e['kind']=='source_quality_failure']
+        if errors or quality_failures:
             for evaluation in report['months'].values():
-                evaluation['status']='observing';evaluation['reasons'].append('source_observation_failed')
+                evaluation['status']='observing';evaluation['reasons'].append('source_observation_failed' if errors else 'source_quality_failure')
             for period in report['months']:
                 result['periods'][period]['review_status']='observing'
                 if state['periods'].get(period,{}).get('review_status')=='ready_for_review':

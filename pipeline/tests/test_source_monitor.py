@@ -190,3 +190,31 @@ class RestoreScope(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             p=Path(d)/'bad.json';p.write_text(json.dumps(state))
             with self.assertRaises(ValueError):monitor.read_state(p)
+
+class FailureSafety(unittest.TestCase):
+    def test_failed_source_does_not_leave_ready_status_or_advance_acceptance(self):
+        from types import SimpleNamespace
+        state,_=monitor.compare(base(),observe(at=NOW-timedelta(days=3)),PRICES,NOW-timedelta(days=3))
+        state,_=monitor.compare(state,observe(),PRICES,NOW)
+        class Clock(datetime):
+            @classmethod
+            def now(cls,tz=None):return NOW+timedelta(days=1)
+        def prices(parser):
+            if parser is monitor.import_henry_hub:raise TimeoutError()
+            return {'prices':[{'periodo':'2026-09-01','usd_per_bbl':3}]}
+        with tempfile.TemporaryDirectory() as directory:
+            output=Path(directory)/'run'
+            args=SimpleNamespace(output=output,previous=None,bootstrap=False,inbound=None,full=False)
+            with patch.object(monitor,'read_state',side_effect=lambda p:copy.deepcopy(state)), \
+                 patch.object(monitor,'collect',return_value=(observe(at=NOW+timedelta(days=1)),{},[])), \
+                 patch.object(monitor,'fetch_eia',side_effect=prices), \
+                 patch.object(monitor,'discover_resources',return_value=([],[])), \
+                 patch.object(monitor,'datetime',Clock):
+                self.assertFalse(monitor.run(args))
+            observed=json.loads((output/'state.json').read_text());report=json.loads((output/'report.json').read_text())
+            self.assertEqual(observed['periods']['2026-09-01']['review_status'],'observing')
+            self.assertNotIn('month_ready_for_review',{e['kind'] for e in report['events']})
+            self.assertEqual(observed['accepted_periods'],base()['accepted_periods'])
+    def test_missing_accepted_month_triggers_quality_notice(self):
+        _,report=monitor.compare(base(),observe(monitor.missing_profile(),period='2026-08-01'),PRICES,NOW)
+        self.assertIn('source_quality_failure',{e['kind'] for e in report['events']})

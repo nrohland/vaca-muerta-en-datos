@@ -2,9 +2,36 @@
   "schema_version": 1,
   "status": "candidate",
   "release_sha256": "1bf27be1365a1520f757f7b1fa6b936a1fc07fe7f07a0f3e7a831b7bfd21688b",
-  "prices_sha256": "ae002c79d9bbd84254c4d47a44eaac2b560f10f611e3a4b2daa475d98678182e",
-  "generated_at": "2026-10-09T19:19:08.952190+00:00",
+  "prices_sha256": "25710ec34eb76fe375cc1e2e6f45392a5953abf961d92a7211da7b32246edb00",
+  "generated_at": "2026-10-12T23:02:00.628448+00:00",
   "missing_oil_price_periods": [],
-  "method": "monthly bbl × monthly EIA Brent USD/bbl; daily = monthly value / calendar days. No realized revenues.",
-  "gas_status": "unavailable"
+  "missing_gas_price_periods": [],
+  "method": "Oil: monthly bbl × same-month EIA Brent USD/bbl. Gas: reported m3 × reference-scenario MMBtu/m3 × same-month EIA Henry Hub USD/MMBtu; daily = monthly value / calendar days. Estimated reference values, not realized revenues or measured VM gas energy.",
+  "gas_status": "available",
+  "gas_valuation_kind": "international_reference_scenario",
+  "energy_basis": "EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1",
+  "m3_to_mmbtu": 0.03658599472346218,
+  "reference_sources": {
+    "oil": {
+      "provider": "EIA",
+      "series": "Europe Brent Spot Price FOB",
+      "url": "https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte",
+      "unit": "USD/bbl",
+      "frequency": "monthly",
+      "source_updated_at": "2026-10-07",
+      "retrieved_at": "2026-10-12T22:53:37.433864+00:00",
+      "response_sha256": "15df82629c5906c899f741b72258770cd3a5d4f12e884962aa459849db58fdd9"
+    },
+    "gas": {
+      "provider": "EIA",
+      "series": "Henry Hub Natural Gas Spot Price",
+      "url": "https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm",
+      "unit": "USD/MMBtu",
+      "frequency": "monthly",
+      "source_updated_at": "2026-10-07",
+      "retrieved_at": "2026-10-12T22:53:47.138147+00:00",
+      "response_sha256": "60d2afb050b84d9ed082f94d9a73e4326231fb717e9c32390d7fcf36fbc5e7b8"
+    }
+  },
+  "publication_approved": false
 }

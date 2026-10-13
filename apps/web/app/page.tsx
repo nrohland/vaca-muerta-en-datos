@@ -470,11 +470,11 @@ export default function Page() {
                   },
                 )}{" "}
                 {t("Gas:")}{" "}
-                <a href={prices.gas.reviewed_sources[0]}>
-                  {t("precios nacionales")}
+                <a href={prices.gas.status === "available" ? prices.gas.source.url : prices.gas.reviewed_sources[0]}>
+                  {t(prices.gas.status === "available" ? "Henry Hub mensual · EIA" : "precios nacionales")}
                 </a>{" "}
                 {t(
-                  "revisados, sin serie comparable y conversión energética validadas.",
+                  prices.gas.status === "available" ? "Referencia internacional USD/MMBtu. Escenario energético de 1.036 BTU/pie³; no calorificidad medida de Vaca Muerta. Los faltantes no se rellenan." : "revisados, sin serie comparable y conversión energética validadas.",
                 )}
               </p>
             )}

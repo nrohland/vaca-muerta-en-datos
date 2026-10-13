@@ -27,7 +27,7 @@ import {
   yearlyComparison,
 } from "../lib/production";
 import { useLocale } from "../lib/locale";
-import { ChartCard, Evolution, KpiCard } from "./dashboard-components";
+import { ChartCard, Evolution, KpiCard, ReferenceValuationNote } from "./dashboard-components";
 
 export function ProductionDashboard({
   rows,
@@ -134,17 +134,11 @@ export function ProductionDashboard({
         </div>
         <span className="production-period">{month(period)}</span>
       </header>
-      {mode === "value" && fluid === "gas" && (
-        <p className="availability-note" role="status">
-          {t(
-            "Valor estimado no disponible para gas. Falta validar una referencia nacional comparable y la conversión energética. Se muestran unidades físicas.",
-          )}
-        </p>
-      )}
+      <ReferenceValuationNote fluid={fluid} prices={prices} />
       {monetary && k.value == null && (
         <p className="availability-note" role="status">
           {t(
-            "Precio Brent no disponible para este período; el valor estimado permanece sin calcular.",
+            "Precio de referencia no disponible para este período; el valor estimado permanece sin calcular.",
           )}
         </p>
       )}
@@ -434,7 +428,7 @@ export function ProductionDashboard({
                       unit: fluid === "oil" ? "bbl/d" : "m³/d",
                     })}
                   </th>
-                  {fluid === "oil" && <><th scope="col">{t("Brent:")} USD/bbl</th><th scope="col">{t("Valor estimado")} USD</th></>}
+                  {<><th scope="col">{fluid === "oil" ? "Brent USD/bbl" : "Henry Hub USD/MMBtu"}</th><th scope="col">{t("Valor estimado")} USD</th></>}
                   <th scope="col">Δ {comparison === "mom" ? "MoM" : "YoY"} ({fullUnit})</th>
                   <th scope="col">{t("Base de comparación")}</th>
                 </tr>
@@ -449,7 +443,7 @@ export function ProductionDashboard({
                     </th>
                     <td>{p.volume == null ? t("No disponible") : `${fluid === "oil" ? compact(p.volume) : compact(p.volume * 1e6)} ${fluid === "oil" ? "bbl" : "m³"}`}</td>
                     <td>{p.rate == null ? t("No disponible") : `${fluid === "oil" ? number(p.rate, 0) : compact(p.rate * 1e6)} ${fluid === "oil" ? "bbl/d" : "m³/d"}`}</td>
-                    {fluid === "oil" && <><td>{p.price == null ? t("No disponible") : `US$ ${number(p.price, 2)}`}</td><td>{p.estimated == null ? t("No disponible") : `US$ ${compact(p.estimated)}`}</td></>}
+                    {<><td>{p.price == null ? t("No disponible") : `US$ ${number(p.price, 2)}`}</td><td>{p.estimated == null ? t("No disponible") : `US$ ${compact(p.estimated)}`}</td></>}
                     <td className="production-selected-column">{signed(p[comparison])}</td>
                     <td>{historyMonth(p[comparison === "mom" ? "momBase" : "yoyBase"])}</td>
                   </tr>
@@ -459,7 +453,7 @@ export function ProductionDashboard({
           </div>
           <p className="chart-context">
             {t(
-              "Fuente: Secretaría de Energía · Capítulo IV. USD: volumen × Brent mensual EIA; estimación, no facturación.",
+              "Fuente: Secretaría de Energía · Capítulo IV. USD: volumen × precio mensual EIA y conversión energética de referencia para gas; estimación, no facturación.",
             )}
           </p>
         </ChartCard>

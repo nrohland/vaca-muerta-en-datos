@@ -1,5 +1,5 @@
 import type { Entity, Fluid, Row } from './contract.ts';
-import { change, comparisonOffset, effectiveMode, entityValue, shiftMonth, type Comparison, type Mode, type Prices } from './metrics.ts';
+import { GAS_ENERGY_BASIS, GAS_M3_TO_MMBTU, change, comparisonOffset, effectiveMode, entityValue, shiftMonth, type Comparison, type Mode, type Prices } from './metrics.ts';
 import { historyWindow } from './history.ts';
 import { operatorName } from './operators.ts';
 
@@ -43,6 +43,7 @@ export function operatorHistory(entities:Entity[], rows:Row[], fluid:Fluid, peri
 export function operatorCsv(points: ReturnType<typeof operatorHistory>, fluid:Fluid, mode:Mode) {
   const selected=effectiveMode(mode,fluid),factor=fluid==='gas'?1e6:1;
   const cell=(v:number|null)=>v==null?'':String(v);
-  return ['period,volume_'+(fluid==='oil'?'bbl':'m3')+',selected_'+(selected==='value'?'usd':fluid==='oil'?'bbl':'m3')+',share_pct,productive_wells,comparison_base,base_value,delta,pct',
-    ...points.map(p=>[p.periodo,cell(p.volume==null?null:p.volume*factor),cell(p.value==null?null:p.value*(selected==='value'?1:factor)),cell(p.share),cell(p.wells),p.basePeriod,cell(p.baseValue==null?null:p.baseValue*(selected==='value'?1:factor)),cell(p.delta==null?null:p.delta*(selected==='value'?1:factor)),cell(p.pct)].join(','))].join('\n');
+  const scenario=fluid==='gas'&&selected==='value';
+  return ['period,volume_'+(fluid==='oil'?'bbl':'m3')+',selected_'+(selected==='value'?'usd':fluid==='oil'?'bbl':'m3')+',share_pct,productive_wells,comparison_base,base_value,delta,pct'+(scenario?',benchmark,energy_basis_scenario,m3_to_mmbtu_scenario':''),
+    ...points.map(p=>[p.periodo,cell(p.volume==null?null:p.volume*factor),cell(p.value==null?null:p.value*(selected==='value'?1:factor)),cell(p.share),cell(p.wells),p.basePeriod,cell(p.baseValue==null?null:p.baseValue*(selected==='value'?1:factor)),cell(p.delta==null?null:p.delta*(selected==='value'?1:factor)),cell(p.pct),...(scenario?(p.value==null?['','','']:['EIA_HENRY_HUB_MONTHLY',GAS_ENERGY_BASIS,String(GAS_M3_TO_MMBTU)]):[])].join(','))].join('\n');
 }

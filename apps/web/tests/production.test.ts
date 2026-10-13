@@ -9,7 +9,7 @@ import {
   absoluteChange,
 } from "../lib/production.ts";
 import { validateRelease, type Row } from "../lib/contract.ts";
-import { validatePrices, shiftMonth } from "../lib/metrics.ts";
+import { validatePrices, shiftMonth, valuedVolume, change } from "../lib/metrics.ts";
 const release = validateRelease(
   JSON.parse(
     readFileSync(
@@ -56,16 +56,12 @@ test("absolute volume changes reconcile with every prepared MoM/YoY delta; monet
             (r) =>
               r.fluid === fluid && r.periodo === shiftMonth(p.periodo, offset),
           );
-          if (mode === "volume" || fluid === "gas")
+          if (mode === "volume")
             close(p[c], r[`${c}_volume_delta`] as number | null);
           else {
-            const cp = prices.prices.find(
-              (v) => v.periodo === p.periodo,
-            )!.usd_per_bbl;
-            const bp = prices.prices.find(
-              (v) => v.periodo === shiftMonth(p.periodo, offset),
-            )?.usd_per_bbl;
-            close(p[c], b && bp ? r.volume * cp - b.volume * bp : null);
+            const cv = valuedVolume(r.volume, fluid, p.periodo, prices);
+            const bv = b ? valuedVolume(b.volume, fluid, b.periodo, prices) : null;
+            close(p[c], cv == null || bv == null ? null : cv - bv);
           }
         }
       }
@@ -82,27 +78,13 @@ test("YTD sums exact January–selected months and peak excludes future data", (
         mode,
         "yoy",
       );
-      const sum = (year: string) =>
-        release.production
-          .filter(
-            (r) =>
-              r.fluid === fluid &&
-              r.periodo.startsWith(year) &&
-              r.periodo.slice(5, 7) <= "08",
-          )
-          .reduce(
-            (s, r) =>
-              s +
-              r.volume *
-                (mode === "value" && fluid === "oil"
-                  ? prices.prices.find((p) => p.periodo === r.periodo)!
-                      .usd_per_bbl
-                  : 1),
-            0,
-          );
+      const sum = (year: string) => {
+        const values = release.production.filter(r => r.fluid === fluid && r.periodo.startsWith(year) && r.periodo.slice(5,7) <= "08").map(r => mode === "value" ? valuedVolume(r.volume, fluid, r.periodo, prices) : r.volume);
+        return values.some(v => v == null) ? null : values.reduce<number>((s,v) => s+v!,0);
+      };
       close(k.accumulated, sum("2026"));
       close(k.previousAccumulated, sum("2025"));
-      close(k.accumulatedGrowth, (sum("2026") / sum("2025") - 1) * 100);
+      close(k.accumulatedGrowth, change(sum("2026"), sum("2025")));
       const early = productionKpis(
         release.production,
         fluid,
@@ -111,7 +93,7 @@ test("YTD sums exact January–selected months and peak excludes future data", (
         mode,
         "mom",
       );
-      assert.ok(early.maximum!.periodo <= "2024-02-01");
+      assert.ok(early.maximum == null || early.maximum.periodo <= "2024-02-01");
     }
 });
 test("missing months, missing prices and a zero base preserve honest nulls and signed deltas", () => {
@@ -193,7 +175,7 @@ test("missing months, missing prices and a zero base preserve honest nulls and s
   );
   assert.ok(
     gas.every(
-      (p) => p.price === null && p.estimated === null && p.value === p.volume,
+      (p) => p.value === p.estimated && (p.price !== null || p.estimated === null),
     ),
   );
 });
@@ -254,10 +236,7 @@ test("CSV roundtrips raw precision, units, nulls, zeroes, signs and exact base d
         Number(body.at(-1)![2]),
         points.at(-1)!.volume! * (fluid === "gas" ? 1e6 : 1),
       );
-      if (fluid === "gas") {
-        assert.ok(
-          body.every((r) => r[4] === "" && r[5] === "" && r[6] === "m3"),
-        );
-      } else assert.equal(Number(body.at(-1)![5]), points.at(-1)!.estimated);
+      assert.equal(body.at(-1)![5], points.at(-1)!.estimated == null ? "" : String(points.at(-1)!.estimated));
+      assert.ok(body.every(r => r[6] === (mode === "value" ? "USD_estimated" : fluid === "gas" ? "m3" : "bbl")));
     }
 });

@@ -1,3 +1,5 @@
+> Investigación argentina previa a la decisión del mismo día. La referencia activa de gas es ahora Henry Hub EIA con escenario energético explícito; [spec 017](../../specs/017-international-gas-reference.md). El precio PPP descrito abajo no se usa para valorizar el dashboard.
+
 # Revalidación oficial de precios — 12 de octubre de 2026
 
 ## Brent

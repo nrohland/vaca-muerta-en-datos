@@ -1,6 +1,6 @@
 # Gates del pipeline candidato de desarrollo
 
-Estado: implementados, con cargas reales de producción/Brent y fase de transformación validada en BigQuery aislado. Un resultado técnico pass nunca aprueba publicación, cambia el corte de la UI ni habilita gas USD.
+Estado: implementados, con cargas reales de producción/Brent/Henry Hub y fase de transformación validada en BigQuery aislado. Un resultado técnico pass nunca aprueba publicación, cambia el corte de la UI ni aprueba su publicación.
 
 ## Contrato activo de fuente
 
@@ -24,13 +24,14 @@ Identificadores fijos/validados, SQL parametrizado, query cache deshabilitada y 
 
 ## Precios y transformación
 
-Descarga fresca EIA mensual → parser revisado → NDJSON/manifest con respuesta SHA, filas SHA, retrieval real, fecha de publicación, benchmark USD/bbl y corte → loader candidato → dbt. La referencia cargada tiene 472 meses hasta agosto 2026; agosto 91,08 USD/bbl. No seeds permanentes de cotizaciones dinámicas ni live fetch del browser.
+Descarga fresca EIA mensual → parser revisado → NDJSON/manifest con respuesta SHA, filas SHA, retrieval real, fecha de publicación, benchmark USD/bbl y corte → loader candidato → dbt. Las referencias cargadas contienen 472 meses Brent (agosto 91,08 USD/bbl) y 356 Henry Hub (agosto 2,78 USD/MMBtu), hasta agosto de 2026, con metadatos propios por producto. No seeds permanentes de cotizaciones dinámicas ni live fetch del browser.
 
 Modelos de precios sólo habilitados con target `candidate` y `enable_candidate_pricing=true`. `candidate_period=2026-08-01` restringe producción/marts al mes aceptado, aunque raw contenga septiembre parcial. Selección incluye padres de company/area/headline/valorización y dimensiones company/area. Sin dimensiones, tests de relaciones fallan; no aceptar un subconjunto verde que omita dependencias necesarias.
 
-Gates de precios: unidad/currency/benchmark válidos, precio finito >0, hash y snapshot coherentes, fechas/corte, unicidad de mes y presencia del precio requerido. Valorización usa mismo mes, convierte petróleo m³→bbl una vez y conserva NULL ante precio/volumen inválidos. Agregados requieren todas las filas disponibles. MoM/YoY usan joins calendario; base cero → porcentaje NULL. YTD exige enero–mes actual completos; un candidato sólo agosto no inventa YTD enero–agosto.
+Gates de precios: unidad/currency/benchmark válidos, precio finito >0, hash y snapshot coherentes, fechas/corte, unicidad de producto × mes y presencia del precio requerido. Valorización usa mismo mes, convierte petróleo m³→bbl una vez y conserva NULL ante precio/volumen inválidos. Agregados requieren todas las filas disponibles. MoM/YoY usan joins calendario; base cero → porcentaje NULL. YTD exige enero–mes actual completos; un candidato sólo agosto no inventa YTD enero–agosto.
 
-Unit tests prueban missing/invalid price, volumen negativo/cero, huecos de calendario, YTD incompleto y base cero. Tests SQL concilian operador/área/cuenca y coherencia disponibilidad/NULL. Gas PPP Neuquina/TOTAL recién descargado sigue hasta mayo, 4,01 USD/MMBTU; junio–agosto ausentes y base térmica CapIV no acreditada. Gas valorizado permanece NULL, sin forward fill ni sustitutos.
+Unit tests prueban missing/invalid price, volumen negativo/cero, huecos de calendario, YTD incompleto y base cero. Tests SQL concilian operador/área/cuenca y coherencia disponibilidad/NULL. Gas usa Henry Hub y el escenario energético EIA versionado explícitamente en spec 017; no usa PPP Neuquina, ni forward fill, ni una calorificidad argentina supuestamente medida.
+
 
 Cada etapa debe emitir gate nuevo `status=pass`, `publication_approved=false`, perteneciente al run. Fallo de subprocess o gate corta la cadena. Un build con resultados error/skip/warn no cumple aceptación. GitHub preserva sólo JSON reducido siete días; `dbt-summary.json` contiene ID/status/duración, no profiles, raw, logs completos, manifest completo ni credenciales.
 
@@ -43,3 +44,7 @@ El frontend conserva snapshot anterior multianual y valorización TypeScript. Lo
 ## Resultado real verificado
 
 El CLI compartido `all` pasó 12 etapas reales, desde descarga hasta build. dbt completó 83 nodos: 8 tablas, 3 vistas, 66 tests de datos, 6 unit tests; cero errores/warnings/skips. Las conciliaciones pasaron y 75 pruebas offline están aprobadas. Modelos/macros/tests ejecutados tienen paridad con el árbol integrado. Preparación, carga y transformación se repitieron como una sola ejecución completa. La autenticación desde GitHub sigue pendiente. Los gates endurecidos de linaje y artefactos se repitieron sobre el candidato real y pasaron; no reemplazan la evidencia fechada del build. Ver [orquestación](../docs/evidence/orchestration/README.md).
+
+## Decisión posterior: Henry Hub
+
+La autorización de referencia internacional reemplaza los requisitos anteriores de gas PPP/NULL. [Spec vigente de gas](017-international-gas-reference.md): Henry Hub EIA mensual, manifest v2 y escenario energético fijo EIA explícito. La ingesta actual carga 828 precios (472 Brent, 356 HH); controles de freshness/hash/unidad/basis separados por producto. Unicidad producto × mes y precio del corte para ambos. Gas válido tiene `reference_scenario`, no calorificidad medida de Vaca Muerta. Nueva validación completa de 88 nodos en [evidencia](../docs/evidence/gas-reference/README.md). Los resultados anteriores se conservan como historial verificable.

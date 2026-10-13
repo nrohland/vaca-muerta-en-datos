@@ -6,6 +6,19 @@ export function readLanguage(value: string | null): Language {
 }
 // Spanish source messages are also the default locale. Variables never translate entity names.
 export const translations: Record<string, string> = {
+  "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.": "Henry Hub · international reference scenario. Estimated energy conversion using the EIA reference: 1,036 BTU/ft³; not a measured heating value for Vaca Muerta. Does not represent actual revenue.",
+  "Metodología EIA": "EIA methodology",
+  "Precio de referencia Henry Hub": "Henry Hub reference price",
+  "Henry Hub · escenario estimado": "Henry Hub · estimated scenario",
+  "Valor estimado a precio de referencia": "Estimated value at reference price",
+  "Valor estimado a precio de referencia. No representa facturación efectiva.": "Estimated value at reference price. Does not represent actual revenue.",
+  "Precio promedio mensual de referencia.": "Monthly average reference price.",
+  "Promedio mensual de referencia; no es el precio efectivo de venta.": "Monthly average reference; not the actual sale price.",
+  "Precio de referencia no disponible para este período; el valor estimado permanece sin calcular.": "Reference price unavailable for this period; estimated value remains uncalculated.",
+  "Henry Hub mensual · EIA": "Monthly Henry Hub · EIA",
+  "Referencia internacional USD/MMBtu. Escenario energético de 1.036 BTU/pie³; no calorificidad medida de Vaca Muerta. Los faltantes no se rellenan.": "International USD/MMBtu reference. Energy scenario of 1,036 BTU/ft³; not measured Vaca Muerta heating value. Missing observations are not filled.",
+  "Fuente: Secretaría de Energía · Capítulo IV. USD: volumen × precio mensual EIA y conversión energética de referencia para gas; estimación, no facturación.": "Source: Secretariat of Energy · Chapter IV. USD: volume × EIA monthly price and reference energy conversion for gas; estimate, not revenue.",
+
   "Detalle de {label}": "Details of {label}",
   "Ver detalle": "View details",
   "Producción acumulada del año": "Year-to-date production",

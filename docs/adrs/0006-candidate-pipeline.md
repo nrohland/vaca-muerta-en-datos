@@ -31,3 +31,7 @@ El portal redirige recursos públicos a HTTP; host/ruta/recurso están restringi
 ## Evidencia de ejecución
 
 El CLI compartido `all` pasó 12 etapas con descargas, cargas y transformación reales. dbt: 83 nodos aprobados, cero errores/warnings/skips; 8 tablas, 3 vistas, 66 tests de datos y 6 unit tests. Conciliaciones reales y 75 pruebas offline aprobadas. El código de modelos/macros/tests del proyecto ejecutado se contrastó con el árbol integrado. Las descargas/cargas y el build se repitieron en una ejecución completa. WIF desde un runner GitHub aún no fue probado. Los controles endurecidos de metadatos/linaje se repitieron con BigQuery y artefactos reales, y pasaron. Ver [evidencia](../evidence/orchestration/README.md).
+
+## Extensión autorizada: referencias internacionales
+
+Precios candidatos ahora incluyen Brent y Henry Hub mensuales EIA con metadata y hashes propios. El manifest v2 conserva freshness independiente de cada fuente y SHA conjunto del payload. Gas se valoriza únicamente como escenario energético EIA versionado, explicitado también en UI/CSV. [Contrato](../../specs/017-international-gas-reference.md). Extracción y transformación volvieron a ejecutarse realmente; 88 nodos dbt aprobados. [Evidencia actual](../evidence/gas-reference/README.md). No altera identidades, permisos, confianza WIF, cron desactivado ni aprobación de promoción.

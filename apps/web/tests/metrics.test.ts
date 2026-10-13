@@ -121,8 +121,8 @@ test("missing prices, missing calendar bases, zero bases and gas never create in
   assert.equal(metric(r, release.production, empty, "estimate").value, null);
   assert.equal(metric(r, [r], prices, "wells").mom, null);
   assert.equal(change(10, 0), null);
-  assert.equal(valuedVolume(1, "gas", r.periodo, prices), null);
-  assert.equal(effectiveMode("value", "gas"), "volume");
+  assert.equal(valuedVolume(1, "gas", r.periodo, {...prices, gas: {status:"unavailable",reason:"No reference",reviewed_sources:[]}}), null);
+  assert.equal(effectiveMode("value", "gas"), "value");
   const bad = structuredClone(prices);
   bad.prices.push(bad.prices[0]);
   assert.throws(() => validatePrices(bad));

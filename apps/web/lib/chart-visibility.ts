@@ -4,7 +4,7 @@ export type SeriesView = "both" | "physical" | "value";
 export function chartVisibility({wells, fluid, detailView, selected, hasEstimated}: {
   wells: boolean; fluid: Fluid; detailView: boolean; selected: SeriesView; hasEstimated: boolean;
 }) {
-  const available = !wells && fluid === "oil" && hasEstimated;
+  const available = !wells && hasEstimated;
   const activeSeries: SeriesView = wells || !available ? "physical" : detailView ? selected : "both";
   return {
     activeSeries,

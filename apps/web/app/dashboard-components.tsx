@@ -349,6 +349,11 @@ export function GlobalFilters({
     </div>
   );
 }
+export function ReferenceValuationNote({fluid, prices}: {fluid: Fluid; prices: Prices | null}) {
+  const {t} = useLocale();
+  if (fluid === "gas") return <p className="availability-note">{t("Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.")} {prices?.gas.status === "available" && <a href={prices.gas.conversion.source_url}>{t("Metodología EIA")}</a>}</p>;
+  return null;
+}
 function TrendTooltip({
   active,
   label,
@@ -376,7 +381,7 @@ function TrendTooltip({
         <span>{t("Producción")}</span>
         <strong>{physical(volume.value, fluid)}</strong>
       </div>
-      {fluid === "oil" && (
+      {(
         <div className="tooltip-row">
           <span>{t("Valor estimado")}</span>
           <strong>{currency(value.value)}</strong>
@@ -475,7 +480,7 @@ export function Evolution({
       )}
       className={wells ? "evolution wells-evolution" : "evolution production-evolution"}
       controls={!wells && <>
-        {detailView && fluid === "oil" && prices && <div className="ranges series-control" role="group" aria-label={t("Series del gráfico")}>{(["both","physical","value"] as const).map(v => <button key={v} aria-pressed={activeSeries === v} disabled={v !== "physical" && unavailable} onClick={() => setSeriesView(v)}>{t(v === "both" ? "Ambas series" : v === "physical" ? "Producción física" : "Valor estimado")}</button>)}</div>}
+        {detailView && prices && <div className="ranges series-control" role="group" aria-label={t("Series del gráfico")}>{(["both","physical","value"] as const).map(v => <button key={v} aria-pressed={activeSeries === v} disabled={v !== "physical" && unavailable} onClick={() => setSeriesView(v)}>{t(v === "both" ? "Ambas series" : v === "physical" ? "Producción física" : "Valor estimado")}</button>)}</div>}
         <div className="ranges" role={detailView ? "group" : undefined} aria-label={t("Período de evolución")}>
           {historyRanges.map((n) => (
             <button
@@ -985,17 +990,11 @@ export function SummaryDashboard({
   return (
     <>
       <h1 className="sr-only">{t("Resumen de Vaca Muerta")}</h1>
-      {mode === "value" && fluid === "gas" && (
-        <p className="availability-note" role="status">
-          {t(
-            "Valor estimado no disponible para gas. Falta validar una referencia nacional comparable y la conversión energética. Se muestran unidades físicas.",
-          )}
-        </p>
-      )}
+      <ReferenceValuationNote fluid={fluid} prices={prices} />
       {monetary && price == null && (
         <p className="availability-note" role="status">
           {t(
-            "Precio Brent no disponible para este período; el valor estimado permanece sin calcular.",
+            "Precio de referencia no disponible para este período; el valor estimado permanece sin calcular.",
           )}
         </p>
       )}
@@ -1064,28 +1063,28 @@ export function SummaryDashboard({
             price == null
               ? "Estimación monetaria no disponible."
               : monetary
-                ? "Precio promedio mensual de referencia Brent."
+                ? "Precio promedio mensual de referencia."
                 : "Producción valorizada a precio de referencia.",
           )}
           label={t(
-            monetary ? "Precio de referencia Brent" : "Valor bruto estimado",
+            monetary ? fluid === "oil" ? "Precio de referencia Brent" : "Precio de referencia Henry Hub" : "Valor estimado a precio de referencia",
           )}
           value={monetary ? number(fourth.value, 2) : million(fourth.value)}
           unit={
-            fourth.value == null ? undefined : monetary ? "USD/bbl" : "M USD"
+            fourth.value == null ? undefined : monetary ? (fluid === "oil" ? "USD/bbl" : "USD/MMBtu") : "M USD"
           }
           context={t(
             monetary
               ? "Promedio mensual · EIA"
               : fourth.value == null
                 ? "Estimación pendiente"
-                : "A precio Brent · estimación",
+                : fluid === "oil" ? "A precio Brent · estimación" : "Henry Hub · escenario estimado",
           )}
           comparisons={comparisons(fourth)}
           tooltip={
             monetary
               ? t(
-                  "Promedio mensual Brent de referencia; no es el precio efectivo de venta.",
+                  "Promedio mensual de referencia; no es el precio efectivo de venta.",
                 )
               : valuationHelp
           }

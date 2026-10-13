@@ -1,60 +1,699 @@
 version: 2
 unit_tests:
-  - name: oil_same_month_missing_and_invalid_are_null
-    model: fct_reference_valuation_month
-    config:
-      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
-    given:
-      - input: ref('fct_well_month')
-        rows:
-          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: 10}
-          - {well_month_id: b, idpozo: 2, idempresa: A, idareapermisoconcesion: X, periodo: '2026-02-01', prod_pet_m3: 10}
-          - {well_month_id: c, idpozo: 3, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: -1}
-          - {well_month_id: d, idpozo: 4, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', prod_pet_m3: 0}
-          - {well_month_id: e, idpozo: 5, idempresa: A, idareapermisoconcesion: X, periodo: '2026-03-01', prod_pet_m3: 10}
-      - input: ref('stg_monthly_reference_price')
-        rows:
-          - {product: oil, periodo: '2026-01-01', benchmark: EIA_BRENT_MONTHLY, price: 80, price_valid: true, snapshot_id: fixture, source_sha256: fixture, retrieved_at: '2026-10-12 12:00:00', source_updated_at: '2026-10-07', accepted_cutoff: '2026-08-01'}
-          - {product: oil, periodo: '2026-03-01', benchmark: EIA_BRENT_MONTHLY, price: 0, price_valid: false, snapshot_id: fixture, source_sha256: fixture, retrieved_at: '2026-10-12 12:00:00', source_updated_at: '2026-10-07', accepted_cutoff: '2026-08-01'}
-    # Native FLOAT64 product; independent reconciliation uses relative tolerance.
-    expect:
-      rows:
-        - {well_month_id: a, oil_reference_value_usd: 5031.848615999999, oil_valuation_available: true, oil_valuation_status: available, gas_valuation_available: false, gas_reference_value_usd: null}
-        - {well_month_id: b, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: missing_price, gas_valuation_available: false, gas_reference_value_usd: null}
-        - {well_month_id: c, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: invalid_volume, gas_valuation_available: false, gas_reference_value_usd: null}
-        - {well_month_id: d, oil_reference_value_usd: 0, oil_valuation_available: true, oil_valuation_status: available, gas_valuation_available: false, gas_reference_value_usd: null}
-        - {well_month_id: e, oil_reference_value_usd: null, oil_valuation_available: false, oil_valuation_status: invalid_price, gas_valuation_available: false, gas_reference_value_usd: null}
-  - name: calendar_gap_and_incomplete_ytd_are_null
-    model: fct_reference_valuation_entity_month
-    config:
-      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
-    given:
-      - input: ref('fct_reference_valuation_month')
-        rows:
-          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', oil_volume_bbl: 1, oil_reference_value_usd: 80, oil_valuation_available: true, reference_price_usd_per_bbl: 80, snapshot_id: fixture}
-          - {well_month_id: b, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-03-01', oil_volume_bbl: 1, oil_reference_value_usd: 90, oil_valuation_available: true, reference_price_usd_per_bbl: 90, snapshot_id: fixture}
-    expect:
-      rows:
-        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
-        - {entity_type: company, entity_id: A, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
-        - {entity_type: area, entity_id: X, periodo: '2026-01-01', oil_reference_ytd_usd: 80, oil_reference_mom_change_usd: null}
-        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
-        - {entity_type: company, entity_id: A, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
-        - {entity_type: area, entity_id: X, periodo: '2026-03-01', oil_reference_ytd_usd: null, oil_reference_mom_change_usd: null}
-  - name: zero_comparison_base_stays_null_with_complete_ytd
-    model: fct_reference_valuation_entity_month
-    config:
-      enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
-    given:
-      - input: ref('fct_reference_valuation_month')
-        rows:
-          - {well_month_id: a, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-01-01', oil_volume_bbl: 0, oil_reference_value_usd: 0, oil_valuation_available: true, reference_price_usd_per_bbl: 80, snapshot_id: fixture}
-          - {well_month_id: b, idpozo: 1, idempresa: A, idareapermisoconcesion: X, periodo: '2026-02-01', oil_volume_bbl: 1, oil_reference_value_usd: 90, oil_valuation_available: true, reference_price_usd_per_bbl: 90, snapshot_id: fixture}
-    expect:
-      rows:
-        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
-        - {entity_type: basin, entity_id: vaca_muerta, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}
-        - {entity_type: company, entity_id: A, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
-        - {entity_type: company, entity_id: A, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}
-        - {entity_type: area, entity_id: X, periodo: '2026-01-01', oil_reference_ytd_usd: 0, oil_reference_mom_change_usd: null, oil_reference_mom_change_pct: null}
-        - {entity_type: area, entity_id: X, periodo: '2026-02-01', oil_reference_ytd_usd: 90, oil_reference_mom_change_usd: 90, oil_reference_mom_change_pct: null}
+- name: oil_same_month_missing_and_invalid_are_null
+  model: fct_reference_valuation_month
+  config:
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  given:
+  - input: ref('fct_well_month')
+    rows:
+    - well_month_id: a
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 10
+    - well_month_id: b
+      idpozo: 2
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-02-01'
+      prod_pet_m3: 10
+    - well_month_id: c
+      idpozo: 3
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: -1
+    - well_month_id: d
+      idpozo: 4
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+    - well_month_id: e
+      idpozo: 5
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-03-01'
+      prod_pet_m3: 10
+  - input: ref('stg_monthly_reference_price')
+    rows:
+    - product: oil
+      periodo: '2026-01-01'
+      benchmark: EIA_BRENT_MONTHLY
+      price: 80
+      price_valid: true
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+    - product: oil
+      periodo: '2026-03-01'
+      benchmark: EIA_BRENT_MONTHLY
+      price: 0
+      price_valid: false
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+  expect:
+    rows:
+    - well_month_id: a
+      oil_reference_value_usd: 5031.848615999999
+      oil_valuation_available: true
+      oil_valuation_status: available
+      gas_valuation_available: false
+      gas_reference_value_usd: null
+    - well_month_id: b
+      oil_reference_value_usd: null
+      oil_valuation_available: false
+      oil_valuation_status: missing_price
+      gas_valuation_available: false
+      gas_reference_value_usd: null
+    - well_month_id: c
+      oil_reference_value_usd: null
+      oil_valuation_available: false
+      oil_valuation_status: invalid_volume
+      gas_valuation_available: false
+      gas_reference_value_usd: null
+    - well_month_id: d
+      oil_reference_value_usd: 0
+      oil_valuation_available: true
+      oil_valuation_status: available
+      gas_valuation_available: false
+      gas_reference_value_usd: null
+    - well_month_id: e
+      oil_reference_value_usd: null
+      oil_valuation_available: false
+      oil_valuation_status: invalid_price
+      gas_valuation_available: false
+      gas_reference_value_usd: null
+- name: calendar_gap_and_incomplete_ytd_are_null
+  model: fct_reference_valuation_entity_month
+  config:
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  given:
+  - input: ref('fct_reference_valuation_month')
+    rows:
+    - well_month_id: a
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      oil_volume_bbl: 1
+      oil_reference_value_usd: 80
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 80
+      snapshot_id: fixture
+    - well_month_id: b
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-03-01'
+      oil_volume_bbl: 1
+      oil_reference_value_usd: 90
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 90
+      snapshot_id: fixture
+  expect:
+    rows:
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 80
+      oil_reference_mom_change_usd: null
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 80
+      oil_reference_mom_change_usd: null
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 80
+      oil_reference_mom_change_usd: null
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-03-01'
+      oil_reference_ytd_usd: null
+      oil_reference_mom_change_usd: null
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-03-01'
+      oil_reference_ytd_usd: null
+      oil_reference_mom_change_usd: null
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-03-01'
+      oil_reference_ytd_usd: null
+      oil_reference_mom_change_usd: null
+- name: zero_comparison_base_stays_null_with_complete_ytd
+  model: fct_reference_valuation_entity_month
+  config:
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  given:
+  - input: ref('fct_reference_valuation_month')
+    rows:
+    - well_month_id: a
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      oil_volume_bbl: 0
+      oil_reference_value_usd: 0
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 80
+      snapshot_id: fixture
+    - well_month_id: b
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-02-01'
+      oil_volume_bbl: 1
+      oil_reference_value_usd: 90
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 90
+      snapshot_id: fixture
+  expect:
+    rows:
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 0
+      oil_reference_mom_change_usd: null
+      oil_reference_mom_change_pct: null
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-02-01'
+      oil_reference_ytd_usd: 90
+      oil_reference_mom_change_usd: 90
+      oil_reference_mom_change_pct: null
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 0
+      oil_reference_mom_change_usd: null
+      oil_reference_mom_change_pct: null
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-02-01'
+      oil_reference_ytd_usd: 90
+      oil_reference_mom_change_usd: 90
+      oil_reference_mom_change_pct: null
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-01-01'
+      oil_reference_ytd_usd: 0
+      oil_reference_mom_change_usd: null
+      oil_reference_mom_change_pct: null
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-02-01'
+      oil_reference_ytd_usd: 90
+      oil_reference_mom_change_usd: 90
+      oil_reference_mom_change_pct: null
+- name: dual_reference_units_and_energy_basis_are_explicit
+  model: stg_monthly_reference_price
+  config: &id001
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  given:
+  - input: source('candidate_pricing', 'monthly_reference_price')
+    rows:
+    - product: oil
+      periodo: '2026-01-01'
+      price: 80
+      currency: USD
+      price_unit: bbl
+      benchmark: EIA_BRENT_MONTHLY
+      energy_basis: null
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-01-01'
+      price: 2
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-02-01'
+      price: 2
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: WRONG_BASIS
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-03-01'
+      price: 2
+      currency: USD
+      price_unit: bbl
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-04-01'
+      price: 0
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-05-01'
+      price: 2
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: null
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-06-01'
+      price: NaN
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-07-01'
+      price: Infinity
+      currency: USD
+      price_unit: MMBTU
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      accepted_cutoff: '2026-08-01'
+  expect:
+    rows:
+    - product: oil
+      periodo: '2026-01-01'
+      price_valid: true
+    - product: gas
+      periodo: '2026-01-01'
+      price_valid: true
+    - product: gas
+      periodo: '2026-02-01'
+      price_valid: false
+    - product: gas
+      periodo: '2026-03-01'
+      price_valid: false
+    - product: gas
+      periodo: '2026-04-01'
+      price_valid: false
+    - product: gas
+      periodo: '2026-05-01'
+      price_valid: false
+    - product: gas
+      periodo: '2026-06-01'
+      price_valid: false
+    - product: gas
+      periodo: '2026-07-01'
+      price_valid: false
+- name: gas_reference_scenario_formula_zero_and_unavailable_cases
+  model: fct_reference_valuation_month
+  config: *id001
+  given:
+  - input: ref('fct_well_month')
+    rows:
+    - well_month_id: valid
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 1
+    - well_month_id: zero
+      idpozo: 2
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 0
+    - well_month_id: badvol
+      idpozo: 3
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: -1
+    - well_month_id: missing
+      idpozo: 4
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-02-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 1
+    - well_month_id: badprice
+      idpozo: 5
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-03-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 1
+    - well_month_id: badbasis
+      idpozo: 6
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-04-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 1
+    - well_month_id: nanvol
+      idpozo: 20
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: NaN
+    - well_month_id: infvol
+      idpozo: 21
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: Infinity
+    - well_month_id: nullvol
+      idpozo: 22
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: null
+  - input: ref('stg_monthly_reference_price')
+    rows:
+    - product: gas
+      periodo: '2026-01-01'
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      price: 2
+      price_valid: true
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-03-01'
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      price: 0
+      price_valid: false
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-04-01'
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      price: 2
+      price_valid: true
+      energy_basis: WRONG_BASIS
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+  expect:
+    rows:
+    - well_month_id: valid
+      gas_valuation_available: true
+      gas_valuation_status: reference_scenario
+      gas_estimated_mmbtu: 36.585994723462186
+      gas_reference_value_usd: 73.17198944692437
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: zero
+      gas_valuation_available: true
+      gas_valuation_status: reference_scenario
+      gas_estimated_mmbtu: 0
+      gas_reference_value_usd: 0
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: badvol
+      gas_valuation_available: false
+      gas_valuation_status: invalid_volume
+      gas_estimated_mmbtu: null
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: missing
+      gas_valuation_available: false
+      gas_valuation_status: missing_price
+      gas_estimated_mmbtu: 36.585994723462186
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: badprice
+      gas_valuation_available: false
+      gas_valuation_status: invalid_price
+      gas_estimated_mmbtu: 36.585994723462186
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: badbasis
+      gas_valuation_available: false
+      gas_valuation_status: invalid_energy_basis
+      gas_estimated_mmbtu: 36.585994723462186
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: nanvol
+      gas_valuation_available: false
+      gas_valuation_status: invalid_volume
+      gas_estimated_mmbtu: null
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: infvol
+      gas_valuation_available: false
+      gas_valuation_status: invalid_volume
+      gas_estimated_mmbtu: null
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+    - well_month_id: nullvol
+      gas_valuation_available: false
+      gas_valuation_status: invalid_volume
+      gas_estimated_mmbtu: null
+      gas_reference_value_usd: null
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+      gas_energy_is_scenario: true
+- name: gas_calendar_gaps_zero_base_and_complete_ytd
+  model: fct_reference_valuation_entity_month
+  config: &id002
+    enabled: '{{ target.name == ''candidate'' and var(''enable_candidate_pricing'',
+      false) }}'
+  given:
+  - input: ref('fct_reference_valuation_month')
+    rows:
+    - well_month_id: '2026-01-01'
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      oil_volume_bbl: 0
+      oil_reference_value_usd: 0
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 80
+      snapshot_id: oil-fixture
+      gas_volume_m3: 0
+      gas_estimated_mmbtu: 0.0
+      gas_reference_value_usd: 0
+      gas_valuation_available: true
+      gas_reference_price_usd_per_mmbtu: 2
+      gas_benchmark: EIA_HENRY_HUB_MONTHLY
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_energy_factor_mmbtu_per_m3: 0.03658599472346218
+      gas_valuation_method: estimated_reference_scenario
+      gas_snapshot_id: gas-fixture
+    - well_month_id: '2026-02-01'
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-02-01'
+      oil_volume_bbl: 0
+      oil_reference_value_usd: 0
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 80
+      snapshot_id: oil-fixture
+      gas_volume_m3: 20
+      gas_estimated_mmbtu: 10.0
+      gas_reference_value_usd: 20
+      gas_valuation_available: true
+      gas_reference_price_usd_per_mmbtu: 2
+      gas_benchmark: EIA_HENRY_HUB_MONTHLY
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_energy_factor_mmbtu_per_m3: 0.03658599472346218
+      gas_valuation_method: estimated_reference_scenario
+      gas_snapshot_id: gas-fixture
+    - well_month_id: '2026-04-01'
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-04-01'
+      oil_volume_bbl: 0
+      oil_reference_value_usd: 0
+      oil_valuation_available: true
+      reference_price_usd_per_bbl: 80
+      snapshot_id: oil-fixture
+      gas_volume_m3: 40
+      gas_estimated_mmbtu: 20.0
+      gas_reference_value_usd: 40
+      gas_valuation_available: true
+      gas_reference_price_usd_per_mmbtu: 2
+      gas_benchmark: EIA_HENRY_HUB_MONTHLY
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_energy_factor_mmbtu_per_m3: 0.03658599472346218
+      gas_valuation_method: estimated_reference_scenario
+      gas_snapshot_id: gas-fixture
+  expect:
+    rows:
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-01-01'
+      gas_reference_ytd_usd: 0
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-02-01'
+      gas_reference_ytd_usd: 20
+      gas_reference_mom_change_usd: 20
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: basin
+      entity_id: vaca_muerta
+      periodo: '2026-04-01'
+      gas_reference_ytd_usd: null
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-01-01'
+      gas_reference_ytd_usd: 0
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-02-01'
+      gas_reference_ytd_usd: 20
+      gas_reference_mom_change_usd: 20
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: company
+      entity_id: A
+      periodo: '2026-04-01'
+      gas_reference_ytd_usd: null
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-01-01'
+      gas_reference_ytd_usd: 0
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-02-01'
+      gas_reference_ytd_usd: 20
+      gas_reference_mom_change_usd: 20
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+    - entity_type: area
+      entity_id: X
+      periodo: '2026-04-01'
+      gas_reference_ytd_usd: null
+      gas_reference_mom_change_usd: null
+      gas_reference_mom_change_pct: null
+      gas_reference_yoy_change_usd: null
+      gas_valuation_available: true
+      gas_energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      gas_valuation_method: estimated_reference_scenario
+- name: duplicate_product_month_prices_never_duplicate_wells
+  model: fct_reference_valuation_month
+  config: *id002
+  given:
+  - input: ref('fct_well_month')
+    rows:
+    - well_month_id: one
+      idpozo: 1
+      idempresa: A
+      idareapermisoconcesion: X
+      periodo: '2026-01-01'
+      prod_pet_m3: 0
+      prod_gas_km3: 1
+  - input: ref('stg_monthly_reference_price')
+    rows:
+    - product: gas
+      periodo: '2026-01-01'
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      price: 2
+      price_valid: true
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+    - product: gas
+      periodo: '2026-01-01'
+      benchmark: EIA_HENRY_HUB_MONTHLY
+      price: 3
+      price_valid: true
+      energy_basis: EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1
+      snapshot_id: fixture
+      source_sha256: fixture
+      retrieved_at: '2026-10-12 12:00:00'
+      source_updated_at: '2026-10-07'
+      accepted_cutoff: '2026-08-01'
+  expect:
+    rows:
+    - well_month_id: one
+      gas_reference_value_usd: null
+      gas_valuation_available: false
+      gas_valuation_status: missing_price

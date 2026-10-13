@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "pipeline_tests": 33,
+  "extraction_tests": 32,
+  "pricing_tests": 31,
+  "python_total": 96,
+  "frontend_tests": 54,
+  "dbt_results": 88,
+  "dbt_models": 11,
+  "dbt_data_tests": 67,
+  "dbt_unit_tests": 10,
+  "typecheck": "pass",
+  "static_build": "pass",
+  "publication_approved": false
+}

@@ -1,11 +1,10 @@
 {{ config(enabled=target.name == 'candidate' and var('enable_candidate_pricing', false), tags=['pricing']) }}
-{% if var('candidate_period', none) is not none %}
-select date('{{ var("candidate_period") }}') as missing_required_period
-from (select 1 as candidate_run)
-where not exists (
-    select 1 from {{ ref('stg_monthly_reference_price') }}
-    where periodo=date('{{ var("candidate_period") }}') and price_valid
+with required as (
+ select product, {{ candidate_period_sql() }} as periodo
+ from unnest(['oil','gas']) product
 )
-{% else %}
-select periodo from {{ ref('stg_monthly_reference_price') }} where false
-{% endif %}
+select r.* from required r
+where not exists (
+ select 1 from {{ ref('stg_monthly_reference_price') }} p
+ where p.product=r.product and p.periodo=r.periodo and p.price_valid
+)

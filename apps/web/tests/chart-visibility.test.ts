@@ -9,8 +9,8 @@ test("a selected USD series falls back to physical when the window has no valid 
   const result=chartVisibility({wells:false,fluid:"oil",detailView:true,selected:"value",hasEstimated:false});
   assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);assert.equal(result.unavailable,true);assert.equal(result.activeSeries,"physical");
 });
-test("gas and productive wells retain physical charts regardless of stale series selection",()=>{
-  for(const options of [{wells:false,fluid:"gas" as const},{wells:true,fluid:"oil" as const}]){
+test("productive wells retain physical charts; gas reference can show USD",()=>{
+  for(const options of [{wells:true,fluid:"oil" as const}]){
     const result=chartVisibility({...options,detailView:true,selected:"value",hasEstimated:true});
     assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);
     assert.equal(result.unavailable,!options.wells);

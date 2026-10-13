@@ -1,0 +1,50 @@
+{
+  "started_at": "2026-10-12T23:03:33.271906+00:00",
+  "status": "passed",
+  "publication_approved": false,
+  "stages": [
+    {
+      "name": "artifact-check",
+      "started_at": "2026-10-12T23:03:33.272260+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:03:33.350656+00:00"
+    },
+    {
+      "name": "raw-revalidate",
+      "started_at": "2026-10-12T23:03:33.351151+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:03:38.092891+00:00"
+    },
+    {
+      "name": "loaded-revalidate",
+      "started_at": "2026-10-12T23:03:38.094316+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:03:43.383709+00:00"
+    },
+    {
+      "name": "dbt-parse",
+      "started_at": "2026-10-12T23:03:43.384358+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:03:48.445438+00:00"
+    },
+    {
+      "name": "dbt-compile",
+      "started_at": "2026-10-12T23:03:48.445890+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:03:55.857163+00:00"
+    },
+    {
+      "name": "dbt-build",
+      "started_at": "2026-10-12T23:03:55.857824+00:00",
+      "status": "passed",
+      "returncode": 0,
+      "finished_at": "2026-10-12T23:07:53.854202+00:00"
+    }
+  ],
+  "finished_at": "2026-10-12T23:07:53.857335+00:00"
+}

@@ -31,10 +31,15 @@ class CandidateCLITests(unittest.TestCase):
           'source-manifest':dict(status='pass',sha256_csv=sha),
           'source-load':dict(status='pass',source_sha256=sha,rows=10,
             destination=f'{candidate.PROJECT}.{candidate.DATASET}.produccion_pozo_mes',publication_approved=False),
-          'price-manifest':dict(cutoff=candidate.CUTOFF,gas_valuation_enabled=False,row_count=472,retrieved_at=stamp,
-                               response_sha256='b'*64,rows_sha256='c'*64),
-          'price-load':dict(table=f'{candidate.PROJECT}.{candidate.DATASET}.monthly_reference_price',rows=472,job_id='job',
-                           source_sha256='b'*64,rows_sha256='c'*64)}
+          'price-manifest':dict(schema_version=2,cutoff=candidate.CUTOFF,gas_valuation_enabled=True,
+             gas_valuation_kind='international_reference_scenario',row_count=828,retrieved_at=stamp,
+             rows_sha256='c'*64,products={
+                k:dict(product=k,benchmark=ref[0],currency='USD',price_unit=ref[1],source_url=ref[2],energy_basis=ref[3],
+                  cutoff=candidate.CUTOFF,retrieved_at=stamp,source_updated_at=stamp[:10],row_count=472 if k=='oil' else 356,
+                  response_sha256='b'*64,snapshot_id='b'*64)
+                for k,ref in __import__('verify_loaded_lineage').REFERENCES.items()}),
+          'price-load':dict(table=f'{candidate.PROJECT}.{candidate.DATASET}.monthly_reference_price',rows=828,job_id='job',
+                           source_hashes={'oil':'b'*64,'gas':'b'*64},rows_sha256='c'*64)}
         for name,value in values.items():path.joinpath(name+'.json').write_text(json.dumps(value))
         return path
 
@@ -56,15 +61,15 @@ class CandidateCLITests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError,'source lineage'):candidate.assert_extract_artifact(path)
 
     def test_artifact_rejects_old_price_even_with_fresh_raw(self):
-        path=self.artifacts();p=path/'price-manifest.json';value=json.loads(p.read_text());value['retrieved_at']=(datetime.now(timezone.utc)-timedelta(days=8)).isoformat();p.write_text(json.dumps(value))
+        path=self.artifacts();p=path/'price-manifest.json';value=json.loads(p.read_text());value['products']['gas']['retrieved_at']=(datetime.now(timezone.utc)-timedelta(days=8)).isoformat();value['products']['gas']['source_updated_at']=value['products']['gas']['retrieved_at'][:10];p.write_text(json.dumps(value))
         with self.assertRaisesRegex(ValueError,'Pricing evidence stale'):candidate.assert_extract_artifact(path)
 
-    def test_artifact_rejects_gas_enabled(self):
-        path=self.artifacts();p=path/'price-manifest.json';value=json.loads(p.read_text());value['gas_valuation_enabled']=True;p.write_text(json.dumps(value))
+    def test_artifact_rejects_gas_disabled(self):
+        path=self.artifacts();p=path/'price-manifest.json';value=json.loads(p.read_text());value['gas_valuation_enabled']=False;p.write_text(json.dumps(value))
         with self.assertRaisesRegex(ValueError,'pricing lineage'):candidate.assert_extract_artifact(path)
 
     def test_artifact_rejects_price_receipt_hash_mismatch(self):
-        path=self.artifacts();p=path/'price-load.json';value=json.loads(p.read_text());value['source_sha256']='d'*64;p.write_text(json.dumps(value))
+        path=self.artifacts();p=path/'price-load.json';value=json.loads(p.read_text());value['source_hashes']['gas']='d'*64;p.write_text(json.dumps(value))
         with self.assertRaisesRegex(ValueError,'pricing lineage'):candidate.assert_extract_artifact(path)
 
     def test_missing_hashes_cannot_match_as_none(self):

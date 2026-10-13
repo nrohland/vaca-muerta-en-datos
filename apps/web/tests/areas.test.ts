@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {areaRanking,areaChange,areaPoints} from '../lib/area-analysis.ts';
 import {validateRelease} from '../lib/contract.ts';
-import {validatePrices,shiftMonth} from '../lib/metrics.ts';
+import {validatePrices,shiftMonth,valuedVolume} from '../lib/metrics.ts';
 const release=validateRelease(JSON.parse(readFileSync(new URL('../public/data/release.json',import.meta.url),'utf8')));
 const prices=validatePrices(JSON.parse(readFileSync(new URL('../public/data/prices.json',import.meta.url),'utf8')));
 const close=(a:number,b:number)=>assert.ok(Math.abs(a-b)<Math.max(1e-7,Math.abs(b)*1e-10),`${a} ≠ ${b}`);
@@ -15,9 +15,9 @@ test('search/filter retain original rank and basin share, never renormalize',()=
  assert.equal(areaRanking(release.entities,current,prices,'volume','mom',{query:'unknown area xyz'}).length,0);
  const up=areaRanking(release.entities,current,prices,'volume','mom',{direction:'up'});assert.ok(up.every(r=>r.delta!=null&&r.delta>0));
 });
-test('USD change values each historical month separately and gas stays physical',()=>{
+test('USD change values each historical month separately and gas requires an explicit price scenario',()=>{
  const current=release.production.filter(r=>r.fluid==='oil').at(-1)!;const entity=areaRanking(release.entities,current,prices,'volume','yoy')[0].entity;const c=areaChange(entity,release.entities,prices,'value','yoy');const base=release.entities.find(e=>e.dimension==='area'&&e.fluid==='oil'&&e.entity_id===entity.entity_id&&e.periodo===shiftMonth(current.periodo,-12))!;close(c.value!,entity.volume*prices.prices.find(p=>p.periodo===current.periodo)!.usd_per_bbl);close(c.delta!,c.value!-base.volume*prices.prices.find(p=>p.periodo===base.periodo)!.usd_per_bbl);
- const gas=release.entities.find(e=>e.dimension==='area'&&e.fluid==='gas')!;assert.equal(areaChange(gas,release.entities,prices,'value','yoy').value,gas.volume);
+ const gas=release.entities.find(e=>e.dimension==='area'&&e.fluid==='gas')!;assert.equal(areaChange(gas,release.entities,prices,'value','yoy').value,valuedVolume(gas.volume,'gas',gas.periodo,prices));
  assert.equal(areaChange(entity,release.entities,null,'value','yoy').value,null);
 });
 test('missing entity month and exact comparison base remain null, observed zeros remain zero',()=>{

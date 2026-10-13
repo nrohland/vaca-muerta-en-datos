@@ -1,3 +1,5 @@
+> **Decisión vigente — 12 de octubre de 2026:** Henry Hub mensual de EIA para gas, con escenario energético EIA explícito. [Contrato actual](../specs/017-international-gas-reference.md). La investigación siguiente documenta la alternativa argentina y las restricciones anteriores; no define el benchmark activo.
+
 # Referencia USD para gas y arquitectura de precios
 
 Revisión del 11 de octubre de 2026. No se implementó USD para gas ni se cambiaron fuentes o configuración de red.

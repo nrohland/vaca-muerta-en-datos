@@ -1,6 +1,6 @@
 # ADR 0005 — Precios y valorización en la capa de datos
 
-Estado: diseño definido; implementación y validación operativa pendientes. No altera los artefactos de la UI actual ni habilita USD de gas.
+Estado: implementado en candidato; decisión de gas internacional autorizada el 12 de octubre de 2026. Validación y alcance actual en spec 017 y evidencia de gas.
 
 ## Problema
 
@@ -8,13 +8,13 @@ Los volúmenes están modelados en dbt, pero el snapshot de precios llega al fro
 
 ## Decisión
 
-Ingerir Brent EIA y la referencia nacional de gas como fuentes mensuales con recurso, fecha, unidades, hash y revisiones. BigQuery conserva el raw. dbt normaliza las referencias y cruza el precio del mismo mes con los volúmenes de meses aceptados. Los marts/export entregan importes, bases, variaciones y estados de disponibilidad; el frontend presenta los resultados.
+Ingerir Brent EIA y Henry Hub mensual EIA como fuentes mensuales con recurso, fecha, unidades, hash y revisiones. BigQuery conserva el raw. dbt normaliza las referencias y cruza el precio del mismo mes con los volúmenes de meses aceptados. Los marts/export entregan importes, bases, variaciones y estados de disponibilidad; el frontend presenta los resultados.
 
 Seeds para catálogos, factores/metodologías estables y un histórico temporal explícitamente versionado. No mantener cotizaciones revisables con edición manual del seed como solución permanente. [dbt recomienda seeds para datos estáticos o que cambian poco](https://docs.getdbt.com/docs/build/seeds).
 
 ## Contratos
 
-Precio: producto × mes × benchmark × versión. No sumar referencias alternativas ni categorías ya agregadas. Petróleo: Brent mensual USD/bbl. Gas: referencia propuesta Neuquina/TOTAL PPP USD/MMBTU de Secretaría de Energía. Confirmar cobertura y base térmica antes de habilitar valorización. Los huecos permanecen nulos; comparaciones y YTD exigen todas las bases/precios necesarios. Valor bruto de referencia no es ingreso realizado.
+Precio: producto × mes × benchmark × versión. No sumar referencias alternativas ni categorías ya agregadas. Petróleo: Brent mensual USD/bbl. Gas: Henry Hub mensual USD/MMBtu, con equivalencia energética de referencia EIA explícita y versionada. Es una estimación internacional, no un precio realizado ni calorificidad medida de Vaca Muerta. [Definición](../../specs/017-international-gas-reference.md). Los huecos permanecen nulos; comparaciones y YTD exigen todas las bases/precios necesarios. Valor bruto de referencia no es ingreso realizado.
 
 ## Cierre operativo
 
@@ -22,4 +22,4 @@ Tests de unicidad/unidades/precios/cobertura, snapshot revisions, gates de fresh
 
 ## Estado actual verificable
 
-El browser consume precios desde un snapshot local verificado y no hace llamadas a EIA. La lógica de valoración de esta entrega todavía vive en TypeScript. No se ha ejecutado ni desplegado la arquitectura de precios definida por este ADR.
+El browser consume precios desde un snapshot local verificado y no hace llamadas a EIA. La lógica de valoración de esta entrega todavía vive en TypeScript. La ingesta y transformación candidatas se ejecutan en desarrollo. El consumidor multianual usa todavía cálculo TypeScript compartido con factor/criterio equivalentes; la migración total de exportadores pertenece al cierre integrado. No hubo despliegue.

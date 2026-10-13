@@ -2,12 +2,12 @@
 import { useMemo, useState } from 'react';
 import { Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Entity, Row } from '../lib/contract';
-import { effectiveMode, type Comparison, type Mode, type Prices } from '../lib/metrics';
+import { effectiveMode, metric, type Comparison, type Mode, type Prices } from '../lib/metrics';
 import { historyTicks } from '../lib/history';
 import { useLocale } from '../lib/locale';
 import { operatorName } from '../lib/operators';
 import { filterOperators, operatorCsv, operatorHistory, operatorRanking, type OperatorDirection, type OperatorSort } from '../lib/operator-analysis';
-import { ChartCard, KpiCard, OperatorLogo, RankingItem, shortNames } from './dashboard-components';
+import { ChartCard, KpiCard, ReferenceValuationNote, OperatorLogo, RankingItem, shortNames } from './dashboard-components';
 import './operators.css';
 
 const text = {
@@ -23,8 +23,7 @@ const text = {
   monthly:['Volúmenes mensuales','Monthly volumes'], monetary:['Valores mensuales estimados','Estimated monthly values'], history:['Histórico','History'],
   period:['Mes','Month'], share:['Participación','Share'], wells:['Pozos productivos','Producing wells'], base:['Base de comparación','Comparison base'], delta:['Cambio absoluto','Absolute change'], pct:['Variación','Change'],
   source:['Fuente: Secretaría de Energía · Capítulo IV · Vaca Muerta no convencional.','Source: Secretariat of Energy · Chapter IV · unconventional Vaca Muerta.'],
-  prices:['USD: volumen × Brent mensual EIA. Estimación de valor bruto, no facturación efectiva.','USD: volume × EIA monthly Brent. Estimated gross value, not actual revenue.'],
-  gas:['No hay precio validado para gas. Se muestran volúmenes físicos, incluso con Valor USD seleccionado.','No validated gas price is available. Physical volumes are shown, including when USD Value is selected.'],
+  prices:['USD: volumen × precio mensual de referencia EIA; conversión energética estimada para gas. No facturación efectiva.','USD: volume × EIA monthly reference price; estimated energy conversion for gas. Not actual revenue.'],
   noPrice:['Falta el precio validado para este período. Los valores USD permanecen sin calcular.','The validated price for this period is missing. USD values remain uncalculated.'],
   gap:['Meses sin registro se conservan sin dato; no se interpolan ni equivalen a cero.','Months without records retain missing values; they are not interpolated or treated as zero.'],
   back:['← Todos los operadores','← All operators'], detail:['Detalle del operador','Operator detail'], detailVolume:['Producción mensual','Monthly production'], detailValue:['Valor mensual estimado','Estimated monthly value'],
@@ -50,8 +49,7 @@ export function OperatorsDashboard({entities,rows,current,prices,mode,comparison
   const selected=entries.find(e=>e.entity.entity_id===operator);
   const detail=operator ? entities.find(e=>e.dimension==='company'&&e.entity_id===operator&&e.fluid===current.fluid&&e.periodo<=current.periodo) : undefined;
   const detailName=selected?.name??(detail?operatorName(detail.entity_id,detail.entity_name):operator);
-  const total=monetary ? prices?.prices.find(p=>p.periodo===current.periodo)?.usd_per_bbl : null;
-  const totalValue=monetary?(total==null?null:current.volume*total):current.volume;
+  const totalValue=metric(current,rows,prices,'volume',mode).value;
   const top5Share=current.volume>0?entries.slice(0,5).reduce((sum,e)=>sum+e.entity.volume,0)/current.volume*100:null;
   const largest=[...entries].filter(e=>e.delta!=null).sort((a,b)=>Math.abs(b.delta!)-Math.abs(a.delta!))[0];
   const points=operatorHistory(entities,rows,current.fluid,current.periodo,range,operator,prices,mode,comparison);
@@ -70,7 +68,7 @@ export function OperatorsDashboard({entities,rows,current,prices,mode,comparison
   return <div className="operators-dashboard" data-detail={!!operator}>
     <header className="operators-heading"><div><p className="eyebrow">{L(operator?'detail':'eyebrow')}</p><h1>{operator?detailName:L('title')}</h1><p>{operator?`${L('volume')} · ${t(current.fluid==='oil'?'Petróleo':'Gas')}`:L('intro')}</p></div><span className="production-period">{month(current.periodo)}</span></header>
     {operator&&<button className="text-action operators-back" onClick={()=>onOperator('')}>{L('back')}</button>}
-    {mode==='value'&&current.fluid==='gas'&&<p className="availability-note" role="status">{L('gas')}</p>}
+    <ReferenceValuationNote fluid={current.fluid} prices={prices} />
     {monetary&&totalValue==null&&<p className="availability-note" role="status">{L('noPrice')}</p>}
     {operator&&!selected&&<p className="availability-note" role="status">{L('invalid')}</p>}
     <div className="kpi-grid">

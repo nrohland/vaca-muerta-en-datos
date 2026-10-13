@@ -7,22 +7,26 @@ sources:
       enabled: "{{ target.name == 'candidate' and var('enable_candidate_pricing', false) }}"
     tables:
       - name: monthly_reference_price
-        description: Immutable reviewed official monthly benchmark snapshot; no seeds or forward filling.
+        description: Immutable reviewed dual-product EIA benchmark snapshot; gas energy is an explicit US-average reference scenario.
 models:
   - name: stg_monthly_reference_price
-    description: Same-month benchmark with currency, units, response hash and accepted cutoff.
+    description: Product-month benchmark with currency, units, response hash, accepted cutoff and explicit gas scenario basis.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [product, periodo]
     columns:
       - name: periodo
-        data_tests: [not_null, unique]
+        data_tests: [not_null]
       - name: snapshot_id
         data_tests: [not_null]
   - name: fct_reference_valuation_month
-    description: Candidate well-grain oil reference valuation; never realized revenue. Gas unavailable.
+    description: Candidate well-grain oil Brent and gas Henry Hub reference valuation; gas energy is a fixed US-average scenario, never measured Vaca Muerta heating value or realized revenue.
     columns:
       - name: well_month_id
         data_tests: [not_null, unique]
   - name: fct_reference_valuation_entity_month
-    description: Basin/company/area monthly reference values, calendar comparisons and complete YTD only.
+    description: Basin/company/area dual-product reference values, exact calendar comparisons and complete YTD only; gas scenario metadata persists.
     data_tests:
       - dbt_utils.unique_combination_of_columns:
           arguments:

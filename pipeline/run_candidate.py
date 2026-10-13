@@ -11,6 +11,7 @@ import sys
 import tempfile
 from urllib.request import HTTPRedirectHandler, build_opener
 
+from verify_loaded_lineage import validate_price_manifest
 from stage_runner import Stage, run, write_report
 
 PROJECT = 'vaca-muerta-pulse'
@@ -66,23 +67,16 @@ def assert_extract_artifact(directory):
         or receipt.get('destination') != f'{PROJECT}.{DATASET}.produccion_pozo_mes'
         or receipt.get('publication_approved') is not False):
         raise ValueError('Extraction artifact source lineage differs')
-    if (price.get('cutoff') != CUTOFF or price.get('gas_valuation_enabled') is not False
-        or not isinstance(price.get('response_sha256'),str)
-        or not re.fullmatch('[a-f0-9]{64}',price['response_sha256'])
-        or not isinstance(price.get('rows_sha256'),str)
-        or not re.fullmatch('[a-f0-9]{64}',price['rows_sha256'])
-        or price_receipt.get('source_sha256') != price['response_sha256']
-        or price_receipt.get('rows_sha256') != price['rows_sha256']
-        or price_receipt.get('table') != f'{PROJECT}.{DATASET}.monthly_reference_price'
-        or price_receipt.get('rows') != price.get('row_count')
-        or not price_receipt.get('job_id')):
+    products = validate_price_manifest(price)
+    if (price_receipt.get('table') != f'{PROJECT}.{DATASET}.monthly_reference_price'
+        or price_receipt.get('rows') != price['row_count']
+        or not price_receipt.get('job_id')
+        or price_receipt.get('source_hashes') != {k:v['response_sha256'] for k,v in products.items()}
+        or price_receipt.get('rows_sha256') != price['rows_sha256']):
         raise ValueError('Extraction artifact pricing lineage differs')
     extracted = datetime.fromisoformat(evidence['extracted_at'])
     if extracted.tzinfo is None or not 0 <= (datetime.now(timezone.utc)-extracted).total_seconds() <= 7*86400:
         raise ValueError('Source evidence stale/future')
-    retrieved = datetime.fromisoformat(price['retrieved_at'])
-    if retrieved.tzinfo is None or not 0 <= (datetime.now(timezone.utc)-retrieved).total_seconds() <= 7*86400:
-        raise ValueError('Pricing evidence stale/future')
     return evidence
 
 
@@ -136,30 +130,36 @@ def execute_stage(args):
             raise ValueError('Source load gate rejected')
         write_report(out/'source-load.json',report)
     elif args.stage == 'price-prepare':
+        from verify_loaded_lineage import PRICE_URL, GAS_URL
         scripts = root/'scripts'
-        spec = importlib.util.spec_from_file_location('candidate_brent',scripts/'import_brent.py')
-        module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
-        allowed = module.URL
-        class SameOfficialURL(HTTPRedirectHandler):
-            def redirect_request(self, req, fp, code, msg, headers, newurl):
-                if newurl != allowed:
-                    raise ValueError('Unexpected EIA redirect')
-                return super().redirect_request(req,fp,code,msg,headers,newurl)
-        with build_opener(SameOfficialURL()).open(allowed,timeout=30) as response:
-            if response.url != allowed:
-                raise ValueError('Unexpected EIA URL')
-            raw = response.read(5*1024**2+1)
-            if len(raw)>5*1024**2:
-                raise ValueError('EIA response exceeds budget')
-        retrieved = utc_now()
-        response_path = scratch/'eia.html'; response_path.write_bytes(raw)
+        downloaded = {}
+        for name, allowed in [('brent',PRICE_URL),('henry_hub',GAS_URL)]:
+            class SameOfficialURL(HTTPRedirectHandler):
+                def redirect_request(self, req, fp, code, msg, headers, newurl):
+                    if newurl != allowed:
+                        raise ValueError('Unexpected EIA redirect')
+                    return super().redirect_request(req,fp,code,msg,headers,newurl)
+            with build_opener(SameOfficialURL()).open(allowed,timeout=30) as response:
+                if response.url != allowed:
+                    raise ValueError('Unexpected EIA URL')
+                raw = response.read(5*1024**2+1)
+                if len(raw)>5*1024**2:
+                    raise ValueError('EIA response exceeds budget')
+            response_path = scratch/(name+'.html'); response_path.write_bytes(raw)
+            downloaded[name] = (response_path,utc_now(),hashlib.sha256(raw).hexdigest())
         rows = scratch/'price.ndjson'
-        manifest = run_json([python,str(scripts/'prepare_reference_prices.py'),'--source',str(response_path),
-            '--cutoff',CUTOFF,'--retrieved-at',retrieved,'--output',str(rows)],root)
-        if manifest.get('response_sha256') != hashlib.sha256(raw).hexdigest() or manifest.get('cutoff') != CUTOFF or manifest.get('gas_valuation_enabled') is not False:
-            raise ValueError('Price preparation differs from downloaded bytes/cutoff')
+        manifest = run_json([python,str(scripts/'prepare_reference_prices.py'),
+            '--source',str(downloaded['brent'][0]),'--cutoff',CUTOFF,
+            '--retrieved-at',downloaded['brent'][1],
+            '--gas-source',str(downloaded['henry_hub'][0]),
+            '--gas-retrieved-at',downloaded['henry_hub'][1],'--output',str(rows)],root)
+        products = validate_price_manifest(manifest)
+        for product, name in [('oil','brent'),('gas','henry_hub')]:
+            if products[product]['response_sha256'] != downloaded[name][2]:
+                raise ValueError('Price preparation differs from downloaded bytes')
         write_report(out/'price-manifest.json',manifest)
-        report = normalized_report({'rows':manifest['row_count'],'source_sha256':manifest['response_sha256']})
+        report = normalized_report({'rows':manifest['row_count'],
+                   'source_hashes':{k:v['response_sha256'] for k,v in products.items()}})
     elif args.stage == 'price-load':
         rows = scratch/'price.ndjson'
         receipt = run_json([python,str(root/'scripts/load_reference_prices.py'),'--rows',str(rows),
@@ -167,7 +167,7 @@ def execute_stage(args):
         manifest = load_json(out/'price-manifest.json')
         if receipt.get('rows') != manifest['row_count'] or receipt.get('table') != f'{PROJECT}.{DATASET}.monthly_reference_price' or not receipt.get('job_id'):
             raise ValueError('Price load receipt differs')
-        receipt['source_sha256'] = manifest['response_sha256']
+        receipt['source_hashes'] = {k:v['response_sha256'] for k,v in validate_price_manifest(manifest).items()}
         receipt['rows_sha256'] = manifest['rows_sha256']
         write_report(out/'price-load.json',receipt)
         report = normalized_report(receipt)

@@ -2,6 +2,8 @@ import type { Fluid, Row } from "./contract.ts";
 import { historyWindow } from "./history.ts";
 import {
   change,
+  GAS_ENERGY_BASIS,
+  GAS_M3_TO_MMBTU,
   comparisonOffset,
   effectiveMode,
   referencePrice,
@@ -170,7 +172,7 @@ export function productionCsv(
     "fluid",
     `volume_${unit}`,
     `daily_rate_${unit}_per_day`,
-    "brent_USD_per_bbl",
+    fluid === "oil" ? "brent_USD_per_bbl" : "henry_hub_USD_per_MMBtu",
     "estimated_value_USD",
     "comparison_metric_unit",
     "mom_base_period",
@@ -179,6 +181,7 @@ export function productionCsv(
     "yoy_base_period",
     `yoy_absolute_${metricUnit}`,
     "yoy_pct",
+    ...(fluid === "gas" ? ["benchmark", "energy_basis_scenario", "m3_to_mmbtu_scenario"] : []),
   ];
   const physical = effectiveMode(mode, fluid) === "volume" ? factor : 1;
   const scaled = (v: number | null, n: number) => (v == null ? null : v * n);
@@ -199,6 +202,7 @@ export function productionCsv(
         p.yoyBase,
         scaled(p.yoy, physical),
         p.yoyPct,
+        ...(fluid === "gas" ? [p.estimated == null ? null : "EIA_HENRY_HUB_MONTHLY", p.estimated == null ? null : GAS_ENERGY_BASIS, p.estimated == null ? null : GAS_M3_TO_MMBTU] : []),
       ]),
     ]
       .map((row) => row.map((v) => (v == null ? "" : String(v))).join(","))

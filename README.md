@@ -27,7 +27,8 @@ La fuente principal es [Capítulo IV de la Secretaría de Energía](https://dato
 - **Petróleo:** m³ × 6,28981077 = barriles. **Gas:** miles de m³ convertidos a MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
 - **Pozos productivos:** pozos únicos con producción positiva del fluido elegido en cada mes. Un pozo puede producir ambos fluidos; los conteos no se suman.
 - **Valor USD de petróleo:** barriles × promedio mensual Brent de [EIA](https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte) del mismo mes. Es una estimación bruta de referencia, no ingresos realizados, margen ni beneficio. Sin precio válido se muestra indisponibilidad.
-- **Gas en USD:** referencia seleccionada para validación: precio promedio ponderado de Cuenca Neuquina, contrato TOTAL, de Secretaría de Energía (Res. 1/2018), expresado en USD/MMBTU. La descarga oficial del 12 de octubre de 2026 sigue llegando sólo a mayo de 2026 y usa gas normalizado a 9.300 kcal/m³; junio–agosto están ausentes y no se acreditó equivalencia térmica con los volúmenes de Capítulo IV. Es un benchmark de cuenca, no precio realizado de Vaca Muerta. El modo USD permanece indisponible hasta cerrar ambas validaciones. Ver [investigación y contrato](docs/pricing-reference.md).
+- **Valor USD de gas:** referencia internacional **Henry Hub mensual de EIA**, del mismo mes. Volumen m³ × equivalencia energética de referencia × USD/MMBtu. La equivalencia es el escenario fijo EIA de 1.036 BTU/pie³ (promedio estadounidense estimado 2026), **no el poder calorífico medido de Vaca Muerta**. El selector Gas USD muestra valor estimado y explicita el supuesto; no representa ingresos realizados. Sin precio válido → indisponibilidad. Ver [contrato y metodología](specs/017-international-gas-reference.md).
+
 - **Actividad:** producción media por pozo y día calendario no equivale a productividad por día efectivo de operación. No se infieren altas, bajas, perforación o completaciones a partir de un conteo agregado.
 - **Frecuencia:** datos mensuales, sin telemetría ni contador en tiempo real. Las transferencias de activos y rectificativas pueden alterar comparaciones por entidad.
 
@@ -38,7 +39,7 @@ La [auditoría del snapshot y la valorización](docs/evidence/data-valuation/REA
 ```mermaid
 flowchart LR
   SE["SE · CSV oficial anual Capítulo IV"] --> EX["Python · descarga + contrato + conciliación"]
-  EIA["EIA · Brent mensual oficial"] --> PX["Python · snapshot de precio + hash + corte"]
+  EIA["EIA · Brent + Henry Hub mensual oficial"] --> PX["Python · snapshot de precio + hash + corte"]
   EX --> RAW["BigQuery · raw candidato aislado"]
   PX --> RAW
   RAW --> DBT["dbt Core · staging → intermediate → marts + valorización"]
@@ -72,7 +73,7 @@ El grafo deriva del manifest dbt retenido y está contrastado con el SQL present
 
 La capa candidata ya implementa **fuente dinámica → raw BigQuery → dbt → valorización**. El 12 de octubre se descargó Brent oficial nuevamente, se verificó su hash y se cargaron 472 meses hasta agosto de 2026 en `raw_cap4_candidate_dev.monthly_reference_price`. Agosto: 91,08 USD/bbl. dbt construye valor bruto de referencia por pozo y entidad, comparaciones contra meses calendario y YTD únicamente si está completo; precios o volúmenes inválidos quedan NULL. No son ingresos realizados. Ver [contrato de precios](specs/016-candidate-pricing.md) y [revalidación oficial](docs/pricing/revalidation-2026-10-12.md).
 
-**El frontend todavía usa el snapshot de revisión anterior y calcula la valorización en TypeScript.** No hace llamadas a EIA. Migrar su consumo al mart validado y exportar historia multianual pertenece al cierre integrado, aún pendiente. Las cotizaciones revisables no se mantienen como seeds permanentes: los seeds se reservan para catálogos y supuestos estables. Gas USD permanece indisponible por cobertura y base térmica, sin forward fill ni sustitutos silenciosos.
+**El frontend todavía usa el snapshot de revisión anterior y calcula la valorización en TypeScript.** No hace llamadas a EIA. Migrar su consumo al mart validado y exportar historia multianual pertenece al cierre integrado, aún pendiente. Las cotizaciones revisables no se mantienen como seeds permanentes: los seeds se reservan para catálogos y supuestos estables. Gas USD usa Henry Hub con escenario energético EIA documentado; sin forward fill ni sustitutos silenciosos.
 
 ## Orquestación, extracción y freshness
 
@@ -83,7 +84,7 @@ El [CLI compartido](pipeline/CLI.md) ejecuta las mismas etapas localmente y en G
 | Fuente de producción | CSV estándar oficial 2026; 663.748 filas descargadas, SHA-256 y esquema revisados | Contrato fijo 2026/agosto; no selecciona el último mes automáticamente. DataStore no reproduce agosto |
 | Cobertura | 16 conciliaciones enero–agosto × petróleo/gas contra el snapshot revisado | Septiembre parcial queda excluido. Esto no constituye aprobación de publicación |
 | Carga | `WRITE_TRUNCATE` atómico por tabla aislada; identidad/hash por fila y recibo de job | No reemplaza el histórico compartido. Producción y precio son cargas separadas, no una transacción conjunta |
-| Transformación | dbt con producción, dimensiones y precios seleccionados; datasets staging/intermediate/marts candidatos | Build real aprobado: 83 nodos sin errores, warnings ni skips; candidato sólo agosto, sin completaciones ni publicación multianual |
+| Transformación | dbt con producción, dimensiones y precios seleccionados; datasets staging/intermediate/marts candidatos | Build real aprobado: 88 nodos con Brent y Henry Hub sin errores, warnings ni skips; candidato sólo agosto, sin completaciones ni publicación multianual |
 | Freshness y linaje | Extracción e ingesta ≤7 días, cronología, conteos, SHA/corte y unidades revalidados antes de dbt | Frescura de carga no equivale a frescura económica. No se verifica cada valor de warehouse contra bytes CSV sólo por comprobar SHA declarado |
 | Acceso | WIF configurado y cuentas separadas de extracción/dbt, permisos por dataset | Sin claves nuevas ni secretos públicos. Falta prueba desde GitHub; no se habilitó facturación |
 | Frontend y promoción | Snapshot anterior conservado; no export ni deploy desde el CLI | Cierre integrado y publicación requieren revisión y aprobación independientes |
@@ -141,3 +142,9 @@ Nunca se versionan secretos ni dumps raw pesados. Los cambios se revisan en rama
 ### Pipeline candidato en validación
 
 Acceso federado autorizado, aplicado y verificado el 12 de octubre de 2026; automatización todavía desactivada. Producción y Brent ya se cargaron en raw candidato aislado y la fase real de transformación pasó con 83 nodos dbt aprobados. Ver [CLI compartido](pipeline/CLI.md) y [evidencia de permisos y tamaño del raw](docs/evidence/pipeline-access/README.md). Esta etapa no cambia el snapshot de la aplicación ni constituye aún el pipeline multianual de publicación.
+
+### Referencia de gas definida
+
+La referencia activa de gas es Henry Hub internacional. Se ingieren 356 meses hasta agosto, junto con 472 de Brent, con metadatos y hashes por fuente. La equivalencia energética es un supuesto versionado EIA, explicitado en la UI; no una medición de gas argentino. [Metodología](specs/017-international-gas-reference.md). La evidencia anterior de gas indisponible corresponde a la fase previa a esta decisión.
+
+Validación posterior con gas: 88 nodos dbt (11 modelos, 67 tests de datos, 10 unit tests), conciliación independiente y paridad del total de agosto con la UI. [Resultados y capturas](docs/evidence/gas-reference/README.md).

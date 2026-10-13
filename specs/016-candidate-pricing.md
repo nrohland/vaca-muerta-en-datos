@@ -16,8 +16,8 @@ Modelos y tests sólo habilitados si target=candidate y `enable_candidate_pricin
 
 ## Gas
 
-Gas USD queda NULL y `gas_valuation_available=false`. Ni Brent ni Henry Hub son sustitutos silenciosos. PPP Cuenca Neuquina/TOTAL podría registrarse como benchmark separado cuando se verifique la descarga oficial, pero no hay compatibilidad demostrada entre volúmenes CapIV y gas de venta normalizado a 9300 kcal/m³. Ese bloqueo persiste aunque aparezcan precios de agosto. No cargar factor térmico arbitrario.
+La decisión anterior de conservar gas NULL fue reemplazada por autorización de referencia internacional Henry Hub y escenario energético explícito el 12 de octubre de 2026. Ver [spec 017](017-international-gas-reference.md). El nuevo manifest v2 incluye ambos productos, con hashes y fechas propios; gas usa USD/MMBTU y basis versionado, y dbt calcula valor estimado del mismo mes. No se presenta como poder calorífico medido ni ingreso realizado.
 
 ## Gates y integración
 
-Tests: unidades/hash/metadatos, unicidad de mes, precio requerido, NULL coherente con flags, multiplicación, gas deshabilitado, conciliación empresa-área-cuenca y tests de transformación de huecos/bases cero. Build candidato no cambia artefactos públicos. Next sigue usando snapshot anterior hasta cierre integrado autorizado; esta implementación no declara migración completa del consumidor.
+Tests: unidades/hash/metadatos, unicidad de producto × mes, precio requerido, NULL coherente con flags, multiplicación, gas de referencia y basis explícito, conciliación empresa-área-cuenca y tests de transformación de huecos/bases cero. Build candidato no cambia artefactos públicos. Next conserva los volúmenes del snapshot multianual revisado y usa ambos benchmarks frescos con el helper compartido; migrar todos los exportadores a marts sigue siendo parte del cierre integrado; esta implementación no declara migración completa del consumidor.

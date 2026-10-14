@@ -4,6 +4,9 @@ The ingestion stamp means arrival in the prepared staging file. loaded_at record
 completion of the actual BigQuery load; no source retrieval timestamp is renewed.
 """
 import argparse
+from concurrent.futures import ThreadPoolExecutor
+import threading
+import time
 import csv
 import hashlib
 import json
@@ -193,17 +196,39 @@ def prepare_stage(args):
     sources, reviews, periods, hashes, total = [], [], {}, {}, 0
     combined = args.output/'history.raw.parquet'
     contract = json.loads(args.contract.read_text())
-    # Review every schema and anchor before producing a multi-GiB payload.
-    reviewed = {}
-    for year, resource_id in RESOURCES.items():
+    # Only public downloads/reviews overlap, with two workers; one Parquet writer preserves order.
+    metrics={'schema_version':1,'started_at':now(),'phases':[],'publication_approved':False}
+    metrics_path=getattr(args,'metrics_output',None) or args.output/'preparation-metrics.json'
+    metrics_lock=threading.Lock()
+    def checkpoint():
+        temporary=metrics_path.with_suffix('.partial')
+        temporary.write_text(json.dumps(metrics,indent=2)+'\n');temporary.replace(metrics_path)
+    def measure(phase,year,action):
+        event={'phase':phase,'year':year,'started_at':now(),'status':'running'}
+        with metrics_lock:metrics['phases'].append(event);checkpoint()
+        start=time.perf_counter()
+        try:
+            result=action()
+            with metrics_lock:
+                event['status']='passed'
+                if isinstance(result,dict):
+                    for name in ('rows','source_rows'):
+                        if name in result:event['rows']=result[name]
+            return result
+        except Exception as error:
+            with metrics_lock:event['status']='failed';event['error_type']=type(error).__name__
+            raise
+        finally:
+            with metrics_lock:event.update(seconds=round(time.perf_counter()-start,3),finished_at=now());checkpoint()
+    def review_year(year):
         if args.inbound:
             csv_path = args.inbound/f'{year}.csv'
             retrieval = normalize_retained(year,json.loads((args.inbound/f'{year}.retrieval.json').read_text()))
         else:
             csv_path = args.output/f'{year}.csv'
-            retrieval = retrieve(year,csv_path)
+            retrieval = measure('download',year,lambda:retrieve(year,csv_path))
             (args.output/f'{year}.retrieval.json').write_text(json.dumps(retrieval,indent=2)+'\n')
-        validate_retrieval(year,csv_path,retrieval)
+        measure('retrieval-validation',year,lambda:validate_retrieval(year,csv_path,retrieval))
         with csv_path.open(encoding='utf-8-sig',newline='') as stream:
             header = next(csv.reader(stream))
         extra = set(header)-set(contract)
@@ -213,8 +238,14 @@ def prepare_stage(args):
         annual_contract = {**contract, **({'id':'numeric'} if extra else {})}
         contract_path = args.output/f'{year}.contract.json'
         contract_path.write_text(json.dumps(annual_contract,sort_keys=True)+'\n')
-        review = review_csv(csv_path,args.anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True)
-        reviewed[year] = (csv_path,retrieval,review,contract_path)
+        review = measure('anchor-review',year,lambda:review_csv(csv_path,args.anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True))
+        return csv_path,retrieval,review,contract_path
+    with ThreadPoolExecutor(max_workers=2) as executor:
+        futures={year:executor.submit(review_year,year) for year in RESOURCES}
+        try:reviewed={year:future.result() for year,future in futures.items()}
+        except Exception:
+            for future in futures.values():future.cancel()
+            raise
     contract = {**contract, 'id':'numeric'}
     from parquet_candidate import arrow_schema, append_csv
     import pyarrow.parquet as pq
@@ -223,7 +254,8 @@ def prepare_stage(args):
         for year, resource_id in RESOURCES.items():
             csv_path,retrieval,review,_ = reviewed[year]
             source_hash = retrieval['sha256']
-            annual = append_csv(writer,csv_path,contract,year,source_hash,retrieval['downloaded_at'],now())
+            stamp=now()
+            annual = measure('parquet-conversion',year,lambda:append_csv(writer,csv_path,contract,year,source_hash,retrieval['downloaded_at'],stamp))
             if annual['rows'] != review['source_rows'] or not 0 < annual['rows'] <= MAX_ROWS_YEAR:
                 raise ValueError('Normalized annual source differs from reviewed bytes')
             source = {'year':year,'resource_id':resource_id,'source_sha256':source_hash,
@@ -368,7 +400,7 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     sub=parser.add_subparsers(dest='stage',required=True)
     prep=sub.add_parser('prepare');prep.add_argument('--start-period',default=START_PERIOD);prep.add_argument('--cutoff',default=CUTOFF)
-    prep.add_argument('--inbound',type=Path);prep.add_argument('--contract',type=Path,required=True)
+    prep.add_argument('--metrics-output',type=Path);prep.add_argument('--inbound',type=Path);prep.add_argument('--contract',type=Path,required=True)
     prep.add_argument('--anchor-release',type=Path,required=True);prep.add_argument('--output',type=Path,required=True)
     load=sub.add_parser('load');load.add_argument('--project',required=True);load.add_argument('--dataset',required=True)
     load.add_argument('--candidate',type=Path,required=True);load.add_argument('--contract',type=Path,required=True)

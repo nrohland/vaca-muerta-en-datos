@@ -66,6 +66,7 @@ def run(stages: list[Stage], run_directory: Path, execute: Callable = execute_ow
         result = {'name': stage.name, 'started_at': now(), 'status': 'running'}
         report['stages'].append(result)
         write_report(report_path, report)
+        print(json.dumps({'stage':stage.name,'status':'started'}),flush=True)
         failure = None
         try:
             if stage.gate_report:
@@ -92,6 +93,7 @@ def run(stages: list[Stage], run_directory: Path, execute: Callable = execute_ow
             failure = 'invalid_or_missing_evidence'
         result['finished_at'] = now()
         result['status'] = 'failed' if failure else 'passed'
+        print(json.dumps({'stage':stage.name,'status':result['status'],'failure':failure}),flush=True)
         if failure:
             result['failure'] = failure
             report['status'] = 'failed'

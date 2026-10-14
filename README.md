@@ -48,10 +48,10 @@ flowchart LR
 
 | Capa | Elección | Motivo |
 | --- | --- | --- |
-| Extracción | Python 3.12, CSV oficiales y HTML EIA | Control explícito de esquema, cobertura, rectificativas y hashes. El CSV comprobado tiene mayor cobertura que DataStore. |
+| Extracción | Python 3.12, CSV oficiales → Parquet y HTML EIA | Esquema explícito, cobertura, rectificativas y hashes; Parquet tipado y comprimido para la ingesta histórica. El CSV comprobado tiene mayor cobertura que DataStore. |
 | Warehouse | BigQuery | Consultas analíticas sin administrar servidores, aislamiento de permisos y medición de bytes. Raw particionado por ingesta; marts con clustering para conservar historia en el sandbox. |
 | Modelado | dbt Core + SQL | Granos y unidades únicos, linaje, tests y conciliación. Intermediate se usa para reglas reutilizadas; staging puede alimentar directamente un mart. |
-| Entrega | JSON agregado y manifiestos | El browser recibe un snapshot consistente sin credenciales ni consultas al warehouse. Construcción y promoción se separan. |
+| Entrega | JSON agregado por vista y manifiestos | El browser carga Resumen y descarga detalles por fluido/dimensión cuando los necesita, con hashes y límites de tamaño. Construcción y promoción se separan. |
 | Aplicación | Next.js 16, React 19, TypeScript 7, Recharts 3 | Componentes tipados, navegación persistente, export estático y semántica visual compartida. |
 | Automatización | CLI Python + GitHub Actions con WIF | Mismos controles localmente y en runner, identidades por etapa y sin claves permanentes. |
 | Calidad | dbt tests, audit_helper, dbt_project_evaluator, Python, Node y Playwright | Validar datos, arquitectura, contratos y UI; rendimiento medido con tiempos, bytes y slot-ms reales. |
@@ -72,7 +72,7 @@ La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, co
 
 La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** promoción del snapshot, hosting y operación pública. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas; sus avisos no certifican cierre oficial. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. No se habilitaron cron, despliegue ni facturación.
+**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** promoción del snapshot, hosting y operación pública. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas; sus avisos no certifican cierre oficial. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. El monitor de fuentes tiene su calendario activado; la carga recurrente, el despliegue y la facturación siguen desactivados.
 
 ## Ejecutar la aplicación
 
@@ -112,3 +112,5 @@ Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muer
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
 
 El monitor de disponibilidad y rectificativas es independiente: revisiones diarias, histórico completo semanal y avisos deduplicados mediante Issues asignadas al propietario. `SOURCE_MONITOR_ENABLED` controla este calendario sin activar las cargas de `DATA_PIPELINE_ENABLED`. [Criterios, fallos y operación](pipeline/MONITOR.md).
+
+La [iteración de rendimiento](specs/021-performance-optimization.md) incorpora Parquet en la ingesta histórica, cuatro threads en el CLI dbt, staging candidato materializado, preflight de recursos sin facturación, presupuestos de bytes y entrega de datos por vista. Los cambios mantienen el snapshot canónico y los cálculos. El preflight no modifica IAM ni habilita facturación.

@@ -7,7 +7,10 @@
     "build": "next build --webpack",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "prebuild": "node --experimental-strip-types scripts/build_delivery.mjs",
+    "predev": "node --experimental-strip-types scripts/build_delivery.mjs",
+    "postbuild": "node scripts/check_performance.mjs"
   },
   "dependencies": {
     "next": "16.3.8",

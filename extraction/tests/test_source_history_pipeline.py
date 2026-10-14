@@ -52,9 +52,10 @@ class HistoryPipelineTests(unittest.TestCase):
         self.assertEqual(sum(len(s['review']['vm_reconciliation']) for s in evidence['sources']),88)
         manifest=source.validate_candidate(self.args.output,self.fields)
         self.assertEqual(manifest['source_hashes'],{str(s['year']):s['source_sha256'] for s in evidence['sources']})
-        records=[json.loads(line) for line in (self.args.output/'history.raw.ndjson').read_text().splitlines()]
+        import pyarrow.parquet as pq
+        records=pq.read_table(self.args.output/'history.raw.parquet').to_pylist()
         self.assertEqual(len(records),48)
-        self.assertEqual(records[0]['_sdc_extracted_at'],evidence['sources'][0]['extracted_at'])
+        self.assertEqual(records[0]['_sdc_extracted_at'].isoformat(),evidence['sources'][0]['extracted_at'])
         self.assertFalse(any(self.args.output.glob('*-normalized/*.ndjson')))
         self.assertFalse((self.args.output/'load.ndjson').exists())
 
@@ -68,7 +69,8 @@ class HistoryPipelineTests(unittest.TestCase):
         meta=self.inbound/'2024.retrieval.json';value=json.loads(meta.read_text())
         value['sha256']=source.digest(path);meta.write_text(json.dumps(value))
         self.prepared()
-        records=[json.loads(line) for line in (self.args.output/'history.raw.ndjson').read_text().splitlines()]
+        import pyarrow.parquet as pq
+        records=pq.read_table(self.args.output/'history.raw.parquet').to_pylist()
         self.assertTrue(all(r['id'] is not None for r in records if r['anio']==2024))
         self.assertTrue(all(r['id'] is None for r in records if r['anio']!=2024))
         self.assertEqual(source.validate_candidate(self.args.output,self.fields)['schema']['id'],'numeric')
@@ -80,7 +82,7 @@ class HistoryPipelineTests(unittest.TestCase):
         value['sha256']=source.digest(path);meta.write_text(json.dumps(value))
         with self.assertRaisesRegex(ValueError,'Annual CSV fields'):
             self.prepared()
-        self.assertFalse((self.args.output/'history.raw.ndjson').exists())
+        self.assertFalse((self.args.output/'history.raw.parquet').exists())
 
     def test_bundle_hash_tampering_rejected(self):
         value=self.prepared();value['sources'][0]['source_sha256']='a'*64
@@ -129,7 +131,7 @@ class HistoryPipelineTests(unittest.TestCase):
 
     def test_payload_bytes_tampering_rejected(self):
         self.prepared()
-        with (self.args.output/'history.raw.ndjson').open('a') as target:target.write('{}\n')
+        with (self.args.output/'history.raw.parquet').open('a') as target:target.write('{}\n')
         with self.assertRaisesRegex(ValueError,'bytes differ'):
             source.validate_candidate(self.args.output,self.fields)
 

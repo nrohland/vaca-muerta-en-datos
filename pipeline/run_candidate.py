@@ -109,7 +109,7 @@ def configure_profile(run_dir):
       project: vaca-muerta-pulse
       dataset: stg_cap4_candidate_dev
       location: US
-      threads: 1
+      threads: 4
       maximum_bytes_billed: 1073741824
       job_execution_timeout_seconds: 300
       job_retries: 0
@@ -131,7 +131,9 @@ def execute_stage(args):
     python = args.python
     report = {}
     history = getattr(args, 'history', False)
-    if args.stage == 'prepared-check':
+    if args.stage == 'resource-preflight':
+        report=run_json([python,str(root/'pipeline/resource_preflight.py'),'--output',str(out/'resource-preflight.json')],root)
+    elif args.stage == 'prepared-check':
         prepared=args.prepared_artifact.resolve()
         previous=load_json(prepared/'run.json')
         if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['source-prepare','price-prepare']:
@@ -264,9 +266,11 @@ def execute_stage(args):
             results = [{k:r.get(k) for k in ('unique_id','status','execution_time')} for r in raw['results']]
             if not results or any(r['status'] not in ('success','pass') for r in results):
                 raise ValueError('dbt result contains errors/skips/warnings')
-            from report_dbt_performance import summarize, render
+            from report_dbt_performance import summarize, render, budget_check
             performance = summarize(raw)
+            performance['inputs']={k:load_json(out/name).get(field) for k,name,field in [('source_sha256','source-evidence.json','source_sha256'),('price_rows_sha256','price-manifest.json','rows_sha256')]} if history else {}
             write_report(out/'performance.json',performance)
+            write_report(out/'performance-budget.json',budget_check(performance,load_json(root/'pipeline/contracts/performance-budget.json')))
             (out/'performance.html').write_text(render(performance))
             evidence = load_json(out/'source-evidence.json') if history else {}
             price = load_json(out/'price-manifest.json') if history else {}
@@ -281,13 +285,13 @@ def execute_stage(args):
 
 def plan(args):
     stages = []
-    extract = ['source-prepare','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
-    transform = ['artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
+    extract = ['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
+    transform = ['resource-preflight','artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
     if getattr(args,'history',False): transform += ['dashboard-export','snapshot-check']
     plans={'prepare':['source-prepare','price-prepare'],
-        'load':['prepared-check','source-load','price-load','raw-gate','loaded-lineage'],
+        'load':['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'],
         'extract':extract,'transform':transform,'all':extract+transform,
-        'export':['artifact-check','dashboard-export','snapshot-check']}
+        'export':['resource-preflight','artifact-check','dashboard-export','snapshot-check']}
     names=plans[args.phase]
     for name in names:
         argv = [args.python,str(Path(__file__).resolve()),args.phase,'--repo',str(args.repo.resolve()),

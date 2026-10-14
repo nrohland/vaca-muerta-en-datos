@@ -38,3 +38,7 @@ El reporte conserva NULL cuando el adaptador no informa una métrica; no fabrica
 La primera corrida histórica reportó 1.549 GiB procesados entre todos sus nodos; incluye el intento inicial fallido del modelo de publicación. La reparación y los tests adicionales tienen reportes independientes. No es un benchmark comparativo ni una prueba de regresión: faltan varias ejecuciones del mismo código/datos y condiciones. Límite existente: 1 GiB por consulta, distinto del costo total de una corrida.
 
 Elementary/Recce y servicios comerciales no se instalaron en esta entrega. La observabilidad continua se decide al activar la operación; no se habilita facturación ni se envían datos a terceros para estos controles.
+
+## Controles de la iteración de rendimiento
+
+El CLI genera `threads: 4`; el valor anterior real era 1 aunque el perfil de referencia declaraba 4. dbt administra el paralelismo por dependencias. La base staging del candidato se materializa una vez para evitar repetir deduplicación en tests y consumidores. `performance-budget.json` bloquea aceptación por más de 3 GiB facturables en dbt o métricas query faltantes; 1 GiB por consulta sigue siendo el límite de ejecución. 300 s de pared es advisory, no prueba estadística. Se registran hashes de entradas; comparar sólo fuentes/ventanas/configuraciones equivalentes. No se cambió clustering sin un benchmark que lo respalde. [Spec](../../specs/021-performance-optimization.md).

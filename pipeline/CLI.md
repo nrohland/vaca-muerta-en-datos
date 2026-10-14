@@ -62,3 +62,5 @@ GitHub encadena prepare público → auth extracción → load → auth dbt → 
 El calendario preparado (día 5, 03:00 Argentina) no prueba fecha de publicación de la fuente. **DATA_PIPELINE_ENABLED=false**, runner real validado y promoción de snapshots sólo con aceptación. El mes máximo raw nunca reemplaza automáticamente el corte completo. [Evidencia actual](../docs/evidence/orchestration-export/README.md), [acceso WIF](../docs/evidence/pipeline-access/README.md) y [calidad/performance dbt](../transform/docs/quality-and-performance.md).
 
 Para disponibilidad de meses nuevos y revisiones históricas: [monitor independiente](MONITOR.md). Se ejecuta antes de aceptar/promover nuevos datos y también luego de finalizar la ingesta.
+
+El histórico prepara `history.raw.parquet` con esquema explícito y Zstandard. `resource-preflight` precede las cargas y transformaciones; requiere lectura de estado de billing desactivado. El perfil generado usa 4 threads; dbt paraleliza nodos independientes automáticamente. Instalar también `extraction/requirements.txt` localmente. Los presupuestos de rendimiento se documentan en `specs/021-performance-optimization.md`.

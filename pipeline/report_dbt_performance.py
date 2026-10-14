@@ -29,6 +29,20 @@ def summarize(results):
             'A view CREATE with zero processed bytes does not measure its downstream query cost.']}
 
 
+def budget_check(report, policy):
+    query_nodes=[n for n in report['nodes'] if n['resource_type'] not in ['seed']]
+    if any(n['bytes_billed'] is None for n in query_nodes):
+        raise ValueError('Query billing metrics missing; budget cannot be verified')
+    if report['totals']['bytes_billed']>policy['dbt_bytes_billed']:
+        raise ValueError('dbt run exceeds 3 GiB billed-byte budget')
+    if any(n['bytes_billed']>policy['query_bytes_billed'] for n in query_nodes):
+        raise ValueError('A query exceeds billed-byte budget')
+    return {'status':'pass','bytes_billed':report['totals']['bytes_billed'],
+        'run_limit':policy['dbt_bytes_billed'],'query_limit':policy['query_bytes_billed'],
+        'warnings':['Wall time exceeds advisory threshold'] if report['wall_seconds'] is not None and report['wall_seconds']>policy['wall_seconds_warning'] else [],
+        'scope':'dbt run_results only; freshness, gates and export are separate',
+        'enforcement':'acceptance after build; execution is guarded per query'}
+
 def render(report):
     rows=''.join('<tr><td>'+html.escape(n['node'])+'</td><td>'+f"{n['seconds']:.2f}"+'</td><td>'+
         ('—' if n['bytes_processed'] is None else f"{n['bytes_processed']/1024**2:.2f}")+'</td><td>'+

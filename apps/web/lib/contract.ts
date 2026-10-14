@@ -1,3 +1,4 @@
+import {validateDelivery, type Delivery} from './delivery.ts';
 import {operatorName} from './operators.ts';
 
 export type Fluid = 'oil' | 'gas';
@@ -8,7 +9,7 @@ export type AssetRef = {path:string;sha256:string;bytes:number;compression?:'gzi
 export type Grouping = {rule_version:string;seed_sha256:string;mappings:{legal_operator_id:string;operator_group_id:string;operator_group_name:string;valid_from:string;valid_to:string}[]};
 export type Valuation = {schema_version:1;producer:'dbt';energy_basis_scenario:string;m3_to_mmbtu_scenario:number};
 export type Release = { valuation?:Valuation; schema_version: 1; status: 'candidate'; production: Row[]; entities: Entity[]; map?:{schema_version:1;index:AssetRef};operator_grouping?:Grouping };
-export type Manifest = { schema_version: 1; status: 'candidate'; version: string; data_sha256: string; generated_at: string; source: { data_kind: 'official'; ingested_at?: string; published_at?: string | null; approved_period: string; accepted_periods: string[]; accepted_at: string; commit: string; resources: { id: string; url: string; sha256?: string; hash_unavailable_reason?: string; source_last_modified?: string; extracted_at?: string; year?: number }[]; snapshot_revisions_note: string } };
+export type Manifest = { delivery?: Delivery; schema_version: 1; status: 'candidate'; version: string; data_sha256: string; generated_at: string; source: { data_kind: 'official'; ingested_at?: string; published_at?: string | null; approved_period: string; accepted_periods: string[]; accepted_at: string; commit: string; resources: { id: string; url: string; sha256?: string; hash_unavailable_reason?: string; source_last_modified?: string; extracted_at?: string; year?: number }[]; snapshot_revisions_note: string } };
 const numeric = ['volume','rate','yoy_volume','yoy_rate','mom_volume','mom_rate','yoy_volume_delta','yoy_rate_delta','mom_volume_delta','mom_rate_delta','yoy_volume_pct','yoy_rate_pct','mom_volume_pct','mom_rate_pct'];
 const concentration = ['top5_company_share_pct','yoy_top5_company_share_pct','top5_company_share_yoy_pp','top5_area_share_pct','yoy_top5_area_share_pct','top5_area_share_yoy_pp'];
 const entityNumeric = ['top5_share_pct','yoy_top5_share_pct','top5_share_yoy_pp','yoy_rest_rate_delta'];
@@ -58,6 +59,7 @@ export function validateManifest(v: unknown): Manifest {
  assert(record(s) && s.data_kind === 'official' && date(s.approved_period) && Array.isArray(s.accepted_periods) && s.accepted_periods.every(date) && s.accepted_periods.includes(s.approved_period) && typeof s.accepted_at === 'string' && Number.isFinite(Date.parse(s.accepted_at)) && typeof s.commit === 'string' && /^[a-f0-9]{7,40}$/.test(s.commit) && typeof s.snapshot_revisions_note === 'string', 'Proveniencia inválida');
  assert(new Set(s.accepted_periods as string[]).size === s.accepted_periods.length && [...s.accepted_periods as string[]].sort().at(-1) === s.approved_period, 'Períodos aceptados duplicados o cutoff inconsistente');
  assert(Array.isArray(s.resources) && s.resources.length > 0 && s.resources.every(r => record(r) && typeof r.id === 'string' && typeof r.url === 'string' && r.url.startsWith('https://datos.energia.gob.ar/') && ((typeof r.sha256 === 'string' && /^[a-f0-9]{64}$/.test(r.sha256)) || typeof r.hash_unavailable_reason === 'string')), 'Recursos inválidos');
+ if(v.delivery!==undefined)validateDelivery(v.delivery,String(v.data_sha256));
  return v as unknown as Manifest;
 }
 export function validatePair(release: Release, manifest: Manifest) {

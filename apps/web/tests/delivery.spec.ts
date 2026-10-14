@@ -1,0 +1,37 @@
+import {test,expect} from '@playwright/test';
+import {mkdirSync,writeFileSync} from 'node:fs';
+import path from 'node:path';
+const base='/vaca-muerta-pulse/';
+const evidence=process.env.EVIDENCE_DIR??path.resolve('test-results/delivery');
+for(const mobile of [false,true])test(`delivery budgets, all views, fluid switches and deep links ${mobile?'mobile':'desktop'}`,async({page})=>{
+ await page.setViewportSize(mobile?{width:390,height:844}:{width:1440,height:1000});
+ const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
+ await page.addInitScript(()=>{(window as any).__longTasks=[];try{new PerformanceObserver(list=>{(window as any).__longTasks.push(...list.getEntries().map(e=>e.duration));}).observe({entryTypes:['longtask']});}catch{}});
+ const start=Date.now();await page.goto(base);await expect(page.locator('.kpi-card--primary')).toBeVisible();
+ const ready=Date.now()-start;
+ expect(requests.some(url=>url.endsWith('/data/release.json'))).toBe(false);
+ expect(requests.filter(url=>/\/(oil|gas)-(company|area)-/.test(url))).toHaveLength(0);
+ const resources=await page.evaluate(()=>performance.getEntriesByType('resource').map(e=>({name:e.name,transfer:(e as PerformanceResourceTiming).transferSize,encoded:(e as PerformanceResourceTiming).encodedBodySize})));
+ const overview=resources.find(r=>r.name.includes('/overview-'));expect(overview).toBeDefined();expect(overview!.encoded).toBeLessThanOrEqual(250*1024);
+ mkdirSync(evidence,{recursive:true});
+ await page.screenshot({path:path.join(evidence,`summary-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+ for(const [label,selector] of [['Producción','.production-dashboard'],['Operadores','.operators-dashboard'],['Áreas','.areas-dashboard'],['Actividad','.activity-dashboard']] as const){
+  await page.getByRole('tab',{name:label,exact:true}).click();await expect(page.locator(selector)).toBeVisible();
+  await page.screenshot({path:path.join(evidence,`${label}-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+ }
+ await page.getByRole('tab',{name:'Operadores',exact:true}).click();await expect(page.locator('.operators-dashboard')).toBeVisible();
+ const before=requests.filter(url=>/\/oil-company-/.test(url)).length;
+ await page.getByRole('tab',{name:'Resumen',exact:true}).click();await page.getByRole('tab',{name:'Operadores',exact:true}).click();await expect(page.locator('.operators-dashboard')).toBeVisible();
+ expect(requests.filter(url=>/\/oil-company-/.test(url))).toHaveLength(before);
+ await page.getByRole('button',{name:'Gas',exact:true}).click();await expect(page.locator('.operators-dashboard')).toBeVisible();
+ expect(requests.some(url=>/\/gas-company-/.test(url))).toBe(true);
+ await page.goto(base+'?tab=areas&fluid=gas');await expect(page.locator('.areas-dashboard')).toBeVisible();
+ await expect(page.getByRole('button',{name:'Gas',exact:true})).toHaveAttribute('aria-pressed','true');
+ writeFileSync(path.join(evidence,`delivery-${mobile?'mobile':'desktop'}.json`),JSON.stringify({ready_ms:ready,resources,requests,long_tasks_ms:await page.evaluate(()=>(window as any).__longTasks),scope:'Local static browser test; no deployed field Core Web Vitals claim'},null,2));
+});
+test('broken detail stays unavailable and retry preserves context',async({page})=>{
+ await page.route('**/data/snapshots/**/oil-area-*.json.gz',route=>route.fulfill({status:503}));
+ await page.goto(base+'?tab=areas&fluid=oil');await expect(page.getByRole('alert')).toBeVisible();await expect(page.locator('.areas-dashboard')).toHaveCount(0);
+ await page.unroute('**/data/snapshots/**/oil-area-*.json.gz');await page.getByRole('button',{name:'Reintentar',exact:true}).click();await expect(page.locator('.areas-dashboard')).toBeVisible();
+ await expect(page.getByRole('tab',{name:'Áreas',exact:true})).toHaveAttribute('aria-selected','true');
+});

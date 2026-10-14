@@ -159,13 +159,13 @@ test("progressive destinations retain filters and entity identity through browse
   ).toBeFocused();
 });
 test("hash mismatch blocks display and retry recovers", async ({ page }) => {
-  await page.route("**/data/release.json", (route) =>
-    route.fulfill({ json: { schema_version: 1 } }),
+  await page.route("**/data/snapshots/**/overview-*.json.gz", (route) =>
+    route.fulfill({body:Buffer.alloc(manifest.delivery.overview.bytes),contentType:'application/gzip'}),
   );
   await page.goto(base);
   await expect(page.getByRole("alert")).toContainText("La versión no coincide");
   await expect(page.locator(".kpi-card")).toHaveCount(0);
-  await page.unroute("**/data/release.json");
+  await page.unroute("**/data/snapshots/**/overview-*.json.gz");
   await page.getByRole("button", { name: "Reintentar" }).click();
   await ready(page);
 });

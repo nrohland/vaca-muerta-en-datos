@@ -18,3 +18,5 @@ Estas especificaciones documentan preguntas, granos, semántica y aceptación. E
 | [Fuente histórica](019-historical-source-candidate.md) | Cuatro CSV, revisiones y corte aceptado |
 
 Los planes de hitos, checklists antiguos y specs de iteraciones visuales superadas se retiraron del árbol actual y permanecen en Git. Antes de cambiar una regla, actualizar su contrato y pruebas. No inventar definiciones para fuentes ausentes.
+
+- [021 · Rendimiento y operación sin facturación](021-performance-optimization.md)

@@ -10,6 +10,8 @@ URL='https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm'
 class Response(BytesIO):
     url=URL
 class PublicPriceFetchTests(unittest.TestCase):
+    def test_unreviewed_url_never_opens_transport(self):
+        with self.assertRaisesRegex(ValueError,'exact reviewed'):fetch('https://evil.test/',opener_factory=lambda:self.fail('No transport'))
     def test_transient_timeout_retries_without_reusing_a_failed_response(self):
         events=[];sleeps=[];calls=[]
         def open(request,timeout):

@@ -2,10 +2,13 @@
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.error import HTTPError, URLError
 import time
+from http.client import IncompleteRead
+from verify_loaded_lineage import PRICE_URL,GAS_URL
 MAX_BYTES=5*1024**2
 
 
 def fetch(allowed, *, opener_factory=None, sleep=time.sleep, observe=lambda event:None):
+    if allowed not in {PRICE_URL,GAS_URL}:raise ValueError('Only the exact reviewed EIA references are allowed')
     class SameOfficialURL(HTTPRedirectHandler):
         def redirect_request(self,req,fp,code,msg,headers,newurl):
             if newurl!=allowed:raise ValueError('Unexpected EIA redirect')
@@ -21,7 +24,7 @@ def fetch(allowed, *, opener_factory=None, sleep=time.sleep, observe=lambda even
                 if len(raw)>MAX_BYTES:raise ValueError('EIA response exceeds budget')
             observe({'attempt':attempt,'status':'passed','seconds':round(time.monotonic()-start,3),'bytes':len(raw)})
             return raw
-        except (HTTPError,URLError,TimeoutError,ConnectionError) as error:
+        except (HTTPError,URLError,TimeoutError,ConnectionError,IncompleteRead) as error:
             observe({'attempt':attempt,'status':'failed','seconds':round(time.monotonic()-start,3),
                      'error_type':type(error).__name__,'http_status':error.code if isinstance(error,HTTPError) else None})
             transient=not isinstance(error,HTTPError) or error.code in (429,500,502,503,504)

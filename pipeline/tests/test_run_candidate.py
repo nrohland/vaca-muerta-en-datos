@@ -81,7 +81,7 @@ class CandidateCLITests(unittest.TestCase):
         self.assertNotIn('snapshot-check',calls)
 
     def test_prepare_is_public_only_and_load_is_separate_without_dbt(self):
-        self.assertEqual([s.name for s in candidate.plan(self.args('prepare'))],['source-prepare','price-prepare'])
+        self.assertEqual([s.name for s in candidate.plan(self.args('prepare'))],['price-prepare','source-prepare'])
         args=self.args('load');args.prepared_artifact=self.path/'prepared'
         stages=candidate.plan(args)
         self.assertEqual([s.name for s in stages],['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'])

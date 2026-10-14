@@ -31,3 +31,5 @@ El clustering actual no se altera sin benchmark controlado de filtros representa
 La preparación pública solapa descargas/revisión de dos años independientes, con dos workers y un único writer Parquet ordenado. Conserva checkpoints atómicos por fase/año (tiempo, estado, conteo y clase de error, sin payload/credenciales). El timeout de source-prepare es 20 minutos; 10 minutos resultó insuficiente en el runner real y se detuvo antes de autenticación. Su diagnóstico se conserva separado del artifact que consume dbt; no altera su layout ni los gates. El timeout no se presenta como una mejora de velocidad.
 
 EIA usa hasta tres intentos con timeout de 45 s y espera acotada, sólo ante fallas de transporte/429/5xx. Redirect inesperado, respuesta >5 MiB o contratos inválidos siguen bloqueando sin retry. Se registran referencia, intento, clase de error/status HTTP y duración; no cuerpos ni credenciales. No hay fallback a precios viejos.
+
+La preparación pública verifica primero los dos HTML EIA pequeños, para que una falla de precios no obligue a descargar/procesar 1,16 GB de CSV. Ambas fuentes deben pasar antes de autenticación/cargas; cambia el orden, no los gates.

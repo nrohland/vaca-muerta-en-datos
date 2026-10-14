@@ -136,7 +136,7 @@ def execute_stage(args):
     elif args.stage == 'prepared-check':
         prepared=args.prepared_artifact.resolve()
         previous=load_json(prepared/'run.json')
-        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['source-prepare','price-prepare']:
+        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['price-prepare','source-prepare']:
             raise ValueError('Preparation run must pass before loads')
         validate_price_manifest(load_json(prepared/'price-manifest.json'))
         for name in ('source-evidence','source-manifest','price-manifest'):
@@ -285,7 +285,7 @@ def plan(args):
     extract = ['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
     transform = ['resource-preflight','artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
     if getattr(args,'history',False): transform += ['dashboard-export','snapshot-check']
-    plans={'prepare':['source-prepare','price-prepare'],
+    plans={'prepare':['price-prepare','source-prepare'],
         'load':['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'],
         'extract':extract,'transform':transform,'all':extract+transform,
         'export':['resource-preflight','artifact-check','dashboard-export','snapshot-check']}

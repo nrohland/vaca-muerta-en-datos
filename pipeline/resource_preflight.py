@@ -16,7 +16,8 @@ def assess(billing, tables, jobs, *, monthly_complete):
     if monthly_complete and usage>MONTHLY_QUERY_BUDGET: raise ValueError('Monthly query usage exceeds 80% operating budget')
     return {'status':'pass','billing_enabled':False,'storage_logical_bytes':storage,
         'storage_scope':'datasets accessible to the current identity; not quota remaining',
-        'query_bytes_billed':usage,'monthly_inventory_complete':monthly_complete,
+        'query_bytes_billed':usage if monthly_complete else None,
+        'query_bytes_observed':usage if jobs else None,'monthly_inventory_complete':monthly_complete,
         'warnings':[] if monthly_complete else ['Global monthly usage unavailable; not interpreted as zero.'],
         'expiring_within_14_days':[t for t in tables if t.get('expires') and
           datetime.fromisoformat(t['expires'])<datetime.now(timezone.utc)+timedelta(days=14)],

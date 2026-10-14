@@ -10,7 +10,7 @@ class ResourceBudgetTests(unittest.TestCase):
             with self.assertRaises(ValueError):assess(value,[],[],monthly_complete=True)
     def test_no_implicit_zero_for_incomplete_month(self):
         r=assess(False,[],[],monthly_complete=False)
-        self.assertFalse(r['monthly_inventory_complete']);self.assertTrue(r['warnings'])
+        self.assertFalse(r['monthly_inventory_complete']);self.assertTrue(r['warnings']);self.assertIsNone(r['query_bytes_billed'])
     def test_storage_and_monthly_compute_operating_limits(self):
         with self.assertRaises(ValueError):assess(False,[{'logical_bytes':STORAGE_BUDGET+1}],[],monthly_complete=True)
         with self.assertRaises(ValueError):assess(False,[],[{'bytes_billed':MONTHLY_QUERY_BUDGET+1}],monthly_complete=True)

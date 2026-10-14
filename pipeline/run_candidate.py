@@ -136,7 +136,7 @@ def execute_stage(args):
     elif args.stage == 'prepared-check':
         prepared=args.prepared_artifact.resolve()
         previous=load_json(prepared/'run.json')
-        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['source-prepare','price-prepare']:
+        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['price-prepare','source-prepare']:
             raise ValueError('Preparation run must pass before loads')
         validate_price_manifest(load_json(prepared/'price-manifest.json'))
         for name in ('source-evidence','source-manifest','price-manifest'):
@@ -168,18 +168,13 @@ def execute_stage(args):
         from verify_loaded_lineage import PRICE_URL, GAS_URL
         scripts = root/'scripts'
         downloaded = {}
+        from public_price_fetch import fetch
+        metrics={'schema_version':1,'attempts':[],'publication_approved':False}
+        def observe(product,event):
+            metrics['attempts'].append({'reference':product,**event})
+            write_report(out/'price-preparation-metrics.json',metrics)
         for name, allowed in [('brent',PRICE_URL),('henry_hub',GAS_URL)]:
-            class SameOfficialURL(HTTPRedirectHandler):
-                def redirect_request(self, req, fp, code, msg, headers, newurl):
-                    if newurl != allowed:
-                        raise ValueError('Unexpected EIA redirect')
-                    return super().redirect_request(req,fp,code,msg,headers,newurl)
-            with build_opener(SameOfficialURL()).open(allowed,timeout=30) as response:
-                if response.url != allowed:
-                    raise ValueError('Unexpected EIA URL')
-                raw = response.read(5*1024**2+1)
-                if len(raw)>5*1024**2:
-                    raise ValueError('EIA response exceeds budget')
+            raw=fetch(allowed,observe=lambda event:observe(name,event))
             response_path = scratch/(name+'.html'); response_path.write_bytes(raw)
             downloaded[name] = (response_path,utc_now(),hashlib.sha256(raw).hexdigest())
         rows = scratch/'price.ndjson'
@@ -290,7 +285,7 @@ def plan(args):
     extract = ['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
     transform = ['resource-preflight','artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
     if getattr(args,'history',False): transform += ['dashboard-export','snapshot-check']
-    plans={'prepare':['source-prepare','price-prepare'],
+    plans={'prepare':['price-prepare','source-prepare'],
         'load':['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'],
         'extract':extract,'transform':transform,'all':extract+transform,
         'export':['resource-preflight','artifact-check','dashboard-export','snapshot-check']}

@@ -58,6 +58,7 @@ jobs:
           path: |
             ${{ runner.temp }}/vm-prepare/run.json
             ${{ runner.temp }}/vm-prepare/source-preparation-metrics.json
+            ${{ runner.temp }}/vm-prepare/price-preparation-metrics.json
           retention-days: 7
           if-no-files-found: ignore
 

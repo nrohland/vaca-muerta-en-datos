@@ -4,6 +4,16 @@ import unittest
 import yaml
 
 class WorkflowContract(unittest.TestCase):
+    def test_manual_resource_check_skips_all_loads_and_transform(self):
+        self.assertEqual(self.workflow['on']['workflow_dispatch']['inputs']['resource_check_only']['default'],'false')
+        steps=self.workflow['jobs']['extract']['steps']
+        for marker in ('run_candidate.py prepare ','run_candidate.py load '):
+            step=next(s for s in steps if marker in s.get('run',''))
+            self.assertEqual(step['if'],'${{ !inputs.resource_check_only }}')
+        check=next(s for s in steps if 'pipeline/resource_preflight.py --output' in s.get('run',''))
+        self.assertEqual(check['if'],'${{ inputs.resource_check_only }}')
+        self.assertEqual(self.workflow['jobs']['transform']['if'],'${{ !inputs.resource_check_only }}')
+
     def setUp(self):
         path=Path(__file__).resolve().parents[2]/'.github/workflows/data-pipeline.yml'
         self.workflow=yaml.load(path.read_text(),Loader=yaml.BaseLoader)

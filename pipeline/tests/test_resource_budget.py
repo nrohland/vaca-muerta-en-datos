@@ -1,10 +1,44 @@
 import sys
 from pathlib import Path
 import unittest
+import tempfile
+import json
+from unittest.mock import patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from resource_preflight import assess,STORAGE_BUDGET,MONTHLY_QUERY_BUDGET
+from resource_preflight import assess,checked,run_check,PreflightFailure,STORAGE_BUDGET,MONTHLY_QUERY_BUDGET
 from report_dbt_performance import budget_check
 class ResourceBudgetTests(unittest.TestCase):
+    def test_failed_inspection_persists_safe_diagnostic_and_exits_failed(self):
+        def denied():
+            raise PreflightFailure('billing-verification',http_status=403,
+                                   api_status='PERMISSION_DENIED',api_reason='SERVICE_DISABLED')
+        with tempfile.TemporaryDirectory() as directory,patch('builtins.print'):
+            output=Path(directory)/'new'/'resource-preflight.json'
+            self.assertEqual(run_check(output,denied),1)
+            report=json.loads(output.read_text())
+        self.assertEqual(report['status'],'fail')
+        self.assertFalse(report['publication_approved'])
+        self.assertEqual(report['failure'],{'phase':'billing-verification','http_status':403,
+            'api_status':'PERMISSION_DENIED','api_reason':'SERVICE_DISABLED'})
+
+    def test_exception_details_never_reach_report_and_never_pass(self):
+        def secret():raise RuntimeError('Bearer sensitive-token path/to/credential.json')
+        for inspector in (secret,lambda:checked('table-inventory',secret)):
+            with tempfile.TemporaryDirectory() as directory,patch('builtins.print'):
+                output=Path(directory)/'resource-preflight.json'
+                self.assertEqual(run_check(output,inspector),1)
+                text=output.read_text()
+                self.assertNotIn('sensitive-token',text)
+                self.assertNotIn('credential.json',text)
+                self.assertEqual(json.loads(text)['status'],'fail')
+
+    def test_successful_inspection_keeps_report(self):
+        expected=assess(False,[],[],monthly_complete=False)
+        with tempfile.TemporaryDirectory() as directory,patch('builtins.print'):
+            output=Path(directory)/'resource-preflight.json'
+            self.assertEqual(run_check(output,lambda:expected),0)
+            self.assertEqual(json.loads(output.read_text()),expected)
+
     def test_billing_unknown_or_enabled_blocks(self):
         for value in [True,None,'false',0]:
             with self.assertRaises(ValueError):assess(value,[],[],monthly_complete=True)

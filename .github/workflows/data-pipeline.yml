@@ -2,6 +2,11 @@ name: Cap IV candidate pipeline (official CSV + dbt pricing)
 
 on:
   workflow_dispatch:
+    inputs:
+      resource_check_only:
+        description: 'Read-only resource access check; no public downloads, loads or queries'
+        type: boolean
+        default: false
   schedule:
     - cron: '0 6 5 * *'
 
@@ -34,13 +39,18 @@ jobs:
       - name: Install candidate extraction dependencies
         run: python -m pip install -r extraction/requirements.txt
       - name: Prepare public CSV and EIA snapshots before authentication
+        if: ${{ !inputs.resource_check_only }}
         run: python pipeline/run_candidate.py prepare --history --run-dir "$RUNNER_TEMP/vm-prepare" --scratch-dir "$RUNNER_TEMP/vm-source-files"
       - name: Authenticate extraction (stage-restricted WIF)
         uses: google-github-actions/auth@v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_CI_EXTRACT_SA }}
+      - name: Check resource access without loads or queries
+        if: ${{ inputs.resource_check_only }}
+        run: python pipeline/resource_preflight.py --output "$RUNNER_TEMP/vm-extract/resource-preflight.json"
       - name: Load and revalidate the prepared snapshots
+        if: ${{ !inputs.resource_check_only }}
         run: python pipeline/run_candidate.py load --history --prepared-artifact "$RUNNER_TEMP/vm-prepare" --run-dir "$RUNNER_TEMP/vm-extract" --scratch-dir "$RUNNER_TEMP/vm-source-files"
       - name: Keep metadata evidence only
         uses: actions/upload-artifact@v4
@@ -64,6 +74,7 @@ jobs:
 
   transform:
     needs: extract
+    if: ${{ !inputs.resource_check_only }}
     runs-on: ubuntu-latest
     environment: data-dev-dbt
     timeout-minutes: 60

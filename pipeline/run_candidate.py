@@ -237,6 +237,8 @@ def execute_stage(args):
         if report.get('status')!='pass' or report.get('publication_approved') is not False:
             raise ValueError('Dashboard export rejected')
     elif args.stage == 'snapshot-check':
+        delivery=run_json([getattr(args,'node','node'),'--experimental-strip-types',str(root/'apps/web/scripts/build_delivery.mjs'),'--data-dir',str(out/'dashboard')],root)
+        if delivery.get('status')!='pass':raise ValueError('Snapshot delivery budget rejected')
         report=run_json([getattr(args,'node','node'),'--experimental-strip-types',
             str(root/'apps/web/scripts/check_snapshot.mjs'),'--data-dir',str(out/'dashboard')],root)
         if report.get('status')!='pass' or report.get('publication_approved') is not False:

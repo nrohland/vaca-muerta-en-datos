@@ -95,16 +95,21 @@ export function metric(
   mode: Mode = "volume",
 ): Metric {
   if (kind === "price") {
-    const value = referencePrice(prices, row.periodo, row.fluid);
+    const priceAt=(period:string)=>{
+      const candidate=rows.find(r=>r.fluid===row.fluid&&r.periodo===period);
+      return warehouseValue(candidate)!==null && typeof candidate?.price_usd_per_unit==='number' && candidate.price_usd_per_unit>0
+        ? candidate.price_usd_per_unit : referencePrice(prices,period,row.fluid);
+    };
+    const value=priceAt(row.periodo);
     return {
       value,
       yoy: change(
         value,
-        referencePrice(prices, shiftMonth(row.periodo, -12), row.fluid),
+        priceAt(shiftMonth(row.periodo, -12)),
       ),
       mom: change(
         value,
-        referencePrice(prices, shiftMonth(row.periodo, -1), row.fluid),
+        priceAt(shiftMonth(row.periodo, -1)),
       ),
     };
   }

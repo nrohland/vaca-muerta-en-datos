@@ -33,3 +33,10 @@ test('USD YTD consumes warehouse complete-calendar aggregates and does not sum a
  const k=productionKpis([row],'gas','2026-08-01',null,'value','yoy');assert.equal(k.accumulated,700);assert.equal(k.previousAccumulated,500);assert.ok(Math.abs(k.accumulatedGrowth!-40)<1e-10);
  assert.equal(productionKpis([{...row,estimated_ytd_value_usd:null}],'gas','2026-08-01',null,'value','yoy').accumulated,null);
 });
+
+test('reference price comes from the validated warehouse snapshot when the auxiliary asset is unavailable',()=>{
+ const f=fixture();const r=f.production[0];validateRelease(f);
+ assert.equal(metric(r,f.production,null,'price').value,2.78);
+ const unavailable={...r,valuation_method:'unavailable',estimated_value_usd:null,estimated_daily_value_usd:null};
+ assert.equal(metric(unavailable,[unavailable],null,'price').value,null);
+});

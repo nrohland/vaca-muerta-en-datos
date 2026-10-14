@@ -14,10 +14,12 @@ for(const mobile of [false,true])test(`delivery budgets, all views, fluid switch
  const resources=await page.evaluate(()=>performance.getEntriesByType('resource').map(e=>({name:e.name,transfer:(e as PerformanceResourceTiming).transferSize,encoded:(e as PerformanceResourceTiming).encodedBodySize})));
  const overview=resources.find(r=>r.name.includes('/overview-'));expect(overview).toBeDefined();expect(overview!.encoded).toBeLessThanOrEqual(250*1024);
  mkdirSync(evidence,{recursive:true});
- await page.screenshot({path:path.join(evidence,`summary-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+ await page.waitForTimeout(1600); // Let chart animations finish for representative captures.
+ await page.screenshot({animations:'disabled',path:path.join(evidence,`summary-${mobile?'mobile':'desktop'}.png`),fullPage:true});
  for(const [label,selector] of [['Producción','.production-dashboard'],['Operadores','.operators-dashboard'],['Áreas','.areas-dashboard'],['Actividad','.activity-dashboard']] as const){
   await page.getByRole('tab',{name:label,exact:true}).click();await expect(page.locator(selector)).toBeVisible();
-  await page.screenshot({path:path.join(evidence,`${label}-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+  await page.waitForTimeout(1600); // Let chart animations finish for representative captures.
+ await page.screenshot({animations:'disabled',path:path.join(evidence,`${label}-${mobile?'mobile':'desktop'}.png`),fullPage:true});
  }
  await page.getByRole('tab',{name:'Operadores',exact:true}).click();await expect(page.locator('.operators-dashboard')).toBeVisible();
  const before=requests.filter(url=>/\/oil-company-/.test(url)).length;
@@ -31,7 +33,7 @@ for(const mobile of [false,true])test(`delivery budgets, all views, fluid switch
 });
 test('broken detail stays unavailable and retry preserves context',async({page})=>{
  await page.route('**/data/snapshots/**/oil-area-*.json.gz',route=>route.fulfill({status:503}));
- await page.goto(base+'?tab=areas&fluid=oil');await expect(page.getByRole('alert')).toBeVisible();await expect(page.locator('.areas-dashboard')).toHaveCount(0);
+ await page.goto(base+'?tab=areas&fluid=oil');await expect(page.locator('#main').getByRole('alert')).toBeVisible();await expect(page.locator('.areas-dashboard')).toHaveCount(0);
  await page.unroute('**/data/snapshots/**/oil-area-*.json.gz');await page.getByRole('button',{name:'Reintentar',exact:true}).click();await expect(page.locator('.areas-dashboard')).toBeVisible();
  await expect(page.getByRole('tab',{name:'Áreas',exact:true})).toHaveAttribute('aria-selected','true');
 });

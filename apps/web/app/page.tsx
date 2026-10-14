@@ -300,7 +300,8 @@ export default function Page() {
             </button>
           </div>
         </header>
-        <nav
+        <nav aria-label={t("Vistas de Vaca Muerta en Datos")}>
+        <div
           className="tabs"
           role="tablist"
           aria-label={t("Vistas de Vaca Muerta en Datos")}
@@ -319,7 +320,7 @@ export default function Page() {
               {t(label)}
             </button>
           ))}
-        </nav>
+        </div></nav>
         <main id="main">
           <GlobalFilters
             fluid={fluid}

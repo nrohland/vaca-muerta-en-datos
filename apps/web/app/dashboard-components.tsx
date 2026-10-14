@@ -978,7 +978,7 @@ export function SummaryDashboard({
     monthly = metric(current, rows, prices, "volume", shownMode),
     wells = metric(current, rows, prices, "wells"),
     fourth = metric(current, rows, prices, monetary ? "price" : "estimate");
-  const price = referencePrice(prices, period, fluid);
+  const price = metric(current, rows, prices, "price").value;
   const valuationHelp = t(
     price == null
       ? "Estimación pendiente: referencia monetaria sin validar para este período."

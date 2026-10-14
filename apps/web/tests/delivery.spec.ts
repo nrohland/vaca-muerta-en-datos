@@ -15,11 +15,11 @@ for(const mobile of [false,true])test(`delivery budgets, all views, fluid switch
  const overview=resources.find(r=>r.name.includes('/overview-'));expect(overview).toBeDefined();expect(overview!.encoded).toBeLessThanOrEqual(250*1024);
  mkdirSync(evidence,{recursive:true});
  await page.waitForTimeout(1600); // Let chart animations finish for representative captures.
- await page.screenshot({animations:'disabled',path:path.join(evidence,`summary-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+ await page.screenshot({animations:'disabled',path:path.join(evidence,`summary-${mobile?'mobile':'desktop'}.png`),fullPage:mobile});
  for(const [label,selector] of [['Producción','.production-dashboard'],['Operadores','.operators-dashboard'],['Áreas','.areas-dashboard'],['Actividad','.activity-dashboard']] as const){
   await page.getByRole('tab',{name:label,exact:true}).click();await expect(page.locator(selector)).toBeVisible();
   await page.waitForTimeout(1600); // Let chart animations finish for representative captures.
- await page.screenshot({animations:'disabled',path:path.join(evidence,`${label}-${mobile?'mobile':'desktop'}.png`),fullPage:true});
+ await page.screenshot({animations:'disabled',path:path.join(evidence,`${label}-${mobile?'mobile':'desktop'}.png`),fullPage:mobile});
  }
  await page.getByRole('tab',{name:'Operadores',exact:true}).click();await expect(page.locator('.operators-dashboard')).toBeVisible();
  const before=requests.filter(url=>/\/oil-company-/.test(url)).length;

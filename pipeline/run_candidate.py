@@ -146,7 +146,7 @@ def execute_stage(args):
         if history:
             argv = [python,str(root/'extraction/scripts/source_history_pipeline.py'),'prepare',
                 '--contract',str(contract),'--anchor-release',str(root/'docs/evidence/historical-source/physical-anchors.json'),
-                '--output',str(candidate)]
+                '--output',str(candidate),'--metrics-output',str(out/'source-preparation-metrics.json')]
             if getattr(args, 'source_inbound', None):
                 argv += ['--inbound',str(args.source_inbound.resolve())]
             report = run_json(argv,root)
@@ -312,7 +312,7 @@ def plan(args):
         if args.dbt_project_dir:
             argv += ['--dbt-project-dir',str(args.dbt_project_dir.resolve())]
         stages.append(Stage(name=name,argv=tuple(argv),cwd=args.repo.resolve(),
-            timeout_seconds=1200 if name.startswith('dbt-') else 600,
+            timeout_seconds=1200 if name.startswith('dbt-') or name=='source-prepare' else 600,
             environment={'BIGQUERY_PROJECT':PROJECT,'BIGQUERY_LOCATION':'US','DBT_RAW_DATASET':DATASET,
                          'DBT_TARGET':'candidate','DBT_BQ_DATASET':'stg_cap4_candidate_dev',
                          'DBT_SEND_ANONYMOUS_USAGE_STATS':'false'},

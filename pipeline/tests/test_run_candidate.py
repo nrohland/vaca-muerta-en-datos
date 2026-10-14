@@ -53,6 +53,7 @@ class CandidateCLITests(unittest.TestCase):
         stages=candidate.plan(args)
         self.assertTrue(all('--history' in s.argv for s in stages))
         self.assertTrue(all('--source-inbound' in s.argv for s in stages))
+        self.assertEqual(next(s for s in stages if s.name=='source-prepare').timeout_seconds,1200)
 
     def test_history_transform_exports_only_after_successful_build(self):
         args=self.args();args.history=True

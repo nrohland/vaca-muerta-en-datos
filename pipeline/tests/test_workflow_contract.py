@@ -24,7 +24,7 @@ class WorkflowContract(unittest.TestCase):
             accounts.append(auth[0]['with']['service_account'])
             for step in jobs[name]['steps']:
                 if step.get('uses','').startswith('actions/upload-artifact@'):
-                    self.assertTrue(step['with']['path'].endswith('/*.json'))
+                    self.assertTrue(step['with']['path'].endswith('/*.json') or step['with']['name']=='candidate-public-preparation')
                     self.assertNotIn('dashboard',step['with']['path'])
         self.assertNotEqual(*accounts)
         self.assertFalse(any('deploy' in s.get('uses','') for j in jobs.values() for s in j['steps']))

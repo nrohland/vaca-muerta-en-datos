@@ -47,6 +47,11 @@ class HistoryPipelineTests(unittest.TestCase):
 
     def test_complete_bundle_stamped_once_preserves_original_retrieval(self):
         evidence=self.prepared();source.validate_bundle(evidence)
+        metrics=json.loads((self.args.output/'preparation-metrics.json').read_text())
+        self.assertEqual(len(metrics['phases']),12)
+        self.assertTrue(all(p['status']=='passed' and p['seconds']>=0 for p in metrics['phases']))
+        self.assertFalse(any('source_url' in p or 'raw_value' in p for p in metrics['phases']))
+        self.assertEqual([v['year'] for v in evidence['sources']],[2023,2024,2025,2026])
         self.assertEqual(len(evidence['accepted_periods']),44)
         self.assertEqual(evidence['total_rows'],48)
         self.assertEqual(sum(len(s['review']['vm_reconciliation']) for s in evidence['sources']),88)

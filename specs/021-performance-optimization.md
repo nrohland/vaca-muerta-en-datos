@@ -27,3 +27,5 @@ CI Linux ejecuta Chromium, toda la suite de pestañas, deeplinks, corrupción/re
 ## Evaluaciones que no se aplican a ciegas
 
 El clustering actual no se altera sin benchmark controlado de filtros representativos. Las tablas pequeñas no ganan por añadirlo. El raw particionado por ingesta conserva historia sin crear particiones por meses vencidos. Las copias antiguas requieren inventario/dependencias y respaldo antes de una eliminación explícita. No habilitar billing para eliminar expiraciones. Mantener fuentes reproducibles y monitor de vencimientos; el snapshot estático no depende de que BigQuery conserve tablas más de 60 días.
+
+La preparación pública solapa descargas/revisión de dos años independientes, con dos workers y un único writer Parquet ordenado. Conserva checkpoints atómicos por fase/año (tiempo, estado, conteo y clase de error, sin payload/credenciales). El timeout de source-prepare es 20 minutos; 10 minutos resultó insuficiente en el runner real y se detuvo antes de autenticación. Su diagnóstico se conserva separado del artifact que consume dbt; no altera su layout ni los gates. El timeout no se presenta como una mejora de velocidad.

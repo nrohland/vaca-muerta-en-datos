@@ -24,3 +24,7 @@ python -m unittest discover -s extraction/tests
 ```
 
 Dependencias cloud: `transform/requirements.txt`. Nunca guardar credenciales o descargas raw en Git. Los scripts antiguos de CKAN, claves permanentes y completaciones se retiraron del árbol actual.
+
+## Formato histórico
+
+El workflow activo histórico usa CSV → Parquet Zstandard directamente, en lotes de 32.768 filas y con esquema explícito. Dependencias: `pip install -r extraction/requirements.txt`. Fuente CSV y payload Parquet llevan hashes independientes. El helper monoanual anterior conserva su contrato NDJSON; los precios pequeños conservan el suyo. [Contrato de rendimiento](../specs/021-performance-optimization.md).

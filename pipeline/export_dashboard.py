@@ -254,6 +254,7 @@ def main():
     price_job=client.query('SELECT '+','.join(PRICE_COLUMNS)+' FROM `'+PROJECT+'.raw_cap4_candidate_dev.monthly_reference_price`',job_config=cfg)
     prices=price_asset([dict(r) for r in price_job.result()],price)
     verify_quotes(rows,prices)
+    manifest.pop('delivery',None)  # Derived asset bindings belong to the newly generated release.
     manifest['data_sha256']=sha;manifest['generated_at']=datetime.now(timezone.utc).isoformat();manifest['version']=f"candidate-dbt-{sha[:12]}";manifest['valuation']={'producer':'dbt','model':'fct_dashboard_month','job_id':job.job_id}
     if a.output.exists(): raise ValueError('Output already exists; refusing replacement')
     a.output.parent.mkdir(parents=True,exist_ok=True)

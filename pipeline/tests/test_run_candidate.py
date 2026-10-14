@@ -45,7 +45,7 @@ class CandidateCLITests(unittest.TestCase):
 
     def test_transform_never_plans_a_load_or_download(self):
         stages=candidate.plan(self.args())
-        self.assertEqual([s.name for s in stages],['artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build'])
+        self.assertEqual([s.name for s in stages],['resource-preflight','artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build'])
         self.assertTrue(all(s.environment['DBT_RAW_DATASET']==candidate.DATASET for s in stages))
 
     def test_history_stage_argument_survives_every_subprocess(self):
@@ -69,7 +69,7 @@ class CandidateCLITests(unittest.TestCase):
 
     def test_export_failure_does_not_reach_frontend_contract(self):
         args=self.args('export');args.history=True;args.transform_artifact=self.path/'accepted-dbt'
-        stages=candidate.plan(args);self.assertEqual([s.name for s in stages],['artifact-check','dashboard-export','snapshot-check'])
+        stages=candidate.plan(args);self.assertEqual([s.name for s in stages],['resource-preflight','artifact-check','dashboard-export','snapshot-check'])
         calls=[]
         def execute(argv,**kwargs):
             name=argv[argv.index('--stage')+1];calls.append(name)
@@ -83,7 +83,7 @@ class CandidateCLITests(unittest.TestCase):
         self.assertEqual([s.name for s in candidate.plan(self.args('prepare'))],['source-prepare','price-prepare'])
         args=self.args('load');args.prepared_artifact=self.path/'prepared'
         stages=candidate.plan(args)
-        self.assertEqual([s.name for s in stages],['prepared-check','source-load','price-load','raw-gate','loaded-lineage'])
+        self.assertEqual([s.name for s in stages],['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'])
         self.assertTrue(all('--prepared-artifact' in s.argv for s in stages))
 
     def test_single_annual_artifact_is_not_accepted_as_history(self):
@@ -93,7 +93,7 @@ class CandidateCLITests(unittest.TestCase):
 
     def test_extract_never_plans_dbt(self):
         stages=candidate.plan(self.args('extract'))
-        self.assertEqual([s.name for s in stages],['source-prepare','source-load','price-prepare','price-load','raw-gate','loaded-lineage'])
+        self.assertEqual([s.name for s in stages],['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage'])
 
     def test_artifact_rejects_source_hash_mismatch(self):
         path=self.artifacts();p=path/'source-load.json';value=json.loads(p.read_text());value['source_sha256']='b'*64;p.write_text(json.dumps(value))
@@ -135,6 +135,7 @@ class CandidateCLITests(unittest.TestCase):
         path=candidate.configure_profile(self.path);profile=(path/'profiles.yml').read_text()
         self.assertIn('maximum_bytes_billed: 1073741824',profile)
         self.assertIn('target: candidate',profile)
+        self.assertIn('threads: 4',profile)
         self.assertNotIn('keyfile',profile);self.assertNotIn('service-account',profile)
 
     def test_freshness_stage_rejects_warnings(self):

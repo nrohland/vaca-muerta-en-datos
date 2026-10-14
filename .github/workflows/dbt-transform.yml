@@ -16,6 +16,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            extraction/requirements.txt
+            transform/requirements.txt
       - uses: actions/setup-node@v4
         with:
           node-version: "22.13.1"
@@ -23,7 +27,7 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - name: Install dependencies
         run: |
-          pip install -r transform/requirements.txt
+          pip install -r transform/requirements.txt -r extraction/requirements.txt
           npm --prefix apps/web ci
       - name: Offline data contracts and guards
         run: |
@@ -45,3 +49,57 @@ jobs:
           npm --prefix apps/web run typecheck
           npm --prefix apps/web test
           npm --prefix apps/web run build
+
+  browser:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.13.1"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm --prefix apps/web ci
+      - name: Build static candidate and install browser
+        run: |
+          npm --prefix apps/web run build
+          cd apps/web
+          npx playwright install --with-deps chromium
+      - name: Verify all tabs and delivery budgets in a real browser
+        working-directory: apps/web
+        env:
+          EVIDENCE_DIR: ${{ runner.temp }}/visual-evidence
+        run: npm run test:browser
+      - name: Retain browser results and representative captures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: browser-validation
+          path: |
+            apps/web/test-results/
+            ${{ runner.temp }}/visual-evidence/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  architecture:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            transform/requirements.txt
+            transform/requirements-audit.txt
+      - run: pip install -r transform/requirements.txt -r transform/requirements-audit.txt
+      - name: Audit the dbt graph locally without cloud credentials
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-profile"
+          cp transform/profiles-audit.yml.example "$RUNNER_TEMP/architecture-profile/profiles.yml"
+          dbt deps --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate
+          dbt build --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate --vars '{enable_project_evaluator: true, enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}' --select package:dbt_project_evaluator

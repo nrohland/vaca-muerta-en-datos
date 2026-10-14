@@ -59,8 +59,11 @@ class WorkflowContract(unittest.TestCase):
         self.assertIn('pull_request',workflow['on'])
         steps=workflow['jobs']['validate']['steps']
         text=path.read_text()
-        for forbidden in ('id-token','google-github-actions/auth','secrets.','dbt build','deploy','git push'):
+        for forbidden in ('id-token','google-github-actions/auth','secrets.','deploy','git push'):
             self.assertNotIn(forbidden,text)
+        self.assertFalse(any('dbt build' in step.get('run','') for step in steps))
+        audit=workflow['jobs']['architecture']['steps']
+        self.assertTrue(any('profiles-audit.yml.example' in step.get('run','') and '--select package:dbt_project_evaluator' in step.get('run','') for step in audit))
         self.assertTrue(any('dbt parse' in step.get('run','') for step in steps))
         self.assertTrue(any('check_snapshot.mjs' in step.get('run','') for step in steps))
 

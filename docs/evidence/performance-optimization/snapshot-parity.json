@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "rows": 10296,
+  "keys_equal": true,
+  "differing_fields": {
+    "source_loaded_at": 10296
+  },
+  "numeric_comparison": "rel_tol=1e-9,abs_tol=1e-6",
+  "scope": "canonical old snapshot vs newly exported actual Parquet/dbt candidate; metadata may differ"
+}

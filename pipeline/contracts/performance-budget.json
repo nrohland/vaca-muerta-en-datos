@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "dbt_bytes_billed": 3221225472,
+  "query_bytes_billed": 1073741824,
+  "wall_seconds_warning": 300,
+  "baseline": "docs/evidence/github-actions/performance.json",
+  "note": "Bytes gates are post-build acceptance checks; per-query maximum_bytes_billed guards execution. Baseline is one execution, timing regressions are advisories until repeated comparable runs exist."
+}

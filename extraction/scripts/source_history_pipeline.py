@@ -191,8 +191,7 @@ def prepare_stage(args):
         raise ValueError('New candidate directory required')
     args.output.mkdir(parents=True)
     sources, reviews, periods, hashes, total = [], [], {}, {}, 0
-    combined = args.output/'history.raw.ndjson'
-    checksum = hashlib.sha256()
+    combined = args.output/'history.raw.parquet'
     contract = json.loads(args.contract.read_text())
     # Review every schema and anchor before producing a multi-GiB payload.
     reviewed = {}
@@ -217,25 +216,16 @@ def prepare_stage(args):
         review = review_csv(csv_path,args.anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True)
         reviewed[year] = (csv_path,retrieval,review,contract_path)
     contract = {**contract, 'id':'numeric'}
-    with combined.open('xb') as target:
+    from parquet_candidate import arrow_schema, append_csv
+    import pyarrow.parquet as pq
+    with pq.ParquetWriter(combined, arrow_schema(contract), compression='zstd',
+                          use_dictionary=True, write_statistics=True) as writer:
         for year, resource_id in RESOURCES.items():
-            csv_path,retrieval,review,contract_path = reviewed[year]
-            annual_dir = args.output/f'{year}-normalized'
-            annual = prepare(csv_path,contract_path,annual_dir,year,retrieval['before'])
-            if annual['sha256_csv'] != retrieval['sha256'] or annual['rows'] != review['source_rows'] or not 0 < annual['rows'] <= MAX_ROWS_YEAR:
+            csv_path,retrieval,review,_ = reviewed[year]
+            source_hash = retrieval['sha256']
+            annual = append_csv(writer,csv_path,contract,year,source_hash,retrieval['downloaded_at'],now())
+            if annual['rows'] != review['source_rows'] or not 0 < annual['rows'] <= MAX_ROWS_YEAR:
                 raise ValueError('Normalized annual source differs from reviewed bytes')
-            stamp = now()
-            source_hash = annual['sha256_csv']
-            with (annual_dir/f'{year}.raw.ndjson').open() as stream:
-                for line in stream:
-                    record = json.loads(line)
-                    record.setdefault('id',None)
-                    record.update(_sdc_extracted_at=retrieval['downloaded_at'],_sdc_batched_at=stamp,
-                                  _sdc_received_at=stamp,_source_sha256=source_hash)
-                    encoded = (json.dumps(record,ensure_ascii=False,sort_keys=True,allow_nan=False)+'\n').encode()
-                    target.write(encoded); checksum.update(encoded)
-            # A single combined, stamped payload is loaded without another ~3 GiB copy.
-            (annual_dir/f'{year}.raw.ndjson').unlink()
             source = {'year':year,'resource_id':resource_id,'source_sha256':source_hash,
                       'extracted_at':retrieval['downloaded_at'],'year_rows':annual['rows'],
                       'month_rows':annual['period_rows'],'review':review,
@@ -255,7 +245,8 @@ def prepare_stage(args):
                 'source_hashes':hashes,'source_sha256':source_sha,'sources':sources,
                 'extracted_at':oldest,'normalized_at':now(),'period_rows':dict(sorted(periods.items())),
                 'start_period':START_PERIOD,'cutoff':CUTOFF,'hash_scope':HASH_SCOPE,
-                'sha256_normalized_ndjson':checksum.hexdigest(),'payload':'history.raw.ndjson',
+                'sha256_payload':digest(combined),'payload':'history.raw.parquet','payload_format':'parquet',
+                'payload_bytes':combined.stat().st_size,'compression':'zstd',
                 'ingestion_stamp_basis':'arrival_in_prepared_staging_file; loaded_at is actual BigQuery load completion',
                 'limitations':['Public official portal may redirect to HTTP; digest identifies bytes, not authenticated transport.',
                                'Acceptance is technical review against retained snapshot; no publication approval.'],
@@ -279,7 +270,7 @@ def validate_candidate(candidate, contract):
         or evidence.get('coverage_status')!='reviewed_complete_snapshot'
         or evidence.get('accepted_periods')!=accepted_periods()
         or manifest.get('sources') != evidence.get('sources')
-        or manifest.get('payload')!='history.raw.ndjson'):
+        or manifest.get('payload')!='history.raw.parquet' or manifest.get('payload_format')!='parquet'):
         raise ValueError('History manifest/evidence/schema contract differs')
     sources = manifest['sources']
     if not isinstance(sources,list) or len(sources)!=4 or [s.get('year') for s in sources] != list(RESOURCES):
@@ -303,30 +294,39 @@ def validate_candidate(candidate, contract):
         or manifest.get('extracted_at')!=oldest or evidence.get('extracted_at')!=oldest
         or manifest.get('rows')!=expected_rows or manifest.get('total_rows')!=expected_rows
         or evidence.get('total_rows')!=expected_rows or manifest.get('period_rows')!=expected_periods
-        or not re.fullmatch('[a-f0-9]{64}',manifest.get('sha256_normalized_ndjson',''))):
+        or not re.fullmatch('[a-f0-9]{64}',manifest.get('sha256_payload',''))):
         raise ValueError('History bundle identity/counts differ')
     fresh(manifest['normalized_at'])
     if datetime.fromisoformat(manifest['normalized_at']) < max(datetime.fromisoformat(s['extracted_at']) for s in sources):
         raise ValueError('Normalization precedes source retrieval')
-    payload=candidate/'history.raw.ndjson'
-    if digest(payload)!=manifest['sha256_normalized_ndjson']:
+    payload=candidate/'history.raw.parquet'
+    if digest(payload)!=manifest['sha256_payload'] or payload.stat().st_size!=manifest.get('payload_bytes'):
         raise ValueError('Combined payload bytes differ')
-    # Validate raw stamps/hash/year/row counts before the client can submit a load.
-    counts={str(year):0 for year in RESOURCES}
-    with payload.open() as stream:
-        for line in stream:
-            record=json.loads(line);year=str(record.get('anio'))
-            if year not in counts or record.get('_source_sha256')!=expected_hashes[year]:
+    from parquet_candidate import arrow_schema, timestamp
+    import pyarrow.parquet as pq
+    parquet = pq.ParquetFile(payload)
+    if not parquet.schema_arrow.equals(arrow_schema(contract)) or parquet.metadata.num_rows!=expected_rows:
+        raise ValueError('Parquet schema/counts differ')
+    counts={str(year):0 for year in RESOURCES}; period_counts={}
+    by_year={str(s['year']):s for s in sources}
+    fields=['anio','periodo','_source_sha256','_sdc_extracted_at','_sdc_batched_at','_sdc_received_at']
+    normalized_at=timestamp(manifest['normalized_at'])
+    for batch in parquet.iter_batches(batch_size=32768,columns=fields):
+        for record in batch.to_pylist():
+            year=str(record['anio']); source=by_year.get(year)
+            if source is None or record['_source_sha256']!=expected_hashes[year]:
                 raise ValueError('Payload annual lineage differs')
-            source=next(s for s in sources if str(s['year'])==year)
-            if record.get('_sdc_extracted_at')!=source['extracted_at']:
+            if record['_sdc_extracted_at']!=timestamp(source['extracted_at']):
                 raise ValueError('Payload retrieval timestamp differs')
+            period=record['periodo']
+            if period is None or period.year!=int(year) or period.day!=1:
+                raise ValueError('Payload business period differs')
+            period_counts[period.isoformat()]=period_counts.get(period.isoformat(),0)+1
             for stamp in ('_sdc_batched_at','_sdc_received_at'):
-                fresh(record[stamp])
-                if not datetime.fromisoformat(source['extracted_at'])<=datetime.fromisoformat(record[stamp])<=datetime.fromisoformat(manifest['normalized_at']):
+                if not timestamp(source['extracted_at'])<=record[stamp]<=normalized_at:
                     raise ValueError('Payload ingestion chronology differs')
             counts[year]+=1
-    if counts!={str(s['year']):s['year_rows'] for s in sources}:
+    if counts!={str(s['year']):s['year_rows'] for s in sources} or period_counts!=expected_periods:
         raise ValueError('Payload row counts differ')
     return manifest
 
@@ -344,14 +344,14 @@ def load_stage(args):
     schema += [bigquery.SchemaField('periodo','DATE')]
     schema += [bigquery.SchemaField(k,'TIMESTAMP') for k in ('_sdc_extracted_at','_sdc_batched_at','_sdc_received_at')]
     schema += [bigquery.SchemaField('_source_sha256','STRING')]
-    config=bigquery.LoadJobConfig(schema=schema,source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
+    config=bigquery.LoadJobConfig(schema=schema,source_format=bigquery.SourceFormat.PARQUET,
         write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,max_bad_records=0,
         time_partitioning=bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.MONTH,field='_sdc_batched_at'),
         clustering_fields=['empresa','idpozo','cuenca'])
     run_key=hashlib.sha256(manifest['normalized_at'].encode()).hexdigest()[:12]
-    with (args.candidate/'history.raw.ndjson').open('rb') as stream:
+    with (args.candidate/'history.raw.parquet').open('rb') as stream:
         job=client.load_table_from_file(stream,DESTINATION,job_config=config,
-            job_id='csv_history_candidate_'+manifest['source_sha256'][:24]+'_'+run_key,location='US')
+            job_id='parquet_history_candidate_'+manifest['source_sha256'][:24]+'_'+run_key,location='US')
         job.result(timeout=600)
     if str(job.destination) != DESTINATION:
         raise ValueError('Actual load destination differs from isolated candidate')

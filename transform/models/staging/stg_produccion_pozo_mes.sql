@@ -1,4 +1,5 @@
-{{ config(materialized="view") }}
+{# The candidate materializes the filtered/deduplicated base once for tests and consumers. #}
+{{ config(materialized="table" if target.name == "candidate" else "view") }}
 {# Primary source dataset: var raw_dataset (default raw_cap4_dev). Prod twin: raw_cap4. #}
 
 with

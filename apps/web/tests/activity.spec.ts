@@ -21,7 +21,7 @@ test('first month omits fabricated net changes, CSV download and small screens r
  const download=page.waitForEvent('download');await page.locator('.activity-download').click();expect((await download).suggestedFilename()).toContain('activity-oil-2026-08');
  await page.getByLabel('Mes de producción').selectOption('2023-01-01');await expect(page.locator('.activity-data tbody tr')).toHaveCount(1);
  await expect(page.locator('.activity-kpis .kpi-card').nth(1)).toContainText('Sin comparador');
- for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);}
+ for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:900});await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),{message:`Viewport ${width}px remains free of horizontal overflow after chart resize`}).toBe(true);}
  expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
  await page.getByRole('button',{name:'Modo oscuro',exact:true}).click();expect((await new AxeBuilder({page}).analyze()).violations).toEqual([]);
 });

@@ -70,3 +70,5 @@ El recorrido real de GitHub/WIF está [validado](evidence/github-actions/README.
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
 
 El [monitor](../pipeline/MONITOR.md) observa producción/precios sin warehouse ni WIF. Separa estado observado de datos aceptados, conserva fingerprints agregados y avisa mediante Issues deduplicadas. Cadencia diaria, lectura histórica completa semanal y al finalizar ingesta. Señales de cobertura/estabilidad habilitan revisión; no prueban cierre oficial ni publican snapshots.
+
+La ingesta histórica usa CSV → Parquet tipado; la entrega frontend mantiene el JSON canónico y genera overview/detalles gzip vinculados al manifiesto. Staging candidato es tabla para reutilizar deduplicación y evitar escaneos repetidos de raw. Ver [contrato de rendimiento](../specs/021-performance-optimization.md).

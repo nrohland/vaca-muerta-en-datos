@@ -1,12 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { defaultHistoryRange } from "../lib/history";
 
 import { validatePrices, estimationNote, type Prices } from "../lib/metrics";
-import { OperatorsDashboard } from "./operators-dashboard";
-import { AreasDashboard } from "./areas-dashboard";
-import { ActivityDashboard } from "./activity-dashboard";
-import { ProductionDashboard } from "./production-dashboard";
+import dynamic from 'next/dynamic';
+import {readDelivery,validateOverview,validateEntities,shardKey} from '../lib/delivery';
+import type {Entity} from '../lib/contract';
+const OperatorsDashboard=dynamic(()=>import('./operators-dashboard').then(m=>m.OperatorsDashboard));
+const AreasDashboard=dynamic(()=>import('./areas-dashboard').then(m=>m.AreasDashboard));
+const ActivityDashboard=dynamic(()=>import('./activity-dashboard').then(m=>m.ActivityDashboard));
+const ProductionDashboard=dynamic(()=>import('./production-dashboard').then(m=>m.ProductionDashboard));
 import { SummaryDashboard, GlobalFilters } from "./dashboard-components";
 import {
   tabs,
@@ -70,6 +73,7 @@ export default function Page() {
         ),
       );
   }, [language]);
+  const priceDownload=useRef<Promise<[Response,Response]|null>|null>(null);
   const [data, setData] = useState<Data | null>(null),
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
@@ -114,25 +118,22 @@ export default function Page() {
     setError("");
     (async () => {
       try {
-        const [dr, mr] = await Promise.all([
-          fetch(`${base}/data/release.json`),
-          fetch(`${base}/data/manifest.json`),
-        ]);
-        if (!dr.ok || !mr.ok) throw Error("No pudimos cargar los agregados.");
-        const [bytes, manifestBytes] = await Promise.all([
-          dr.arrayBuffer(),
-          mr.arrayBuffer(),
-        ]);
-        const manifest = validateManifest(
-          JSON.parse(new TextDecoder().decode(manifestBytes)),
-        );
-        if ((await sha256(bytes)) !== manifest.data_sha256)
-          throw Error("La versión no coincide con su manifiesto.");
-        const release = validateRelease(
-          JSON.parse(new TextDecoder().decode(bytes)),
-        );
-        validatePair(release, manifest);
-        const ar = await fetch(`${base}/data/approval.json`);
+        priceDownload.current=Promise.all([fetch(`${base}/data/prices.json`),fetch(`${base}/data/valuation-manifest.json`)]).catch(()=>null);
+        const mr = await fetch(`${base}/data/manifest.json`);
+        if (!mr.ok) throw Error("No pudimos cargar los agregados.");
+        const manifestBytes=await mr.arrayBuffer();
+        const manifest=validateManifest(JSON.parse(new TextDecoder().decode(manifestBytes)));
+        // Request approval alongside the overview, while retaining exact manifest binding.
+        const approvalRequest=fetch(`${base}/data/approval.json`).catch(()=>null);
+        let release:Release;
+        if(manifest.delivery){
+          release=validateOverview(await readDelivery(manifest.delivery.overview,base),manifest,manifest.delivery);
+        }else{
+          const dr=await fetch(`${base}/data/release.json`);if(!dr.ok)throw Error('No pudimos cargar los agregados.');
+          const bytes=await dr.arrayBuffer();if(await sha256(bytes)!==manifest.data_sha256)throw Error('La versión no coincide con su manifiesto.');
+          release=validateRelease(JSON.parse(new TextDecoder().decode(bytes)));validatePair(release,manifest);
+        }
+        const ar=await approvalRequest;if(!ar)throw Error('No pudimos verificar el estado de publicación.');
         let approval: Approval | null = null;
         if (ar.ok)
           approval = validateApproval(
@@ -176,10 +177,8 @@ export default function Page() {
     setPriceError("");
     (async () => {
       try {
-        const [pr, vr] = await Promise.all([
-          fetch(`${base}/data/prices.json`),
-          fetch(`${base}/data/valuation-manifest.json`),
-        ]);
+        const downloaded=await priceDownload.current;if(!downloaded)throw Error('Referencia de precios no disponible.');
+        const [pr,vr]=downloaded;
         if (!pr.ok || !vr.ok)
           throw Error("Referencia de precios no disponible.");
         const priceBytes = await pr.arrayBuffer(),
@@ -210,7 +209,22 @@ export default function Page() {
   }, [data]);
   const rows = data?.release.production ?? [];
   const current = rows.find((r) => r.fluid === fluid && r.periodo === period);
-  const entities = data?.release.entities ?? [];
+  const [details,setDetails]=useState<Record<string,Entity[]>>({});
+  const [detailFailure,setDetailFailure]=useState({key:'',message:''});
+  const detailDimension=tab==='operators'?'company':tab==='areas'?'area':null;
+  const detailKey=data&&detailDimension?`${data.manifest.data_sha256}/${shardKey(fluid,detailDimension)}`:'';
+  const detailError=detailFailure.key===detailKey?detailFailure.message:'';
+  useEffect(()=>{
+    if(!data?.manifest.delivery||!detailDimension||details[detailKey])return;
+    const controller=new AbortController();setDetailFailure({key:detailKey,message:''});
+    const ref=data.manifest.delivery.entities[shardKey(fluid,detailDimension)];
+    readDelivery(ref,base,controller.signal).then(v=>validateEntities(v,data.release,ref,fluid,detailDimension))
+      .then(rows=>{if(!controller.signal.aborted)setDetails(old=>({...old,[detailKey]:rows}));})
+      .catch(()=>{if(!controller.signal.aborted)setDetailFailure({key:detailKey,message:'No pudimos cargar los agregados.'});});
+    return()=>controller.abort();
+  },[data,fluid,detailDimension,detailKey,details,attempt]);
+  const detailLoading=!!(data?.manifest.delivery&&detailDimension&&!details[detailKey]&&!detailError);
+  const entities=(detailDimension&&details[detailKey])||data?.release.entities||[];
   function keyboardTab(
     e: React.KeyboardEvent<HTMLButtonElement>,
     index: number,
@@ -286,7 +300,8 @@ export default function Page() {
             </button>
           </div>
         </header>
-        <nav
+        <nav aria-label={t("Vistas de Vaca Muerta en Datos")}>
+        <div
           className="tabs"
           role="tablist"
           aria-label={t("Vistas de Vaca Muerta en Datos")}
@@ -305,7 +320,7 @@ export default function Page() {
               {t(label)}
             </button>
           ))}
-        </nav>
+        </div></nav>
         <main id="main">
           <GlobalFilters
             fluid={fluid}
@@ -340,6 +355,10 @@ export default function Page() {
                 {t("Reintentar")}
               </button>
             </div>
+          ) : detailError && detailDimension ? (
+            <div className="state" role="alert"><p>{t(detailError)}</p><button onClick={()=>{setDetailFailure({key:detailKey,message:''});setAttempt(n=>n+1);}}>{t('Reintentar')}</button></div>
+          ) : detailLoading ? (
+            <div className="state" role="status">{t('Cargando agregados oficiales y verificando integridad…')}</div>
           ) : !current ? (
             <div className="state">
               <h1>{t("Sin datos para este período")}</h1>

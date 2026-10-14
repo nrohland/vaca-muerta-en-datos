@@ -1,0 +1,36 @@
+{
+  "date_argentina": "2026-10-13",
+  "history_rows": 3614213,
+  "parquet_bytes": 77024233,
+  "prior_ndjson_bytes": 4537137858,
+  "dbt_nodes": 106,
+  "dbt_results": {
+    "pass_or_success": 106,
+    "errors": 0,
+    "warnings": 0,
+    "skips": 0
+  },
+  "prior_reference": {
+    "wall_seconds": 176.395218,
+    "bytes_billed": 2541748224,
+    "slot_ms": 349821
+  },
+  "current": {
+    "wall_seconds": 105.828132,
+    "bytes_billed": 1708130304,
+    "slot_ms": 554443
+  },
+  "frontend": {
+    "overview_gzip_bytes": 248948,
+    "prior_canonical_json_bytes": 17563319,
+    "initial_modern_js_bytes": 914927,
+    "initial_modern_js_gzip_level9_bytes": 268331
+  },
+  "publication_approved": false,
+  "limitations": [
+    "Single before/after execution, not a statistical benchmark.",
+    "Slot-ms increased while wall time and billed bytes decreased.",
+    "The current canonical frontend snapshot is preserved; the new export is a validation candidate.",
+    "Old table inventory is for review; no deletion or IAM/billing changes."
+  ]
+}

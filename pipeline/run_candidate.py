@@ -168,18 +168,13 @@ def execute_stage(args):
         from verify_loaded_lineage import PRICE_URL, GAS_URL
         scripts = root/'scripts'
         downloaded = {}
+        from public_price_fetch import fetch
+        metrics={'schema_version':1,'attempts':[],'publication_approved':False}
+        def observe(product,event):
+            metrics['attempts'].append({'reference':product,**event})
+            write_report(out/'price-preparation-metrics.json',metrics)
         for name, allowed in [('brent',PRICE_URL),('henry_hub',GAS_URL)]:
-            class SameOfficialURL(HTTPRedirectHandler):
-                def redirect_request(self, req, fp, code, msg, headers, newurl):
-                    if newurl != allowed:
-                        raise ValueError('Unexpected EIA redirect')
-                    return super().redirect_request(req,fp,code,msg,headers,newurl)
-            with build_opener(SameOfficialURL()).open(allowed,timeout=30) as response:
-                if response.url != allowed:
-                    raise ValueError('Unexpected EIA URL')
-                raw = response.read(5*1024**2+1)
-                if len(raw)>5*1024**2:
-                    raise ValueError('EIA response exceeds budget')
+            raw=fetch(allowed,observe=lambda event:observe(name,event))
             response_path = scratch/(name+'.html'); response_path.write_bytes(raw)
             downloaded[name] = (response_path,utc_now(),hashlib.sha256(raw).hexdigest())
         rows = scratch/'price.ndjson'

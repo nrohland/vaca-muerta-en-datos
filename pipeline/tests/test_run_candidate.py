@@ -150,11 +150,28 @@ class CandidateCLITests(unittest.TestCase):
 
     def test_dbt_build_enables_prices_and_rejects_skipped_results(self):
         args=self.args();args.stage='dbt-build';args.run_dir.mkdir();target=args.run_dir/'dbt-target';target.mkdir()
-        (target/'run_results.json').write_text(json.dumps({'results':[{'unique_id':'test.a','status':'skipped','execution_time':0}]}))
-        with patch.object(candidate.subprocess,'run',return_value=subprocess.CompletedProcess([],0)) as process:
+        def build(*a,**kw):
+            (target/'run_results.json').write_text(json.dumps({'results':[{'unique_id':'test.a','status':'skipped','execution_time':0}]}))
+            return subprocess.CompletedProcess([],0)
+        with patch('dbt_build_diagnostics.check_staging_budget'),patch.object(candidate.subprocess,'run',side_effect=build) as process:
             with self.assertRaisesRegex(ValueError,'errors/skips'):candidate.execute_stage(args)
             argv=process.call_args.args[0];vars=json.loads(argv[argv.index('--vars')+1])
             self.assertTrue(vars['enable_candidate_pricing']);self.assertEqual(vars['candidate_period'],candidate.CUTOFF)
+
+    def test_build_budget_failure_never_launches_dbt(self):
+        args=self.args();args.stage='dbt-build';args.run_dir.mkdir()
+        with patch('dbt_build_diagnostics.check_staging_budget',side_effect=ValueError('over budget')),patch.object(candidate.subprocess,'run') as process:
+            with self.assertRaisesRegex(ValueError,'over budget'):candidate.execute_stage(args)
+            process.assert_not_called()
+
+    def test_failed_build_cannot_reuse_previous_compile_results(self):
+        args=self.args();args.stage='dbt-build';args.run_dir.mkdir();target=args.run_dir/'dbt-target';target.mkdir()
+        (target/'run_results.json').write_text(json.dumps({'results':[{'unique_id':'model.stale','status':'success'}]}))
+        with patch('dbt_build_diagnostics.check_staging_budget'),patch.object(candidate.subprocess,'run',return_value=subprocess.CompletedProcess([],1)):
+            with self.assertRaisesRegex(ValueError,'dbt stage failed'):candidate.execute_stage(args)
+        report=json.loads((args.run_dir/'dbt-build.diagnostic.json').read_text())
+        self.assertEqual(report['failure'],'dbt_results_unavailable')
+        self.assertEqual(report['nodes'],[])
 
 
 if __name__=='__main__':unittest.main()

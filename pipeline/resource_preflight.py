@@ -38,12 +38,24 @@ def run_check(output, inspector=None):
     return 0 if report.get('status')=='pass' else 1
 
 
+def global_jobs_visible(session):
+    # jobs.list may return only this identity's jobs even with allUsers=true.
+    # Test visibility explicitly; this endpoint only checks existing permissions.
+    try:
+        response=session.post(
+            f'https://cloudresourcemanager.googleapis.com/v1/projects/{PROJECT}:testIamPermissions',
+            json={'permissions':['bigquery.jobs.listAll']},timeout=30)
+        return response.ok and 'bigquery.jobs.listAll' in response.json().get('permissions',[])
+    except Exception:
+        return False
+
+
 def assess(billing, tables, jobs, *, monthly_complete):
     if billing is not False: raise ValueError('No-cost policy requires verified billingEnabled=false')
     storage=sum(t.get('logical_bytes') or 0 for t in tables)
     if storage>STORAGE_BUDGET: raise ValueError('Accessible storage exceeds 8 GiB operating budget')
     usage=sum(j.get('bytes_billed') or 0 for j in jobs if j.get('statement_type')!='SCRIPT')
-    if monthly_complete and usage>MONTHLY_QUERY_BUDGET: raise ValueError('Monthly query usage exceeds 80% operating budget')
+    if usage>MONTHLY_QUERY_BUDGET: raise ValueError('Observed monthly query usage exceeds 80% operating budget')
     return {'status':'pass','billing_enabled':False,'storage_logical_bytes':storage,
         'storage_scope':'datasets accessible to the current identity; not quota remaining',
         'query_bytes_billed':usage if monthly_complete else None,
@@ -59,7 +71,8 @@ def inspect():
     from google.auth.transport.requests import AuthorizedSession
     from google.cloud import bigquery
     credentials,_=checked('credentials',lambda:google.auth.default(scopes=['https://www.googleapis.com/auth/cloud-platform']))
-    response=checked('billing-request',lambda:AuthorizedSession(credentials).get(f'https://cloudbilling.googleapis.com/v1/projects/{PROJECT}/billingInfo',timeout=30))
+    session=AuthorizedSession(credentials)
+    response=checked('billing-request',lambda:session.get(f'https://cloudbilling.googleapis.com/v1/projects/{PROJECT}/billingInfo',timeout=30))
     if not response.ok:
         try:failure=response.json().get('error',{})
         except ValueError:failure={}
@@ -79,7 +92,7 @@ def inspect():
     try:
         start=datetime.now(timezone.utc).replace(day=1,hour=0,minute=0,second=0,microsecond=0)
         inventory=list(client.list_jobs(all_users=True,min_creation_time=start,max_results=10000,page_size=1000,timeout=30))
-        complete=len(inventory)<10000
+        complete=len(inventory)<10000 and global_jobs_visible(session)
         for j in inventory:
             if j.job_type=='query':
                 if not j.error_result and j.total_bytes_billed is None and j.state=='DONE':complete=False

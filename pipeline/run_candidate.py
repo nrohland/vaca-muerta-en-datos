@@ -250,8 +250,16 @@ def execute_stage(args):
             argv += ['--select','source:raw_cap4.produccion_pozo_mes','source:candidate_pricing.monthly_reference_price']
         if action in ('compile','build'):
             argv += ['--select',*SELECTION,*(['+fct_dashboard_month'] if history else [])]
+        if action == 'build':
+            from dbt_build_diagnostics import check_staging_budget
+            check_staging_budget(out,PROJECT,BUDGET)
+            # A failed invocation must not report results left by compile.
+            (out/'dbt-target/run_results.json').unlink(missing_ok=True)
         result = subprocess.run(argv,cwd=project,check=False)
         if result.returncode:
+            if action == 'build':
+                from dbt_build_diagnostics import failure_report
+                write_report(out/'dbt-build.diagnostic.json',failure_report(out/'dbt-target',result.returncode))
             raise ValueError('dbt stage failed')
         if action == 'source-freshness':
             freshness = load_json(out/'dbt-target/sources.json')

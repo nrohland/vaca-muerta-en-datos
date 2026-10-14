@@ -33,3 +33,7 @@ La preparación pública solapa descargas/revisión de dos años independientes,
 EIA usa hasta tres intentos con timeout de 45 s y espera acotada, sólo ante fallas de transporte/429/5xx. Redirect inesperado, respuesta >5 MiB o contratos inválidos siguen bloqueando sin retry. Se registran referencia, intento, clase de error/status HTTP y duración; no cuerpos ni credenciales. No hay fallback a precios viejos.
 
 La preparación pública verifica primero los dos HTML EIA pequeños, para que una falla de precios no obligue a descargar/procesar 1,16 GB de CSV. Ambas fuentes deben pasar antes de autenticación/cargas; cambia el orden, no los gates.
+
+Antes de ejecutar el build se hace un dry run de la consulta staging compilada. Tras una carga nueva, la estimación sobre raw con clustering puede superar el límite aunque una estimación posterior sea menor. El CLI comprueba hasta cinco minutos, cada 15 segundos, sin ejecutar SQL de escritura ni aumentar 1 GiB. Sólo continúa con una estimación válida dentro del límite; sobrecosto persistente o estimación desconocida bloquean y conservan diagnóstico. No se atribuye automáticamente todo cambio de estimación a reclustering ni se garantiza que la espera resuelva un crecimiento real.
+
+Los builds fallidos conservan un resumen reducido por nodo (estado, categoría de error y límites numéricos reconocidos), sin mensajes completos, SQL, argumentos dbt ni credenciales. Se descarta el run_results previo de compile antes del build para no presentar evidencia de otra invocación.

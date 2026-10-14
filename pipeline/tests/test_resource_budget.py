@@ -3,11 +3,20 @@ from pathlib import Path
 import unittest
 import tempfile
 import json
-from unittest.mock import patch
+from unittest.mock import patch,Mock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
-from resource_preflight import assess,checked,run_check,PreflightFailure,STORAGE_BUDGET,MONTHLY_QUERY_BUDGET
+from resource_preflight import assess,checked,run_check,global_jobs_visible,PreflightFailure,STORAGE_BUDGET,MONTHLY_QUERY_BUDGET
 from report_dbt_performance import budget_check
 class ResourceBudgetTests(unittest.TestCase):
+    def test_global_usage_requires_explicit_existing_permission(self):
+        session=Mock()
+        for ok,permissions,expected in [(True,[],False),(False,['bigquery.jobs.listAll'],False),(True,['bigquery.jobs.list'],False),(True,['bigquery.jobs.listAll'],True)]:
+            session.post.return_value.ok=ok
+            session.post.return_value.json.return_value={'permissions':permissions}
+            self.assertEqual(global_jobs_visible(session),expected)
+        session.post.side_effect=RuntimeError('sensitive request details')
+        self.assertFalse(global_jobs_visible(session))
+
     def test_failed_inspection_persists_safe_diagnostic_and_exits_failed(self):
         def denied():
             raise PreflightFailure('billing-verification',http_status=403,
@@ -48,6 +57,7 @@ class ResourceBudgetTests(unittest.TestCase):
     def test_storage_and_monthly_compute_operating_limits(self):
         with self.assertRaises(ValueError):assess(False,[{'logical_bytes':STORAGE_BUDGET+1}],[],monthly_complete=True)
         with self.assertRaises(ValueError):assess(False,[],[{'bytes_billed':MONTHLY_QUERY_BUDGET+1}],monthly_complete=True)
+        with self.assertRaises(ValueError):assess(False,[],[{'bytes_billed':MONTHLY_QUERY_BUDGET+1}],monthly_complete=False)
     def test_script_parents_are_not_double_counted(self):
         r=assess(False,[],[{'bytes_billed':10,'statement_type':'SCRIPT'},{'bytes_billed':10,'statement_type':'SELECT'}],monthly_complete=True)
         self.assertEqual(r['query_bytes_billed'],10)

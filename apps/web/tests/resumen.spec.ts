@@ -40,11 +40,11 @@ test("real snapshot matches KPIs and both top-five rankings for oil and gas", as
     );
     await expect(
       page.locator(".kpi-card--primary .kpi-comparisons"),
-    ).toContainText(number(r.yoy_rate_pct!));
+    ).toContainText(number(r.yoy_rate_pct!).replace("-", "−"));
     await page.getByRole("button", { name: "Mensual", exact: true }).click();
     await expect(
       page.locator(".kpi-card--primary .kpi-comparisons"),
-    ).toContainText(number(r.mom_rate_pct!));
+    ).toContainText(number(r.mom_rate_pct!).replace("-", "−"));
     await page.getByRole("button", { name: "Interanual", exact: true }).click();
     await expect(page.locator(".kpi-card").nth(2)).toContainText(
       number(r.positive_producing_wells, 0),
@@ -53,9 +53,7 @@ test("real snapshot matches KPIs and both top-five rankings for oil and gas", as
       page.locator(".kpi-card").nth(1).locator(".kpi-value"),
     ).toContainText(number(fluid === "oil" ? r.volume / 1e6 : r.volume, 1));
     await expect(page.locator(".kpi-card").nth(3)).toContainText(
-      fluid === "oil"
-        ? number(metric(r, release.production, prices, "estimate").value! / 1e6)
-        : "No disponible",
+      number(metric(r, release.production, prices, "estimate").value! / 1e6),
     );
     for (const dimension of ["company", "area"] as const) {
       const top = prepareEntities(

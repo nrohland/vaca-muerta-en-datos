@@ -2,6 +2,12 @@ name: V1 checks
 
 on:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      public_source_check:
+        description: Read-only public source connectivity check (no cloud or notices)
+        type: boolean
+        default: false
   push:
     branches: [main]
 
@@ -103,3 +109,19 @@ jobs:
           cp transform/profiles-audit.yml.example "$RUNNER_TEMP/architecture-profile/profiles.yml"
           dbt deps --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate
           dbt build --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate --vars '{enable_project_evaluator: true, enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}' --select package:dbt_project_evaluator
+
+  public-sources:
+    if: github.event_name == 'workflow_dispatch' && inputs.public_source_check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check exact public endpoints without credentials or writes
+        run: python pipeline/check_public_sources.py

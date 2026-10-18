@@ -18,7 +18,7 @@ test('official area geometry supports selection and shares global filters',async
  await expect(page.locator('.area-map-card')).toContainText('68/88');
  await polygons.first().focus();await expect(page.locator('.map-readout')).toContainText('AGUADA FEDERAL');
  await polygons.first().press('Enter');await expect(page).toHaveURL(/area=AFED/);
- await expect(page.locator('.areas-detail h2')).toContainText('AGUADA FEDERAL');
+ await expect(page.locator('.areas-detail-heading h2')).toContainText('AGUADA FEDERAL');
  await page.getByRole('button',{name:'Valor USD',exact:true}).click();await expect(page.locator('.area-map-card')).toContainText('USD');
  await page.getByRole('button',{name:'English',exact:true}).click();await expect(page.locator('.area-map-card h2')).toContainText('Area map');
  await page.reload();await expect(polygons).toHaveCount(68);await expect(page).toHaveURL(/area=AFED/);

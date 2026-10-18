@@ -1,5 +1,7 @@
 """Read-only transport diagnosis; never load data, notify, or advance freshness."""
 import json
+import ipaddress
+import socket
 import subprocess
 import time
 import source_monitor as monitor
@@ -15,6 +17,7 @@ PATHS = {
 
 def transport_probe(name):
     url = PATHS[name]
+    addresses=sorted({item[4][0] for item in socket.getaddrinfo('datos.energia.gob.ar',None) if ipaddress.ip_address(item[4][0]).is_global})
     # No redirect following, credentials, response bodies, proxy changes or TLS bypass.
     result = subprocess.run(['curl','--silent','--output','/dev/null','--connect-timeout','5',
                              '--max-time','12','--write-out','%{json}',url],
@@ -27,7 +30,7 @@ def transport_probe(name):
     accepted = result.returncode == 0 and ((name.endswith('https') and status in (301,302,307,308)
                                           and redirect == expected_redirect) or status == 200)
     return {'source':name,'status':'reachable' if accepted else 'unavailable',
-            'curl_exit':result.returncode,'http_status':status,
+            'curl_exit':result.returncode,'http_status':status,'dns_addresses':addresses,
             'redirect':'reviewed_public_http' if redirect == expected_redirect and redirect else 'unexpected' if redirect else 'none',
             **{key:round(float(detail.get(key) or 0),3) for key in
                ('time_namelookup','time_connect','time_appconnect','time_starttransfer','time_total')}}

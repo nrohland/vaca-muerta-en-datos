@@ -8,6 +8,11 @@ on:
         description: Read-only public source connectivity check (no cloud or notices)
         type: boolean
         default: false
+      public_source_runner:
+        description: Runner network for the read-only source diagnosis
+        type: choice
+        options: [linux, macos-14]
+        default: linux
   push:
     branches: [main]
 
@@ -116,7 +121,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-latest, ubuntu-24.04-arm]
+        runner: ${{ fromJSON(inputs.public_source_runner == 'macos-14' && '["macos-14"]' || '["ubuntu-latest","ubuntu-24.04-arm"]') }}
     runs-on: ${{ matrix.runner }}
     timeout-minutes: 5
     permissions:

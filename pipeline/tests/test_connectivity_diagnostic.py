@@ -7,6 +7,9 @@ from pathlib import Path
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
 import check_public_sources as check
 class TransportDiagnostic(unittest.TestCase):
+    def setUp(self):
+        self.dns=patch.object(check.socket,'getaddrinfo',return_value=[(2,1,6,'',('8.8.8.8',0))])
+        self.dns.start();self.addCleanup(self.dns.stop)
     def test_exact_redirect_is_accepted_without_following_or_tls_bypass(self):
         payload={'http_code':301,'redirect_url':check.PATHS['production_http'],'time_connect':.1}
         with patch.object(check.subprocess,'run',return_value=SimpleNamespace(returncode=0,stdout=json.dumps(payload))) as run:

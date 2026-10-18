@@ -16,6 +16,7 @@ permissions:
 
 jobs:
   validate:
+    if: github.event_name != 'workflow_dispatch' || !inputs.public_source_check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -112,8 +113,12 @@ jobs:
 
   public-sources:
     if: github.event_name == 'workflow_dispatch' && inputs.public_source_check
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 5
     permissions:
       contents: read
     steps:

@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './browser-fixtures';
 const base='/vaca-muerta-pulse/?month=2026-08-01&fluid=gas&comparison=yoy';
 test('gas reference methodology lives behind its KPI and notation uses a smaller unit',async({page})=>{
  await page.goto(base);await expect(page.locator('#panel-summary .kpi-card')).toHaveCount(4);
@@ -14,13 +14,13 @@ test('gas reference methodology lives behind its KPI and notation uses a smaller
  expect(await metric.evaluate(e=>parseFloat(getComputedStyle(e.querySelector('.kpi-unit')!).fontSize)<parseFloat(getComputedStyle(e).fontSize))).toBe(true);
 });
 test('official area geometry supports selection and shares global filters',async({page})=>{
- await page.goto(base+'&tab=areas');const polygons=page.locator('.area-map path');await expect(polygons).toHaveCount(68);
- await expect(page.locator('.area-map-card')).toContainText('68/88');
- await polygons.first().focus();await expect(page.locator('.map-readout')).toContainText('AGUADA FEDERAL');
- await polygons.first().press('Enter');await expect(page).toHaveURL(/area=AFED/);
+ await page.goto(base+'&tab=areas');const polygons=page.locator('.area-bubble');await expect(polygons).toHaveCount(68);
+ await expect(page.locator('.area-map-card')).toContainText('68 con geometría');
+ await page.locator('.area-bubble[data-area="AFED"]').focus();await expect(page.locator('.map-readout')).toContainText('AGUADA FEDERAL');
+ await page.locator('.area-bubble[data-area="AFED"]').press('Enter');await expect(page).toHaveURL(/area=AFED/);
  await expect(page.locator('.areas-detail-heading h2')).toContainText('AGUADA FEDERAL');
  await page.getByRole('button',{name:'Valor USD',exact:true}).click();await expect(page.locator('.area-map-card')).toContainText('USD');
- await page.getByRole('button',{name:'English',exact:true}).click();await expect(page.locator('.area-map-card h2')).toContainText('Area map');
+ await page.getByRole('button',{name:'English',exact:true}).click();await expect(page.locator('.area-map-card h2')).toContainText('Where production');
  await page.reload();await expect(polygons).toHaveCount(68);await expect(page).toHaveURL(/area=AFED/);
 });
 test('activity exposes meaningful comparisons and expands the full table',async({page})=>{
@@ -33,7 +33,7 @@ test('activity exposes meaningful comparisons and expands the full table',async(
 });
 test('map and all detail views stay within a narrow English dark viewport',async({page})=>{
  await page.setViewportSize({width:320,height:812});await page.goto(base+'&tab=areas');
- await expect(page.locator('.map-context')).toContainText('Argentina');
+ await expect(page.getByRole('button',{name:'Argentina',exact:true})).toBeVisible();
  await page.getByRole('button',{name:'English',exact:true}).click();await page.getByRole('button',{name:'Dark mode',exact:true}).click();
  for(const name of ['Areas','Activity','Production','Operators','Overview']){
   await page.getByRole('tab',{name,exact:true}).click();

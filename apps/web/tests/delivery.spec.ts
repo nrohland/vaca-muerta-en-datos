@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './browser-fixtures';
 import {mkdirSync,writeFileSync} from 'node:fs';
 import path from 'node:path';
 const base='/vaca-muerta-pulse/';

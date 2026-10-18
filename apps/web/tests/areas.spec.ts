@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './browser-fixtures';
 const base='/vaca-muerta-pulse/?tab=areas&month=2026-08-01';
 test('area ranking supports search, detail deep link, persistent filters and browser back',async({page})=>{
  await page.goto(base);await expect(page.locator('.areas-ranking .ranking-item')).toHaveCount(12);await expect(page.locator('.areas-dashboard .kpi-card').nth(3).locator('.kpi-value')).toHaveText('82');

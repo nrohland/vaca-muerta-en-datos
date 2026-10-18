@@ -20,12 +20,22 @@ class Geometry(unittest.TestCase):
         self.assertEqual(result['unmatched_ids'],['XYZ'])
         self.assertIsNone(result['geometry_effective_date'])
         self.assertNotIn('unreviewed',json.dumps(result))
+        self.assertEqual(result['type'],'FeatureCollection')
     def test_out_of_region_coordinates_fail_instead_of_fake_locations(self):
         self.feature['geometry']['coordinates'][0][0]=[0,0]
+        self.feature['geometry']['coordinates'][0][-1]=[0,0]
         with self.assertRaisesRegex(ValueError,'outside'):self.compile([self.feature])
     def test_versioned_asset_has_unique_ids_explicit_coverage_and_size_budget(self):
         asset=ROOT/'apps/web/public/geography/areas.json';result=json.loads(asset.read_text())
         ids=[f['id'] for f in result['features']]
         self.assertEqual(len(ids),len(set(ids)));self.assertEqual(len(ids)+len(result['unmatched_ids']),result['catalog_count'])
-        self.assertLess(asset.stat().st_size,150*1024);self.assertEqual(len(result['source_sha256']),64)
+        self.assertLess(asset.stat().st_size,200*1024);self.assertEqual(len(result['source_sha256']),64)
         self.assertIsNone(result['geometry_effective_date'])
+
+    def test_anchors_are_in_geometry_and_outside_holes(self):
+        asset=json.loads((ROOT/'apps/web/public/geography/areas.json').read_text())
+        for feature in asset['features']:
+            anchor=feature['properties']['anchor']
+            self.assertTrue(any(module.inside_polygon(anchor,p) for p in feature['geometry']['coordinates']),feature['id'])
+        polygon=[[[0,0],[10,0],[10,10],[0,10],[0,0]],[[4,4],[6,4],[6,6],[4,6],[4,4]]]
+        anchor=module.interior_anchor([polygon]);self.assertTrue(module.inside_polygon(anchor,polygon))

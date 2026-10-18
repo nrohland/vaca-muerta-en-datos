@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './browser-fixtures';
 import AxeBuilder from '@axe-core/playwright';
 const base='/vaca-muerta-pulse/?tab=activity&month=2026-08-01';
 test('activity has truthful physical metrics, shared ranges and filter persistence',async({page})=>{

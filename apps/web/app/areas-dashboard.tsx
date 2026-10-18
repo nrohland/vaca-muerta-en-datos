@@ -1,5 +1,5 @@
 "use client";
-import {trendClass} from "../lib/presentation";
+import {trendClass,kpiState} from "../lib/presentation";
 import {useState,useMemo} from 'react';
 import type {Entity,Row} from '../lib/contract';
 import {effectiveMode,shiftMonth,comparisonOffset,type Comparison,type Mode,type Prices} from '../lib/metrics';
@@ -22,7 +22,7 @@ export function AreasDashboard({entities,rows,current,prices,mode,comparison,ran
  <div className="kpi-grid">
  <KpiCard tooltip={monetary&&current.fluid==='gas'?t(gasReferenceMethod):l('Volumen mensual del área seleccionada.','Monthly volume of the selected area.')} flipped={flipped} onFlip={()=>setFlipped(!flipped)} variant="primary" label={area?monetary?l('Valor mensual estimado del área','Estimated monthly area value'):l('Producción del área','Area production'):l('Área líder','Leading area')} value={area?fmt(selected?.value??null).replace(` ${unit}`,''):leader?fmt(leader.value).replace(` ${unit}`,''):'—'} unit={unit} context={area?name:leader?.entity.entity_name??t('No disponible')} comparisons={<span>{area?<Change value={selected?.pct}/>:leader?.share==null?'—':`${percent(leader.share)} ${l('del total','of total')}`}</span>}/>
  <KpiCard label={area?l('Participación en Vaca Muerta','Share of Vaca Muerta'):l('Áreas con producción','Producing areas')} value={area?selected?.share==null?'—':percent(selected.share):number(active,0)} context={area?l('Volumen del área / volumen de cuenca','Area volume / basin volume'):l('Volumen mayor que cero en el mes','Volume above zero in the month')}/>
- <KpiCard label={area?l('Cambio absoluto','Absolute change'):l('Concentración del top 5','Top 5 concentration')} value={area?selected?.delta==null?t('Sin comparador'):`${selected.delta>0?'+':selected.delta<0?'−':''}${fmt(Math.abs(selected.delta))}`:percent(top5)} context={area?`vs. ${historyMonth(shiftMonth(current.periodo,comparisonOffset(comparison)))}`:l('Cuota conjunta de las cinco áreas líderes','Combined share of the five leading areas')}/>
+ <KpiCard state={area?kpiState(selected?.delta):'neutral'} label={area?l('Cambio absoluto','Absolute change'):l('Concentración del top 5','Top 5 concentration')} value={area?selected?.delta==null?t('Sin comparador'):`${selected.delta>0?'+':selected.delta<0?'−':''}${fmt(Math.abs(selected.delta))}`:percent(top5)} context={area?`vs. ${historyMonth(shiftMonth(current.periodo,comparisonOffset(comparison)))}`:l('Cuota conjunta de las cinco áreas líderes','Combined share of the five leading areas')}/>
  <KpiCard label={area?l('Pozos productivos del área','Producing wells in the area'):l('Áreas reportadas','Reported areas')} value={area?selected?number(selected.entity.positive_producing_wells,0):t('No disponible'):number(all.filter(r=>Number(r.entity.reported_well_rows)>0).length,0)} context={area?l('Pozos distintos con producción positiva','Distinct wells with positive production'):l('Con registro en el mes seleccionado','With a record in the selected month')}/>
  </div>
 

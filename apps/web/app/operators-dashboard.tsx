@@ -1,5 +1,5 @@
 "use client";
-import {trendClass} from "../lib/presentation";
+import {trendClass,kpiState} from "../lib/presentation";
 import { useMemo, useState } from 'react';
 import { Line, ComposedChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { Entity, Row } from '../lib/contract';
@@ -8,7 +8,7 @@ import { historyTicks } from '../lib/history';
 import { useLocale } from '../lib/locale';
 import { operatorName } from '../lib/operators';
 import { filterOperators, operatorCsv, operatorHistory, operatorRanking, type OperatorDirection, type OperatorSort } from '../lib/operator-analysis';
-import { gasReferenceMethod, ChartCard, KpiCard, ReferenceValuationNote, OperatorLogo, RankingItem, shortNames } from './dashboard-components';
+import { Change, gasReferenceMethod, ChartCard, KpiCard, ReferenceValuationNote, OperatorLogo, RankingItem, shortNames } from './dashboard-components';
 import './operators.css';
 
 const text = {
@@ -73,10 +73,10 @@ export function OperatorsDashboard({entities,rows,current,prices,mode,comparison
     {monetary&&totalValue==null&&<p className="availability-note" role="status">{L('noPrice')}</p>}
     {operator&&!selected&&<p className="availability-note" role="status">{L('invalid')}</p>}
     <div className="kpi-grid">
-      <KpiCard {...card(0,monetary?L('prices'):L('monthly'))} variant="primary" label={L(operator?monetary?'detailValue':'detailVolume':monetary?'estimated':'total')} value={operator?format(selected?.value??null).replace(` ${unit}`,''):format(totalValue).replace(` ${unit}`,'')} unit={(operator?selected?.value:totalValue)==null?undefined:unit} context={month(current.periodo)} comparisons={operator?<span className="operators-neutral">{comparison==='mom'?'MoM':'YoY'} · {pct(selected?.pct??null)}</span>:undefined}/>
+      <KpiCard {...card(0,monetary?L('prices'):L('monthly'))} variant="primary" label={L(operator?monetary?'detailValue':'detailVolume':monetary?'estimated':'total')} value={operator?format(selected?.value??null).replace(` ${unit}`,''):format(totalValue).replace(` ${unit}`,'')} unit={(operator?selected?.value:totalValue)==null?undefined:unit} context={month(current.periodo)} comparisons={operator?<span className="operators-neutral">{comparison==='mom'?'MoM':'YoY'} · <Change value={selected?.pct}/></span>:undefined}/>
       <KpiCard {...card(1,operator?L('top5Context'):L('countContext'))} label={L(operator?'share':'count')} value={operator?(selected?.share==null?L('missing'):percent(selected.share)):number(entries.filter(e=>e.entity.volume>0).length,0)} context={L(operator?'top5Context':'countContext')}/>
       <KpiCard {...card(2,operator?L('producing'):L('top5Context'))} label={L(operator?'wells':'top5')} value={operator?number(selected?.entity.positive_producing_wells??null,0):top5Share==null?L('missing'):percent(top5Share)} context={L(operator?'producing':'top5Context')}/>
-      <KpiCard {...card(3,L('tableCaption'))} label={L(operator?'delta':'largest')} value={signed(operator?selected?.delta??null:largest?.delta??null).replace(` ${unit}`,'')} unit={(operator?selected?.delta:largest?.delta)==null?undefined:unit} context={operator?`${L('vs')} ${month(selected?.basePeriod??points.at(-1)?.basePeriod??current.periodo)}`:largest?.name??L('noComparison')} comparisons={!operator&&largest?<span className="operators-neutral">{comparison==='mom'?'MoM':'YoY'} · {L('vs')} {month(largest.basePeriod)}</span>:undefined}/>
+      <KpiCard {...card(3,L('tableCaption'))} state={kpiState(operator?selected?.delta:largest?.delta)} label={L(operator?'delta':'largest')} value={signed(operator?selected?.delta??null:largest?.delta??null).replace(` ${unit}`,'')} unit={(operator?selected?.delta:largest?.delta)==null?undefined:unit} context={operator?`${L('vs')} ${month(selected?.basePeriod??points.at(-1)?.basePeriod??current.periodo)}`:largest?.name??L('noComparison')} comparisons={!operator&&largest?<span className="operators-neutral">{comparison==='mom'?'MoM':'YoY'} · {L('vs')} {month(largest.basePeriod)}</span>:undefined}/>
     </div>
     <div className="operators-grid">
       {!operator&&<ChartCard title={L('ranking')} subtitle={`${entries.length} ${L('results')} · ${month(current.periodo)}`} className="ranking-card operators-ranking">

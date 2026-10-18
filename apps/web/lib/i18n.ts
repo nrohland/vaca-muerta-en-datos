@@ -6,6 +6,7 @@ export function readLanguage(value: string | null): Language {
 }
 // Spanish source messages are also the default locale. Variables never translate entity names.
 export const translations: Record<string, string> = {
+  "Deslizá para explorar columnas y períodos →": "Scroll to explore columns and periods →",
   "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.": "Henry Hub · international reference scenario. Estimated energy conversion using the EIA reference: 1,036 BTU/ft³; not a measured heating value for Vaca Muerta. Does not represent actual revenue.",
   "Metodología EIA": "EIA methodology",
   "Precio de referencia Henry Hub": "Henry Hub reference price",
@@ -355,12 +356,12 @@ export function formatters(language: Language) {
         }).format(value);
   const historyMonth = (period: string) => new Intl.DateTimeFormat(locale, {month: "short", year: "numeric", timeZone: "UTC"}).format(new Date(`${period}T00:00:00Z`)).replace(/\./g, "");
   const exact = (value: number | null | undefined) => number(value, 20, 0);
-  const compact = (value: number | null | undefined) => {
+  const compact = (value: number | null | undefined, decimals = 2) => {
     if (value == null) return t("No disponible");
     // Round representation only; promote 999.999K to 1M rather than showing 1,000K.
     const magnitude = Math.abs(value);
     const divisor = magnitude >= 999995 ? 1e6 : magnitude >= 999.995 ? 1e3 : 1;
-    return `${number(value / divisor, 2, 0)}${divisor === 1 ? "" : `${language === "es" ? " " : ""}${divisor === 1e6 ? "M" : "K"}`}`;
+    return `${number(value / divisor, decimals, 0)}${divisor === 1 ? "" : `${language === "es" ? " " : ""}${divisor === 1e6 ? "M" : "K"}`}`;
   };
   const currency = (value: number | null | undefined) =>
     value == null

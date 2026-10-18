@@ -974,7 +974,7 @@ export function SummaryDashboard({
     methodSource: t(
       id === 3 && monetary
         ? "Fuente: EIA."
-        : id !== 2 && (monetary || (id === 3 && fluid === "oil"))
+        : id !== 2 && (monetary || id === 3)
           ? "Fuente: Secretaría de Energía · EIA."
           : "Fuente: Secretaría de Energía.",
     ),

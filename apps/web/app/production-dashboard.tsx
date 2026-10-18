@@ -339,8 +339,8 @@ export function ProductionDashboard({
                     tickMargin={10}
                   />
                   <YAxis
-                    width={56}
-                    tickFormatter={(v) => compact(v)}
+                    width={68}
+                    tickFormatter={(v) => compact(v, 1)}
                     tick={{ fontSize: 10, fill: "var(--muted)" }}
                     tickLine={false}
                     axisLine={false}
@@ -404,6 +404,7 @@ export function ProductionDashboard({
               { unit: fullUnit },
             )}
           </p>
+          <p className="scroll-hint">{t("Deslizá para explorar columnas y períodos →")}</p>
           <div
             className="production-table-scroll"
             tabIndex={0}

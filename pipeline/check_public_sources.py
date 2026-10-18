@@ -4,8 +4,15 @@ import time
 import source_monitor as monitor
 
 
+def identified_metadata():
+    opener = monitor.build_opener(monitor.source.AnnualRedirect(2026))
+    opener.addheaders = [('User-Agent', 'VacaMuertaEnDatos/1.0 public-monthly-data')]
+    return monitor.source.read_metadata(2026, opener)
+
+
 def main():
     checks = [('production_2026_metadata', lambda: monitor.source.read_metadata(2026, monitor.build_opener(monitor.source.AnnualRedirect(2026)))),
+              ('production_2026_identified_client', identified_metadata),
               ('catalogue', monitor.discover_resources),
               ('oil', lambda: monitor.fetch_eia(monitor.import_brent)),
               ('gas', lambda: monitor.fetch_eia(monitor.import_henry_hub))]

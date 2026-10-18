@@ -1,0 +1,24 @@
+[
+  {
+    "id": "SHE",
+    "original": "SHE.jpg",
+    "file": "SHE.webp",
+    "max_dimension": 144,
+    "original_bytes": 223319,
+    "bytes": 9810,
+    "source_sha256": "6d762582173b3ff040500038184fba5de19ad42593af695fe1d2eff6c71248de",
+    "sha256": "9787059779ebf8f8904bbdb778643c52295dc3002a207e16850d1a64772073b7",
+    "encoding": "lossless_after_resize"
+  },
+  {
+    "id": "TPT",
+    "original": "TPT.jpg",
+    "file": "TPT.webp",
+    "max_dimension": 144,
+    "original_bytes": 117155,
+    "bytes": 4934,
+    "source_sha256": "cf271653f776a3a6874661f192131ba262b1fc9dbd15e890bb304c2ab1466ae6",
+    "sha256": "d5aeb0217d0104eeadfa9e21f2378fee965c4809e173113679451eb3e2e10fad",
+    "encoding": "lossless_after_resize"
+  }
+]

@@ -33,11 +33,11 @@ test('complete ranking filters without changing total share and supports URL dri
 test('gas USD uses warehouse values and English detail survives reload',async({page})=>{
  await page.goto(base+'&fluid=gas&mode=value&comparison=mom&operator=YPF');
  await expect(page.locator('.operators-dashboard')).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
+ await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-back')).toContainText('Henry Hub');
  await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-value')).toContainText('USD');
  await page.getByRole('button',{name:'English',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
+ await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-back')).toContainText('Henry Hub');
  await page.reload();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
  await expect(page).toHaveURL(/operator=YPF/);

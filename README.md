@@ -15,7 +15,7 @@ Pensado para analistas, equipos de energía y periodistas. Como portfolio, muest
 | Resumen | ¿Cuál es el nivel actual y qué cambió? KPIs, evolución y concentración. |
 | Producción | ¿Cómo evoluciona cada fluido? Comparación entre años, cambio absoluto, acumulados y tabla descargable. |
 | Operadores | ¿Quién produce y cómo cambia su participación? Ranking completo, búsqueda y evolución por operador. |
-| Áreas | ¿Dónde se concentra la producción? Ranking y evolución por permiso o concesión. |
+| Áreas | ¿Dónde se concentra la producción? Mapa de referencia de Neuquén, ranking y evolución por permiso o concesión. |
 | Actividad | ¿Cuántos pozos tienen producción y cómo cambia el promedio por pozo? Historia, cambio neto y tasa por día calendario. |
 
 Las cinco vistas comparten componentes, filtros y contexto persistente: petróleo/gas, período, volumen/valor USD, comparación mensual/interanual, ES/EN, light/dark y enlaces a detalles. Petróleo azul, gas violeta, dinero ámbar y variaciones verde/rojo conservan su significado en todo el dashboard. [Capturas desktop y mobile](docs/screenshots/README.md).
@@ -31,7 +31,7 @@ La fuente principal es [Capítulo IV de la Secretaría de Energía](https://dato
 
 USD representa **valor bruto estimado con referencias internacionales**, no ingresos realizados, márgenes ni precios locales. Los precios cambiantes se extraen y cargan a BigQuery; dbt calcula la valorización. No son seeds ni se calculan en Next.js. Sin precio válido → valor indisponible; no hay relleno silencioso. Los seeds contienen catálogos estables.
 
-Actividad muestra producción media por pozo y día calendario, no productividad por día efectivo. El cambio neto de conteos no identifica altas o bajas. No se presentan completaciones, mapa ni relaciones operador–área actuales sin respaldo suficiente. [Contrato histórico](specs/019-historical-source-candidate.md).
+Actividad muestra producción media por pozo y día calendario, no productividad por día efectivo. El cambio neto de conteos no identifica altas o bajas. No se presentan completaciones ni relaciones operador–área actuales sin respaldo suficiente. El [mapa de referencia](docs/geography/README.md) usa geometrías oficiales de Neuquén con cruce verificado de 68/88 áreas y límites de cobertura explícitos. [Contrato histórico](specs/019-historical-source-candidate.md).
 
 ## Arquitectura y razones
 

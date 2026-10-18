@@ -64,11 +64,8 @@ test("filter matrix updates real KPIs and retains navigation state", async ({
             mode,
             comparison,
           );
-          await expect(
-            page.locator(".production-dashboard .kpi-card--primary .kpi-value"),
-          ).toContainText(
-            fluid === "gas" && mode === "volume" ? f.number(k.value, 2, 0) : f.compact(k.value),
-          );
+          const expectedValue = fluid === "gas" && mode === "volume" ? f.number(k.value, 2, 0) : f.compact(k.value);
+          await expect.poll(async () => (await page.locator(".production-dashboard .kpi-card--primary .kpi-value").innerText()).replace(/\s/g, "")).toContain(expectedValue.replace(/\s/g, ""));
           const pts = productionPoints(
             rows,
             fluid,

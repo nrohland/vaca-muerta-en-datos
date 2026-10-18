@@ -26,8 +26,9 @@ import {
   productionPoints,
   yearlyComparison,
 } from "../lib/production";
+import { trendClass, kpiState } from "../lib/presentation";
 import { useLocale } from "../lib/locale";
-import { ChartCard, Evolution, KpiCard, ReferenceValuationNote } from "./dashboard-components";
+import { Change, gasReferenceMethod, ChartCard, Evolution, KpiCard, ReferenceValuationNote } from "./dashboard-components";
 
 export function ProductionDashboard({
   rows,
@@ -78,7 +79,7 @@ export function ProductionDashboard({
   const props = (index: number, help: string) => ({
     flipped: flipped === index,
     onFlip: () => setFlipped(flipped === index ? null : index),
-    tooltip: t(help),
+    tooltip: t(help) + (monetary && fluid === "gas" ? " " + t(gasReferenceMethod) : ""),
     brief: t([monetary ? "Producción valorizada a precio de referencia." : "Producción acumulada durante el mes.", "Diferencia frente al mes base.", "Acumulado enero–mes vs. año anterior.", "Mayor mes dentro del histórico disponible."][index]),
   });
   function download() {
@@ -164,7 +165,7 @@ export function ProductionDashboard({
           comparisons={
             <span className="production-neutral">
               {t(comparison === "mom" ? "Mensual" : "Interanual")} ·{" "}
-              {k.pct == null ? t("Sin comparador") : percent(k.pct, true)}
+              <Change value={k.pct} />
             </span>
           }
         />
@@ -173,7 +174,7 @@ export function ProductionDashboard({
             1,
             "Valor del mes menos el valor de su base calendario exacta.",
           )}
-          label={t("Cambio absoluto")}
+          state={kpiState(k.delta)} label={t("Cambio absoluto")}
           value={
             k.delta == null
               ? t("Sin comparador")
@@ -196,7 +197,7 @@ export function ProductionDashboard({
           value={k.accumulated == null ? t("No disponible") : monetary || fluid === "oil" ? compact(k.accumulated) : number(k.accumulated, 2, 0)}
           unit={k.accumulated == null ? undefined : unit}
           context={`${historyMonth(k.start)} – ${historyMonth(period)}`}
-          comparisons={<span className="production-neutral">{k.accumulatedGrowth == null ? t("Sin comparador") : percent(k.accumulatedGrowth, true)} · {t("vs. mismo acumulado de {year}", {year: Number(period.slice(0,4))-1})}</span>}
+          comparisons={<span className="production-neutral"><Change value={k.accumulatedGrowth} /> · {t("vs. mismo acumulado de {year}", {year: Number(period.slice(0,4))-1})}</span>}
         />
       </div>
       <Evolution
@@ -253,7 +254,7 @@ export function ProductionDashboard({
                     axisLine={false}
                     tickMargin={10}
                   />
-                  <YAxis hide domain={[0, "auto"]} />
+                  <YAxis width={56} domain={[0, "auto"]} tickFormatter={compact} tick={{fontSize:11,fill:"var(--muted)"}} axisLine={false} tickLine={false} />
                   <Tooltip content={yearTooltip} isAnimationActive={false} />
                   {annual.years.map((year, i) => (
                     <Line
@@ -338,8 +339,7 @@ export function ProductionDashboard({
                     tickMargin={10}
                   />
                   <YAxis
-                    hide
-                    width={0}
+                    width={56}
                     tickFormatter={(v) => compact(v)}
                     tick={{ fontSize: 10, fill: "var(--muted)" }}
                     tickLine={false}
@@ -444,7 +444,7 @@ export function ProductionDashboard({
                     <td>{p.volume == null ? t("No disponible") : `${fluid === "oil" ? compact(p.volume) : compact(p.volume * 1e6)} ${fluid === "oil" ? "bbl" : "m³"}`}</td>
                     <td>{p.rate == null ? t("No disponible") : `${fluid === "oil" ? number(p.rate, 0) : compact(p.rate * 1e6)} ${fluid === "oil" ? "bbl/d" : "m³/d"}`}</td>
                     {<><td>{p.price == null ? t("No disponible") : `US$ ${number(p.price, 2)}`}</td><td>{p.estimated == null ? t("No disponible") : `US$ ${compact(p.estimated)}`}</td></>}
-                    <td className="production-selected-column">{signed(p[comparison])}</td>
+                    <td className={`production-selected-column ${trendClass(p[comparison])}`}>{signed(p[comparison])}</td>
                     <td>{historyMonth(p[comparison === "mom" ? "momBase" : "yoyBase"])}</td>
                   </tr>
                 ))}

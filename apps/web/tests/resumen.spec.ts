@@ -239,7 +239,7 @@ test("monetary mode updates metrics and units; gas availability and price failur
   expect(new URL(page.url()).searchParams.get("mode")).toBe("value");
   await page.getByRole("tab", { name: "Resumen", exact: true }).click();
   await page.getByRole("button", { name: "Gas", exact: true }).click();
-  await expect(page.locator(".availability-note")).toContainText("Henry Hub");
+  await expect(page.locator("#panel-summary .kpi-card").nth(3)).toContainText("Henry Hub");
   await expect(page.locator(".kpi-card--primary .kpi-value")).toContainText(
     "USD/d",
   );
@@ -356,7 +356,7 @@ test("combined monthly series, bounded tooltip, reversible KPI and compact table
   await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(1);
   await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(36);
   await expect(page.locator(".chart-context")).toHaveCount(0);
-  await expect(page.locator(".availability-note")).toContainText("Henry Hub");
+  await expect(page.locator("#panel-summary .kpi-card").nth(3)).toContainText("Henry Hub");
 });
 
 test("historical windows, explicit partial coverage and compact information", async ({

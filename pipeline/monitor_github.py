@@ -92,6 +92,11 @@ def issue_body(event, run_url):
             'source_quality_failure':'Problema de calidad de la fuente',
             'source_observation_failed':'No se pudo verificar la fuente'}
     title=labels[kind]+(' · '+period[:7] if period else '')
+    if kind == 'source_observation_failed':
+        year = details.get('year')
+        source_label = ('Capítulo IV '+str(year) if isinstance(year, int) and 2023 <= year <= 2100
+                        else {'catalogue':'Catálogo Energía','oil':'Brent EIA','gas':'Henry Hub EIA'}.get(details.get('source'), 'Monitor'))
+        title += ' · '+source_label
     body=f"<!-- vm-source-event:{event['id']} -->\n\n{title}.\n\n"
     if kind=='month_ready_for_review':
         body+='Mes transcurrido, cobertura ≥98% de la mediana de los tres meses aceptados anteriores, dos recuperaciones distintas estables durante ≥48 horas y ambas cotizaciones mensuales disponibles. **Es una señal para revisar, no una certificación oficial de completitud.**\n\n'
@@ -106,6 +111,13 @@ def issue_body(event, run_url):
     elif kind in ('accepted_price_revised','accepted_price_missing'):
         body+=f"Fluido: {details['fluid']}. Referencia anterior: {details['before']}; actual: {details.get('after','ausente')}.\n\n"
     elif kind=='source_observation_failed':
+        allowed_categories = {'unexpected_error','http_error','tls_error','timeout','dns_error','connection_error','validation_error'}
+        category = details.get('category')
+        if category in allowed_categories:
+            body += 'Diagnóstico: `'+category+'`'
+            status = details.get('http_status')
+            if isinstance(status, int) and 100 <= status <= 599: body += ' (HTTP '+str(status)+')'
+            body += '.\n\n'
         body+='La recuperación/validación falló. No se renueva la frescura ni se certifica ausencia de novedades.\n\n'
     body+=f'[Evidencia de la ejecución]({run_url}).\n\nLa aceptación, corrección de anclajes y promoción del snapshot son decisiones separadas. Este aviso no carga BigQuery ni publica datos.'
     return title,body

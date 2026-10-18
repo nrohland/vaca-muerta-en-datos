@@ -36,3 +36,7 @@ Estado/report/summary JSON-Markdown, artifacts 90 días, sin CSV, SQLite, perfil
 Permisos `contents:read`, `actions:read`, `issues:write`; sin WIF, id-token, IAM ni acceso BigQuery. Token GitHub sólo en restauración/avisos al API oficial. No se reenvía Authorization a destinos de descarga firmada. Las fuentes públicas no reciben el token. Un error de fuente conserva observaciones previas, no declara ausencia de cambios y genera aviso de fallo. Si falla GitHub, la entrega puede fallar y queda visible en Actions; no se simula recepción de avisos.
 
 `SOURCE_MONITOR_ENABLED` controla este calendario. `DATA_PIPELINE_ENABLED` sigue controlando el calendario de carga por separado. Ejecución manual disponible sólo en main.
+
+## Resiliencia de lectura y diagnóstico
+
+Ante el incidente de conectividad del 17 de octubre de 2026, los GET públicos admiten tres intentos acotados únicamente para errores transitorios. TLS, identidad/redirect, esquema, calidad y autorización siguen bloqueando sin relajación. Las descargas parciales se reinician desde cero en scratch propio; no cambian ingesta, aceptación, precios ni snapshot. Avisos y resumen identifican año/serie y categorías sanitizadas (sin mensajes privados). Pruebas cubren recuperación, agotamiento, no retry de validación/TLS/403, eliminación de parcial y ausencia de secretos.

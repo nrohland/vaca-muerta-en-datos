@@ -4,7 +4,7 @@ import { defaultHistoryRange } from "../lib/history";
 
 import { validatePrices, estimationNote, type Prices } from "../lib/metrics";
 import dynamic from 'next/dynamic';
-import {readDelivery,validateOverview,validateEntities,shardKey} from '../lib/delivery';
+import {readDelivery,validateOverview,validateEntities,shardKey,createRequestCache} from '../lib/delivery';
 import type {Entity} from '../lib/contract';
 const OperatorsDashboard=dynamic(()=>import('./operators-dashboard').then(m=>m.OperatorsDashboard), {loading: TabLoading});
 const AreasDashboard=dynamic(()=>import('./areas-dashboard').then(m=>m.AreasDashboard), {loading: TabLoading});
@@ -110,6 +110,16 @@ export default function Page() {
     window.history.pushState(null, "", url);
     setSelection(next);
   }
+  // Start only the active view's module alongside the data bootstrap, not after it.
+  // Read the URL here so a deep link never preloads the default Summary by mistake.
+  useEffect(()=>{
+    const active=readUrl().tab;
+    const request=active==='summary'?import('./dashboard-components'):
+      active==='production'?import('./production-dashboard'):
+      active==='operators'?import('./operators-dashboard'):
+      active==='areas'?import('./areas-dashboard'):import('./activity-dashboard');
+    void request.catch(()=>{}); // The dynamic boundary retains its normal error handling.
+  },[tab]);
   useEffect(() => {
     setSelection(readUrl());
     try { setDark(localStorage.getItem("vm-theme") === "dark"); } catch {}
@@ -218,18 +228,20 @@ export default function Page() {
   const rows = data?.release.production ?? [];
   const current = rows.find((r) => r.fluid === fluid && r.periodo === period);
   const [details,setDetails]=useState<Record<string,Entity[]>>({});
+  const [detailRequests]=useState(()=>createRequestCache<Entity[]>());
   const [detailFailure,setDetailFailure]=useState({key:'',message:''});
   const detailDimension=tab==='operators'?'company':tab==='areas'?'area':null;
   const detailKey=data&&detailDimension?`${data.manifest.data_sha256}/${shardKey(fluid,detailDimension)}`:'';
   const detailError=detailFailure.key===detailKey?detailFailure.message:'';
   useEffect(()=>{
     if(!data?.manifest.delivery||!detailDimension||details[detailKey])return;
-    const controller=new AbortController();setDetailFailure({key:detailKey,message:''});
+    let active=true;setDetailFailure({key:detailKey,message:''});
     const ref=data.manifest.delivery.entities[shardKey(fluid,detailDimension)];
-    readDelivery(ref,base,controller.signal).then(v=>validateEntities(v,data.release,ref,fluid,detailDimension))
-      .then(rows=>{if(!controller.signal.aborted)setDetails(old=>({...old,[detailKey]:rows}));})
-      .catch(()=>{if(!controller.signal.aborted)setDetailFailure({key:detailKey,message:'No pudimos cargar los agregados.'});});
-    return()=>controller.abort();
+    // A tab switch cancels this consumer, not a public immutable request another view may reuse.
+    detailRequests.read(detailKey,()=>readDelivery(ref,base).then(v=>validateEntities(v,data.release,ref,fluid,detailDimension)))
+      .then(rows=>{if(active)setDetails(old=>({...old,[detailKey]:rows}));})
+      .catch(()=>{if(active)setDetailFailure({key:detailKey,message:'No pudimos cargar los agregados.'});});
+    return()=>{active=false;};
   },[data,fluid,detailDimension,detailKey,details,detailAttempt]);
   const detailLoading=!!(data?.manifest.delivery&&detailDimension&&!details[detailKey]&&!detailError);
   const entities=(detailDimension&&details[detailKey])||data?.release.entities||[];

@@ -1,5 +1,5 @@
 import {test,expect} from './browser-fixtures';
-import {mkdirSync,writeFileSync} from 'node:fs';
+import {mkdirSync,writeFileSync,readFileSync} from 'node:fs';
 import path from 'node:path';
 const base='/vaca-muerta-pulse/';
 const evidence=process.env.EVIDENCE_DIR??path.resolve('test-results/delivery');
@@ -47,4 +47,30 @@ test('selecting an active filter does not add duplicate history entries',async({
  await page.getByRole('button',{name:'Petróleo',exact:true}).click();
  await page.getByRole('tab',{name:'Resumen',exact:true}).click();
  expect(await page.evaluate(()=>history.length)).toBe(before);
+});
+
+for(const tab of ['summary','areas'] as const)test(`active ${tab} module starts while overview is still loading`,async({page})=>{
+ const manifest=JSON.parse(readFileSync('.next/react-loadable-manifest.json','utf8'));
+ const activePath=tab==='summary'?'./dashboard-components':'./areas-dashboard';
+ const active:string[]=manifest[`app/page.tsx -> ${activePath}`].files.filter((file:string)=>file.endsWith('.js'));
+ const other:string[]=manifest['app/page.tsx -> ./operators-dashboard'].files.filter((file:string)=>file.endsWith('.js')&&!active.includes(file));
+ const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
+ let unblock!:()=>void;const gate=new Promise<void>(resolve=>{unblock=resolve;});
+ await page.route('**/data/snapshots/**/overview-*.json.gz',async route=>{await gate;await route.continue();});
+ try{
+  await page.goto(base+`?tab=${tab}`);
+  await expect.poll(()=>active.every(file=>requests.some(url=>url.endsWith('/_next/'+file)))).toBe(true);
+  expect(other.some(file=>requests.some(url=>url.endsWith('/_next/'+file)))).toBe(false);
+ }finally{unblock();}
+ await expect(page.locator(tab==='summary'?'.kpi-card--primary':'.areas-dashboard')).toBeVisible();
+});
+test('rapid tab round-trip reuses an in-flight public detail shard',async({page})=>{
+ let count=0,unblock!:()=>void;const gate=new Promise<void>(resolve=>{unblock=resolve;});
+ await page.route('**/data/snapshots/**/oil-company-*.json.gz',async route=>{count++;await gate;await route.continue();});
+ try{
+  await page.goto(base+'?tab=operators&fluid=oil');await expect.poll(()=>count).toBe(1);
+  await page.getByRole('tab',{name:'Resumen',exact:true}).click();await expect(page.locator('.kpi-card--primary')).toBeVisible();
+  await page.getByRole('tab',{name:'Operadores',exact:true}).click();
+ }finally{unblock();}
+ await expect(page.locator('.operators-dashboard')).toBeVisible();expect(count).toBe(1);
 });

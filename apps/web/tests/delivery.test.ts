@@ -6,7 +6,7 @@ import path from 'node:path';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {buildDelivery} from '../scripts/build_delivery.mjs';
-import {validateDelivery,validateEntities,validateOverview,readDelivery} from '../lib/delivery.ts';
+import {validateDelivery,validateEntities,validateOverview,readDelivery,createRequestCache} from '../lib/delivery.ts';
 import {validateManifest} from '../lib/contract.ts';
 test('derived delivery preserves complete canonical metrics and defers only entity detail',()=>{
  const directory=mkdtempSync(path.join(tmpdir(),'vm-delivery-'));
@@ -36,4 +36,15 @@ test('browser delivery rejects tampered and oversized bodies before parsing',asy
   globalThis.fetch=async()=>new Response(new Uint8Array(d.overview.bytes+1));await assert.rejects(readDelivery(d.overview,''),/Tamaño/);
   globalThis.fetch=async()=>new Response(new Uint8Array(d.overview.bytes));await assert.rejects(readDelivery(d.overview,''),/manifiesto/);
  }finally{globalThis.fetch=old;}
+});
+
+test('public shard cache shares in-flight/completed reads, isolates release keys and allows retries',async()=>{
+ const cache=createRequestCache<number>();let calls=0,complete!:(v:number)=>void;
+ const loader=()=>{calls++;return new Promise<number>(resolve=>{complete=resolve;});};
+ const first=cache.read('release-a/oil-area',loader),second=cache.read('release-a/oil-area',loader);
+ assert.equal(first,second);await Promise.resolve();assert.equal(calls,1);complete(42);assert.equal(await first,42);
+ assert.equal(await cache.read('release-a/oil-area',async()=>{throw Error('duplicate');}),42);
+ assert.equal(await cache.read('release-b/oil-area',async()=>84),84);
+ await assert.rejects(cache.read('release-a/gas-area',async()=>{throw Error('offline');}));
+ assert.equal(await cache.read('release-a/gas-area',async()=>21),21);
 });

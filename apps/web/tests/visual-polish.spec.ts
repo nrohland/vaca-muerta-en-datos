@@ -27,10 +27,11 @@ test('official area geometry supports selection and shares global filters',async
 });
 test('activity exposes meaningful comparisons and expands the full table',async({page})=>{
  await page.goto(base+'&tab=activity');await expect(page.locator('.activity-count-plot .recharts-bar')).toHaveCount(1);
- await expect(page.locator('.activity-average-plot .recharts-bar-rectangle')).toHaveCount(2);
+ await expect(page.locator('.activity-average-plot .recharts-area')).toHaveCount(1);
+ await expect(page.locator('.activity-average-current')).toHaveCount(1);
  await expect(page.locator('.activity-data .trend-positive').first()).toContainText('+');
  await page.getByRole('button',{name:'Expandir tabla',exact:true}).click();await expect(page.locator('.activity-table-scroll')).toHaveClass(/is-expanded/);
- await page.getByLabel('Mes de producción').selectOption('2023-01-01');await expect(page.locator('.activity-average-plot .recharts-bar-rectangle')).toHaveCount(1);
+ await page.getByLabel('Mes de producción').selectOption('2023-01-01');await expect(page.locator('.activity-average-current')).toHaveCount(1);
  await expect(page.locator('.activity-dashboard')).toContainText('Sin promedio válido para el mes base');
 });
 test('map and all detail views stay within a narrow English dark viewport',async({page})=>{
@@ -42,4 +43,34 @@ test('map and all detail views stay within a narrow English dark viewport',async
   await expect(page.getByRole('tabpanel')).toBeVisible();
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
  }
+});
+test('desktop explorers align panels and keep scrolling inside their rankings',async({page})=>{
+ for(const height of [704,900]){
+  await page.setViewportSize({width:1440,height});
+  for(const tab of ['operators','areas']){
+   await page.goto(base.replace('fluid=gas','fluid=oil')+'&tab='+tab);
+   const left=page.locator(tab==='operators'?'.operators-ranking':'.area-map-card');
+   const right=page.locator(tab==='operators'?'.operators-evolution':'.areas-ranking');
+   await expect(left).toBeVisible();await expect(right).toBeVisible();
+   await expect.poll(async()=>Math.abs((await left.boundingBox())!.height-(await right.boundingBox())!.height)).toBeLessThan(2);
+   const list=page.locator(tab==='operators'?'.operators-ranking-list':'.areas-ranking .ranking-list');
+   await expect.poll(()=>list.evaluate(e=>e.scrollHeight>e.clientHeight)).toBe(true);
+   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2),{message:`${tab} at 1440×${height} fits the viewport`}).toBe(true);
+  }
+ }
+});
+test('overlapping map symbols offer explicit selection and keep selected readout coherent',async({page})=>{
+ await page.setViewportSize({width:390,height:844});
+ await page.goto(base.replace('fluid=gas','fluid=oil')+'&tab=areas');
+ const loma=page.locator('.area-bubble[data-area="LCAM"]');await expect(loma).toBeVisible();
+ await loma.scrollIntoViewIfNeeded();await loma.click({force:true});
+ await expect(page.locator('.map-choice')).toBeVisible();
+ await page.locator('.map-choice').getByRole('button',{name:/^LOMA CAMPANA/}).click();
+ await expect(page).toHaveURL(/area=LCAM/);
+ await expect(page.locator('.map-readout strong')).toHaveText('LOMA CAMPANA');
+ await expect(page.locator('.areas-detail-heading h2')).toHaveText('LOMA CAMPANA');
+ await page.locator('.area-bubble[data-area="BNDS"]').focus();
+ await expect(page.locator('.map-readout strong')).toHaveText('LOMA CAMPANA');
+ await page.getByLabel('Mes de producción').selectOption('2026-07-01');
+ await expect(page.locator('.map-choice')).toHaveCount(0);
 });

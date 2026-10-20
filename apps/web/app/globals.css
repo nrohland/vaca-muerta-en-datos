@@ -2053,3 +2053,6 @@ footer .status-badge {
 @media(max-width:540px){.geo-map{height:390px}}
 .area-map-card .bubble-legend{border-top:0;border-bottom:1px solid var(--rule);padding:0 0 10px;margin:0 0 10px;min-height:72px;gap:8px}.bubble-size-key{flex-shrink:0;max-width:100%}.area-map-card .map-state-key{margin-top:4px}.area-map-card .bubble-legend>div:first-child{max-width:260px}
 @media(max-width:540px){.area-map-card .bubble-legend{gap:10px}.bubble-size-key{width:220px;height:66px}.area-map-card .map-intro{gap:8px}.area-map-card .map-readout{margin:8px 0;min-height:60px}}
+
+/* Closed disclosures must not contribute hidden table/methodology overflow. */
+details:not([open]) > :not(summary) {display:none}

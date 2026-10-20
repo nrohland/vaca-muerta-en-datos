@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Bar, CartesianGrid, Cell, ComposedChart, LabelList, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Area, Bar, CartesianGrid, Cell, ComposedChart, ReferenceLine, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import type { Entity, Row } from "../lib/contract";
 import { type Comparison, type Mode, type Prices } from "../lib/metrics";
 import { historyRanges, historyWindow, historyTicks } from "../lib/history";
@@ -21,10 +21,8 @@ export function ActivityDashboard({ rows, current, prices, mode, comparison, ran
   const points = activityPoints(rows, fluid, period, range);
   const k = activityKpis(rows, current, comparison);
   const baseRow = rows.find(r => r.fluid === fluid && r.periodo === k.basePeriod);
-  const comparisonBars = [
-    {periodo:k.basePeriod, average:averagePerProductiveWell(baseRow), current:false},
-    {periodo:period, average:k.average, current:true},
-  ];
+  const baseAverage = averagePerProductiveWell(baseRow);
+  const averageDelta = k.average==null||baseAverage==null?null:k.average-baseAverage;
   const coverage = historyWindow(rows, fluid, period, range);
   const unit = fluid === "oil" ? "bbl/pozo/d" : "m³/pozo/d";
   const translatedUnit = language === "en" ? unit.replace("pozo", "well") : unit;
@@ -71,17 +69,18 @@ export function ActivityDashboard({ rows, current, prices, mode, comparison, ran
         <div className="activity-plot" aria-hidden="true"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={points} margin={{top: 20, right: 12, left: 0, bottom: 12}} accessibilityLayer={false}><XAxis dataKey="periodo" tickFormatter={historyMonth} ticks={historyTicks(points.map(p => p.periodo), coverage.requested)} tick={{fontSize: 10, fill: "var(--muted)"}} tickLine={false} axisLine={false} minTickGap={28}/><YAxis width={52} tickFormatter={v=>signed(v)} allowDecimals={false} tick={{fontSize: 10, fill: "var(--muted)"}} tickLine={false} axisLine={false} domain={([min,max]: readonly [number, number]) => [Math.min(0,min), Math.max(0,max)]}/><CartesianGrid vertical={false} stroke="var(--rule)"/><ReferenceLine y={0} stroke="var(--muted)"/><Tooltip content={tooltip("delta")} isAnimationActive={false}/><Bar dataKey={comparison} isAnimationActive={false}>{points.map(p => <Cell key={p.periodo} fill={p[comparison] == null || p[comparison] === 0 ? "var(--muted)" : p[comparison]! < 0 ? "var(--negative)" : "var(--positive)"}/>)}</Bar></ComposedChart></ResponsiveContainer></div>
         <p className="chart-context">{text("Un cambio neto puede combinar entradas, salidas o reactivaciones. Los agregados disponibles no permiten separarlas.", "Net change may combine entries, exits or reactivations. Available aggregates cannot separate these events.")}</p>
       </ChartCard>
-      <ChartCard title={text("Producción media por pozo", "Average production per well")} subtitle={`${month(k.basePeriod)} → ${month(period)} · ${translatedUnit}`}>
-        <div className="activity-plot activity-average-plot" aria-hidden="true"><ResponsiveContainer width="100%" height="100%"><ComposedChart layout="vertical" data={comparisonBars} margin={{top:20,right:66,left:0,bottom:12}} accessibilityLayer={false}>
-          <CartesianGrid horizontal={false} stroke="var(--rule)"/>
-          <XAxis type="number" domain={[0,"auto"]} tickFormatter={v=>number(v,0)} tick={{fontSize:11,fill:"var(--muted)"}} axisLine={false} tickLine={false}/>
-          <YAxis type="category" dataKey="periodo" tickFormatter={historyMonth} width={88} tick={{fontSize:11,fill:"var(--muted)"}} axisLine={false} tickLine={false}/>
-          <Tooltip isAnimationActive={false} content={({active,payload})=>!active||!payload?.length?null:<div className="chart-tooltip compact-chart-tooltip"><strong>{month(payload[0].payload.periodo)}</strong><p>{number(payload[0].payload.average,2)} {translatedUnit}</p></div>}/>
-          <Bar dataKey="average" barSize={32} isAnimationActive={false}>{comparisonBars.map(p=><Cell key={p.periodo} fill={p.current?"var(--accent)":"var(--muted)"}/>)}<LabelList dataKey="average" position="right" formatter={(v:any)=>v==null?"—":number(Number(v),2)} fill="var(--ink)" fontSize={12}/></Bar>
+      <ChartCard title={text("Producción media por pozo", "Average production per well")} subtitle={`${text("Evolución mensual", "Monthly history")} · ${translatedUnit}`}>
+        <div className="activity-average-comparison"><span>{historyMonth(k.basePeriod)} <strong>{number(baseAverage,2)}</strong></span><span aria-hidden="true">→</span><span>{historyMonth(period)} <strong>{number(k.average,2)}</strong></span><span className={trendClass(averageDelta)}>{averageDelta==null?"—":`${averageDelta>0?"+":averageDelta<0?"−":""}${number(Math.abs(averageDelta),2)} ${translatedUnit}`}</span><Change value={k.averagePct}/></div>
+        <div className="activity-plot activity-average-plot" aria-hidden="true"><ResponsiveContainer width="100%" height="100%"><ComposedChart data={points} margin={{top:16,right:18,left:0,bottom:12}} accessibilityLayer={false}>
+          <CartesianGrid vertical={false} stroke="var(--rule)"/>
+          <XAxis dataKey="periodo" ticks={historyTicks(points.map(p=>p.periodo),coverage.requested)} tickFormatter={historyMonth} minTickGap={28} tick={{fontSize:10,fill:"var(--muted)"}} axisLine={false} tickLine={false}/>
+          <YAxis width={58} domain={[0,"auto"]} tickFormatter={v=>number(v,0)} tick={{fontSize:11,fill:"var(--muted)"}} axisLine={false} tickLine={false}/>
+          {baseAverage != null && <ReferenceLine y={baseAverage} stroke="var(--muted)" strokeDasharray="5 4"/>}
+          <Tooltip isAnimationActive={false} content={tooltip("average")}/>
+          <Area type="linear" dataKey="average" stroke="var(--accent)" strokeWidth={2.4} fill="var(--product-secondary)" fillOpacity={.2} connectNulls={false} isAnimationActive={false} activeDot={{r:4}} dot={(props:any)=>props.payload?.periodo===period&&props.payload?.average!=null?<circle key={props.key} className="activity-average-current" cx={props.cx} cy={props.cy} r={4} fill="var(--accent)" stroke="var(--surface)" strokeWidth={2}/>:<g key={props.key}/>}/>
         </ComposedChart></ResponsiveContainer></div>
-        <p className="activity-average-change">{changeLabel} · <Change value={k.averagePct}/></p>
-        {comparisonBars[0].average == null && <p className="chart-context">{text("Sin promedio válido para el mes base; no se representa como cero.","No valid average for the comparison month; it is not shown as zero.")}</p>}
-        <p className="chart-context">{text("El promedio cambia con la composición del conjunto. No mide tiempo efectivo de operación, eficiencia ni rendimiento de pozos comparables.", "The average changes with population composition. It does not measure effective operating time, efficiency or performance of comparable wells.")}</p>
+        {baseAverage == null ? <p className="chart-context">{text("Sin promedio válido para el mes base; no se representa como cero.","No valid average for the comparison month; it is not shown as zero.")}</p>:<p className="chart-context">{text("Línea de referencia", "Reference line")}: {month(k.basePeriod)} · {number(baseAverage,2)} {translatedUnit}.</p>}
+        <details className="activity-average-method"><summary>{text("Cómo interpretar este promedio", "How to interpret this average")}</summary><p className="chart-context">{methods[2]}</p></details>
       </ChartCard>
     </div>
     <ChartCard title={text("Datos de actividad", "Activity data")} subtitle={`${coverage.available} ${text("meses disponibles", "available months")} · ${coverage.start ? historyMonth(coverage.start) : "—"} – ${historyMonth(period)}`} className="activity-data" action={<button className="activity-download" onClick={download}>{text("Descargar CSV", "Download CSV")}</button>}>

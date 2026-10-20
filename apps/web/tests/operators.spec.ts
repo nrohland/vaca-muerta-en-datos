@@ -47,6 +47,10 @@ test('operators remain accessible and fit mobile without document overflow',asyn
  await page.goto(base);
  await expect(page.locator('.operators-ranking-list > li').first()).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollHeight<=Math.max(innerHeight,document.body.scrollHeight)+2)).toBe(true);
+ const listBox=(await page.locator('.operators-ranking-list').boundingBox())!;
+ const noteBox=(await page.locator('.operators-ranking > .chart-context').boundingBox())!;
+ expect(noteBox.y).toBeGreaterThanOrEqual(listBox.y+listBox.height);
  const overview=await new AxeBuilder({page}).include('.operators-dashboard').analyze();
  expect(overview.violations.filter(v=>['critical','serious'].includes(v.impact??''))).toEqual([]);
  await page.locator('.operators-ranking-list button').first().click();

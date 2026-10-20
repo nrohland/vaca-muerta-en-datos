@@ -107,12 +107,13 @@ export function AreaMap({entries,selected,onSelect,unit,period}:{entries:ReturnT
       {maximum>0&&<svg className="bubble-size-key" width="220" height="66" role="img" aria-label={[maximum,maximum/4,maximum/16].map(valueText).join('; ')}>{[maximum,maximum/4,maximum/16].map(value=>{const radius=bubbleRadius(value,maximum),top=60-radius*2;return <g key={value}><circle cx="30" cy={60-radius} r={radius} fill="none" stroke={unit==='USD'?'var(--value-line)':'var(--accent)'} strokeWidth="1.3"/><line x1="30" x2="76" y1={top} y2={top} stroke="var(--muted)" strokeWidth=".7"/><text x="82" y={top+4} fill="var(--muted)" fontSize="11">{valueText(value)}</text></g>;})}</svg>}
       <div className="map-state-key"><span><i className="zero"/>{l('Cero','Zero')}</span><span><i className="missing"/>{l('Sin dato','No data')}</span></div>
     </div></details>
+  {!ready&&!failed&&<p role="status" className="map-load-status">{l('Cargando mapa…','Loading map…')}</p>}
+  {failed&&<p role="status" className="map-load-status">{l('El mapa no pudo iniciarse. Usá el ranking para explorar todas las áreas.','The map could not start. Use the ranking to explore every area.')}</p>}
+  {baseFailed&&<p className="map-load-status">{l('Fondo geográfico no disponible; se conservan las concesiones y los datos.','Geographic background unavailable; concessions and data remain available.')}</p>}
     {choices.length>0&&<div className="map-choice" role="group" aria-label={l('Áreas superpuestas','Overlapping concessions')}><div><strong>{l('¿Qué concesión querés explorar?','Which concession would you like to explore?')}</strong><button onClick={()=>setChoices([])} aria-label={l('Cerrar selección de áreas','Close concession picker')}>×</button></div><ul>{choices.map(id=>{const entry=lookup.get(id);return <li key={id}><button onClick={()=>{setChoices([]);setActive('');onSelect(id);}}>{entry?.entity.entity_name??id}<span>{valueText(mapValue(entry))}</span></button></li>;})}</ul></div>}
   </div>
   <div className="map-readout" aria-live="polite"><div><strong>{hover?.entity.entity_name??l('Seleccioná una concesión','Select a concession')}</strong><span>{hover?`${valueText(mapValue(hover))} · ${month(period)}`:l('Círculos proporcionales · límites de referencia','Proportional circles · reference boundaries')}</span></div>{hover&&<button className="text-action" onClick={seeDetail}>{l('Ver evolución','View history')} ↗</button>}</div>
-  {!ready&&!failed&&<p role="status" className="chart-context">{l('Cargando mapa…','Loading map…')}</p>}
-  {failed&&<p role="status" className="chart-context">{l('El mapa no pudo iniciarse. Usá el ranking para explorar todas las áreas.','The map could not start. Use the ranking to explore every area.')}</p>}
-  {baseFailed&&<p className="chart-context">{l('Fondo geográfico no disponible; se conservan las concesiones y los datos.','Geographic background unavailable; concessions and data remain available.')}</p>}
+
 
   {selected&&!ids.has(selected)&&<p role="status" className="chart-context">{l('El área seleccionada no tiene geometría verificada; sus indicadores siguen disponibles.','The selected area has no verified geometry; its metrics remain available.')}</p>}
 

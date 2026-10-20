@@ -1,8 +1,8 @@
 # Pipeline candidato — Vaca Muerta en Datos
 
-Python → BigQuery raw aislado → dbt histórico → snapshot agregado → contrato frontend → build Next.js. El mismo CLI se usa localmente y desde GitHub Actions. El workflow fue verificado en GitHub; el calendario conserva **DATA_PIPELINE_ENABLED=false**: no se activó cron, publicó ni desplegó. WIF sigue restringido a main, workflow y ambientes autorizados, con identidades separadas de extracción y transformación.
+Python → BigQuery raw aislado → dbt histórico → snapshot agregado → contrato frontend → build Next.js. El mismo CLI se usa localmente y desde GitHub Actions. El workflow fue verificado en GitHub; el calendario conserva **DATA_PIPELINE_ENABLED=false** y el monitor **SOURCE_MONITOR_ENABLED=false** por conectividad con la fuente. La demo pública en Vercel se despliega por separado y sirve el snapshot incluido en Git. WIF sigue restringido a main, workflow y ambientes autorizados, con identidades separadas de extracción y transformación.
 
-La extracción activa usa **Python**, cuatro CSV oficiales de Capítulo IV (2023–2026) y HTML oficial EIA para Brent/Henry Hub. El corte aceptado es fijo: enero 2023–agosto 2026; septiembre parcial se excluye. No hay descubrimiento ni aceptación automática de meses nuevos.
+La extracción implementada usa **Python**, cuatro CSV oficiales de Capítulo IV (2023–2026) y HTML oficial EIA para Brent/Henry Hub. El corte aceptado es fijo: enero 2023–agosto 2026; septiembre parcial se excluye. No hay descubrimiento ni aceptación automática de meses nuevos.
 
 ## Recorrido
 
@@ -26,7 +26,7 @@ WIF usa el archivo ADC externo de la acción oficial, nunca una key. Se instalan
 
 La carga y los modelos históricos tienen evidencia real previa; la integración del export se registra en [evidencia de orquestación/export](../docs/evidence/orchestration-export/README.md). El snapshot revisado y las capturas están en [integración frontend](../docs/evidence/snapshot-integration/README.md). El árbol conserva la evidencia vigente y la auditoría histórica relevante; las iteraciones superadas permanecen en Git.
 
-[Recorrido real en GitHub con WIF aprobado](../docs/evidence/github-actions/README.md), desde descarga hasta build del consumidor. La detección de nuevos meses y rectificativas tiene [monitor independiente](MONITOR.md). Pendiente: operación/promoción pública. Cron preparado día 5 a las 03:00 Argentina, desactivado. El workflow no sube raw, HTML, perfiles, credenciales, manifest dbt completo, dashboard ni build a artifacts; no publica GitHub Pages ni hace commits/push. Cambios nuevos de volumen/clasificación/área bloquean hasta contar con revisión explícita; no se aceptan automáticamente por actualizar hashes.
+[Recorrido real en GitHub con WIF aprobado](../docs/evidence/github-actions/README.md), desde descarga hasta build del consumidor. La detección de nuevos meses y rectificativas tiene [monitor independiente](MONITOR.md). La promoción de nuevos datos sigue requiriendo revisión; no hay ingesta automática operativa. Cron preparado día 5 a las 03:00 Argentina, desactivado. El workflow no sube raw, HTML, perfiles, credenciales, manifest dbt completo, dashboard ni build a artifacts; no publica GitHub Pages ni hace commits/push. Cambios nuevos de volumen/clasificación/área bloquean hasta contar con revisión explícita; no se aceptan automáticamente por actualizar hashes.
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
 

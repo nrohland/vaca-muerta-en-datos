@@ -17,7 +17,7 @@ Pensado para analistas, equipos de energía y periodistas. Como portfolio, muest
 | Resumen | ¿Cuál es el nivel actual y qué cambió? KPIs, evolución y concentración. |
 | Producción | ¿Cómo evoluciona cada fluido? Comparación entre años, cambio absoluto, acumulados y tabla descargable. |
 | Operadores | ¿Quién produce y cómo cambia su participación? Ranking completo, búsqueda y evolución por operador. |
-| Áreas | ¿Dónde se concentra la producción? Mapa de referencia de Neuquén, ranking y evolución por permiso o concesión. |
+| Áreas | ¿Dónde se concentra la producción? Mapa con círculos proporcionales sobre concesiones de referencia, ranking y evolución por área. |
 | Actividad | ¿Cuántos pozos tienen producción y cómo cambia el promedio por pozo? Historia, cambio neto y tasa por día calendario. |
 
 Las cinco vistas comparten componentes, filtros y contexto persistente: petróleo/gas, período, volumen/valor USD, comparación mensual/interanual, ES/EN, light/dark y enlaces a detalles. Petróleo azul, gas violeta, dinero ámbar y variaciones verde/rojo conservan su significado en todo el dashboard. [Capturas desktop y mobile](docs/screenshots/README.md).
@@ -41,11 +41,14 @@ Actividad muestra producción media por pozo y día calendario, no productividad
 flowchart LR
   SE["CSV oficiales · Capítulo IV"] --> PY["Python · extracción y contratos"]
   EIA["EIA · Brent y Henry Hub"] --> PY
-  PY --> RAW["BigQuery · raw candidato aislado"]
+  PY --> PQ["Parquet tipado · producción histórica"]
+  PQ --> RAW["BigQuery · raw candidato aislado"]
+  PY -->|Precios| RAW
   RAW --> DBT["dbt · staging / intermediate / marts"]
   DBT --> QA["Tests · freshness · conciliación"]
   QA --> JSON["Snapshot agregado + manifiestos SHA-256"]
-  JSON --> UI["Next.js / React / Recharts"]
+  JSON --> UI["Next.js / React / Recharts / MapLibre"]
+  UI --> HOST["Vercel · sitio estático"]
 ```
 
 | Capa | Elección | Motivo |
@@ -54,7 +57,7 @@ flowchart LR
 | Warehouse | BigQuery | Consultas analíticas sin administrar servidores, aislamiento de permisos y medición de bytes. Raw particionado por ingesta; marts con clustering para conservar historia en el sandbox. |
 | Modelado | dbt Core + SQL | Granos y unidades únicos, linaje, tests y conciliación. Intermediate se usa para reglas reutilizadas; staging puede alimentar directamente un mart. |
 | Entrega | JSON agregado por vista y manifiestos | El browser carga Resumen y descarga detalles por fluido/dimensión cuando los necesita, con hashes y límites de tamaño. Construcción y promoción se separan. |
-| Aplicación | Next.js 16, React 19, TypeScript 7, Recharts 3 | Componentes tipados, navegación persistente, export estático y semántica visual compartida. |
+| Aplicación | Next.js 16, React 19, TypeScript 7, Recharts 3 y MapLibre 6 | Componentes tipados, navegación persistente, export estático, mapas navegables y semántica visual compartida. |
 | Automatización | CLI Python + GitHub Actions con WIF | Mismos controles localmente y en runner, identidades por etapa y sin claves permanentes. |
 | Calidad | dbt tests, audit_helper, dbt_project_evaluator, Python, Node y Playwright | Validar datos, arquitectura, contratos y UI; rendimiento medido con tiempos, bytes y slot-ms reales. |
 
@@ -72,9 +75,9 @@ El [CLI compartido](pipeline/CLI.md) prepara fuentes públicas, carga tablas can
 
 La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, con **`DATA_PIPELINE_ENABLED=false`**. No se presupone que la fuente publique ese día. Frescura operativa máxima de siete días; el warning dbt desde cinco días también detiene el pipeline. Se distinguen recuperación, ingesta, mes de negocio y cobertura: descargar hoy no vuelve completo el último mes.
 
-La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
+La validación histórica documentó nueve etapas, **106/106 nodos dbt aprobados, sin warnings, errores ni skips**, 59 tests frontend y 10.296 agregados conciliados. Es evidencia de esa ejecución, no un contador de pruebas de la versión actual. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en la validación histórica de [GitHub Actions](docs/evidence/github-actions/README.md). La demo está publicada en Vercel y conserva el snapshot preliminar. La extracción y el monitor automático permanecen pausados por problemas de conectividad de los runners con Energía; publicar el frontend no reanuda la ingesta. Playwright corre en CI. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas cuando puede acceder a la fuente; sus avisos no certifican cierre oficial. [Configuración y operación del sitio](docs/vercel.md).
+**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en la validación histórica de [GitHub Actions](docs/evidence/github-actions/README.md). La demo está publicada en Vercel y conserva el snapshot preliminar. La extracción y el monitor automático permanecen pausados por problemas de conectividad de los runners con Energía; publicar el frontend no reanuda la ingesta. Playwright corre en CI. El [monitor de fuentes](pipeline/MONITOR.md), actualmente pausado, está preparado para detectar nuevos meses y rectificativas; sus avisos no certifican cierre oficial. [Configuración y operación del sitio](docs/vercel.md).
 
 ## Ejecutar la aplicación
 
@@ -113,6 +116,10 @@ Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muer
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
 
-El monitor de disponibilidad y rectificativas es independiente: revisiones diarias, histórico completo semanal y avisos deduplicados mediante Issues asignadas al propietario. `SOURCE_MONITOR_ENABLED` controla este calendario sin activar las cargas de `DATA_PIPELINE_ENABLED`. [Criterios, fallos y operación](pipeline/MONITOR.md).
+El monitor de disponibilidad y rectificativas es independiente y está pausado (`SOURCE_MONITOR_ENABLED=false`). Su calendario previsto contempla revisiones diarias, histórico completo semanal y avisos deduplicados mediante Issues asignadas al propietario. `SOURCE_MONITOR_ENABLED` controla este calendario sin activar las cargas de `DATA_PIPELINE_ENABLED`. [Criterios, fallos y operación](pipeline/MONITOR.md).
 
 La [iteración de rendimiento](specs/021-performance-optimization.md) incorpora Parquet en la ingesta histórica, cuatro threads en el CLI dbt, staging candidato materializado, preflight de recursos sin facturación, presupuestos de bytes y entrega de datos por vista. Los cambios mantienen el snapshot canónico y los cálculos. El preflight no modifica IAM ni habilita facturación.
+
+## Alcance de esta versión
+
+V1 permite explorar datos públicos agregados; no consulta BigQuery desde el navegador ni expone credenciales del pipeline. No incluye un chat de datos: esa integración está planificada para una etapa posterior. La demo es preliminar y no ofrece actualización automática mientras la extracción y el monitor permanezcan pausados.

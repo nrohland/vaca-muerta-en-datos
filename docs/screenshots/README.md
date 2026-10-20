@@ -1,6 +1,8 @@
 # Capturas de V1
 
-Snapshot histórico revisado: enero 2023–agosto 2026. Desktop ES/claro y mobile EN/oscuro, las cinco vistas. Capturas de la revisión real del consumidor; no prueban ejecución automatizada de Playwright. [Alcance y límites](../evidence/snapshot-integration/README.md).
+Snapshot preliminar: enero 2023–agosto 2026. Las cinco capturas desktop y las de Operadores, Áreas y Actividad mobile corresponden a la demo pública revisada el **20 de octubre de 2026**, commit `cb62ef645d6ffeac4943afa65c5b267203d7f090`. Las capturas mobile de Resumen y Producción pertenecen a la revisión histórica anterior y se conservan como referencia; no representan evidencia visual de este commit.
+
+Son capturas reales, no mockups. No prueban por sí solas ejecución automatizada de Playwright. El snapshot conserva su corte aunque cambie la fecha del despliegue. [Validación histórica del consumidor](../evidence/snapshot-integration/README.md) · [Demo pública](https://vaca-muerta-en-datos.vercel.app).
 
 ## Resumen
 
@@ -8,7 +10,7 @@ Snapshot histórico revisado: enero 2023–agosto 2026. Desktop ES/claro y mobil
 
 ![resumen mobile](resumen-mobile.jpg)
 
-## Produccion
+## Producción
 
 ![produccion desktop](produccion.jpg)
 
@@ -20,7 +22,7 @@ Snapshot histórico revisado: enero 2023–agosto 2026. Desktop ES/claro y mobil
 
 ![operadores mobile](operadores-mobile.jpg)
 
-## Areas
+## Áreas
 
 ![areas desktop](areas.jpg)
 

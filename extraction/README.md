@@ -1,6 +1,6 @@
 # Extracción — Vaca Muerta en Datos
 
-La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV (2023–2026) y referencias mensuales EIA. Los contratos, hashes y controles preceden cualquier carga. No requiere Meltano/Singer.
+La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV (2023–2026) y referencias mensuales EIA. Los contratos, hashes y controles preceden cualquier carga. La ingesta histórica convierte CSV a Parquet tipado antes de cargar BigQuery.
 
 ## Componentes
 
@@ -11,9 +11,11 @@ La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV
 - `scripts/check_raw_snapshot.py`: verificación de raw para la ruta de un año.
 - `../scripts/prepare_reference_prices.py` y `load_reference_prices.py`: preparación/carga de Brent y Henry Hub.
 
-CSV es el formato publicado por la fuente; NDJSON es el formato transitorio de carga, fuera de Git. El consumidor usa JSON agregado, no raw. No se incorporó Parquet a esta versión.
+CSV es el formato publicado por la fuente. La ruta histórica vigente carga Parquet Zstandard; el helper monoanual conserva NDJSON y las referencias de precio mantienen su contrato de carga pequeño. Los payloads de ingesta quedan fuera de Git. El consumidor recibe JSON agregado, nunca raw.
 
 ## Operación
+
+La ejecución automática está pausada por conectividad de los runners con Energía. Los comandos siguientes describen la implementación disponible; no implican que la fuente se haya descargado hoy.
 
 Usar el [CLI compartido](../pipeline/CLI.md), que coordina ambas fuentes. `prepare` no necesita identidad cloud; `load` requiere ADC/WIF y escribe sólo en el proyecto/dataset candidato autorizado. Los helpers rechazan destinos compartidos antes de crear el cliente BigQuery. Cargas atómicas por tabla, sin transacción conjunta producción/precios.
 
@@ -27,4 +29,4 @@ Dependencias cloud: `transform/requirements.txt`. Nunca guardar credenciales o d
 
 ## Formato histórico
 
-El workflow activo histórico usa CSV → Parquet Zstandard directamente, en lotes de 32.768 filas y con esquema explícito. Dependencias: `pip install -r extraction/requirements.txt`. Fuente CSV y payload Parquet llevan hashes independientes. El helper monoanual anterior conserva su contrato NDJSON; los precios pequeños conservan el suyo. [Contrato de rendimiento](../specs/021-performance-optimization.md).
+El workflow histórico implementado usa CSV → Parquet Zstandard directamente, en lotes de 32.768 filas y con esquema explícito. Dependencias: `pip install -r extraction/requirements.txt`. Fuente CSV y payload Parquet llevan hashes independientes. El helper monoanual anterior conserva su contrato NDJSON; los precios pequeños conservan el suyo. [Contrato de rendimiento](../specs/021-performance-optimization.md).

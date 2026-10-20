@@ -6,11 +6,12 @@ import { validatePrices, estimationNote, type Prices } from "../lib/metrics";
 import dynamic from 'next/dynamic';
 import {readDelivery,validateOverview,validateEntities,shardKey} from '../lib/delivery';
 import type {Entity} from '../lib/contract';
-const OperatorsDashboard=dynamic(()=>import('./operators-dashboard').then(m=>m.OperatorsDashboard));
-const AreasDashboard=dynamic(()=>import('./areas-dashboard').then(m=>m.AreasDashboard));
-const ActivityDashboard=dynamic(()=>import('./activity-dashboard').then(m=>m.ActivityDashboard));
-const ProductionDashboard=dynamic(()=>import('./production-dashboard').then(m=>m.ProductionDashboard));
-import { SummaryDashboard, GlobalFilters } from "./dashboard-components";
+const OperatorsDashboard=dynamic(()=>import('./operators-dashboard').then(m=>m.OperatorsDashboard), {loading: TabLoading});
+const AreasDashboard=dynamic(()=>import('./areas-dashboard').then(m=>m.AreasDashboard), {loading: TabLoading});
+const ActivityDashboard=dynamic(()=>import('./activity-dashboard').then(m=>m.ActivityDashboard), {loading: TabLoading});
+const ProductionDashboard=dynamic(()=>import('./production-dashboard').then(m=>m.ProductionDashboard), {loading: TabLoading});
+import { GlobalFilters } from "./global-filters";
+const SummaryDashboard=dynamic(()=>import("./dashboard-components").then(m=>m.SummaryDashboard), {loading: TabLoading});
 import {
   tabs,
   readSelection,
@@ -27,7 +28,7 @@ import {
   type Manifest,
   type Approval,
 } from "../lib/contract";
-import { LocaleProvider } from "../lib/locale";
+import { LocaleProvider, useLocale } from "../lib/locale";
 import {
   formatters,
   readLanguage,
@@ -47,6 +48,10 @@ const initial: Selection = {
   area: "",
   range: defaultHistoryRange,
 };
+function TabLoading() {
+  const {t}=useLocale();
+  return <div className="state" role="status">{t("Cargando agregados oficiales y verificando integridad…")}</div>;
+}
 export default function Page() {
   const [language, setLanguage] = useState<Language>("es");
   const { t, month, date } = formatters(language);
@@ -78,6 +83,7 @@ export default function Page() {
     [error, setError] = useState(""),
     [loading, setLoading] = useState(true),
     [attempt, setAttempt] = useState(0),
+    [detailAttempt, setDetailAttempt] = useState(0),
     [selection, setSelection] = useState<Selection>(initial),
     [dark, setDark] = useState(false),
     [prices, setPrices] = useState<Prices | null>(null),
@@ -89,11 +95,13 @@ export default function Page() {
   }
   function update(patch: Partial<Selection>) {
     // URL updates are synchronous: rapid filter changes retain the latest context.
-    const next = { ...readUrl(), ...patch };
+    const previous=readUrl();
+    const next = { ...previous, ...patch };
     if (patch.tab) {
       if (patch.tab !== "operators") next.operator = "";
       if (patch.tab !== "areas") next.area = "";
     }
+    if(Object.entries(next).every(([key,value])=>value===previous[key as keyof Selection]))return;
     const url = new URL(window.location.href);
     for (const [k, v] of Object.entries(next)) {
       if (v || k === "range") url.searchParams.set(k, String(v));
@@ -118,18 +126,18 @@ export default function Page() {
     setError("");
     (async () => {
       try {
-        priceDownload.current=Promise.all([fetch(`${base}/data/prices.json`),fetch(`${base}/data/valuation-manifest.json`)]).catch(()=>null);
-        const mr = await fetch(`${base}/data/manifest.json`);
+        priceDownload.current=Promise.all([fetch(`${base}/data/prices.json`,{cache:"no-cache"}),fetch(`${base}/data/valuation-manifest.json`,{cache:"no-cache"})]).catch(()=>null);
+        const mr = await fetch(`${base}/data/manifest.json`,{cache:"no-cache"});
         if (!mr.ok) throw Error("No pudimos cargar los agregados.");
         const manifestBytes=await mr.arrayBuffer();
         const manifest=validateManifest(JSON.parse(new TextDecoder().decode(manifestBytes)));
         // Request approval alongside the overview, while retaining exact manifest binding.
-        const approvalRequest=fetch(`${base}/data/approval.json`).catch(()=>null);
+        const approvalRequest=fetch(`${base}/data/approval.json`,{cache:"no-cache"}).catch(()=>null);
         let release:Release;
         if(manifest.delivery){
           release=validateOverview(await readDelivery(manifest.delivery.overview,base),manifest,manifest.delivery);
         }else{
-          const dr=await fetch(`${base}/data/release.json`);if(!dr.ok)throw Error('No pudimos cargar los agregados.');
+          const dr=await fetch(`${base}/data/release.json`,{cache:"no-cache"});if(!dr.ok)throw Error('No pudimos cargar los agregados.');
           const bytes=await dr.arrayBuffer();if(await sha256(bytes)!==manifest.data_sha256)throw Error('La versión no coincide con su manifiesto.');
           release=validateRelease(JSON.parse(new TextDecoder().decode(bytes)));validatePair(release,manifest);
         }
@@ -222,7 +230,7 @@ export default function Page() {
       .then(rows=>{if(!controller.signal.aborted)setDetails(old=>({...old,[detailKey]:rows}));})
       .catch(()=>{if(!controller.signal.aborted)setDetailFailure({key:detailKey,message:'No pudimos cargar los agregados.'});});
     return()=>controller.abort();
-  },[data,fluid,detailDimension,detailKey,details,attempt]);
+  },[data,fluid,detailDimension,detailKey,details,detailAttempt]);
   const detailLoading=!!(data?.manifest.delivery&&detailDimension&&!details[detailKey]&&!detailError);
   const entities=(detailDimension&&details[detailKey])||data?.release.entities||[];
   function keyboardTab(
@@ -356,7 +364,7 @@ export default function Page() {
               </button>
             </div>
           ) : detailError && detailDimension ? (
-            <div className="state" role="alert"><p>{t(detailError)}</p><button onClick={()=>{setDetailFailure({key:detailKey,message:''});setAttempt(n=>n+1);}}>{t('Reintentar')}</button></div>
+            <div className="state" role="alert"><p>{t(detailError)}</p><button onClick={()=>{setDetailFailure({key:detailKey,message:''});setDetailAttempt(n=>n+1);}}>{t('Reintentar')}</button></div>
           ) : detailLoading ? (
             <div className="state" role="status">{t('Cargando agregados oficiales y verificando integridad…')}</div>
           ) : !current ? (

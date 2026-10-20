@@ -48,7 +48,6 @@ import {
   defaultHistoryRange,
 } from "../lib/history";
 import { chartVisibility } from "../lib/chart-visibility";
-import { MeasurementIcon } from "./icons";
 function Comparisons({
   metric: m,
   period,
@@ -270,86 +269,7 @@ function ModuleCard({
 export function ChartCard(props: Parameters<typeof ModuleCard>[0]) {
   return <ModuleCard {...props} />;
 }
-export function GlobalFilters({
-  fluid,
-  period,
-  periods,
-  mode,
-  comparison,
-  onFluid,
-  onPeriod,
-  onMode,
-  onComparison,
-}: {
-  fluid: Fluid;
-  period: string;
-  periods: string[];
-  mode: Mode;
-  comparison: Comparison;
-  onFluid: (f: Fluid) => void;
-  onPeriod: (p: string) => void;
-  onMode: (m: Mode) => void;
-  onComparison: (c: Comparison) => void;
-}) {
-  const { t, month } = useLocale();
-  return (
-    <div className="global-filters">
-      <fieldset className="fluid-control">
-        <legend className="sr-only">{t("Fluido")}</legend>
-        {(["oil", "gas"] as Fluid[]).map((f) => (
-          <button key={f} aria-pressed={fluid === f} onClick={() => onFluid(f)}>
-            {t(f === "oil" ? "Petróleo" : "Gas")}
-          </button>
-        ))}
-      </fieldset>
-      <label className="period-selector">
-        <span className="sr-only">{t("Período")}</span>
-        <select
-          aria-label={t("Mes de producción")}
-          value={period}
-          disabled={!periods.length}
-          onChange={(e) => onPeriod(e.target.value)}
-        >
-          {periods
-            .slice()
-            .reverse()
-            .map((p) => (
-              <option key={p} value={p}>
-                {month(p)}
-              </option>
-            ))}
-        </select>
-      </label>
-      <fieldset className="fluid-control mode-control">
-        <legend className="sr-only">{t("Unidad de análisis")}</legend>
-        {(["volume", "value"] as Mode[]).map((m) => (
-          <button key={m} aria-pressed={mode === m} onClick={() => onMode(m)}>
-            {m === "volume" ? (
-              <MeasurementIcon />
-            ) : (
-              <span className="currency-symbol" aria-hidden="true">
-                $
-              </span>
-            )}
-            {t(m === "volume" ? "Volumen" : "Valor USD")}
-          </button>
-        ))}
-      </fieldset>
-      <fieldset className="fluid-control comparison-control">
-        <legend className="sr-only">{t("Comparación temporal")}</legend>
-        {(["mom", "yoy"] as Comparison[]).map((c) => (
-          <button
-            key={c}
-            aria-pressed={comparison === c}
-            onClick={() => onComparison(c)}
-          >
-            {t(c === "mom" ? "Mensual" : "Interanual")}
-          </button>
-        ))}
-      </fieldset>
-    </div>
-  );
-}
+export { GlobalFilters } from './global-filters';
 export const gasReferenceMethod = "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.";
 // Methodology belongs to the relevant KPI disclosure, not a banner above all views.
 export function ReferenceValuationNote(_props: {fluid: Fluid; prices: Prices | null}) { return null; }
@@ -754,6 +674,7 @@ export function OperatorLogo({ id }: { id: string }) {
           width={36}
           height={36}
           decoding="async"
+          loading="lazy"
           onError={() => setFailed(true)}
         />
       ) : (

@@ -336,8 +336,28 @@ Object.assign(translations, {
   "Acumulado enero–mes vs. año anterior.": "Year-to-date total versus last year.",
   "Mayor mes dentro del histórico disponible.": "Largest month in the available history.",
 });
+// Only two locales and a small fixed set of precision/date options are used by the UI.
+// Reuse ICU formatters across rows and renders instead of constructing one per cell.
+const formatterCache = new Map<Language, ReturnType<typeof createFormatters>>();
 export function formatters(language: Language) {
+  let value=formatterCache.get(language);
+  if(!value){value=createFormatters(language);formatterCache.set(language,value);}
+  return value;
+}
+function createFormatters(language: Language) {
   const locale = locales[language];
+  const numberFormats=new Map<string,Intl.NumberFormat>();
+  function numericFormat(decimals:number,minimum:number){
+    const key=`${decimals}/${minimum}`;
+    let formatter=numberFormats.get(key);
+    if(!formatter){formatter=new Intl.NumberFormat(locale,{maximumFractionDigits:decimals,minimumFractionDigits:minimum});numberFormats.set(key,formatter);}
+    return formatter;
+  }
+  const historyFormat=new Intl.DateTimeFormat(locale,{month:"short",year:"numeric",timeZone:"UTC"});
+  const monthFormat=new Intl.DateTimeFormat(locale,{month:"long",year:"numeric",timeZone:"UTC"});
+  const shortMonthFormat=new Intl.DateTimeFormat(locale,{month:"short",timeZone:"UTC"});
+  const dateFormat=new Intl.DateTimeFormat(locale,{dateStyle:"medium",timeZone:"UTC"});
+  const timestampFormat=new Intl.DateTimeFormat(locale,{dateStyle:"medium",timeStyle:"short",timeZone:"UTC"});
   const t = (key: string, vars: Record<string, string | number> = {}) =>
     (language === "en" ? (translations[key] ?? key) : key).replace(
       /\{(\w+)\}/g,
@@ -350,11 +370,8 @@ export function formatters(language: Language) {
   ) =>
     value == null
       ? t("No disponible")
-      : new Intl.NumberFormat(locale, {
-          maximumFractionDigits: decimals,
-          minimumFractionDigits: minimum,
-        }).format(value);
-  const historyMonth = (period: string) => new Intl.DateTimeFormat(locale, {month: "short", year: "numeric", timeZone: "UTC"}).format(new Date(`${period}T00:00:00Z`)).replace(/\./g, "");
+      : numericFormat(decimals,minimum).format(value);
+  const historyMonth = (period: string) => historyFormat.format(new Date(`${period}T00:00:00Z`)).replace(/\./g, "");
   const exact = (value: number | null | undefined) => number(value, 20, 0);
   const compact = (value: number | null | undefined, decimals = 2) => {
     if (value == null) return t("No disponible");
@@ -374,25 +391,16 @@ export function formatters(language: Language) {
   const million = (value: number | null | undefined, decimals = 1) =>
     value == null ? t("No disponible") : number(value / 1e6, decimals);
   const month = (period: string, short = false) => {
-    const text = new Intl.DateTimeFormat(locale, {
-      month: short ? "short" : "long",
-      year: short ? "2-digit" : "numeric",
-      timeZone: "UTC",
-    }).format(new Date(`${period}T00:00:00Z`));
+    const text = monthFormat.format(new Date(`${period}T00:00:00Z`));
     return short
-      ? new Intl.DateTimeFormat(locale, { month: "short", timeZone: "UTC" })
-          .format(new Date(`${period}T00:00:00Z`))
+      ? shortMonthFormat.format(new Date(`${period}T00:00:00Z`))
           .replace(/\.$/, "") +
           " " +
           period.slice(2, 4)
       : text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
   };
   const monthYear = (period: string) => {
-    const parts = new Intl.DateTimeFormat(locale, {
-      month: "long",
-      year: "numeric",
-      timeZone: "UTC",
-    }).formatToParts(new Date(`${period}T00:00:00Z`));
+    const parts = monthFormat.formatToParts(new Date(`${period}T00:00:00Z`));
     const text = `${parts.find((p) => p.type === "month")?.value} ${parts.find((p) => p.type === "year")?.value}`;
     return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
   };
@@ -403,11 +411,7 @@ export function formatters(language: Language) {
     const d = new Date(dateOnly || zoned ? value : `${value}Z`);
     if (!Number.isFinite(d.getTime())) return t("no informada");
     return (
-      new Intl.DateTimeFormat(locale, {
-        dateStyle: "medium",
-        ...(!dateOnly ? { timeStyle: "short" as const } : {}),
-        timeZone: "UTC",
-      }).format(d) +
+      (dateOnly?dateFormat:timestampFormat).format(d) +
       (!dateOnly ? (zoned ? " UTC" : ` ${t("(zona no informada)")}`) : "")
     );
   };

@@ -3,7 +3,7 @@ import {trendClass,kpiState} from "../lib/presentation";
 import {useState,useMemo} from 'react';
 import type {Entity,Row} from '../lib/contract';
 import {effectiveMode,shiftMonth,comparisonOffset,type Comparison,type Mode,type Prices} from '../lib/metrics';
-import {areaRanking,areaSeries,areaPoints,type AreaActivity,type AreaDirection,type AreaSort} from '../lib/area-analysis';
+import {areaRanking,filterAreas,areaSeries,areaPoints,type AreaActivity,type AreaDirection,type AreaSort} from '../lib/area-analysis';
 import {useLocale} from '../lib/locale';
 import {gasReferenceMethod,Change,ChartCard,Evolution,KpiCard,ReferenceValuationNote,RankingItem} from './dashboard-components';
 import './areas.css';
@@ -14,7 +14,7 @@ export function AreasDashboard({entities,rows,current,prices,mode,comparison,ran
  const [query,setQuery]=useState(''),[activity,setActivity]=useState<AreaActivity>('all'),[direction,setDirection]=useState<AreaDirection>('all'),[sort,setSort]=useState<AreaSort>('volume');
  const shown=effectiveMode(mode,current.fluid),monetary=shown==='value',unit=monetary?'USD':current.fluid==='oil'?'bbl':'MMm³';
  const fmt=(v:number|null)=>v==null?t('No disponible'):`${monetary||current.fluid==='oil'?compact(v):number(v,2,0)} ${unit}`;
- const all=useMemo(()=>areaRanking(entities,current,prices,mode,comparison),[entities,current,prices,mode,comparison]),ranking=useMemo(()=>areaRanking(entities,current,prices,mode,comparison,{query,activity,direction,sort}),[entities,current,prices,mode,comparison,query,activity,direction,sort]),selected=all.find(r=>r.entity.entity_id===area),series=areaSeries(entities,current,area),name=selected?.entity.entity_name??series.at(-1)?.entity_name??area,points=areaPoints(entities,rows,current,area,range,prices,mode,comparison),active=all.filter(r=>r.entity.volume>0).length,top5=all.filter(r=>r.entity.volume_rank<=5).reduce((s,r)=>s+(r.share??0),0),leader=all[0];
+ const all=useMemo(()=>areaRanking(entities,current,prices,mode,comparison),[entities,current,prices,mode,comparison]),ranking=useMemo(()=>filterAreas(all,{query,activity,direction,sort}),[all,query,activity,direction,sort]),selected=all.find(r=>r.entity.entity_id===area),series=useMemo(()=>areaSeries(entities,current,area),[entities,current,area]),name=selected?.entity.entity_name??series.at(-1)?.entity_name??area,points=useMemo(()=>areaPoints(entities,rows,current,area,range,prices,mode,comparison),[entities,rows,current,area,range,prices,mode,comparison]),active=all.filter(r=>r.entity.volume>0).length,top5=all.filter(r=>r.entity.volume_rank<=5).reduce((s,r)=>s+(r.share??0),0),leader=all[0];
  const clear=()=>{setQuery('');setActivity('all');setDirection('all');setSort('volume');};
  return <div className="areas-dashboard">
  <header className="areas-heading"><div><p className="eyebrow sr-only">{l('Explorar el territorio','Explore the territory')}</p><h1>{l('Áreas','Areas')}</h1><p className="sr-only">{l('Dónde se produce y cómo evoluciona cada concesión.','Where production takes place and how each concession evolves.')}</p></div><span className="areas-period">{month(current.periodo)}</span></header>

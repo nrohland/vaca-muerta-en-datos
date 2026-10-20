@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, type ReactNode } from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { formatters, type Language } from "./i18n";
 const LocaleContext = createContext(formatters("es"));
 export function LocaleProvider({
@@ -9,8 +9,9 @@ export function LocaleProvider({
   language: Language;
   children: ReactNode;
 }) {
+  const value=useMemo(()=>formatters(language),[language]);
   return (
-    <LocaleContext.Provider value={formatters(language)}>
+    <LocaleContext.Provider value={value}>
       {children}
     </LocaleContext.Provider>
   );

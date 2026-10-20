@@ -31,9 +31,20 @@ for(const mobile of [false,true])test(`delivery budgets, all views, fluid switch
  await expect(page.getByRole('button',{name:'Gas',exact:true})).toHaveAttribute('aria-pressed','true');
  writeFileSync(path.join(evidence,`delivery-${mobile?'mobile':'desktop'}.json`),JSON.stringify({ready_ms:ready,resources,requests,long_tasks_ms:await page.evaluate(()=>(window as any).__longTasks),scope:'Local static browser test; no deployed field Core Web Vitals claim'},null,2));
 });
-test('broken detail stays unavailable and retry preserves context',async({page})=>{
+test('broken detail stays unavailable and retry preserves context without reloading verified overview',async({page})=>{
+ const requests:string[]=[];page.on('request',r=>requests.push(r.url()));
  await page.route('**/data/snapshots/**/oil-area-*.json.gz',route=>route.fulfill({status:503}));
  await page.goto(base+'?tab=areas&fluid=oil');await expect(page.locator('#main').getByRole('alert')).toBeVisible();await expect(page.locator('.areas-dashboard')).toHaveCount(0);
- await page.unroute('**/data/snapshots/**/oil-area-*.json.gz');await page.getByRole('button',{name:'Reintentar',exact:true}).click();await expect(page.locator('.areas-dashboard')).toBeVisible();
+ await page.unroute('**/data/snapshots/**/oil-area-*.json.gz');const manifestCount=requests.filter(u=>u.endsWith('/data/manifest.json')).length;
+ await page.getByRole('button',{name:'Reintentar',exact:true}).click();await expect(page.locator('.areas-dashboard')).toBeVisible();
+ expect(requests.filter(u=>u.endsWith('/data/manifest.json'))).toHaveLength(manifestCount);
  await expect(page.getByRole('tab',{name:'Áreas',exact:true})).toHaveAttribute('aria-selected','true');
+});
+
+test('selecting an active filter does not add duplicate history entries',async({page})=>{
+ await page.goto(base);await expect(page.locator('.kpi-card--primary')).toBeVisible();
+ const before=await page.evaluate(()=>history.length);
+ await page.getByRole('button',{name:'Petróleo',exact:true}).click();
+ await page.getByRole('tab',{name:'Resumen',exact:true}).click();
+ expect(await page.evaluate(()=>history.length)).toBe(before);
 });

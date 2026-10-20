@@ -53,10 +53,10 @@ export function OperatorsDashboard({entities,rows,current,prices,mode,comparison
   const totalValue=metric(current,rows,prices,'volume',mode).value;
   const top5Share=current.volume>0?entries.slice(0,5).reduce((sum,e)=>sum+e.entity.volume,0)/current.volume*100:null;
   const largest=[...entries].filter(e=>e.delta!=null).sort((a,b)=>Math.abs(b.delta!)-Math.abs(a.delta!))[0];
-  const points=operatorHistory(entities,rows,current.fluid,current.periodo,range,operator,prices,mode,comparison);
-  const leaders=entries.slice(0,3);
-  const leaderHistory=leaders.map(e=>operatorHistory(entities,rows,current.fluid,current.periodo,range,e.entity.entity_id,prices,mode,comparison));
-  const chartPoints=operator?points:leaderHistory[0]?.map((p,i)=>({periodo:p.periodo,...Object.fromEntries(leaders.map((e,j)=>[e.entity.entity_id,leaderHistory[j][i]?.value??null]))}))??[];
+  const points=useMemo(()=>operatorHistory(entities,rows,current.fluid,current.periodo,range,operator,prices,mode,comparison),[entities,rows,current.fluid,current.periodo,range,operator,prices,mode,comparison]);
+  const leaders=useMemo(()=>entries.slice(0,3),[entries]);
+  const leaderHistory=useMemo(()=>operator?[]:leaders.map(e=>operatorHistory(entities,rows,current.fluid,current.periodo,range,e.entity.entity_id,prices,mode,comparison)),[operator,leaders,entities,rows,current.fluid,current.periodo,range,prices,mode,comparison]);
+  const chartPoints=useMemo(()=>operator?points:leaderHistory[0]?.map((p,i)=>({periodo:p.periodo,...Object.fromEntries(leaders.map((e,j)=>[e.entity.entity_id,leaderHistory[j][i]?.value??null]))}))??[],[operator,points,leaderHistory,leaders]);
   const card=(index:number,brief:string)=>({tooltip:brief+(monetary&&current.fluid==='gas'?' '+t(gasReferenceMethod):''),brief,flipped:flipped===index,onFlip:()=>setFlipped(flipped===index?null:index)});
   const pct=(v:number|null)=>v==null?L('noComparison'):percent(v,true);
   function download(){

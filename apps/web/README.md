@@ -25,7 +25,7 @@ El build estático queda en `out/`. El runner de navegador requiere un entorno c
 
 ## Componentes y navegación
 
-Stack instalado: Next.js 16, React 19, TypeScript 7, Recharts 3 y MapLibre 6. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard` y `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
+Stack instalado: Next.js 16, React 19, TypeScript 7, Recharts 3 y MapLibre 6. `app/dashboard-components.tsx` contiene `KpiCard`, `ModuleCard`, `ChartCard`, `RankingCard`; `app/global-filters.tsx` contiene `GlobalFilters`; `app/globals.css` comparte tema, espaciado y responsive. analytics-ui guía jerarquía, componentes comunes y escalas veraces.
 
 El mismo concepto mantiene color y comportamiento entre pestañas: petróleo azul, gas violeta, monetario ámbar. Variaciones positivas verdes y negativas rojas siguen la convención del producto. Rankings de participación usan escala real 0–100%; etiquetas, unidades, tooltips y tablas permiten leer cifras exactas.
 
@@ -55,6 +55,9 @@ El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca
 
 ## Rendimiento y superficie de acceso
 
-El build genera shards comprimidos y direccionados por hash para cargar el resumen primero y el detalle por fluido/dimensión cuando se necesita. `lib/delivery.ts` valida tamaños y hashes; `scripts/check_performance.mjs` controla presupuestos del build. El render no ejecuta SQL ni realiza requests a BigQuery: las consultas analíticas y la valorización se resuelven antes de exportar. El mapa consume geometrías públicas de referencia; los logos se sirven como assets del sitio.
+Los filtros globales se definen en `app/global-filters.tsx`, separados del módulo de gráficos. Cada vista se descarga cuando se necesita; el build limita el JavaScript moderno inicial a 200 KiB gzip. El build genera shards comprimidos y direccionados por hash para cargar el resumen primero y el detalle por fluido/dimensión cuando se necesita. `lib/delivery.ts` valida tamaños y hashes; `scripts/check_performance.mjs` controla presupuestos. [Mediciones, decisiones y límites](PERFORMANCE.md).
+
+La configuración propuesta de Vercel asigna caché inmutable a shards con hash y revalidación a manifiestos/precios de nombre estable; sus headers efectivos requieren verificar el despliegue. El render no ejecuta SQL ni realiza requests a BigQuery: las consultas analíticas y la valorización se resuelven antes de exportar. El mapa consume geometrías públicas de referencia; los logos se sirven como assets del sitio.
 
 El chat de datos no está implementado: su diseño es una etapa futura. Ninguna clave de modelo, GCP o extracción es necesaria para usar este frontend.
+

@@ -6,7 +6,9 @@ Pensado para analistas, equipos de energía y periodistas. Como portfolio, muest
 
 ![Resumen de Vaca Muerta en Datos](docs/screenshots/resumen.jpg)
 
-**Estado:** V1 integrada y validada localmente y en GitHub, con 44 meses de enero de 2023 a agosto de 2026. Versión preliminar sin promoción pública aprobada. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
+**Estado:** V1 preliminar con 44 meses de enero de 2023 a agosto de 2026. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
+
+**[Abrir demo pública en Vercel](https://vaca-muerta-en-datos.vercel.app)**. El sitio sirve el snapshot revisado; la extracción automática está pausada por problemas de conectividad con Energía. Publicar el frontend no actualiza los datos. [Configuración del despliegue](docs/vercel.md).
 
 ## Qué preguntas responde
 

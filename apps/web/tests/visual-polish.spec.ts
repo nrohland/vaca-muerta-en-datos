@@ -14,7 +14,9 @@ test('gas reference methodology lives behind its KPI and notation uses a smaller
  expect(await metric.evaluate(e=>parseFloat(getComputedStyle(e.querySelector('.kpi-unit')!).fontSize)<parseFloat(getComputedStyle(e).fontSize))).toBe(true);
 });
 test('official area geometry supports selection and shares global filters',async({page})=>{
+ const worker=page.waitForResponse(response=>/\/_next\/static\/media\/.*\.mjs$/.test(new URL(response.url()).pathname));
  await page.goto(base+'&tab=areas');const polygons=page.locator('.area-bubble');await expect(polygons).toHaveCount(68);
+ expect((await worker).ok()).toBe(true);
  await expect(page.locator('.area-map-card')).toContainText('68 con geometría');
  await page.locator('.area-bubble[data-area="AFED"]').focus();await expect(page.locator('.map-readout')).toContainText('AGUADA FEDERAL');
  await page.locator('.area-bubble[data-area="AFED"]').press('Enter');await expect(page).toHaveURL(/area=AFED/);

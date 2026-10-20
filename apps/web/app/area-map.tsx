@@ -26,6 +26,7 @@ export function AreaMap({entries,selected,onSelect,unit,period}:{entries:ReturnT
   let disposed=false;let instance:LibreMap|undefined;
   import('maplibre-gl').then(ml=>{
    if(disposed||!container.current)return;
+   ml.setWorkerUrl(new URL('maplibre-gl/dist/maplibre-gl-worker.mjs',import.meta.url).toString());
    instance=new ml.Map({container:container.current,style:{version:8,sources:{basemap:{type:'raster',tiles:['https://tile.openstreetmap.org/{z}/{x}/{y}.png'],tileSize:256,maxzoom:19,attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors'}},layers:[{id:'base',type:'raster',source:'basemap',paint:{'raster-saturation':-1,'raster-opacity':.65,'raster-contrast':-.1}}]},bounds:geometry.bounds,fitBoundsOptions:{padding:35},maxZoom:14,minZoom:2,cooperativeGestures:true,attributionControl:false,renderWorldCopies:false});
    map.current=instance;
    instance.addControl(new ml.NavigationControl({showCompass:false}),'top-right');
@@ -33,13 +34,13 @@ export function AreaMap({entries,selected,onSelect,unit,period}:{entries:ReturnT
    instance.on('error',event=>{if((event as any).sourceId==='basemap')setBaseFailed(true);});
    instance.on('load',()=>{
     if(disposed||!instance)return;
+    instance.on('sourcedata',event=>{if(!disposed&&event.sourceId==='areas'&&event.isSourceLoaded)setReady(true);});
     instance.addSource('areas',{type:'geojson',data:geometry});
     instance.addLayer({id:'area-fill',type:'fill',source:'areas',paint:{'fill-color':'#8c9ba4','fill-opacity':.10}});
     instance.addLayer({id:'area-borders',type:'line',source:'areas',paint:{'line-color':'#627785','line-opacity':.8,'line-width':1.15}});
     instance.on('click','area-fill',event=>{const id=event.features?.[0]?.properties?.area_id;if(typeof id==='string')latest.current.onSelect(id);});
     instance.on('mousemove','area-fill',event=>{if(instance)instance.getCanvas().style.cursor='pointer';const id=event.features?.[0]?.properties?.area_id;if(typeof id==='string')setActive(id);});
     instance.on('mouseleave','area-fill',()=>{if(instance)instance.getCanvas().style.cursor='';setActive('');});
-    setReady(true);
    });
   }).catch(()=>{if(!disposed)setFailed(true);});
   return()=>{disposed=true;setReady(false);markers.current.forEach(m=>m.remove());markers.current=[];instance?.remove();map.current=null;};

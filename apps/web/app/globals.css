@@ -2056,3 +2056,17 @@ footer .status-badge {
 
 /* Closed disclosures must not contribute hidden table/methodology overflow. */
 details:not([open]) > :not(summary) {display:none}
+
+/* Desktop exploration fills available space; card height follows the shell,
+   rather than estimating the combined height of filters, KPIs and footer. */
+@media(min-width:1101px){
+ .page[data-workspace=explore]{height:100svh;display:flex;flex-direction:column}
+ .page[data-workspace=explore]>.masthead,.page[data-workspace=explore]>nav,.page[data-workspace=explore]>footer{flex:none}
+ .page[data-workspace=explore]>main{flex:1;min-height:0;display:flex;flex-direction:column}
+ .page[data-workspace=explore] .global-filters{flex:none}
+ .page[data-workspace=explore] main>[role=tabpanel]{flex:1;min-height:0;display:flex;flex-direction:column}
+ .page[data-workspace=explore] .operators-dashboard,.page[data-workspace=explore] .areas-dashboard{flex:1;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:12px}
+ .page[data-workspace=explore] .operators-dashboard>.operators-heading,.page[data-workspace=explore] .areas-dashboard>.areas-heading{margin:0}
+ .page[data-workspace=explore] .kpi-grid{margin:0}
+ .page[data-workspace=explore] .operators-dashboard[data-detail=false] .operators-grid,.page[data-workspace=explore] .areas-explorer{height:auto;min-height:0;margin:0}
+}

@@ -1,4 +1,5 @@
 import {test,expect} from './browser-fixtures';
+import {writeFile} from 'node:fs/promises';
 const base='/vaca-muerta-pulse/?month=2026-08-01&fluid=gas&comparison=yoy';
 test('gas reference methodology lives behind its KPI and notation uses a smaller unit',async({page})=>{
  await page.goto(base);await expect(page.locator('#panel-summary .kpi-card')).toHaveCount(4);
@@ -55,7 +56,10 @@ test('desktop explorers align panels and keep scrolling inside their rankings',a
    await expect.poll(async()=>Math.abs((await left.boundingBox())!.height-(await right.boundingBox())!.height)).toBeLessThan(2);
    const list=page.locator(tab==='operators'?'.operators-ranking-list':'.areas-ranking .ranking-list');
    await expect.poll(()=>list.evaluate(e=>e.scrollHeight>e.clientHeight)).toBe(true);
-   await test.info().attach(`${tab}-${height}-geometry.json`,{body:JSON.stringify(await page.evaluate(()=>({viewport:innerHeight,html:document.documentElement.scrollHeight,body:document.body.scrollHeight,boxes:[...document.querySelectorAll('.areas-heading,.kpi-grid,.areas-explorer,.area-map-card,.map-frame,.operators-grid,footer')].map(e=>({class:e.className,top:e.getBoundingClientRect().top,height:e.getBoundingClientRect().height}))}))),contentType:'application/json'});
+   const geometry=await page.evaluate(()=>({viewport:innerHeight,html:document.documentElement.scrollHeight,body:document.body.scrollHeight,boxes:[...document.querySelectorAll('.areas-heading,.kpi-grid,.areas-explorer,.area-map-card,.map-frame,.operators-grid,footer')].map(e=>({class:e.className,top:e.getBoundingClientRect().top,height:e.getBoundingClientRect().height}))}));
+   await writeFile(test.info().outputPath(`${tab}-${height}-geometry.json`),JSON.stringify(geometry));
+   console.log(`${tab}-${height}-geometry`,geometry);
+   await page.screenshot({path:test.info().outputPath(`${tab}-${height}.png`)});
    await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollHeight<=innerHeight+2),{message:`${tab} at 1440×${height} fits the viewport`}).toBe(true);
   }
  }

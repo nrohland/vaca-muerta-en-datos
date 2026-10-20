@@ -245,7 +245,7 @@ export default function Page() {
       <a className="skip" href="#main">
         {t("Ir al contenido")}
       </a>
-      <div className="page" data-fluid={fluid}>
+      <div className="page" data-fluid={fluid} data-workspace={(tab==='operators'&&!selection.operator)||(tab==='areas'&&!selection.area)?'explore':undefined}>
         <header className="masthead">
           <a
             className="brand"

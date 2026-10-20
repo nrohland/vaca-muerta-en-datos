@@ -56,6 +56,8 @@ test('desktop explorers align panels and keep scrolling inside their rankings',a
    await expect.poll(async()=>Math.abs((await left.boundingBox())!.height-(await right.boundingBox())!.height)).toBeLessThan(2);
    const list=page.locator(tab==='operators'?'.operators-ranking-list':'.areas-ranking .ranking-list');
    await expect.poll(()=>list.evaluate(e=>e.scrollHeight>e.clientHeight)).toBe(true);
+   await list.locator('button').last().focus();
+   await expect.poll(()=>page.evaluate(()=>scrollY)).toBe(0);
    const geometry=await page.evaluate(()=>({viewport:innerHeight,html:document.documentElement.scrollHeight,body:document.body.scrollHeight,boxes:[...document.querySelectorAll('.areas-heading,.kpi-grid,.areas-explorer,.area-map-card,.map-frame,.operators-grid,footer')].map(e=>({class:e.className,top:e.getBoundingClientRect().top,height:e.getBoundingClientRect().height}))}));
    await writeFile(test.info().outputPath(`${tab}-${height}-geometry.json`),JSON.stringify(geometry));
    console.log(`${tab}-${height}-geometry`,geometry);

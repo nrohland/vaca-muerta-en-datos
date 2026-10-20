@@ -21,7 +21,7 @@ npx playwright install chromium
 npm run test:browser
 ```
 
-El build estático queda en `out/`. El runner de navegador requiere un entorno compatible y un puerto disponible. `EVIDENCE_DIR` permite dirigir las capturas; los reportes de evidencia deben indicar qué suite y qué inspección visual se ejecutaron realmente. No hay despliegue automático.
+El build estático queda en `out/`. El runner de navegador requiere un entorno compatible y un puerto disponible. `EVIDENCE_DIR` permite dirigir las capturas; los reportes de evidencia deben indicar qué suite y qué inspección visual se ejecutaron realmente. La rama de despliegue configurada en Vercel actualiza la demo pública; las ramas de trabajo generan previews protegidas. Ver [configuración](../../docs/vercel.md).
 
 ## Componentes y navegación
 
@@ -45,7 +45,7 @@ Producción profundiza en historia, acumulados comparables, años calendario, ca
 
 La [revisión actual](../../docs/evidence/snapshot-integration/README.md) registra cálculos, navegación, capturas desktop/mobile y restricciones de Playwright. La [orquestación/export](../../docs/evidence/orchestration-export/README.md) valida el consumidor sobre el bundle generado. [Capturas de las cinco vistas](../../docs/screenshots/README.md).
 
-La extracción y transformación son reproducibles; promoción pública independiente y runner real pendientes. [Arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build.
+La extracción y transformación son reproducibles. La demo pública sirve el snapshot incluido en Git; la extracción automática permanece pausada por conectividad con la fuente. [Arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build.
 
 ## Conexión histórica validada
 

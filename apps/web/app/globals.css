@@ -2070,3 +2070,5 @@ details:not([open]) > :not(summary) {display:none}
  .page[data-workspace=explore] .kpi-grid{margin:0}
  .page[data-workspace=explore] .operators-dashboard[data-detail=false] .operators-grid,.page[data-workspace=explore] .areas-explorer{height:auto;min-height:0;margin:0}
 }
+/* Bound painted row descendants to keyboard-scrollable ranking viewports. */
+.ranking-list[tabindex]{position:relative;isolation:isolate;contain:paint;overscroll-behavior-y:contain}

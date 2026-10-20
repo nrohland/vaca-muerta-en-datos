@@ -74,7 +74,7 @@ La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, co
 
 La integración local pasó nueve etapas en una corrida, con **106/106 nodos dbt aprobados, sin warnings, errores ni skips**. El frontend pasó 59 tests, typecheck y build sobre el bundle exportado; 10.296 agregados conciliados. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
 
-**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en [GitHub Actions](docs/evidence/github-actions/README.md). **Pendientes:** promoción del snapshot, hosting y operación pública. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas; sus avisos no certifican cierre oficial. Playwright local está bloqueado por permisos de Chromium en macOS; la inspección desktop/mobile se documenta separadamente. El monitor de fuentes tiene su calendario activado; la carga recurrente, el despliegue y la facturación siguen desactivados.
+**Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en la validación histórica de [GitHub Actions](docs/evidence/github-actions/README.md). La demo está publicada en Vercel y conserva el snapshot preliminar. La extracción y el monitor automático permanecen pausados por problemas de conectividad de los runners con Energía; publicar el frontend no reanuda la ingesta. Playwright corre en CI. El [monitor de fuentes](pipeline/MONITOR.md) detecta nuevos meses y rectificativas cuando puede acceder a la fuente; sus avisos no certifican cierre oficial. [Configuración y operación del sitio](docs/vercel.md).
 
 ## Ejecutar la aplicación
 

@@ -25,3 +25,4 @@
 /* Clip descendants at the list boundary without letting its rows cross the footer. */
 .operators-ranking-list{position:relative;isolation:isolate;contain:paint;overscroll-behavior-y:contain}
 .operators-ranking>.chart-context{position:relative;background:var(--surface);flex:none}
+.operators-ranking>.chart-context{margin-top:12px}

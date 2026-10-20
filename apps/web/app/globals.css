@@ -2072,3 +2072,6 @@ details:not([open]) > :not(summary) {display:none}
 }
 /* Bound painted row descendants to keyboard-scrollable ranking viewports. */
 .ranking-list[tabindex]{position:relative;isolation:isolate;contain:paint;overscroll-behavior-y:contain}
+@media(min-width:1101px){
+ .page[data-workspace=explore] .areas-explorer .areas-filters{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

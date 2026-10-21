@@ -23,6 +23,7 @@ import {
   type Fluid,
   type Row,
 } from "../lib/contract";
+import { kpiParts } from "../lib/presentation";
 import { operatorName } from "../lib/operators";
 import type { Tab } from "../lib/navigation";
 import {
@@ -47,7 +48,6 @@ import {
   defaultHistoryRange,
 } from "../lib/history";
 import { chartVisibility } from "../lib/chart-visibility";
-import { MeasurementIcon } from "./icons";
 function Comparisons({
   metric: m,
   period,
@@ -127,6 +127,7 @@ export function KpiCard({
 }) {
   const { t, locale } = useLocale();
   const id = useId();
+  const amount = typeof value === "string" ? kpiParts(value, unit) : {value, unit};
   const info = useRef<HTMLButtonElement>(null);
   const back = useRef<HTMLButtonElement>(null);
   const wasFlipped = useRef(false);
@@ -173,8 +174,7 @@ export function KpiCard({
             )}
           </div>
           <div className="kpi-value">
-            {value}
-            {unit && <span>{unit}</span>}
+            {amount.value}{amount.unit && <> <span className="kpi-unit">{amount.unit}</span></>}
           </div>
           {comparisons && <div className="kpi-comparisons">{comparisons}</div>}
           <div className="kpi-context">
@@ -269,91 +269,10 @@ function ModuleCard({
 export function ChartCard(props: Parameters<typeof ModuleCard>[0]) {
   return <ModuleCard {...props} />;
 }
-export function GlobalFilters({
-  fluid,
-  period,
-  periods,
-  mode,
-  comparison,
-  onFluid,
-  onPeriod,
-  onMode,
-  onComparison,
-}: {
-  fluid: Fluid;
-  period: string;
-  periods: string[];
-  mode: Mode;
-  comparison: Comparison;
-  onFluid: (f: Fluid) => void;
-  onPeriod: (p: string) => void;
-  onMode: (m: Mode) => void;
-  onComparison: (c: Comparison) => void;
-}) {
-  const { t, month } = useLocale();
-  return (
-    <div className="global-filters">
-      <fieldset className="fluid-control">
-        <legend className="sr-only">{t("Fluido")}</legend>
-        {(["oil", "gas"] as Fluid[]).map((f) => (
-          <button key={f} aria-pressed={fluid === f} onClick={() => onFluid(f)}>
-            {t(f === "oil" ? "Petróleo" : "Gas")}
-          </button>
-        ))}
-      </fieldset>
-      <label className="period-selector">
-        <span className="sr-only">{t("Período")}</span>
-        <select
-          aria-label={t("Mes de producción")}
-          value={period}
-          disabled={!periods.length}
-          onChange={(e) => onPeriod(e.target.value)}
-        >
-          {periods
-            .slice()
-            .reverse()
-            .map((p) => (
-              <option key={p} value={p}>
-                {month(p)}
-              </option>
-            ))}
-        </select>
-      </label>
-      <fieldset className="fluid-control mode-control">
-        <legend className="sr-only">{t("Unidad de análisis")}</legend>
-        {(["volume", "value"] as Mode[]).map((m) => (
-          <button key={m} aria-pressed={mode === m} onClick={() => onMode(m)}>
-            {m === "volume" ? (
-              <MeasurementIcon />
-            ) : (
-              <span className="currency-symbol" aria-hidden="true">
-                $
-              </span>
-            )}
-            {t(m === "volume" ? "Volumen" : "Valor USD")}
-          </button>
-        ))}
-      </fieldset>
-      <fieldset className="fluid-control comparison-control">
-        <legend className="sr-only">{t("Comparación temporal")}</legend>
-        {(["mom", "yoy"] as Comparison[]).map((c) => (
-          <button
-            key={c}
-            aria-pressed={comparison === c}
-            onClick={() => onComparison(c)}
-          >
-            {t(c === "mom" ? "Mensual" : "Interanual")}
-          </button>
-        ))}
-      </fieldset>
-    </div>
-  );
-}
-export function ReferenceValuationNote({fluid, prices}: {fluid: Fluid; prices: Prices | null}) {
-  const {t} = useLocale();
-  if (fluid === "gas") return <p className="availability-note">{t("Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.")} {prices?.gas.status === "available" && <a href={prices.gas.conversion.source_url}>{t("Metodología EIA")}</a>}</p>;
-  return null;
-}
+export { GlobalFilters } from './global-filters';
+export const gasReferenceMethod = "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.";
+// Methodology belongs to the relevant KPI disclosure, not a banner above all views.
+export function ReferenceValuationNote(_props: {fluid: Fluid; prices: Prices | null}) { return null; }
 function TrendTooltip({
   active,
   label,
@@ -443,7 +362,14 @@ export function Evolution({
     const el = scrollRef.current;
     if (!el) return;
     const compactViewport = window.matchMedia("(max-width: 1100px)");
-    const measure = () => setScrollable(compactViewport.matches && el.scrollWidth > el.clientWidth + 1);
+    let previousMax = Math.max(0, el.scrollWidth-el.clientWidth);
+    const measure = () => {
+      const atEnd = el.scrollLeft >= previousMax-2;
+      setScrollable(compactViewport.matches && el.scrollWidth > el.clientWidth+1);
+      if (atEnd) el.scrollLeft = el.scrollWidth;
+      previousMax = Math.max(0, el.scrollWidth-el.clientWidth);
+      setScrollOffset(el.scrollLeft);
+    };
     compactViewport.addEventListener("change", measure);
     const observer = new ResizeObserver(measure);
     observer.observe(el);
@@ -718,8 +644,8 @@ const assets: Record<string, string> = {
   PAL: "PAL.png",
   PAM: "PAM.svg",
   TAU: "TAU.svg",
-  TPT: "TPT.jpg",
-  SHE: "SHE.jpg",
+  TPT: "TPT.webp",
+  SHE: "SHE.webp",
   PGR: "PGR.png",
   VST: "VST.svg",
 };
@@ -745,6 +671,10 @@ export function OperatorLogo({ id }: { id: string }) {
         <img
           src={`${base}/operators/${assets[id]}`}
           alt=""
+          width={36}
+          height={36}
+          decoding="async"
+          loading="lazy"
           onError={() => setFailed(true)}
         />
       ) : (
@@ -965,7 +895,7 @@ export function SummaryDashboard({
     methodSource: t(
       id === 3 && monetary
         ? "Fuente: EIA."
-        : id !== 2 && (monetary || (id === 3 && fluid === "oil"))
+        : id !== 2 && (monetary || id === 3)
           ? "Fuente: Secretaría de Energía · EIA."
           : "Fuente: Secretaría de Energía.",
     ),
@@ -982,7 +912,7 @@ export function SummaryDashboard({
   const valuationHelp = t(
     price == null
       ? "Estimación pendiente: referencia monetaria sin validar para este período."
-      : "Volumen mensual × precio del período. Estimación, no facturación efectiva.",
+      : fluid === "gas" ? gasReferenceMethod : "Volumen mensual × precio del período. Estimación, no facturación efectiva.",
   );
   const comparisons = (m: Metric) => (
     <Comparisons metric={m} period={period} comparison={comparison} />
@@ -1084,7 +1014,7 @@ export function SummaryDashboard({
           tooltip={
             monetary
               ? t(
-                  "Promedio mensual de referencia; no es el precio efectivo de venta.",
+                  fluid === "gas" ? gasReferenceMethod : "Promedio mensual de referencia; no es el precio efectivo de venta.",
                 )
               : valuationHelp
           }

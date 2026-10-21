@@ -44,3 +44,14 @@ export function validateEntities(value:unknown, overview:Release, ref:DeliveryRe
  }
  return release.entities;
 }
+
+// Component-owned cache for the bounded set of public, hash-keyed detail shards.
+// Keep in-flight and successful promises; failures must remain retryable.
+export function createRequestCache<T>() {
+ const requests=new Map<string,Promise<T>>();
+ return {read(key:string,load:()=>Promise<T>):Promise<T>{
+  const existing=requests.get(key);if(existing)return existing;
+  const request=Promise.resolve().then(load).catch(error=>{requests.delete(key);throw error;});
+  requests.set(key,request);return request;
+ }};
+}

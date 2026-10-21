@@ -1,4 +1,4 @@
-import {test,expect} from '@playwright/test';
+import {test,expect} from './browser-fixtures';
 import AxeBuilder from '@axe-core/playwright';
 import {readFileSync} from 'node:fs';
 import {validateRelease} from '../lib/contract';
@@ -33,11 +33,11 @@ test('complete ranking filters without changing total share and supports URL dri
 test('gas USD uses warehouse values and English detail survives reload',async({page})=>{
  await page.goto(base+'&fluid=gas&mode=value&comparison=mom&operator=YPF');
  await expect(page.locator('.operators-dashboard')).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
+ await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-back')).toContainText('Henry Hub');
  await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-value')).toContainText('USD');
  await page.getByRole('button',{name:'English',exact:true}).click();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
- await expect(page.locator('.operators-dashboard .availability-note')).toContainText('Henry Hub');
+ await expect(page.locator('.operators-dashboard .kpi-card--primary .kpi-back')).toContainText('Henry Hub');
  await page.reload();
  await expect(page.getByRole('heading',{name:'Operator data',exact:true})).toBeVisible();
  await expect(page).toHaveURL(/operator=YPF/);
@@ -47,6 +47,10 @@ test('operators remain accessible and fit mobile without document overflow',asyn
  await page.goto(base);
  await expect(page.locator('.operators-ranking-list > li').first()).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollHeight<=Math.max(innerHeight,document.body.scrollHeight)+2)).toBe(true);
+ const listBox=(await page.locator('.operators-ranking-list').boundingBox())!;
+ const noteBox=(await page.locator('.operators-ranking > .chart-context').boundingBox())!;
+ expect(noteBox.y).toBeGreaterThanOrEqual(listBox.y+listBox.height);
  const overview=await new AxeBuilder({page}).include('.operators-dashboard').analyze();
  expect(overview.violations.filter(v=>['critical','serious'].includes(v.impact??''))).toEqual([]);
  await page.locator('.operators-ranking-list button').first().click();

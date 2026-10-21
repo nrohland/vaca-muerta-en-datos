@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import {areaRanking,areaChange,areaPoints} from '../lib/area-analysis.ts';
+import {areaRanking,areaChange,areaPoints,filterAreas} from '../lib/area-analysis.ts';
 import {validateRelease} from '../lib/contract.ts';
 import {validatePrices,shiftMonth,warehouseValue} from '../lib/metrics.ts';
 const release=validateRelease(JSON.parse(readFileSync(new URL('../public/data/release.json',import.meta.url),'utf8')));
@@ -29,4 +29,17 @@ test('direction detects increases from an observed zero without fabricating a pe
  const growing = areaRanking(release.entities,current,prices,'volume','mom',{direction:'up'});
  const area = growing.find(r=>r.entity.entity_id==='AGCA')!;
  assert.ok(area);assert.ok(area.delta!>0);assert.equal(area.pct,null);
+});
+
+test('indexed rankings match exact-calendar comparisons in both fluids and modes; filtering preserves entries',()=>{
+ for(const fluid of ['oil','gas'] as const)for(const mode of ['volume','value'] as const)for(const comparison of ['mom','yoy'] as const){
+  const current=release.production.filter(r=>r.fluid===fluid).at(-1)!;
+  const all=areaRanking(release.entities,current,prices,mode,comparison);
+  for(const entry of all){
+   const {entity,share,...actual}=entry;
+   assert.deepEqual(actual,areaChange(entity,release.entities,prices,mode,comparison));
+  }
+  const before=[...all];const filtered=filterAreas(all,{direction:'up',sort:'name'});
+  assert.deepEqual(all,before);assert.ok(filtered.every(entry=>all.includes(entry)&&entry.delta!=null&&entry.delta>0));
+ }
 });

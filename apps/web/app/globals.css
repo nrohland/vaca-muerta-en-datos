@@ -2004,3 +2004,74 @@ footer .status-badge {
   .page .operators-dashboard .kpi-card:not(.kpi-card--primary) .kpi-value, .page .areas-dashboard .kpi-card:not(.kpi-card--primary) .kpi-value, .page .activity-dashboard .kpi-card:not(.kpi-card--primary) .kpi-value { font-size: 23px; flex-wrap: wrap; }
   .page .activity-dashboard .kpi-card--primary .kpi-value { font-size: 34px; }
 }
+
+/* Shared display notation and change semantics across every tab. */
+.page .kpi-card .kpi-value .kpi-unit{font-size:.43em;font-weight:500;line-height:1.4;letter-spacing:0;white-space:nowrap;color:inherit}
+.kpi-card[data-state=favorable] .kpi-value,.trend-positive{color:var(--positive)}
+.kpi-card[data-state=unfavorable] .kpi-value,.trend-negative{color:var(--negative)}
+.trend-positive,.trend-negative{font-weight:650}
+.production-dashboard .kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+.production-dashboard .kpi-card{min-height:154px}
+.production-dashboard .kpi-value{font-size:36px;display:flex;align-items:baseline;flex-wrap:wrap;gap:5px;line-height:1.25}
+.production-dashboard .kpi-comparisons{min-height:24px;line-height:1.7}
+.tabs{flex-wrap:nowrap;overflow-x:auto;min-width:0}
+.tabs button{flex:0 0 auto;white-space:nowrap}
+.scroll-hint{display:none}
+.activity-count-plot{height:290px;min-width:0}
+.activity-table-scroll{max-height:420px;border:1px solid var(--rule);border-radius:10px}
+.activity-table-scroll.is-expanded{max-height:none}
+.activity-data thead th{position:sticky;top:0;background:var(--surface);z-index:2}
+.table-expand{margin-top:12px;min-height:40px;background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:8px;padding:8px 14px;cursor:pointer}
+.activity-average-change{font-size:13px;color:var(--muted)}
+@media(max-width:1050px){.production-dashboard .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.production-dashboard .kpi-card--primary{grid-column:1/-1}.production-dashboard .kpi-value{font-size:29px}}
+@media(max-width:540px){.tabs{gap:20px}.scroll-hint{display:block;font-size:11px;color:var(--muted)}.activity-count-plot{height:260px}.activity-table-scroll{max-height:390px}.production-dashboard .kpi-value{font-size:25px}}
+.areas-explorer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:22px;align-items:start;min-width:0}
+.areas-explorer .areas-filters{grid-template-columns:1fr 1fr}.areas-explorer .areas-filters label:first-child{grid-column:1/-1}
+.areas-explorer .ranking-list{max-height:550px;overflow-y:auto;padding-right:4px}
+.map-readout{min-height:78px;display:flex;flex-direction:column;gap:5px;font-size:13px;color:var(--muted);margin-top:16px}.map-readout strong{color:var(--ink)}.map-readout button{align-self:flex-start}
+.area-map{display:block;width:100%;max-height:480px;min-height:270px;background:var(--surface)}.area-map path{cursor:pointer}.area-map path:focus-visible{outline:none;stroke:var(--ink);stroke-width:3}
+.map-legend{display:flex;gap:10px;align-items:center;font-size:11px;color:var(--muted)}.map-legend i{height:8px;flex:1;max-width:130px;border-radius:4px}.map-source{font-size:11px;color:var(--muted);margin-top:16px;line-height:1.6}.map-source summary{cursor:pointer}.map-source a{color:var(--accent)}
+@media(max-width:1050px){.areas-explorer{grid-template-columns:1fr}.area-map{max-height:430px}}
+.page .areas-explorer .areas-filters{display:grid;grid-template-columns:1fr 1fr}
+.page .areas-explorer .areas-filters label:first-child{grid-column:1/-1}
+.map-frame{position:relative;min-width:0}.map-context{position:absolute;right:0;top:0;width:112px;padding:8px;margin:0;background:var(--surface);border:1px solid var(--rule);border-radius:10px;text-align:center;color:var(--muted);font-size:10px;line-height:1.4}.map-context figcaption{font-size:11px;font-weight:600;color:var(--ink)}.map-context svg{display:block;height:155px;width:100%}.map-context span{display:block;font-size:9px}
+@media(max-width:540px){.map-context{width:83px;padding:6px}.map-context svg{height:120px}}
+.operators-leader-legend .leader-key{width:22px;height:0;border-top:3px solid;border-radius:0;background:none}.operators-leader-legend .leader-key-1{border-top-style:dashed}.operators-leader-legend .leader-key-2{border-top-style:dotted}
+/* Geography: neutral boundaries, proportional volume symbols, explicit evidence. */
+.page .areas-explorer{grid-template-columns:minmax(0,1.6fr) minmax(320px,1fr);align-items:start}
+.area-map-card{min-width:0;overflow:hidden}.map-intro{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-top:12px}.map-intro p{font-size:12px;line-height:1.6;color:var(--muted);margin:0;max-width:490px}.map-view-controls{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0}.map-view-controls button{background:var(--surface);color:var(--ink);border:1px solid var(--rule);border-radius:7px;font:inherit;font-size:11px;padding:8px 10px;min-height:36px;cursor:pointer}
+.map-coverage{font-size:11px;color:var(--muted);line-height:1.7;margin:12px 0 0}.area-map-card .map-readout{min-height:64px;margin:12px 0;gap:3px;font-size:12px}.map-readout .text-action{font-size:11px;padding:2px 0}
+.geo-map{height:480px;min-height:360px;position:relative;background:#e4e9ec;border:1px solid var(--rule);border-radius:10px;overflow:hidden}.geo-map .maplibregl-canvas:focus-visible{outline:2px solid var(--accent);outline-offset:-3px}.geo-map .maplibregl-ctrl-attrib{font-size:10px;background:rgba(255,255,255,.9);color:#283c48}.geo-map .maplibregl-ctrl-attrib a{color:#283c48}.geo-map .maplibregl-ctrl button{min-width:36px;min-height:36px}.geo-map .maplibregl-canvas{filter:grayscale(1)}
+:root[data-theme=dark] .geo-map .maplibregl-canvas{filter:invert(.92) hue-rotate(180deg) saturate(.15)}
+.area-bubble{display:flex;align-items:center;justify-content:center;padding:0;border:0;background:none;cursor:pointer;border-radius:50%;outline-offset:2px}.area-bubble .area-bubble-symbol{display:block;flex:none;width:var(--bubble-size);height:var(--bubble-size);border-radius:50%;background:var(--bubble-color);opacity:.67;border:1px solid color-mix(in srgb,var(--bubble-color) 80%,var(--ink));box-sizing:content-box;pointer-events:none;transition:opacity 100ms}
+.area-bubble:hover,.area-bubble:focus-visible,.area-bubble[aria-pressed=true]{z-index:5}.area-bubble:hover .area-bubble-symbol,.area-bubble:focus-visible .area-bubble-symbol,.area-bubble[aria-pressed=true] .area-bubble-symbol{opacity:.95;outline:2px solid var(--ink);outline-offset:2px}.area-bubble:focus-visible{outline:2px solid var(--ink)}
+.area-bubble[data-state=zero] .area-bubble-symbol{width:6px;height:6px;background:var(--surface);border:1.5px solid var(--muted);opacity:1}.area-bubble[data-state=missing] .area-bubble-symbol{width:7px;height:7px;border-radius:0;background:transparent;border:1.5px dashed var(--muted);opacity:1}
+.bubble-legend{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-top:1px solid var(--rule);margin-top:14px;padding-top:12px}.bubble-legend>div:first-child{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--ink);max-width:240px}.bubble-legend>div:first-child>span{font-size:11px;color:var(--muted);line-height:1.5}.bubble-legend-values{display:flex;gap:6px;align-items:flex-end}.bubble-legend-values>div{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--muted)}.map-state-key{display:flex;gap:14px;font-size:11px;color:var(--muted)}.map-state-key>span{display:flex;align-items:center;gap:6px}.map-state-key i{display:inline-block;width:8px;height:8px;border:1.5px solid var(--muted);border-radius:50%}.map-state-key .missing{border-style:dashed;border-radius:0}.map-caveat{font-size:11px;color:var(--muted);line-height:1.6;margin:12px 0 0}.area-kpi-scope{margin-bottom:-10px}
+@media(max-width:1100px){.page .areas-explorer{grid-template-columns:minmax(0,1fr)}.map-intro p{max-width:none}.map-intro{flex-direction:column}.map-view-controls{justify-content:flex-start}.geo-map{height:470px}}
+@media(max-width:540px){.geo-map{height:390px;min-height:330px}.map-coverage{font-size:10px}.bubble-legend{gap:12px}.bubble-legend-values{gap:0;justify-content:space-between;width:100%}.bubble-legend-values>div{flex:1}.map-view-controls button{min-height:40px}.area-map-card .module-heading{align-items:flex-start}}
+.geo-map{height:460px}
+@media(max-width:540px){.geo-map{height:390px}}
+.area-map-card .bubble-legend{border-top:0;border-bottom:1px solid var(--rule);padding:0 0 10px;margin:0 0 10px;min-height:72px;gap:8px}.bubble-size-key{flex-shrink:0;max-width:100%}.area-map-card .map-state-key{margin-top:4px}.area-map-card .bubble-legend>div:first-child{max-width:260px}
+@media(max-width:540px){.area-map-card .bubble-legend{gap:10px}.bubble-size-key{width:220px;height:66px}.area-map-card .map-intro{gap:8px}.area-map-card .map-readout{margin:8px 0;min-height:60px}}
+
+/* Closed disclosures must not contribute hidden table/methodology overflow. */
+details:not([open]) > :not(summary) {display:none}
+
+/* Desktop exploration fills available space; card height follows the shell,
+   rather than estimating the combined height of filters, KPIs and footer. */
+@media(min-width:1101px){
+ .page[data-workspace=explore]{height:100svh;display:flex;flex-direction:column}
+ .page[data-workspace=explore]>.masthead,.page[data-workspace=explore]>nav,.page[data-workspace=explore]>footer{flex:none}
+ .page[data-workspace=explore]>main{flex:1;min-height:0;display:flex;flex-direction:column}
+ .page[data-workspace=explore] .global-filters{flex:none}
+ .page[data-workspace=explore] main>[role=tabpanel]{flex:1;min-height:0;display:flex;flex-direction:column}
+ .page[data-workspace=explore] .operators-dashboard,.page[data-workspace=explore] .areas-dashboard{flex:1;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr);gap:12px}
+ .page[data-workspace=explore] .operators-dashboard>.operators-heading,.page[data-workspace=explore] .areas-dashboard>.areas-heading{margin:0}
+ .page[data-workspace=explore] .kpi-grid{margin:0}
+ .page[data-workspace=explore] .operators-dashboard[data-detail=false] .operators-grid,.page[data-workspace=explore] .areas-explorer{height:auto;min-height:0;margin:0}
+}
+/* Bound painted row descendants to keyboard-scrollable ranking viewports. */
+.ranking-list[tabindex]{position:relative;isolation:isolate;contain:paint;overscroll-behavior-y:contain}
+@media(min-width:1101px){
+ .page[data-workspace=explore] .areas-explorer .areas-filters{grid-template-columns:repeat(3,minmax(0,1fr))}
+}

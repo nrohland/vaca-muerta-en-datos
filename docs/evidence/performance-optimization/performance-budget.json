@@ -1,0 +1,9 @@
+{
+  "status": "pass",
+  "bytes_billed": 1708130304,
+  "run_limit": 3221225472,
+  "query_limit": 1073741824,
+  "warnings": [],
+  "scope": "dbt run_results only; freshness, gates and export are separate",
+  "enforcement": "acceptance after build; execution is guarded per query"
+}

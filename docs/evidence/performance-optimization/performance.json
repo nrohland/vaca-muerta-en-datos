@@ -1,0 +1,1362 @@
+{
+  "schema_version": 1,
+  "invocation_id": "1c35ff48-a7ab-4da4-8e48-5c5fefdbbb07",
+  "wall_seconds": 105.828132,
+  "totals": {
+    "bytes_processed": 1038427627,
+    "bytes_billed": 1708130304,
+    "slot_ms": 554443
+  },
+  "node_count": 106,
+  "metrics_available": {
+    "bytes_processed": 105,
+    "bytes_billed": 105,
+    "slot_ms": 95
+  },
+  "models": [
+    {
+      "node": "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "status": "success",
+      "seconds": 6.164760112762451,
+      "bytes_processed": 820448355,
+      "bytes_billed": 821035008,
+      "slot_ms": 6888,
+      "job_id": "ee1e1b27-7656-401c-8198-c2f0eea21dba",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.stg_monthly_reference_price",
+      "status": "success",
+      "seconds": 1.2910966873168945,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 0,
+      "job_id": "a11f9e2e-93d5-4f68-888a-7b3099440950",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.int_produccion_vm_noconv",
+      "status": "success",
+      "seconds": 2.0138230323791504,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 0,
+      "job_id": "c90deb72-cc14-46b3-bdd6-7af7cd987748",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_well_month",
+      "status": "success",
+      "seconds": 4.610229015350342,
+      "bytes_processed": 29670942,
+      "bytes_billed": 30408704,
+      "slot_ms": 5346,
+      "job_id": "14fa205e-bef4-476a-9d39-ec8a1bfa264c",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.dim_company",
+      "status": "success",
+      "seconds": 3.270205020904541,
+      "bytes_processed": 4065803,
+      "bytes_billed": 10485760,
+      "slot_ms": 3612,
+      "job_id": "48df201d-bbfa-48dd-92ba-50b645e21fd0",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_area_month",
+      "status": "success",
+      "seconds": 3.3176887035369873,
+      "bytes_processed": 13019716,
+      "bytes_billed": 13631488,
+      "slot_ms": 16512,
+      "job_id": "18a55262-434b-4872-a0d0-171eabc5120a",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.dim_area",
+      "status": "success",
+      "seconds": 5.275349855422974,
+      "bytes_processed": 4917556,
+      "bytes_billed": 10485760,
+      "slot_ms": 12141,
+      "job_id": "16c2437c-bf64-42b4-8b93-593671eb5dc8",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_company_month",
+      "status": "success",
+      "seconds": 5.404794216156006,
+      "bytes_processed": 12167963,
+      "bytes_billed": 12582912,
+      "slot_ms": 16591,
+      "job_id": "1a19d8d3-2a4c-4b85-83c6-cf4eb5f9364a",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_production_rate",
+      "status": "success",
+      "seconds": 3.9389758110046387,
+      "bytes_processed": 7201920,
+      "bytes_billed": 10485760,
+      "slot_ms": 1935,
+      "job_id": "34b43b11-f515-4318-b84f-795dd55a7b7f",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "status": "success",
+      "seconds": 4.783581256866455,
+      "bytes_processed": 8818167,
+      "bytes_billed": 20971520,
+      "slot_ms": 68988,
+      "job_id": "6336288d-73a4-4203-aed3-b8e697c3df8a",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.23589301109314,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 401272,
+      "job_id": "30225b1e-81e7-4b5c-b72f-6c26d5de8bd1",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_reference_valuation_entity_month",
+      "status": "success",
+      "seconds": 17.10175108909607,
+      "bytes_processed": 36196801,
+      "bytes_billed": 36700160,
+      "slot_ms": 20135,
+      "job_id": "f04ec2b0-203c-4e85-a972-08f6e2bd99b0",
+      "resource_type": "model"
+    }
+  ],
+  "slowest_nodes": [
+    {
+      "node": "model.vaca_muerta_pulse.fct_reference_valuation_entity_month",
+      "status": "success",
+      "seconds": 17.10175108909607,
+      "bytes_processed": 36196801,
+      "bytes_billed": 36700160,
+      "slot_ms": 20135,
+      "job_id": "f04ec2b0-203c-4e85-a972-08f6e2bd99b0",
+      "resource_type": "model"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.zero_comparison_base_stays_null_with_complete_ytd",
+      "status": "pass",
+      "seconds": 14.446430921554565,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "ebaca6bb-663f-4c47-984f-6ce1687c0aa2",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.23589301109314,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 401272,
+      "job_id": "30225b1e-81e7-4b5c-b72f-6c26d5de8bd1",
+      "resource_type": "model"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.duplicate_product_month_prices_never_duplicate_wells",
+      "status": "pass",
+      "seconds": 8.203659057617188,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "8b8953e7-282b-4a61-9c50-72ed33b0be4f",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_uses_latest_cap4_month_only",
+      "status": "pass",
+      "seconds": 7.916138172149658,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "1119d0a7-bfd0-45ab-ad3a-e0ee35106a8e",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.gas_reference_scenario_formula_zero_and_unavailable_cases",
+      "status": "pass",
+      "seconds": 7.364220857620239,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "11ab465e-2477-4994-8ddc-54cda913c9b1",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "seed.vaca_muerta_pulse.operator_groups",
+      "status": "success",
+      "seconds": 6.915889024734497,
+      "bytes_processed": null,
+      "bytes_billed": null,
+      "slot_ms": null,
+      "job_id": null,
+      "resource_type": "seed"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.oil_same_month_missing_and_invalid_are_null",
+      "status": "pass",
+      "seconds": 6.820955038070679,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "9c83cccd-5ddd-4202-a889-1347b0a153d4",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_calendar_when_tef_sum_zero",
+      "status": "pass",
+      "seconds": 6.283592224121094,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "603995be-a02f-4dee-904c-fc4ce222fa24",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "status": "success",
+      "seconds": 6.164760112762451,
+      "bytes_processed": 820448355,
+      "bytes_billed": 821035008,
+      "slot_ms": 6888,
+      "job_id": "ee1e1b27-7656-401c-8198-c2f0eea21dba",
+      "resource_type": "model"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_headline_is_basin_calendar_not_tef",
+      "status": "pass",
+      "seconds": 5.94603705406189,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "938ec210-0df2-43ab-afe9-c1fec55b4651",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.stg_monthly_reference_price.dual_reference_units_and_energy_basis_are_explicit",
+      "status": "pass",
+      "seconds": 5.71897029876709,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "370d1755-ddc7-465a-8cd2-601ac5dbb8e3",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_company_month",
+      "status": "success",
+      "seconds": 5.404794216156006,
+      "bytes_processed": 12167963,
+      "bytes_billed": 12582912,
+      "slot_ms": 16591,
+      "job_id": "1a19d8d3-2a4c-4b85-83c6-cf4eb5f9364a",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.dim_area",
+      "status": "success",
+      "seconds": 5.275349855422974,
+      "bytes_processed": 4917556,
+      "bytes_billed": 10485760,
+      "slot_ms": 12141,
+      "job_id": "16c2437c-bf64-42b4-8b93-593671eb5dc8",
+      "resource_type": "model"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.gas_calendar_gaps_zero_base_and_complete_ytd",
+      "status": "pass",
+      "seconds": 5.204086065292358,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "d764fc4c-50d9-4256-a1e1-c6a5ebf6a954",
+      "resource_type": "unit_test"
+    }
+  ],
+  "nodes": [
+    {
+      "node": "unit_test.vaca_muerta_pulse.stg_monthly_reference_price.dual_reference_units_and_energy_basis_are_explicit",
+      "status": "pass",
+      "seconds": 5.71897029876709,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "370d1755-ddc7-465a-8cd2-601ac5dbb8e3",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "status": "success",
+      "seconds": 6.164760112762451,
+      "bytes_processed": 820448355,
+      "bytes_billed": 821035008,
+      "slot_ms": 6888,
+      "job_id": "ee1e1b27-7656-401c-8198-c2f0eea21dba",
+      "resource_type": "model"
+    },
+    {
+      "node": "seed.vaca_muerta_pulse.operator_groups",
+      "status": "success",
+      "seconds": 6.915889024734497,
+      "bytes_processed": null,
+      "bytes_billed": null,
+      "slot_ms": null,
+      "job_id": null,
+      "resource_type": "seed"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.stg_monthly_reference_price",
+      "status": "success",
+      "seconds": 1.2910966873168945,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 0,
+      "job_id": "a11f9e2e-93d5-4f68-888a-7b3099440950",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_formacion__vaca_muerta.418e3c55d1",
+      "status": "pass",
+      "seconds": 1.8007452487945557,
+      "bytes_processed": 1462890,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "e7a26dbf-2ed0-406d-8563-f38de50ef7d9",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_tipo_de_recurso__NO_CONVENCIONAL.d1338691a4",
+      "status": "pass",
+      "seconds": 1.884185791015625,
+      "bytes_processed": 1913010,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "c424f1e3-dda3-4e9e-9f43-96d4e06fa521",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_stg_produccion_pozo_mes_idpozo__anio__mes.207ebc2835",
+      "status": "pass",
+      "seconds": 1.7895638942718506,
+      "bytes_processed": 2700720,
+      "bytes_billed": 10485760,
+      "slot_ms": 36,
+      "job_id": "dcd65bb4-64c0-4aee-bf47-8ccb303c5d5a",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_anio.38818fe703",
+      "status": "pass",
+      "seconds": 2.5404841899871826,
+      "bytes_processed": 900240,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "1deeeffd-6bdb-4d8d-9418-b57d8f0611d1",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_mes.666f621797",
+      "status": "pass",
+      "seconds": 1.7021350860595703,
+      "bytes_processed": 900240,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "66a29754-9b46-4d02-8c53-56a8efbfde36",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_idpozo.9bfb2ca424",
+      "status": "pass",
+      "seconds": 1.8560948371887207,
+      "bytes_processed": 900240,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "56ce2c3a-b1bb-4921-a5af-60c8e4eda81a",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_periodo.b052550c7c",
+      "status": "pass",
+      "seconds": 2.522233009338379,
+      "bytes_processed": 900240,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "ad18a476-52ab-49ce-8772-95632562d4af",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_operator_groups_legal_operator_id.336ee3c9c0",
+      "status": "pass",
+      "seconds": 1.9002711772918701,
+      "bytes_processed": 10,
+      "bytes_billed": 10485760,
+      "slot_ms": 4,
+      "job_id": "21849ea4-8f66-4e59-962f-284732a64bd7",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_operator_groups_operator_group_id.c545c5a621",
+      "status": "pass",
+      "seconds": 1.797631025314331,
+      "bytes_processed": 24,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "e9c08302-4a8a-4b01-9270-809da4b796ac",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_operator_groups_legal_operator_id.af9772197d",
+      "status": "pass",
+      "seconds": 1.7843010425567627,
+      "bytes_processed": 10,
+      "bytes_billed": 10485760,
+      "slot_ms": 8,
+      "job_id": "dfaae68f-3a4f-4a00-a025-df256de7e119",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_stg_monthly_reference_price_product__periodo.70368d0953",
+      "status": "pass",
+      "seconds": 1.793273687362671,
+      "bytes_processed": 10764,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "a8120b1c-8722-4454-941d-d67b8806d841",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_periodo.c844a0169d",
+      "status": "pass",
+      "seconds": 1.822441816329956,
+      "bytes_processed": 6624,
+      "bytes_billed": 10485760,
+      "slot_ms": 18,
+      "job_id": "dadae6b4-c903-4c9e-b8d2-8e90f7892f5f",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_snapshot_id.e33fbd228e",
+      "status": "pass",
+      "seconds": 1.8855271339416504,
+      "bytes_processed": 54648,
+      "bytes_billed": 10485760,
+      "slot_ms": 4,
+      "job_id": "aabbd2bc-775a-4b82-a33e-5a3f713c0488",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.reference_price_contract",
+      "status": "pass",
+      "seconds": 1.9797492027282715,
+      "bytes_processed": 240988,
+      "bytes_billed": 10485760,
+      "slot_ms": 10,
+      "job_id": "c4f56efc-f8f7-4cc1-a82e-ecbd4b9c9d29",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.reference_required_price",
+      "status": "pass",
+      "seconds": 2.0258679389953613,
+      "bytes_processed": 68672,
+      "bytes_billed": 10485760,
+      "slot_ms": 9,
+      "job_id": "3462bcdb-3e72-4fbd-b247-cbc2dcb44c15",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.int_produccion_vm_noconv",
+      "status": "success",
+      "seconds": 2.0138230323791504,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 0,
+      "job_id": "c90deb72-cc14-46b3-bdd6-7af7cd987748",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_int_produccion_vm_noconv_well_month_id.7e3e063cec",
+      "status": "pass",
+      "seconds": 1.8805241584777832,
+      "bytes_processed": 2700720,
+      "bytes_billed": 10485760,
+      "slot_ms": 96,
+      "job_id": "b6ef51a5-70cf-400d-8027-648dcb3662f4",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_int_produccion_vm_noconv_well_month_id.024fd86571",
+      "status": "pass",
+      "seconds": 2.0687100887298584,
+      "bytes_processed": 2700720,
+      "bytes_billed": 10485760,
+      "slot_ms": 14,
+      "job_id": "24c4bda1-88f5-4a96-a2f5-d4e049baece6",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_well_month",
+      "status": "success",
+      "seconds": 4.610229015350342,
+      "bytes_processed": 29670942,
+      "bytes_billed": 30408704,
+      "slot_ms": 5346,
+      "job_id": "14fa205e-bef4-476a-9d39-ec8a1bfa264c",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_expectations_expect_column_values_to_be_between_fct_well_month_tef__31_5__0__tef_is_not_null.44af150677",
+      "status": "pass",
+      "seconds": 1.5411779880523682,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 8,
+      "job_id": "ee9db8df-8fa1-4090-aae0-dd19918d9317",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_well_month_idpozo__anio__mes.ac668b86aa",
+      "status": "pass",
+      "seconds": 1.7338829040527344,
+      "bytes_processed": 2700720,
+      "bytes_billed": 10485760,
+      "slot_ms": 19,
+      "job_id": "8eba4d35-b29a-4ade-b9a8-0917bd6ee83e",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.assert_idareapermisoconcesion_has_one_area_name",
+      "status": "pass",
+      "seconds": 2.030451774597168,
+      "bytes_processed": 3452209,
+      "bytes_billed": 10485760,
+      "slot_ms": 15,
+      "job_id": "8a5f9919-0879-4675-8fe6-a6a52e1ca3e6",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.assert_idempresa_has_one_empresa_name",
+      "status": "pass",
+      "seconds": 2.680464029312134,
+      "bytes_processed": 3165563,
+      "bytes_billed": 10485760,
+      "slot_ms": 9,
+      "job_id": "72688e5e-b254-462b-b3d8-cc109745a017",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_well_month_anio.d73e287c34",
+      "status": "pass",
+      "seconds": 1.6971509456634521,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 8,
+      "job_id": "029fb7eb-b2f1-4aaa-90be-731ffa8a9890",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_well_month_idpozo.d77b1e2308",
+      "status": "pass",
+      "seconds": 1.6619679927825928,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "8a6aae7b-6ea6-4228-bfa6-bb585ed8f1ec",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_well_month_mes.bd385e1416",
+      "status": "pass",
+      "seconds": 1.624466896057129,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 8,
+      "job_id": "61a653e1-b613-4e4d-b672-192c21a16ac1",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_well_month_periodo.5252cd78f9",
+      "status": "pass",
+      "seconds": 1.612489938735962,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 6,
+      "job_id": "c41f111f-3b34-45aa-9365-f5b4c960d391",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_well_month_well_month_id.1d3ef599f9",
+      "status": "pass",
+      "seconds": 1.5701789855957031,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "05076da7-c42d-49be-ac1d-df01d8985f57",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_fct_well_month_well_month_id.539458cf81",
+      "status": "pass",
+      "seconds": 1.6614420413970947,
+      "bytes_processed": 3826020,
+      "bytes_billed": 10485760,
+      "slot_ms": 153,
+      "job_id": "f7af6b89-b983-4c77-895c-db954485a61c",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.dim_company",
+      "status": "success",
+      "seconds": 3.270205020904541,
+      "bytes_processed": 4065803,
+      "bytes_billed": 10485760,
+      "slot_ms": 3612,
+      "job_id": "48df201d-bbfa-48dd-92ba-50b645e21fd0",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_area_month",
+      "status": "success",
+      "seconds": 3.3176887035369873,
+      "bytes_processed": 13019716,
+      "bytes_billed": 13631488,
+      "slot_ms": 16512,
+      "job_id": "18a55262-434b-4872-a0d0-171eabc5120a",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.dim_area",
+      "status": "success",
+      "seconds": 5.275349855422974,
+      "bytes_processed": 4917556,
+      "bytes_billed": 10485760,
+      "slot_ms": 12141,
+      "job_id": "16c2437c-bf64-42b4-8b93-593671eb5dc8",
+      "resource_type": "model"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_company_month",
+      "status": "success",
+      "seconds": 5.404794216156006,
+      "bytes_processed": 12167963,
+      "bytes_billed": 12582912,
+      "slot_ms": 16591,
+      "job_id": "1a19d8d3-2a4c-4b85-83c6-cf4eb5f9364a",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_dim_company_empresa.a16ddc11be",
+      "status": "pass",
+      "seconds": 1.5717511177062988,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "b271a436-8d8e-4d91-b5a5-e0db34d3b164",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_dim_company_idempresa.43e49fa435",
+      "status": "pass",
+      "seconds": 2.469923257827759,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 11,
+      "job_id": "4174af44-9438-4231-824c-b29ef7e34b59",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_dim_company_idempresa.8e85f2536d",
+      "status": "pass",
+      "seconds": 1.6542320251464844,
+      "bytes_processed": 150,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "bbf14d01-f34e-4844-8f66-f8e46a9bfddb",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.assert_area_month_reconciles_to_well_month",
+      "status": "pass",
+      "seconds": 1.980468988418579,
+      "bytes_processed": 1856400,
+      "bytes_billed": 20971520,
+      "slot_ms": 21,
+      "job_id": "8e3c276f-28f7-471e-b907-db70f88948f9",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_area_month_idareapermisoconcesion__periodo.1dff08e108",
+      "status": "pass",
+      "seconds": 1.624851942062378,
+      "bytes_processed": 47752,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "d2bf5ba9-b9aa-46c9-a8e2-cccf8df4e166",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_uses_latest_cap4_month_only",
+      "status": "pass",
+      "seconds": 7.916138172149658,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "1119d0a7-bfd0-45ab-ad3a-e0ee35106a8e",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.duplicate_product_month_prices_never_duplicate_wells",
+      "status": "pass",
+      "seconds": 8.203659057617188,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "8b8953e7-282b-4a61-9c50-72ed33b0be4f",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_anio.47a4dfb200",
+      "status": "pass",
+      "seconds": 1.6955289840698242,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "eaac372a-d42d-49b5-9f57-49992f0eacd6",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_area_month_id.cde79ea6a5",
+      "status": "pass",
+      "seconds": 1.801605224609375,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 6,
+      "job_id": "8e4f5126-8ddc-4af8-84e1-c3fe166de23b",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_areapermisoconcesion.b2fea16c5b",
+      "status": "pass",
+      "seconds": 1.683769941329956,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 7,
+      "job_id": "b9f87f94-ddd8-402d-990b-55a59ef0eca5",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_idareapermisoconcesion.aa91414af2",
+      "status": "pass",
+      "seconds": 1.6800377368927002,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 5,
+      "job_id": "f0b620e2-281e-4101-8f2c-91588da1efec",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_mes.32d95a3f88",
+      "status": "pass",
+      "seconds": 1.5773131847381592,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 6,
+      "job_id": "8c08dd96-6ea5-4ce5-9702-ecbcd6f931bf",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_area_month_periodo.eec5ab0704",
+      "status": "pass",
+      "seconds": 1.5133678913116455,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 5,
+      "job_id": "bf49347c-ca58-4bb0-b4e6-c8b8628302aa",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_fct_area_month_area_month_id.b4fd479181",
+      "status": "pass",
+      "seconds": 1.7523770332336426,
+      "bytes_processed": 118830,
+      "bytes_billed": 10485760,
+      "slot_ms": 10,
+      "job_id": "da3c046d-8ce9-4870-83ff-d6d0aca45ff2",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_headline_is_basin_calendar_not_tef",
+      "status": "pass",
+      "seconds": 5.94603705406189,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "938ec210-0df2-43ab-afe9-c1fec55b4651",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_dim_area_areapermisoconcesion.452363d375",
+      "status": "pass",
+      "seconds": 1.9906010627746582,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 9,
+      "job_id": "0f934027-2ef5-4b2b-914b-cedc4ee9396b",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_dim_area_idareapermisoconcesion.b7314313ef",
+      "status": "pass",
+      "seconds": 1.4913928508758545,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 6,
+      "job_id": "be815a36-85c2-4666-b9de-258b6a13aa0a",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.relationships_fct_area_month_idareapermisoconcesion__idareapermisoconcesion__ref_dim_area_.c76e733f46",
+      "status": "pass",
+      "seconds": 1.6427991390228271,
+      "bytes_processed": 20288,
+      "bytes_billed": 20971520,
+      "slot_ms": 9,
+      "job_id": "a8d0557b-80eb-4911-b483-b551950f6fa0",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.gas_reference_scenario_formula_zero_and_unavailable_cases",
+      "status": "pass",
+      "seconds": 7.364220857620239,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "11ab465e-2477-4994-8ddc-54cda913c9b1",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_dim_area_idareapermisoconcesion.59ffb863fa",
+      "status": "pass",
+      "seconds": 2.1799979209899902,
+      "bytes_processed": 496,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "5d8465a6-99e4-41e9-b524-1fe701eb6243",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.assert_company_month_reconciles_to_well_month",
+      "status": "pass",
+      "seconds": 1.5899109840393066,
+      "bytes_processed": 1813984,
+      "bytes_billed": 20971520,
+      "slot_ms": 35,
+      "job_id": "311fe6b9-4b71-4bc4-8c45-3f89c1bd3df1",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_company_month_idempresa__periodo.86cb8c2303",
+      "status": "pass",
+      "seconds": 1.5462961196899414,
+      "bytes_processed": 11132,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "a8e35fe0-4b13-48c5-910e-2f3e99e24ddb",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_anio.5b959cae54",
+      "status": "pass",
+      "seconds": 2.1698319911956787,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 5,
+      "job_id": "69956b8f-0962-4075-9a7e-b26f18aa1763",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_production_rate.production_calendar_when_tef_sum_zero",
+      "status": "pass",
+      "seconds": 6.283592224121094,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "603995be-a02f-4dee-904c-fc4ce222fa24",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_company_month_id.035adf095f",
+      "status": "pass",
+      "seconds": 1.6074528694152832,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 3,
+      "job_id": "7dcb7c35-0f2f-412c-9e6a-2b3663c91a0b",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_empresa.fa4c25b735",
+      "status": "pass",
+      "seconds": 1.8613150119781494,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "176eab4e-7879-4c2f-a4f9-55e76b4aecd3",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_idempresa.deacd3cef6",
+      "status": "pass",
+      "seconds": 1.4958899021148682,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 5,
+      "job_id": "5aaf466d-0a06-4ef7-8766-652eb0667b14",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.oil_same_month_missing_and_invalid_are_null",
+      "status": "pass",
+      "seconds": 6.820955038070679,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "9c83cccd-5ddd-4202-a889-1347b0a153d4",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_mes.f0d7ea15bd",
+      "status": "pass",
+      "seconds": 1.5251970291137695,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 4,
+      "job_id": "adb8cbde-588f-4446-9625-68fc18489ef6",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_company_month_periodo.ba5e684649",
+      "status": "pass",
+      "seconds": 1.5607538223266602,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 7,
+      "job_id": "7c3c8217-bcbc-452a-9131-226f3fd5c003",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_production_rate",
+      "status": "success",
+      "seconds": 3.9389758110046387,
+      "bytes_processed": 7201920,
+      "bytes_billed": 10485760,
+      "slot_ms": 1935,
+      "job_id": "34b43b11-f515-4318-b84f-795dd55a7b7f",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.relationships_fct_company_month_idempresa__idempresa__ref_dim_company_.fd71feaae8",
+      "status": "pass",
+      "seconds": 1.7703046798706055,
+      "bytes_processed": 4530,
+      "bytes_billed": 20971520,
+      "slot_ms": 9,
+      "job_id": "70853da9-86fd-4960-bbc2-63df76d6571b",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_fct_company_month_company_month_id.0a1e2662f8",
+      "status": "pass",
+      "seconds": 1.51975417137146,
+      "bytes_processed": 28696,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "afe290da-ee11-45b0-a356-a451be55a154",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_production_rate_rate_method__calendar_days.081d83fb07",
+      "status": "pass",
+      "seconds": 1.5613629817962646,
+      "bytes_processed": 15,
+      "bytes_billed": 10485760,
+      "slot_ms": 4,
+      "job_id": "55fa0647-a32f-4ffc-95ad-c62191c184ba",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.assert_production_reconciles_to_well_month",
+      "status": "pass",
+      "seconds": 1.5293776988983154,
+      "bytes_processed": 1800496,
+      "bytes_billed": 20971520,
+      "slot_ms": 15,
+      "job_id": "83819d65-3756-431c-9d13-1087ac211147",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.candidate_period_is_enforced",
+      "status": "pass",
+      "seconds": 1.5616161823272705,
+      "bytes_processed": 8,
+      "bytes_billed": 20971520,
+      "slot_ms": 4,
+      "job_id": "65980c0c-d053-4212-bd5a-a03fdc5696d3",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "status": "success",
+      "seconds": 4.783581256866455,
+      "bytes_processed": 8818167,
+      "bytes_billed": 20971520,
+      "slot_ms": 68988,
+      "job_id": "6336288d-73a4-4203-aed3-b8e697c3df8a",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_expectations_expect_table_row_count_to_be_between_fct_production_rate_1__1.52b55c7edb",
+      "status": "pass",
+      "seconds": 1.593148946762085,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": 7,
+      "job_id": "1498b83b-5a8d-45db-96a4-f8a0fc3601af",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_bbl_dia_rate_m3_dia_var_m3_to_bbl_0_0000001.4d3d9a1b7e",
+      "status": "pass",
+      "seconds": 1.456589937210083,
+      "bytes_processed": 16,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "a1220efe-ef7a-4673-a8ca-558c73d71200",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_m3_dia_prod_pet_m3_days_in_month_0_0000001.53fb3d4c21",
+      "status": "pass",
+      "seconds": 1.666031837463379,
+      "bytes_processed": 24,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "c93c2858-e51c-4c47-ad29-4bb735f65166",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_rate_bbl_dia_rate_bbl_per_day_and_rate_m3_dia_rate_m3_per_day.2ed8499256",
+      "status": "pass",
+      "seconds": 1.5787930488586426,
+      "bytes_processed": 32,
+      "bytes_billed": 10485760,
+      "slot_ms": 8,
+      "job_id": "4e4f05ea-8677-40f7-9a03-4b5ec440b563",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_production_rate_anio.86be59754c",
+      "status": "pass",
+      "seconds": 1.6177978515625,
+      "bytes_processed": 8,
+      "bytes_billed": 10485760,
+      "slot_ms": 3,
+      "job_id": "7c9ac376-bf35-4425-a084-41d13053bf68",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_production_rate_mes.e2eaf65b4f",
+      "status": "pass",
+      "seconds": 1.512524127960205,
+      "bytes_processed": 8,
+      "bytes_billed": 10485760,
+      "slot_ms": 6,
+      "job_id": "1b0a66f5-0744-42ca-bbf7-21ac99796d92",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_production_rate_periodo.21cbb42701",
+      "status": "pass",
+      "seconds": 1.5370190143585205,
+      "bytes_processed": 8,
+      "bytes_billed": 10485760,
+      "slot_ms": 4,
+      "job_id": "223cc21f-005a-4a31-ba71-622be58c8c61",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_fct_production_rate_periodo.e0661158ea",
+      "status": "pass",
+      "seconds": 1.3076567649841309,
+      "bytes_processed": 8,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "73f1b115-77f2-4874-b352-e860755df649",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_bbl_dia.91bf6aa716",
+      "status": "pass",
+      "seconds": 1.5790748596191406,
+      "bytes_processed": 8,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "8ebfa185-7b71-4458-95f9-0927a5d37342",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_method.bd0ee889f3",
+      "status": "pass",
+      "seconds": 1.5315568447113037,
+      "bytes_processed": 15,
+      "bytes_billed": 10485760,
+      "slot_ms": 2,
+      "job_id": "b92bb835-27d2-44be-8b23-9a0cddf2342c",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_reference_valuation_month_well_month_id.da561d11d2",
+      "status": "pass",
+      "seconds": 1.5162322521209717,
+      "bytes_processed": 3826020,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "e638ef7c-a1e4-4051-880f-a3f171ccecfa",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.reference_gas_scenario_constant",
+      "status": "pass",
+      "seconds": 1.4041390419006348,
+      "bytes_processed": 2700720,
+      "bytes_billed": 10485760,
+      "slot_ms": 14,
+      "job_id": "7dda8cef-b511-48f5-99a5-dfc50b3b3a01",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.reference_valuation_contract",
+      "status": "pass",
+      "seconds": 1.6215879917144775,
+      "bytes_processed": 27682380,
+      "bytes_billed": 28311552,
+      "slot_ms": 53,
+      "job_id": "750afe0e-d44e-40a2-980d-0df1e049dbbd",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_fct_reference_valuation_month_well_month_id.c11093a987",
+      "status": "pass",
+      "seconds": 1.8788671493530273,
+      "bytes_processed": 3826020,
+      "bytes_billed": 10485760,
+      "slot_ms": 97,
+      "job_id": "05007d8d-a3b1-4e93-802d-cc284e6dffe8",
+      "resource_type": "test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.23589301109314,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 401272,
+      "job_id": "30225b1e-81e7-4b5c-b72f-6c26d5de8bd1",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_dimension__basin__company__area.86d612b04d",
+      "status": "pass",
+      "seconds": 1.4605960845947266,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 8,
+      "job_id": "1b1f952a-a86a-4a29-b677-2365ef3ba2bb",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.accepted_values_fct_dashboard_month_fluid__oil__gas.199899208f",
+      "status": "pass",
+      "seconds": 1.656829833984375,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 9,
+      "job_id": "4dc664fb-b90f-460f-9a29-72bf07435bb8",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_contract",
+      "status": "pass",
+      "seconds": 1.68308687210083,
+      "bytes_processed": 1023176,
+      "bytes_billed": 10485760,
+      "slot_ms": 14,
+      "job_id": "7c335d75-b960-44fb-b1c2-6ad454801237",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_months",
+      "status": "pass",
+      "seconds": 1.5579249858856201,
+      "bytes_processed": 285472,
+      "bytes_billed": 10485760,
+      "slot_ms": 12,
+      "job_id": "668e9db4-744f-4995-82b7-cd3a0344876b",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_reconciles",
+      "status": "pass",
+      "seconds": 1.588805913925171,
+      "bytes_processed": 367840,
+      "bytes_billed": 10485760,
+      "slot_ms": 10,
+      "job_id": "f88256ad-82a7-4d67-bb1a-96351c93c658",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_dashboard_month_fluid__dimension__entity_id__periodo.bdf8ea9deb",
+      "status": "pass",
+      "seconds": 1.59474778175354,
+      "bytes_processed": 261272,
+      "bytes_billed": 10485760,
+      "slot_ms": 7,
+      "job_id": "5dbf35a1-58cb-407e-b4a8-73e4a5a2d567",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.zero_comparison_base_stays_null_with_complete_ytd",
+      "status": "pass",
+      "seconds": 14.446430921554565,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "ebaca6bb-663f-4c47-984f-6ce1687c0aa2",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_dimension.12b471f41c",
+      "status": "pass",
+      "seconds": 1.620190143585205,
+      "bytes_processed": 69256,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "40f0d947-aeee-4075-92e2-ec3afdd66986",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_fluid.8a32736446",
+      "status": "pass",
+      "seconds": 1.478851079940796,
+      "bytes_processed": 51480,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "b0affcfb-ad9f-4b5d-9a0e-637f7321697c",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_entity_id.657afc6b38",
+      "status": "pass",
+      "seconds": 1.7742071151733398,
+      "bytes_processed": 58168,
+      "bytes_billed": 10485760,
+      "slot_ms": 8,
+      "job_id": "387e8855-97eb-4aa0-81d5-dbe7e2a91be2",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_periodo.26eb65dc70",
+      "status": "pass",
+      "seconds": 1.4558000564575195,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 2,
+      "job_id": "99c74ec7-3ddd-4a35-a75c-506a8241a949",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.not_null_fct_dashboard_month_volume.da60612825",
+      "status": "pass",
+      "seconds": 1.610671043395996,
+      "bytes_processed": 82368,
+      "bytes_billed": 10485760,
+      "slot_ms": 1,
+      "job_id": "ff492762-a8f1-428c-a55e-9121ca991b40",
+      "resource_type": "test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.calendar_gap_and_incomplete_ytd_are_null",
+      "status": "pass",
+      "seconds": 4.662347078323364,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "f3a95ba4-30dd-4336-b569-ccb437fbafdb",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.gas_calendar_gaps_zero_base_and_complete_ytd",
+      "status": "pass",
+      "seconds": 5.204086065292358,
+      "bytes_processed": 0,
+      "bytes_billed": 0,
+      "slot_ms": null,
+      "job_id": "d764fc4c-50d9-4256-a1e1-c6a5ebf6a954",
+      "resource_type": "unit_test"
+    },
+    {
+      "node": "model.vaca_muerta_pulse.fct_reference_valuation_entity_month",
+      "status": "success",
+      "seconds": 17.10175108909607,
+      "bytes_processed": 36196801,
+      "bytes_billed": 36700160,
+      "slot_ms": 20135,
+      "job_id": "f04ec2b0-203c-4e85-a972-08f6e2bd99b0",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.reference_entity_reconciliation",
+      "status": "pass",
+      "seconds": 1.5524718761444092,
+      "bytes_processed": 212960,
+      "bytes_billed": 10485760,
+      "slot_ms": 15,
+      "job_id": "27d18cbd-448e-4998-8e93-8f0545c8ac56",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_reference_valuation_entity_month_entity_type__entity_id__periodo.19387893af",
+      "status": "pass",
+      "seconds": 1.579883098602295,
+      "bytes_processed": 88682,
+      "bytes_billed": 10485760,
+      "slot_ms": 5,
+      "job_id": "f294f5fd-07e1-4cc9-8bf8-4b1d2ab1824d",
+      "resource_type": "test"
+    }
+  ],
+  "limitations": [
+    "One execution, not a statistically comparable performance baseline.",
+    "Missing adapter metrics remain null; totals include only reported values.",
+    "Bytes billed are not a monetary charge; no pricing assumption is applied.",
+    "A view CREATE with zero processed bytes does not measure its downstream query cost."
+  ],
+  "inputs": {
+    "source_sha256": "bbda8d6de8a3b7f8ff8f3a325be6f04442dae5e1a0df415471066046152d9a05",
+    "price_rows_sha256": "bbe43c3991d919d540c3be7386736fbd2a197f60c78b93653dbcf5e5ecb65b99"
+  }
+}

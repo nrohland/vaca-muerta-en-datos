@@ -1,0 +1,93 @@
+[
+  {
+    "entity_id": "YPF",
+    "url": "https://ypf.com/images/menu-principal/ypf_logoazul.svg",
+    "source_url": "https://www.ypf.com/",
+    "content_type": "image/svg+xml",
+    "file": "apps/web/public/operators/YPF.svg",
+    "sha256": "c844bd75ad6d79f052e0dc14f8b5fa2b230c8567a5a4ad926e1bc011ad159bda",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted",
+    "source_selector": "YPFcom - Header Logo official metadata urlImage"
+  },
+  {
+    "entity_id": "PLUSPETROL",
+    "url": "https://www.pluspetrol.net/images/brand.svg",
+    "source_url": "https://www.pluspetrol.net/en",
+    "content_type": "image/svg+xml",
+    "file": "work/operator-assets-audit/local/PLUSPETROL.svg",
+    "sha256": "efbdddb3dede6e3babc8413c06efc8b58c85c4bd83225700a06182903c55eabf",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "PAL",
+    "url": "https://www.pan-energy.com/Style%20Library/PAE/images/logo-pan-american-energy-pae.png",
+    "source_url": "https://www.pan-energy.com/",
+    "content_type": "image/png",
+    "file": "work/operator-assets-audit/local/PAL.png",
+    "sha256": "3f52d7b75cf2ed22d617d900bbc31245fe1edca00ad0710892cca67c29e3e272",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "PAM",
+    "url": "https://pampa.com/wp-content/uploads/2020/04/pampa-logo-blanco.svg",
+    "source_url": "https://pampa.com/",
+    "content_type": "image/svg+xml",
+    "file": "work/operator-assets-audit/local/PAM.svg",
+    "sha256": "5cf98b0b2e0ced29971660a01b0072bc526e3d67c9ec569aa3b95b529b2f0301",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "TAU",
+    "url": "https://totalenergies.com.ar/themes/custom/butterfly_theme/logo.svg?v=1.2",
+    "source_url": "https://totalenergies.com.ar/es",
+    "content_type": "image/svg+xml",
+    "file": "work/operator-assets-audit/local/TAU.svg",
+    "sha256": "509a0ac4a5b4ed190bd763dace5900f9c7ae00f6ed3c6c1fc937d97736f250b2",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "TPT",
+    "url": "https://www.tecpetrol.com/media/oa3pltak/tp_isologo.jpg",
+    "source_url": "https://www.tecpetrol.com/es/sala-de-prensa",
+    "content_type": "image/jpeg",
+    "file": "work/operator-assets-audit/local/TPT.jpg",
+    "sha256": "cf271653f776a3a6874661f192131ba262b1fc9dbd15e890bb304c2ab1466ae6",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "SHE",
+    "url": "https://www.shell.dk/press/shell-logo/download/_jcr_content/root/main/section/text.multi.stream/1711020253030/335d56178beaf47342c2ba95e7c925e8139f4ece/shell-pecten.jpg",
+    "source_url": "https://www.shell.dk/press/shell-logo/download.html",
+    "content_type": "image/jpeg",
+    "file": "work/operator-assets-audit/local/SHE.jpg",
+    "sha256": "6d762582173b3ff040500038184fba5de19ad42593af695fe1d2eff6c71248de",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "PGR",
+    "url": "https://m25djebmixn.preview.infomaniak.website/wp-content/uploads/2025/05/Phoenix-logo.png",
+    "source_url": "https://phoenixglobalresources.com/en/",
+    "content_type": "image/png",
+    "file": "work/operator-assets-audit/local/PGR.png",
+    "sha256": "691db822723f308d2ddf08dcfbbf9f23827754bf9d163bfaf4c62c00ee54653d",
+    "status": "verified-official-source",
+    "reuse_permission": "not_asserted"
+  },
+  {
+    "entity_id": "VST",
+    "url": "https://www.vistaenergy.com/",
+    "source_url": "https://www.vistaenergy.com/",
+    "source_selector": "header link aria-label Vista Energy - Ir a la página de inicio, first SVG",
+    "file": "work/operator-assets-audit/local/VST.svg",
+    "sha256": "c601adfdf5a23600d8f15c9708e5cd49ce155d662093ee5c2a368f19129c5af8",
+    "status": "verified-official-inline-svg",
+    "reuse_permission": "not_asserted"
+  }
+]

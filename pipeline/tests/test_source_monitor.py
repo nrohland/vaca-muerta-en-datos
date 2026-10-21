@@ -218,3 +218,60 @@ class FailureSafety(unittest.TestCase):
     def test_missing_accepted_month_triggers_quality_notice(self):
         _,report=monitor.compare(base(),observe(monitor.missing_profile(),period='2026-08-01'),PRICES,NOW)
         self.assertIn('source_quality_failure',{e['kind'] for e in report['events']})
+
+class PublicReadResilience(unittest.TestCase):
+    def test_timeout_is_bounded_and_recovery_returns_fresh_result(self):
+        calls, sleeps = [], []
+        def read():
+            calls.append(1)
+            if len(calls) < 3: raise TimeoutError('private upstream detail')
+            return 'new observation'
+        self.assertEqual(monitor.retry_public_read(read, sleep=sleeps.append), 'new observation')
+        self.assertEqual((len(calls), sleeps), (3, [1, 2]))
+
+    def test_validation_access_denied_and_tls_errors_never_retry(self):
+        from urllib.error import HTTPError, URLError
+        import ssl
+        for error in (ValueError('contract'), HTTPError('https://example.test',403,'secret',{},None),
+                      URLError(ssl.SSLCertVerificationError('private certificate detail'))):
+            calls = []
+            def read():
+                calls.append(1)
+                raise error
+            with self.assertRaises(type(error)):
+                monitor.retry_public_read(read, sleep=lambda _:self.fail('Must not retry'))
+            self.assertEqual(len(calls), 1)
+
+    def test_final_network_failure_is_not_silenced(self):
+        from urllib.error import URLError
+        calls = []
+        def read():
+            calls.append(1)
+            raise URLError('private message')
+        with self.assertRaises(URLError): monitor.retry_public_read(read, sleep=lambda _:None)
+        self.assertEqual(len(calls),3)
+
+    def test_partial_annual_download_is_removed_before_read_retry(self):
+        with tempfile.TemporaryDirectory() as d:
+            target = Path(d)/'2026.csv'; calls = []
+            def retrieve(year, path):
+                calls.append(year)
+                with path.open('xb') as stream: stream.write(b'partial' if len(calls)==1 else b'fresh')
+                if len(calls)==1: raise TimeoutError('private')
+                return {'sha256':'new hash'}
+            with patch.object(monitor.source,'retrieve',side_effect=retrieve), patch.object(monitor.time,'sleep'):
+                self.assertEqual(monitor.retrieve_annual(2026,target),{'sha256':'new hash'})
+            self.assertEqual(target.read_bytes(),b'fresh')
+
+    def test_diagnostic_is_safe_and_notice_identifies_source(self):
+        from urllib.error import URLError, HTTPError
+        import socket
+        detail = monitor.source_error(URLError(socket.gaierror(-2,'private DNS response')))
+        self.assertEqual(detail,{'code':'URLError','category':'dns_error'})
+        detail = monitor.source_error(HTTPError('https://private.test?token=secret',503,'private body',{},None))
+        self.assertEqual(detail,{'code':'HTTPError','category':'http_error','http_status':503})
+        event={'id':'a'*64,'kind':'source_observation_failed','period':None,'details':{'year':2026,**detail}}
+        title, body = issue_body(event,'https://github.com/a/b/actions/runs/1')
+        self.assertIn('2026',title); self.assertIn('HTTP 503',body)
+        self.assertNotIn('private',body); self.assertNotIn('secret',body)
+        self.assertNotIn('HTTP 503',issue_body({**event,'details':{'category':'<script>','source':'evil'}},'run')[1])

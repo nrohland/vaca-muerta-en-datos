@@ -13,6 +13,11 @@ import statistics
 import sys
 import tempfile
 import re
+import socket
+import ssl
+import time
+from http.client import IncompleteRead
+from urllib.error import HTTPError, URLError
 from zoneinfo import ZoneInfo
 from urllib.request import HTTPRedirectHandler, build_opener
 
@@ -28,6 +33,42 @@ POLICY = {'coverage_floor': 0.98, 'stable_hours': 48, 'fresh_hours': 36,
 # Arrival/user metadata and the optional surrogate id do not change product semantics.
 EXCLUDED = {'fecha_data', 'idusuario', 'id'}
 INTEGERS = {'anio', 'mes', 'idpozo', 'idusuario', 'id'}
+
+
+def source_error(error):
+    """Allowlisted diagnostics only: never persist exception text or response bodies."""
+    reason = error.reason if isinstance(error, URLError) else error
+    category = 'unexpected_error'
+    if isinstance(error, HTTPError): category = 'http_error'
+    elif isinstance(reason, ssl.SSLError): category = 'tls_error'
+    elif isinstance(reason, (TimeoutError, socket.timeout)): category = 'timeout'
+    elif isinstance(reason, socket.gaierror): category = 'dns_error'
+    elif isinstance(error, (URLError, ConnectionError, IncompleteRead)): category = 'connection_error'
+    elif isinstance(error, ValueError): category = 'validation_error'
+    result = {'code': type(error).__name__, 'category': category}
+    if isinstance(error, HTTPError): result['http_status'] = int(error.code)
+    return result
+
+
+def retry_public_read(action, *, sleep=None):
+    """Retry only transient public reads, never validation failures or cloud writes."""
+    for attempt in range(3):
+        try:
+            return action()
+        except (HTTPError, URLError, TimeoutError, ConnectionError, IncompleteRead) as error:
+            reason = error.reason if isinstance(error, URLError) else error
+            transient = (not isinstance(reason, ssl.SSLError)
+                         and (not isinstance(error, HTTPError) or error.code in (429, 500, 502, 503, 504)))
+            if not transient or attempt == 2: raise
+            (sleep or time.sleep)(2 ** attempt)
+
+
+def retrieve_annual(year, csv_path):
+    # csv_path belongs to this run's private scratch directory, never inbound files.
+    def retrieve():
+        csv_path.unlink(missing_ok=True)
+        return source.retrieve(year, csv_path)
+    return retry_public_read(retrieve)
 
 
 def stamp():
@@ -270,7 +311,7 @@ def collect(state, scratch, inbound=None, force=False):
         try:
             due = not previous or year == max(source.RESOURCES) or (now-moment(previous['observed_at'])).days >= POLICY['historical_full_days']
             if not due and not force and not inbound:
-                current = source.read_metadata(year, build_opener(source.AnnualRedirect(year)))
+                current = retry_public_read(lambda: source.read_metadata(year, build_opener(source.AnnualRedirect(year))))
                 due = any(current.get(k)!=previous['metadata'].get(k) for k in ('id','url','size','last_modified'))
             if not due and not force and not inbound:
                 observations.update({p: {'profile':v['profile'],'observed_at':v['observed_at']} for p,v in state['periods'].items() if p.startswith(str(year))})
@@ -279,7 +320,7 @@ def collect(state, scratch, inbound=None, force=False):
                 csv_path = inbound/f'{year}.csv'; retained=json.loads((inbound/f'{year}.retrieval.json').read_text())
                 retrieval = source.normalize_retained(year,retained)
             else:
-                csv_path = scratch/f'{year}.csv'; retrieval = source.retrieve(year,csv_path)
+                csv_path = scratch/f'{year}.csv'; retrieval = retrieve_annual(year,csv_path)
             source.validate_retrieval(year,csv_path,retrieval)
             values = profile(csv_path,contract,year)
             if any(p>now.astimezone(ZoneInfo('America/Argentina/Buenos_Aires')).strftime('%Y-%m-01') for p in values):
@@ -292,7 +333,7 @@ def collect(state, scratch, inbound=None, force=False):
                                 'csv_sha256':retrieval['sha256']}
         except Exception as error:
             if previous: years[str(year)]=previous
-            errors.append({'year':year,'code':type(error).__name__,
+            errors.append({'year':year,**source_error(error),
                            'source_fingerprint':retrieval['sha256'] if retrieval else 'unavailable'})
     return observations, years, errors
 
@@ -348,15 +389,15 @@ def run(args):
         quotes=copy.deepcopy(state['prices'])
         for fluid, parser, field in [('oil',import_brent,'usd_per_bbl'),('gas',import_henry_hub,'usd_per_mmbtu')]:
             try:
-                parsed=fetch_eia(parser)
+                parsed=retry_public_read(lambda: fetch_eia(parser))
                 quotes[fluid]={r['periodo']:r[field] for r in parsed['prices'] if r['periodo']>='2023-01-01'}
             except Exception as error:
-                errors.append({'source':fluid,'code':type(error).__name__,'source_fingerprint':'unavailable'})
+                errors.append({'source':fluid,**source_error(error),'source_fingerprint':'unavailable'})
         catalogue_events=[]
         try:
-            catalogue_events,catalogue_ids=discover_resources(state.get('catalogue_resource_ids',list(source.RESOURCES.values())))
+            catalogue_events,catalogue_ids=retry_public_read(lambda: discover_resources(state.get('catalogue_resource_ids',list(source.RESOURCES.values()))))
             state['catalogue_resource_ids']=catalogue_ids
-        except Exception as error: errors.append({'source':'catalogue','code':type(error).__name__,'source_fingerprint':'unavailable'})
+        except Exception as error: errors.append({'source':'catalogue',**source_error(error),'source_fingerprint':'unavailable'})
         result, report = compare(state,observations,quotes,datetime.now(timezone.utc))
         report['events'].extend(catalogue_events)
         quality_failures=[e for e in report['events'] if e['kind']=='source_quality_failure']
@@ -379,6 +420,14 @@ def run(args):
     for period, item in report.get('months',{}).items():
         lines.append('| '+period[:7]+' | '+item['status']+' | '+', '.join(item['reasons'])+' |')
     lines += ['', 'Novedades detectadas: '+str(len(report['events']))+'.']
+    failures = [e for e in report['events'] if e['kind'] == 'source_observation_failed']
+    if failures:
+        lines += ['', '| Fuente | Categoría | HTTP |', '| --- | --- | --- |']
+        for event in failures:
+            detail = event['details']
+            lines.append('| '+str(detail.get('year', detail.get('source', 'monitor')))+' | '
+                         +detail.get('category', detail.get('code', 'unknown'))+' | '
+                         +str(detail.get('http_status', '—'))+' |')
     (args.output/'summary.md').write_text('\n'.join(lines)+'\n')
     print(json.dumps({'status':report['status'],'events':len(report['events']),'publication_approved':False}))
     return report['status'] != 'degraded'

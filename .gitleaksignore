@@ -1,0 +1,4 @@
+# Reviewed public Google IAM enum, not a credential. Exact historical fingerprints only.
+# See docs/security.md; no file-wide or regex allowlist.
+96ab1378d1835271de67a9fac0e276428222fd54:transform/scripts/provision_hito2_bq.py:generic-api-key:418
+5c21e57222b29b2d132ab95ab071d789fadbbe3a:transform/scripts/provision_hito2_bq.py:generic-api-key:418

@@ -28,8 +28,10 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
           cache: pip
@@ -42,7 +44,7 @@ jobs:
         if: ${{ !inputs.resource_check_only }}
         run: python pipeline/run_candidate.py prepare --history --run-dir "$RUNNER_TEMP/vm-prepare" --scratch-dir "$RUNNER_TEMP/vm-source-files"
       - name: Authenticate extraction (stage-restricted WIF)
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_CI_EXTRACT_SA }}
@@ -53,7 +55,7 @@ jobs:
         if: ${{ !inputs.resource_check_only }}
         run: python pipeline/run_candidate.py load --history --prepared-artifact "$RUNNER_TEMP/vm-prepare" --run-dir "$RUNNER_TEMP/vm-extract" --scratch-dir "$RUNNER_TEMP/vm-source-files"
       - name: Keep metadata evidence only
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: candidate-extraction-checks
@@ -62,7 +64,7 @@ jobs:
           retention-days: 7
       - name: Preserve public preparation diagnostics
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: candidate-public-preparation
           path: |
@@ -82,15 +84,17 @@ jobs:
       contents: read
       id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
           cache: pip
           cache-dependency-path: |
             extraction/requirements.txt
             transform/requirements.txt
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '22.13.1'
           cache: npm
@@ -107,12 +111,12 @@ jobs:
           mkdir -p "$RUNNER_TEMP/vm-dbt-profile"
           cp transform/ci-profiles.yml.example "$RUNNER_TEMP/vm-dbt-profile/profiles.yml"
           dbt deps --project-dir transform --profiles-dir "$RUNNER_TEMP/vm-dbt-profile" --target candidate
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
           name: candidate-extraction-checks
           path: ${{ runner.temp }}/vm-extract-evidence
       - name: Authenticate transformation (separate stage-restricted WIF)
-        uses: google-github-actions/auth@v3
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3
         with:
           workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
           service_account: ${{ vars.GCP_CI_DBT_SA }}
@@ -131,7 +135,7 @@ jobs:
           npm --prefix apps/web test
           npm --prefix apps/web run build
       - name: Keep sanitized metadata only
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         if: always()
         with:
           name: candidate-dbt-checks

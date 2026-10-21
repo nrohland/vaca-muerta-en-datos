@@ -112,7 +112,7 @@ Para navegador, instalar Chromium con `npx playwright install chromium`. Para ca
 | `specs/` | Alcance, preguntas, definiciones y contratos vigentes. |
 | `docs/` | Arquitectura, decisiones, evidencia y capturas de V1. |
 
-Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muerta-pulse`. [Contribución y seguridad](AGENTS.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.
+Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muerta-pulse`. [Contribución](AGENTS.md) · [Controles de seguridad](docs/security.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.
 
 La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
 

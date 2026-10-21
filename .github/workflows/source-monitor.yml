@@ -1,0 +1,74 @@
+name: Source availability and revisions
+
+on:
+  workflow_dispatch:
+    inputs:
+      full:
+        description: Recheck all reviewed annual CSVs
+        type: boolean
+        default: false
+  workflow_run:
+    workflows: ['Cap IV candidate pipeline (official CSV + dbt pricing)']
+    types: [completed]
+  schedule:
+    - cron: '0 6 * * *'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: source-monitor
+  cancel-in-progress: false
+
+jobs:
+  observe:
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || (github.event_name == 'schedule' && vars.SOURCE_MONITOR_ENABLED == 'true') || (github.event_name == 'workflow_run' && vars.SOURCE_MONITOR_ENABLED == 'true' && github.event.workflow_run.head_branch == 'main' && github.event.workflow_run.head_repository.full_name == github.repository))
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    permissions:
+      contents: read
+      actions: read
+      issues: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Restore last observation metadata
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp pipeline/contracts/monitor-baseline.json "$RUNNER_TEMP/previous.json"
+          python pipeline/monitor_github.py restore --repository "$GITHUB_REPOSITORY" --state "$RUNNER_TEMP/previous.json"
+      - name: Observe public production and prices without cloud credentials
+        env:
+          MONITOR_FULL: ${{ inputs.full || github.event_name == 'workflow_run' }}
+        run: |
+          if [ "$MONITOR_FULL" = 'true' ]; then
+            python pipeline/source_monitor.py --previous "$RUNNER_TEMP/previous.json" --output "$RUNNER_TEMP/source-monitor" --full
+          else
+            python pipeline/source_monitor.py --previous "$RUNNER_TEMP/previous.json" --output "$RUNNER_TEMP/source-monitor"
+          fi
+      - name: Deliver deduplicated source notices
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if [ ! -f "$RUNNER_TEMP/source-monitor/report.json" ]; then
+            python pipeline/monitor_failure.py --previous "$RUNNER_TEMP/previous.json" --output "$RUNNER_TEMP/source-monitor"
+          fi
+          python pipeline/monitor_github.py notify --repository "$GITHUB_REPOSITORY" --state "$RUNNER_TEMP/source-monitor/state.json" --report "$RUNNER_TEMP/source-monitor/report.json" --run-url "https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+          cat "$RUNNER_TEMP/source-monitor/summary.md" >> "$GITHUB_STEP_SUMMARY"
+      - name: Preserve metadata only for the next observation
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: source-monitor-state
+          path: |
+            ${{ runner.temp }}/source-monitor/state.json
+            ${{ runner.temp }}/source-monitor/report.json
+            ${{ runner.temp }}/source-monitor/summary.md
+          retention-days: 90
+          if-no-files-found: error

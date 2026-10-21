@@ -1,0 +1,111 @@
+name: V1 checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            extraction/requirements.txt
+            transform/requirements.txt
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.13.1"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - name: Install dependencies
+        run: |
+          pip install -r transform/requirements.txt -r extraction/requirements.txt
+          npm --prefix apps/web ci
+      - name: Offline data contracts and guards
+        run: |
+          python -m unittest discover -s extraction/tests
+          python -m unittest discover -s pipeline/tests
+          python -m unittest discover -s transform/tests_python
+      - name: Parse historical dbt without warehouse access
+        working-directory: transform
+        env:
+          DBT_RAW_DATASET: raw_cap4_candidate_dev
+        run: |
+          mkdir -p "$RUNNER_TEMP/vm-dbt-profile"
+          cp ci-profiles.yml.example "$RUNNER_TEMP/vm-dbt-profile/profiles.yml"
+          dbt deps --profiles-dir "$RUNNER_TEMP/vm-dbt-profile"
+          dbt parse --profiles-dir "$RUNNER_TEMP/vm-dbt-profile" --target candidate --vars '{enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}'
+      - name: Frontend contracts and static build
+        run: |
+          node --experimental-strip-types apps/web/scripts/check_snapshot.mjs --data-dir apps/web/public/data
+          npm --prefix apps/web run typecheck
+          npm --prefix apps/web test
+          npm --prefix apps/web run build
+
+  browser:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "22.13.1"
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm --prefix apps/web ci
+      - name: Build static candidate and install browser
+        run: |
+          npm --prefix apps/web run build
+          cd apps/web
+          npx playwright install --with-deps chromium
+      - name: Verify all tabs and delivery budgets in a real browser
+        working-directory: apps/web
+        env:
+          EVIDENCE_DIR: ${{ runner.temp }}/visual-evidence
+        run: npm run test:browser
+      - name: Retain browser results and representative captures
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: browser-validation
+          path: |
+            apps/web/test-results/
+            ${{ runner.temp }}/visual-evidence/
+          retention-days: 7
+          if-no-files-found: ignore
+
+  architecture:
+    needs: validate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: |
+            transform/requirements.txt
+            transform/requirements-audit.txt
+      - run: pip install -r transform/requirements.txt -r transform/requirements-audit.txt
+      - name: Audit the dbt graph locally without cloud credentials
+        run: |
+          mkdir -p "$RUNNER_TEMP/architecture-profile"
+          cp transform/profiles-audit.yml.example "$RUNNER_TEMP/architecture-profile/profiles.yml"
+          dbt deps --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate
+          dbt build --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate --vars '{enable_project_evaluator: true, enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}' --select package:dbt_project_evaluator

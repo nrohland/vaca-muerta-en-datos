@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "energy_basis": "EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1",
+  "interpretation": "international_reference_scenario",
+  "cubic_meters_per_cubic_foot": 0.028316846592,
+  "m3_to_mmbtu": 0.03658599472346218,
+  "source_url": "https://www.eia.gov/energyexplained/units-and-calculators/energy-conversion-calculators.php",
+  "volume_unit_source": "https://www.nist.gov/system/files/documents/2021/11/30/2022-HB44-Section-Appendix-C.pdf",
+  "reference_context": "EIA estimate of US average natural gas delivered to consumers in 2026, frozen as a reference scenario for all displayed months. Not measured Vaca Muerta heat content; no composition or temperature/pressure correction.",
+  "retrieved_at": "2026-10-12T22:53:55.388663+00:00",
+  "source_response_sha256": "3afdbfbaf8e2e2125b53cc71e3dd27a8384e997f3fcaba6b2539a8bc0bded69e",
+  "btu_per_cubic_foot": 1036
+}

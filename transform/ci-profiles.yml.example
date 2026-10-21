@@ -1,0 +1,13 @@
+vaca_muerta_pulse:
+  target: candidate
+  outputs:
+    candidate:
+      type: bigquery
+      method: oauth
+      project: vaca-muerta-pulse
+      dataset: stg_cap4_candidate_dev
+      location: US
+      threads: 4
+      maximum_bytes_billed: 1073741824
+      job_execution_timeout_seconds: 600
+      job_retries: 1

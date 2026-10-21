@@ -1,0 +1,32 @@
+{% macro generate_schema_name(custom_schema_name, node) -%}
+    {# Dedicated BQ datasets (Nicolás / DE). Not `{profile}_{custom}`.
+       Dev (default): stg_cap4_dev / int_cap4_dev / marts_cap4_dev
+       Prod twin (target prod): stg_cap4 / int_cap4 / marts_cap4
+    #}
+    {%- if target.name == 'candidate' -%}
+        {%- if custom_schema_name in ['stg', 'int', 'marts'] -%}
+            {{ custom_schema_name }}_cap4_candidate_dev
+        {%- elif custom_schema_name is none -%}
+            {{ target.schema }}
+        {%- elif custom_schema_name == 'dbt_test__audit' and node.resource_type == 'test' -%}
+            {{ target.schema }}
+        {%- elif node.config.enabled == false -%}
+            {{ target.schema }}
+        {%- else -%}
+            {{ exceptions.raise_compiler_error('Candidate target rejects unknown schema: ' ~ custom_schema_name ~ ' / ' ~ node.unique_id) }}
+        {%- endif -%}
+    {%- else -%}
+    {%- set is_prod = target.name == 'prod' -%}
+    {%- if custom_schema_name == 'stg' -%}
+        {{ 'stg_cap4' if is_prod else 'stg_cap4_dev' }}
+    {%- elif custom_schema_name == 'int' -%}
+        {{ 'int_cap4' if is_prod else 'int_cap4_dev' }}
+    {%- elif custom_schema_name == 'marts' -%}
+        {{ 'marts_cap4' if is_prod else 'marts_cap4_dev' }}
+    {%- elif custom_schema_name is none -%}
+        {{ target.schema }}
+    {%- else -%}
+        {{ custom_schema_name | trim }}
+    {%- endif -%}
+{%- endif -%}
+{%- endmacro %}

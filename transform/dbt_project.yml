@@ -1,0 +1,82 @@
+name: vaca_muerta_pulse
+version: "1.0.0"
+config-version: 2
+
+profile: vaca_muerta_pulse
+require-dbt-version: [">=1.8.0", "<2.0.0"]
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+seed-paths: ["seeds"]
+
+clean-targets:
+  - target
+  - dbt_packages
+  - logs
+
+flags:
+  send_anonymous_usage_stats: false
+
+# Product: Vaca Muerta en Datos. Repo: vaca-muerta-pulse.
+# Conversion factor shared by SQL and dashboard contracts ({{ var('m3_to_bbl') }}).
+vars:
+  m3_to_bbl: 6.28981077
+  vm_formacion: "vaca muerta"
+  vm_tipo_de_recurso: "NO CONVENCIONAL"
+  # Primary Hito 2 source = DE landing. Default target `dev` → raw_cap4_dev.
+  # Prod twin is raw_cap4 (same table name). Override with DBT_RAW_DATASET
+  # on the source schema (env_var in _sources.yml). Keep this var a plain
+  # string — nested {{ env_var() }} here is stored unrendered and BQ rejects
+  # the dataset id.
+  raw_dataset: "raw_cap4_dev"
+  "dbt_date:time_zone": "America/Argentina/Buenos_Aires"
+
+dispatch:
+  - macro_namespace: dbt_date
+    search_order: ["vaca_muerta_pulse", "dbt_date"]
+
+models:
+  vaca_muerta_pulse:
+    staging:
+      +materialized: view
+      +schema: stg
+      +tags: ["staging", "cap4"]
+    intermediate:
+      +materialized: view
+      +schema: int
+      +tags: ["intermediate", "cap4"]
+    marts:
+      +materialized: table
+      +schema: marts
+      +tags: ["marts", "production"]
+  # Package models: do not materialize on a normal `dbt build` (cost).
+  logging:
+    +enabled: false
+  dbt_project_evaluator:
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
+    +schema: stg
+
+# Keep evaluator tests aligned with its disabled models outside the DuckDB audit.
+data_tests:
+  dbt_project_evaluator:
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
+
+seeds:
+  vaca_muerta_pulse:
+    +schema: marts
+    +enabled: "{{ target.name == 'candidate' and var('enable_dashboard_export', false) }}"
+  dbt_project_evaluator:
+    +enabled: "{{ target.name == 'candidate' and target.type == 'duckdb' and var('enable_project_evaluator', false) }}"
+    +schema: stg
+
+# Event-logging hooks that CREATE SCHEMA/TABLE in BQ stay commented.
+# To enable: see README.md (run-operation logging.create_audit_table).
+# on-run-start:
+#   - "{{ logging.create_audit_schema() }}"
+#   - "{{ logging.create_audit_table() }}"
+#   - "{{ logging.log_run_start_event() }}"
+# on-run-end:
+#   - "{{ logging.log_run_end_event() }}"

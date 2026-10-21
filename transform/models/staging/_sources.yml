@@ -1,0 +1,51 @@
+version: 2
+sources:
+- name: raw_cap4
+  description: Official national production landing. Candidate uses reviewed annual
+    CSV loads; retained dev/prod may contain the earlier CKAN route. Production month
+    is periodo; batch timestamp is technical staging arrival.
+  database: '{{ env_var(''BIGQUERY_PROJECT'', ''vaca-muerta-pulse'') }}'
+  schema: '{{ env_var(''DBT_RAW_DATASET'', ''raw_cap4_dev'') }}'
+  tables:
+  - name: produccion_pozo_mes
+    description: Official national well/year/month declarations. Candidate grain,
+      annual hashes, schema and coverage are verified before dbt. The analytical universe
+      is filtered in staging; raw remains faithful to the source.
+    columns:
+    - name: idpozo
+      description: Well id by productive formation (integer in source).
+    - name: anio
+      description: DDJJ year.
+    - name: mes
+      description: DDJJ month (1–12).
+    - name: periodo
+      description: 'First day of the DDJJ month. Added by the Python loader from anio+mes. Staging
+        coalesces this if null. Never treat `_sdc_batched_at` as this value.
+
+        '
+    - name: prod_pet
+      description: Oil volume in cubic metres (m³) for the month.
+    - name: tef
+      description: 'Effective time. Sample 2025 suggests days (31.0 in January non-conventional).
+        Usable as Vaca Muerta en Datos denominator = UNKNOWN until warehouse tests;
+        staging casts, does not assume.
+
+        '
+    - name: formacion
+      description: Formation name; Product filter uses literal `vaca muerta`.
+    - name: tipo_de_recurso
+      description: Resource type; Product filter uses `NO CONVENCIONAL`.
+    - name: _sdc_batched_at
+      description: Python loader batch timestamp. Raw partition column. Not Cap.
+        IV month.
+    - name: rectificado
+      description: '`t`/`f` rectificativa flag. Rare `t` in 2025 sample.'
+    config:
+      loaded_at_field: _sdc_batched_at
+      freshness:
+        warn_after:
+          count: 5
+          period: day
+        error_after:
+          count: 7
+          period: day

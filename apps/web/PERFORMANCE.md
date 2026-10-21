@@ -2,6 +2,8 @@
 
 Auditoría local del 20 de octubre de 2026. Se conservan datos, definiciones y diseño.
 
+**Publicación validada posteriormente:** 41 pruebas browser aprobadas en CI, revisión manual Chrome desktop/mobile y headers de caché verificados en producción. El build de Vercel registra 149.957 bytes gzip iniciales, frente a 150.474 en el build local integrado; la diferencia depende del base path/build. [Cierre y evidencia](../../docs/evidence/share-readiness/publication.md). Las limitaciones de la auditoría original se conservan abajo como registro histórico.
+
 | Medición | Antes | Después | Alcance |
 | --- | ---: | ---: | --- |
 | JavaScript moderno en el HTML, gzip | 269.986 bytes | 150.475 bytes | −44,3%; export local, no bytes de toda la sesión |

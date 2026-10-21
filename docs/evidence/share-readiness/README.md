@@ -1,6 +1,6 @@
 # Auditoría final previa a compartir
 
-20/10/2026. Integración en `audit/share-quality-20261020`, a partir de `cb62ef6`. Tres subagentes revisaron documentación, frontend y arquitectura; el agente principal integró los cambios y verificó el candidato. **Estos cambios aún no están subidos ni desplegados.** La demo pública conserva la versión anterior y el mismo snapshot preliminar.
+20/10/2026. Integración en `audit/share-quality-20261020`, a partir de `cb62ef6`. Tres subagentes revisaron documentación, frontend y arquitectura; el agente principal integró los cambios y verificó el candidato. Estado al cerrar la auditoría: cambios locales, previos a publicación. **Actualización posterior: publicados con autorización del usuario y comprobados en Chrome; ver [cierre de publicación](publication.md).** El snapshot preliminar permanece sin cambios.
 
 ## Resultado por pedido
 
@@ -31,7 +31,7 @@ Capturas y logs de integración conservados en `outputs/share-quality-2026-10-20
 
 ## Publicación y límites
 
-La demo y el README remoto todavía no incluyen esta auditoría. La [regla del repositorio](../../../AGENTS.md) reserva merge/publicación/despliegue al propietario; por eso se entrega primero una versión concreta y revisable. Siguiente paso: autorización para subir la rama, ejecutar CI y actualizar la rama de despliegue; no se requiere merge a `main` para ello. Confirmar headers de caché después del despliegue y conservar los gates de validación.
+Al registrar la auditoría, la demo y el README remoto todavía no la incluían. Ese estado se cerró en el [registro de publicación](publication.md). La [regla del repositorio](../../../AGENTS.md) reserva merge/publicación/despliegue al propietario; por eso se entrega primero una versión concreta y revisable. Siguiente paso: autorización para subir la rama, ejecutar CI y actualizar la rama de despliegue; no se requiere merge a `main` para ello. Confirmar headers de caché después del despliegue y conservar los gates de validación.
 
 No se activó extracción, monitor, chat/LLM, facturación, IAM ni nuevas credenciales. Datos enero 2023–agosto 2026; extracción automática pausada por conectividad con la fuente. La demo sirve agregados preliminares, no información en tiempo real. Los USD son estimaciones con Brent/Henry Hub, no ingresos reales. El plan del data agent sigue guardado para más adelante.
 

@@ -2,6 +2,17 @@ name: V1 checks
 
 on:
   pull_request:
+  workflow_dispatch:
+    inputs:
+      public_source_check:
+        description: Read-only public source connectivity check (no cloud or notices)
+        type: boolean
+        default: false
+      public_source_runner:
+        description: Runner network for the read-only source diagnosis
+        type: choice
+        options: [linux, macos-14]
+        default: linux
   push:
     branches: [main]
 
@@ -10,6 +21,7 @@ permissions:
 
 jobs:
   validate:
+    if: github.event_name != 'workflow_dispatch' || !inputs.public_source_check
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -109,3 +121,23 @@ jobs:
           cp transform/profiles-audit.yml.example "$RUNNER_TEMP/architecture-profile/profiles.yml"
           dbt deps --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate
           dbt build --project-dir transform --profiles-dir "$RUNNER_TEMP/architecture-profile" --target candidate --vars '{enable_project_evaluator: true, enable_dashboard_export: true, enable_candidate_pricing: true, candidate_start_period: "2023-01-01", candidate_period: "2026-08-01"}' --select package:dbt_project_evaluator
+
+  public-sources:
+    if: github.event_name == 'workflow_dispatch' && inputs.public_source_check
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: ${{ fromJSON(inputs.public_source_runner == 'macos-14' && '["macos-14"]' || '["ubuntu-latest","ubuntu-24.04-arm"]') }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Check exact public endpoints without credentials or writes
+        run: python pipeline/check_public_sources.py

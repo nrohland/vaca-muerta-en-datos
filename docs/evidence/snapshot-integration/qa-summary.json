@@ -1,0 +1,234 @@
+{
+  "status": "technical_review_pass",
+  "publication_approved": false,
+  "frontend_tests": {
+    "pass": 59,
+    "fail": 0
+  },
+  "export_tests": {
+    "pass": 17,
+    "fail": 0
+  },
+  "typecheck": "pass",
+  "build": "pass",
+  "snapshot_sha256": "ce6056ff9fd00e1816048b2f7c9e32685b6440981c72d83b43d2b4ea77113690",
+  "browser_review": {
+    "method": "Codex integrated browser; DOM checks and visual screenshot inspection",
+    "tabs": [
+      "summary",
+      "production",
+      "operators",
+      "areas",
+      "activity"
+    ],
+    "languages": [
+      "es",
+      "en"
+    ],
+    "themes": [
+      "light",
+      "dark"
+    ],
+    "responsive_checks": [
+      {
+        "tab": "Overview",
+        "viewport": "390x844",
+        "documentWidth": 390,
+        "width": 390
+      },
+      {
+        "tab": "Production",
+        "viewport": "390x844",
+        "documentWidth": 390,
+        "width": 390
+      },
+      {
+        "tab": "Operators",
+        "viewport": "390x844",
+        "documentWidth": 390,
+        "width": 390
+      },
+      {
+        "tab": "Areas",
+        "viewport": "390x844",
+        "documentWidth": 390,
+        "width": 390
+      },
+      {
+        "tab": "Activity",
+        "viewport": "390x844",
+        "documentWidth": 390,
+        "width": 390
+      },
+      {
+        "tab": "Resumen",
+        "viewport": "320x900",
+        "documentWidth": 320,
+        "width": 320
+      },
+      {
+        "tab": "Producción",
+        "viewport": "320x900",
+        "documentWidth": 320,
+        "width": 320
+      },
+      {
+        "tab": "Operadores",
+        "viewport": "320x900",
+        "documentWidth": 320,
+        "width": 320
+      },
+      {
+        "tab": "Áreas",
+        "viewport": "320x900",
+        "documentWidth": 320,
+        "width": 320
+      },
+      {
+        "tab": "Actividad",
+        "viewport": "320x900",
+        "documentWidth": 320,
+        "width": 320
+      },
+      {
+        "tab": "Resumen",
+        "viewport": "768x900",
+        "documentWidth": 768,
+        "width": 768
+      },
+      {
+        "tab": "Producción",
+        "viewport": "768x900",
+        "documentWidth": 768,
+        "width": 768
+      },
+      {
+        "tab": "Operadores",
+        "viewport": "768x900",
+        "documentWidth": 768,
+        "width": 768
+      },
+      {
+        "tab": "Áreas",
+        "viewport": "768x900",
+        "documentWidth": 768,
+        "width": 768
+      },
+      {
+        "tab": "Actividad",
+        "viewport": "768x900",
+        "documentWidth": 768,
+        "width": 768
+      }
+    ],
+    "production_filter_states": [
+      {
+        "fluid": "Petróleo",
+        "mode": "Volumen",
+        "comparison": "Mensual",
+        "kpis": [
+          "20,76 Mbbl",
+          "+827,3 Kbbl",
+          "151,14 Mbbl"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=oil&mode=volume&comparison=mom&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Petróleo",
+        "mode": "Volumen",
+        "comparison": "Interanual",
+        "kpis": [
+          "20,76 Mbbl",
+          "+4,44 Mbbl",
+          "151,14 Mbbl"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=oil&mode=volume&comparison=yoy&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Petróleo",
+        "mode": "Valor USD",
+        "comparison": "Mensual",
+        "kpis": [
+          "1.891,17 MUSD",
+          "+221,29 MUSD",
+          "13.740,52 MUSD"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=oil&mode=value&comparison=mom&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Petróleo",
+        "mode": "Valor USD",
+        "comparison": "Interanual",
+        "kpis": [
+          "1.891,17 MUSD",
+          "+783,32 MUSD",
+          "13.740,52 MUSD"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=oil&mode=value&comparison=yoy&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Gas",
+        "mode": "Volumen",
+        "comparison": "Mensual",
+        "kpis": [
+          "2.958,95MMm³",
+          "−35,38MMm³",
+          "21.352,52MMm³"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=gas&mode=volume&comparison=mom&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Gas",
+        "mode": "Volumen",
+        "comparison": "Interanual",
+        "kpis": [
+          "2.958,95MMm³",
+          "+162,48MMm³",
+          "21.352,52MMm³"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=gas&mode=volume&comparison=yoy&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Gas",
+        "mode": "Valor USD",
+        "comparison": "Mensual",
+        "kpis": [
+          "300,95 MUSD",
+          "−15,65 MUSD",
+          "2.740,32 MUSD"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=gas&mode=value&comparison=mom&month=2026-08-01&range=36"
+      },
+      {
+        "fluid": "Gas",
+        "mode": "Valor USD",
+        "comparison": "Interanual",
+        "kpis": [
+          "300,95 MUSD",
+          "+3,23 MUSD",
+          "2.740,32 MUSD"
+        ],
+        "url": "http://127.0.0.1:4188/vaca-muerta-pulse/?tab=production&fluid=gas&mode=value&comparison=yoy&month=2026-08-01&range=36"
+      }
+    ],
+    "operator_reload_and_back": "pass",
+    "area_search_and_detail": "pass",
+    "historical_rows": 44,
+    "first_month_rows": 1,
+    "first_month_missing_comparison": "pass",
+    "reported_areas_august": 82,
+    "catalogue_areas_august": 88,
+    "csv_exact_snapshot_comparison": "pass"
+  },
+  "playwright": {
+    "status": "blocked_before_tests",
+    "cases_not_executed": 28,
+    "reason": "macOS denies Chromium MachPortRendezvous process bootstrap in this sandbox"
+  },
+  "limitations": [
+    "The command exports a technically accepted candidate; export is not yet a run_candidate/workflow stage.",
+    "Promotion, cron activation, deployment and a real GitHub WIF runner remain unapproved/unverified.",
+    "No new automated axe audit could run because Chromium launch is blocked.",
+    "Gas USD is an international energy-reference scenario, not measured VM calorific value or realized revenue."
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "status": "pass",
+  "publication_approved": false,
+  "well_id": 164323,
+  "changed_well_months": 24,
+  "prior_classification": "CONVENCIONAL",
+  "official_csv_classification": "NO CONVENCIONAL",
+  "formation": "vaca muerta",
+  "baseline_read_job": "40a5ccc2-6938-4fb9-8fdb-49f7c8ae6159",
+  "baseline_read_bytes": 144681439,
+  "prior_baseline_sha256": "1bf27be1365a1520f757f7b1fa6b936a1fc07fe7f07a0f3e7a831b7bfd21688b",
+  "csv_source_hashes": {
+    "2023": "acb887f8255134fbea1b954e472e21ccb02e70ce82d595d11be80b9d2e870a40",
+    "2024": "2c3e2f6ec26840266c92aea509acf7677daf146d52e58bbd794a976b96e29cba",
+    "2025": "01cc0ae6e549e02ff4206002d1de0ac11e7dcdff5fcc72d969717897667dad69",
+    "2026": "7978a52c7ed409e78a32d08440c2c1fbdd5af6df74ea5b73d8cdcad4f4e7ec73"
+  },
+  "gas_difference_MMm3": {
+    "2024": 73.925161,
+    "2025": 40.6911208
+  },
+  "note": "Exact comparison of retained raw classification and current official CSV; physical anchors adjusted only for the 24 explained well-month memberships. Other differences remain blocking.",
+  "reclassified_well_volume_changed": false
+}

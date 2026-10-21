@@ -1,0 +1,15 @@
+{
+  "status": "pass",
+  "grains": 10296,
+  "all_grains_identical": true,
+  "physical_and_USD_parity": "pass",
+  "maximum_absolute_float_differences": {
+    "volume": 7.450580596923828e-09,
+    "rate": 2.473825588822365e-10,
+    "positive_producing_wells": 0,
+    "reported_well_rows": 0,
+    "estimated_value_usd": 1.0728836059570312e-06,
+    "estimated_daily_value_usd": 3.5390257835388184e-08,
+    "estimated_ytd_value_usd": 3.337860107421875e-06
+  }
+}

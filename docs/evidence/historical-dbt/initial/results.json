@@ -1,0 +1,1578 @@
+{
+  "invocation_id": "77ce23d4-f385-45ea-81e4-7fb5bcbbc1ef",
+  "results": [
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.stg_monthly_reference_price.dual_reference_units_and_energy_basis_are_explicit",
+      "status": "pass",
+      "execution_time": 17.94432520866394,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (16.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 16,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "8a39e53a-47af-467e-b159-eec31d00272d"
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.stg_monthly_reference_price",
+      "status": "success",
+      "execution_time": 1.4525649547576904,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE VIEW (0 processed)",
+        "code": "CREATE VIEW",
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "1406a06c-92ae-44b9-96af-1de0a3913fdf",
+        "slot_ms": 0
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.stg_produccion_pozo_mes",
+      "status": "success",
+      "execution_time": 1.2506229877471924,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE VIEW (0 processed)",
+        "code": "CREATE VIEW",
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "77a32731-563b-4ca8-aaa7-15d63fee03df",
+        "slot_ms": 0
+      }
+    },
+    {
+      "unique_id": "seed.vaca_muerta_pulse.operator_groups",
+      "status": "success",
+      "execution_time": 10.197678089141846,
+      "failures": null,
+      "adapter_response": {
+        "_message": "INSERT 2",
+        "code": "INSERT",
+        "rows_affected": 2
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_stg_monthly_reference_price_product__periodo.70368d0953",
+      "status": "pass",
+      "execution_time": 1.9668328762054443,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 10.5 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 10764,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "e4c07f10-f0b6-4e39-b4ad-1b8dde67e2ba",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_periodo.c844a0169d",
+      "status": "pass",
+      "execution_time": 1.855254888534546,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 6.5 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 6624,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "eedb43a9-2d06-4991-bc28-521f9452e5be",
+        "slot_ms": 7
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_monthly_reference_price_snapshot_id.e33fbd228e",
+      "status": "pass",
+      "execution_time": 1.875532865524292,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 53.4 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 54648,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "87aa0b8e-f4f9-4444-8080-3875c7a0b630",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_price_contract",
+      "status": "pass",
+      "execution_time": 2.0458288192749023,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 235.3 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 240988,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "86d3fcd8-8013-421e-8162-1e04b3fae7ee",
+        "slot_ms": 18
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_required_price",
+      "status": "pass",
+      "execution_time": 1.8159520626068115,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 67.1 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 68672,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "4a578891-ca68-48c0-aa60-4abe4dc725c0",
+        "slot_ms": 28
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_formacion__vaca_muerta.418e3c55d1",
+      "status": "pass",
+      "execution_time": 1.8384771347045898,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 193.9 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 203299388,
+        "bytes_billed": 203423744,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "971fe8c0-f575-453e-a4f1-c00121d55435",
+        "slot_ms": 119
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_stg_produccion_pozo_mes_tipo_de_recurso__NO_CONVENCIONAL.d1338691a4",
+      "status": "pass",
+      "execution_time": 2.232004165649414,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 193.9 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 203299388,
+        "bytes_billed": 203423744,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "98293e51-99d4-4da5-a5cd-5e2bcfc15bd7",
+        "slot_ms": 157
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_stg_produccion_pozo_mes_idpozo__anio__mes.207ebc2835",
+      "status": "pass",
+      "execution_time": 1.9982662200927734,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 193.9 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 203299388,
+        "bytes_billed": 203423744,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "548e0dda-a8b8-4ae5-a288-6432752d0750",
+        "slot_ms": 418
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_anio.38818fe703",
+      "status": "pass",
+      "execution_time": 1.7729439735412598,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "a48aa310-deb2-49ca-af33-05dd63e1df01",
+        "slot_ms": 1
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_idpozo.9bfb2ca424",
+      "status": "pass",
+      "execution_time": 1.7912862300872803,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "09a49156-9a84-44c7-83fa-20dfc3bb0371",
+        "slot_ms": 2
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_mes.666f621797",
+      "status": "pass",
+      "execution_time": 1.8417768478393555,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "b2211fbd-66c9-4610-b4b8-10f3231ff283",
+        "slot_ms": 2
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_stg_produccion_pozo_mes_periodo.b052550c7c",
+      "status": "pass",
+      "execution_time": 1.9856882095336914,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 193.9 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 203299388,
+        "bytes_billed": 203423744,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "d0a42ae4-a17e-4ddd-8832-711fec07a6d4",
+        "slot_ms": 200
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_operator_groups_legal_operator_id.336ee3c9c0",
+      "status": "pass",
+      "execution_time": 1.7453410625457764,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 10.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 10,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "521f17f1-4921-4069-a200-7f43525142c4",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_operator_groups_operator_group_id.c545c5a621",
+      "status": "pass",
+      "execution_time": 1.612666130065918,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 24.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 24,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "565dae29-894d-42e0-b1e7-68b6546ebf8c",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_operator_groups_legal_operator_id.af9772197d",
+      "status": "pass",
+      "execution_time": 1.7844908237457275,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 10.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 10,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "b600399e-dd20-4139-b444-f317d5810a4b",
+        "slot_ms": 16
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.int_produccion_vm_noconv",
+      "status": "success",
+      "execution_time": 1.3587400913238525,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE VIEW (0 processed)",
+        "code": "CREATE VIEW",
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "e5be5951-1ece-4549-a683-83ae64bea53b",
+        "slot_ms": 0
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_well_month",
+      "status": "success",
+      "execution_time": 5.363818883895874,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (112.5k rows, 673.0 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 112530,
+        "bytes_processed": 705665067,
+        "bytes_billed": 705691648,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "8b2b237b-38a1-4771-9a58-c2854cd5b3eb",
+        "slot_ms": 11239
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_idareapermisoconcesion_has_one_area_name",
+      "status": "pass",
+      "execution_time": 1.7833828926086426,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 3.3 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 3452209,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "be235820-db3c-46ff-aa00-5b80c8011d51",
+        "slot_ms": 13
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_idempresa_has_one_empresa_name",
+      "status": "pass",
+      "execution_time": 1.9543650150299072,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 3.0 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 3165563,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "5b433ff3-4cad-43d3-b69b-e0c7e9fe67cf",
+        "slot_ms": 17
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_expectations_expect_column_values_to_be_between_fct_well_month_tef__31_5__0__tef_is_not_null.44af150677",
+      "status": "pass",
+      "execution_time": 1.6754579544067383,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "5830cecd-9e3a-410b-81b8-0b874079b467",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_well_month_idpozo__anio__mes.ac668b86aa",
+      "status": "pass",
+      "execution_time": 2.150546073913574,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 2.6 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 2700720,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "645eff3f-dedd-493c-a35f-cb27ba6430c5",
+        "slot_ms": 54
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_anio.d73e287c34",
+      "status": "pass",
+      "execution_time": 1.761686086654663,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "0c1a88df-c81f-4dfb-b580-a593cca63300",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_idpozo.d77b1e2308",
+      "status": "pass",
+      "execution_time": 1.7888190746307373,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "54f2e23b-cd9f-46a3-9349-0a5b41341b89",
+        "slot_ms": 7
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_mes.bd385e1416",
+      "status": "pass",
+      "execution_time": 1.8208351135253906,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "3689f389-0657-4b52-9169-2d3190d3afd9",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_periodo.5252cd78f9",
+      "status": "pass",
+      "execution_time": 1.5113060474395752,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "2c1748f8-ec99-4b7d-9457-9be2f96c17c9",
+        "slot_ms": 28
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_well_month_well_month_id.1d3ef599f9",
+      "status": "pass",
+      "execution_time": 1.7061407566070557,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "f8c49398-90f5-499c-b7e4-e7ca1b849715",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_well_month_well_month_id.539458cf81",
+      "status": "pass",
+      "execution_time": 2.0738449096679688,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 3.6 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 3826020,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "25c7e504-08e7-4241-959c-f8b9bbde0227",
+        "slot_ms": 111
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.dim_area",
+      "status": "success",
+      "execution_time": 3.9621710777282715,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (88.0 rows, 4.7 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 88,
+        "bytes_processed": 4917556,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "1c1de19c-49ef-4a6c-b521-2c04bd2b0024",
+        "slot_ms": 3608
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.dim_company",
+      "status": "success",
+      "execution_time": 4.095251798629761,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (29.0 rows, 3.9 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 29,
+        "bytes_processed": 4065803,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "a8af0006-0b2c-4959-a1d5-d758b3c17663",
+        "slot_ms": 3469
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_area_month",
+      "status": "success",
+      "execution_time": 3.8650310039520264,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (3.5k rows, 12.4 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 3495,
+        "bytes_processed": 13019716,
+        "bytes_billed": 13631488,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "a7a880a7-5a97-47bb-b434-d05ab5dff05f",
+        "slot_ms": 3922
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_company_month",
+      "status": "success",
+      "execution_time": 3.6792550086975098,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (844.0 rows, 11.6 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 844,
+        "bytes_processed": 12167963,
+        "bytes_billed": 12582912,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "be1ad8f7-71bb-46d7-8769-6c5c7f5ba4db",
+        "slot_ms": 4036
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_calendar_when_tef_sum_zero",
+      "status": "pass",
+      "execution_time": 5.357149124145508,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (2.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 2,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "ad2ee232-fe64-4553-90dc-de716ef94e09"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_headline_is_basin_calendar_not_tef",
+      "status": "pass",
+      "execution_time": 5.3062450885772705,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (2.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 2,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "40bba9e8-936e-41f9-b045-d706c9ad860d"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_production_rate.production_uses_latest_cap4_month_only",
+      "status": "pass",
+      "execution_time": 7.39290714263916,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (2.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 2,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "71090da9-9c87-42c6-a51a-e3c54c2bbf81"
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_production_rate",
+      "status": "success",
+      "execution_time": 4.175869941711426,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (1.0 rows, 6.9 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 1,
+        "bytes_processed": 7201920,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "bbd2b404-5398-44fd-8c92-04a3bb09f063",
+        "slot_ms": 9074
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.oil_same_month_missing_and_invalid_are_null",
+      "status": "pass",
+      "execution_time": 5.572488307952881,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (10.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 10,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "d16a5171-55a2-43ac-9c6e-1e30a9a9b01b"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.duplicate_product_month_prices_never_duplicate_wells",
+      "status": "pass",
+      "execution_time": 7.852602958679199,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (2.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 2,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "3b1b7e81-e452-4c42-a36f-5aae24653ea7"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_month.gas_reference_scenario_formula_zero_and_unavailable_cases",
+      "status": "pass",
+      "execution_time": 6.06973123550415,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (18.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 18,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "bbe4c840-e6aa-43ed-95af-e239bc8c9eab"
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_reference_valuation_month",
+      "status": "success",
+      "execution_time": 5.7593278884887695,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (112.5k rows, 8.4 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 112530,
+        "bytes_processed": 8818167,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "dcb4d7c4-4359-4753-9699-ecc016116f69",
+        "slot_ms": 16787
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_area_areapermisoconcesion.452363d375",
+      "status": "pass",
+      "execution_time": 2.929750919342041,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "d0866208-588c-4b82-8c45-988993a68415",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_area_idareapermisoconcesion.b7314313ef",
+      "status": "pass",
+      "execution_time": 1.6255240440368652,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "311c7693-a44c-4e52-b25d-533926cec8ca",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_dim_area_idareapermisoconcesion.59ffb863fa",
+      "status": "pass",
+      "execution_time": 1.7192351818084717,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 496.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 496,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "24a5b93d-7175-468e-90c8-6dbbf41dddaa",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_company_empresa.a16ddc11be",
+      "status": "pass",
+      "execution_time": 1.8258092403411865,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "475a45b5-9671-4884-ab5d-5066a7c28607",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_dim_company_idempresa.43e49fa435",
+      "status": "pass",
+      "execution_time": 1.7200300693511963,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "c0347a76-61a1-4d45-834e-c239fe8a7954",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_dim_company_idempresa.8e85f2536d",
+      "status": "pass",
+      "execution_time": 1.598912000656128,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 150.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 150,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "d4308f69-7da0-4895-bfd2-d52edac4d3bf",
+        "slot_ms": 7
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_area_month_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.9197251796722412,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 1.8 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 1856400,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "cd40ebcd-37c2-4545-8307-8cc878409fe0",
+        "slot_ms": 23
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_area_month_idareapermisoconcesion__periodo.1dff08e108",
+      "status": "pass",
+      "execution_time": 1.78804612159729,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 46.6 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 47752,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "aa13f5d0-897b-4999-b90f-e470481140ce",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_anio.47a4dfb200",
+      "status": "pass",
+      "execution_time": 1.7603051662445068,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "d27cf9e6-3646-4a78-945b-8813ada74f4d",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_area_month_id.cde79ea6a5",
+      "status": "pass",
+      "execution_time": 1.715904951095581,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "63a5f7c2-7211-48f0-aeba-0743e18560a0",
+        "slot_ms": 7
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_areapermisoconcesion.b2fea16c5b",
+      "status": "pass",
+      "execution_time": 1.7037110328674316,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "946f705a-8807-4c1a-84ff-b17b00e7b8c7",
+        "slot_ms": 8
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_idareapermisoconcesion.aa91414af2",
+      "status": "pass",
+      "execution_time": 1.7253150939941406,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "b3ca4d8a-8954-417b-8c0e-b8bf5be16719",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_mes.32d95a3f88",
+      "status": "pass",
+      "execution_time": 2.477993965148926,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "99dbce0d-4a20-412e-93ee-f2fc9dcf3122",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_area_month_periodo.eec5ab0704",
+      "status": "pass",
+      "execution_time": 1.5881950855255127,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "e5c5264a-b407-44ad-951e-4a34f38e14c7",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.relationships_fct_area_month_idareapermisoconcesion__idareapermisoconcesion__ref_dim_area_.c76e733f46",
+      "status": "pass",
+      "execution_time": 1.809865951538086,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 19.8 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 20288,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "1ed005f3-fb89-48dd-9dbd-c213e795da99",
+        "slot_ms": 21
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_area_month_area_month_id.b4fd479181",
+      "status": "pass",
+      "execution_time": 1.5911369323730469,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 116.0 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 118830,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "c16c9a2c-2ff3-4374-9a74-1ad18357fe10",
+        "slot_ms": 10
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_company_month_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.7253739833831787,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 1.7 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 1813984,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "4c97cbcd-ad28-4647-b6ed-596aad5725bb",
+        "slot_ms": 15
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_company_month_idempresa__periodo.86cb8c2303",
+      "status": "pass",
+      "execution_time": 1.7430548667907715,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 10.9 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 11132,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "858395da-768e-4448-971c-c075501b1237",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_anio.5b959cae54",
+      "status": "pass",
+      "execution_time": 1.8356449604034424,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "beb36b1b-99f8-488d-ace4-afceb3c7241b",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_company_month_id.035adf095f",
+      "status": "pass",
+      "execution_time": 2.9554269313812256,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "700d7d56-a2a3-4f1a-a485-8cf9e08de1e6",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_empresa.fa4c25b735",
+      "status": "pass",
+      "execution_time": 1.763232946395874,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "3cf0c1c4-adbb-4c0d-b3e8-8bdb0483b8fa",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_idempresa.deacd3cef6",
+      "status": "pass",
+      "execution_time": 1.768894910812378,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "33d6f619-f55b-4433-81f0-dae089dd5208",
+        "slot_ms": 18
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_mes.f0d7ea15bd",
+      "status": "pass",
+      "execution_time": 2.384324789047241,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "8361c434-c54a-4399-a9c6-eacf1b29c502",
+        "slot_ms": 11
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_company_month_periodo.ba5e684649",
+      "status": "pass",
+      "execution_time": 1.7176740169525146,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "125f8c27-28eb-4732-b35b-e96a62f357af",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.relationships_fct_company_month_idempresa__idempresa__ref_dim_company_.fd71feaae8",
+      "status": "pass",
+      "execution_time": 1.6250500679016113,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 4.4 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 4530,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "9ad0b551-e63e-442b-80d4-cabe191c1350",
+        "slot_ms": 12
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_company_month_company_month_id.0a1e2662f8",
+      "status": "pass",
+      "execution_time": 1.4897370338439941,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 28.0 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 28696,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "db4c1af5-7ef9-4fe8-8193-f44f6280df73",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.accepted_values_fct_production_rate_rate_method__calendar_days.081d83fb07",
+      "status": "pass",
+      "execution_time": 2.193861722946167,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 15.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 15,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "f35ab72e-f65f-4a75-910e-3907201ca9df",
+        "slot_ms": 16
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.assert_production_reconciles_to_well_month",
+      "status": "pass",
+      "execution_time": 1.6106553077697754,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 1.7 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 1800496,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "ec7cd1af-a00d-4dd9-b23b-a6ae5a16e97f",
+        "slot_ms": 15
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.candidate_period_is_enforced",
+      "status": "pass",
+      "execution_time": 1.5782279968261719,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 20971520,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "8f007a55-3565-4fb4-915b-0a79e872c530",
+        "slot_ms": 7
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_expectations_expect_table_row_count_to_be_between_fct_production_rate_1__1.52b55c7edb",
+      "status": "pass",
+      "execution_time": 1.6519520282745361,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "4432c77d-0647-4964-855f-647c8dc9bd37",
+        "slot_ms": 3
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_bbl_dia_rate_m3_dia_var_m3_to_bbl_0_0000001.4d3d9a1b7e",
+      "status": "pass",
+      "execution_time": 1.7233412265777588,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 16.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 16,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "329dc164-822c-4aa1-b431-39453caf53fc",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_abs_rate_m3_dia_prod_pet_m3_days_in_month_0_0000001.53fb3d4c21",
+      "status": "pass",
+      "execution_time": 1.9218049049377441,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 24.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 24,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "6d4dc18e-91ee-4042-8c11-448c8a491b70",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_expression_is_true_fct_production_rate_rate_bbl_dia_rate_bbl_per_day_and_rate_m3_dia_rate_m3_per_day.2ed8499256",
+      "status": "pass",
+      "execution_time": 1.9783470630645752,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 32.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 32,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "43f0e9d5-1b5a-4d8b-8d01-f593cd8b17ca",
+        "slot_ms": 5
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_anio.86be59754c",
+      "status": "pass",
+      "execution_time": 1.767176866531372,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "145eb1f2-b09c-439a-ada3-22007abd4cf9",
+        "slot_ms": 6
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_mes.e2eaf65b4f",
+      "status": "pass",
+      "execution_time": 1.6099700927734375,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "6a66d5d9-2bc7-46e4-aaec-6d3d503bb643",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_periodo.21cbb42701",
+      "status": "pass",
+      "execution_time": 1.9818248748779297,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "8920a504-5e7e-45d3-b51e-34d99771497c",
+        "slot_ms": 19
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_bbl_dia.91bf6aa716",
+      "status": "pass",
+      "execution_time": 2.020310163497925,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "a21e6c0d-2e16-42d3-a388-3137c0c3bbac",
+        "slot_ms": 1
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_production_rate_rate_method.bd0ee889f3",
+      "status": "pass",
+      "execution_time": 1.7440831661224365,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 15.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 15,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "3b0c021b-515c-4de7-a939-fe378d2a222c",
+        "slot_ms": 2
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_production_rate_periodo.e0661158ea",
+      "status": "pass",
+      "execution_time": 1.6329002380371094,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 8.0 Bytes processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 8,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "91ba3d20-6c60-4319-bbea-928b2383c59a",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.not_null_fct_reference_valuation_month_well_month_id.da561d11d2",
+      "status": "pass",
+      "execution_time": 3.4134163856506348,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 3.6 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 3826020,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "15dbd238-b94a-4d89-b20d-c42f90995e6e",
+        "slot_ms": 10
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_gas_scenario_constant",
+      "status": "pass",
+      "execution_time": 1.8942508697509766,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 2.6 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 2700720,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "426aea39-e6a5-47e7-bd95-39370f235bb5",
+        "slot_ms": 25
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_valuation_contract",
+      "status": "pass",
+      "execution_time": 1.7472240924835205,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 26.4 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 27682380,
+        "bytes_billed": 28311552,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "10dbed1d-1ab7-4a41-b03e-2bcde4bc1cf4",
+        "slot_ms": 67
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.unique_fct_reference_valuation_month_well_month_id.c11093a987",
+      "status": "pass",
+      "execution_time": 2.153553009033203,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 3.6 MiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 3826020,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "4fb52a92-b1cb-4c98-adc4-bf8d6d5877df",
+        "slot_ms": 93
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "error",
+      "execution_time": 1.0836050510406494,
+      "failures": null,
+      "adapter_response": {}
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.calendar_gap_and_incomplete_ytd_are_null",
+      "status": "pass",
+      "execution_time": 6.053284168243408,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (12.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 12,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "2408e861-4566-4bb6-a9ca-e5b09b781a56"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.zero_comparison_base_stays_null_with_complete_ytd",
+      "status": "pass",
+      "execution_time": 6.186450242996216,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (12.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 12,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "c3404c99-dd77-4f90-9bbb-1f9c1bf6a744"
+      }
+    },
+    {
+      "unique_id": "unit_test.vaca_muerta_pulse.fct_reference_valuation_entity_month.gas_calendar_gaps_zero_base_and_complete_ytd",
+      "status": "pass",
+      "execution_time": 18.939445972442627,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (18.0 rows, 0 processed)",
+        "code": "SELECT",
+        "rows_affected": 18,
+        "bytes_processed": 0,
+        "bytes_billed": 0,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "3e3be7b8-6962-46e1-b56f-fbb775591d54"
+      }
+    },
+    {
+      "unique_id": "model.vaca_muerta_pulse.fct_reference_valuation_entity_month",
+      "status": "success",
+      "execution_time": 4.23022198677063,
+      "failures": null,
+      "adapter_response": {
+        "_message": "CREATE TABLE (4.4k rows, 34.5 MiB processed)",
+        "code": "CREATE TABLE",
+        "rows_affected": 4383,
+        "bytes_processed": 36196801,
+        "bytes_billed": 36700160,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "e5734168-5208-46fb-8f8a-fb549f389ad1",
+        "slot_ms": 12156
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_contract",
+      "status": "skipped",
+      "execution_time": 0,
+      "failures": null,
+      "adapter_response": {}
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_months",
+      "status": "skipped",
+      "execution_time": 0,
+      "failures": null,
+      "adapter_response": {}
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dashboard_publication_reconciles",
+      "status": "skipped",
+      "execution_time": 0,
+      "failures": null,
+      "adapter_response": {}
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.dbt_utils_unique_combination_of_columns_fct_reference_valuation_entity_month_entity_type__entity_id__periodo.19387893af",
+      "status": "pass",
+      "execution_time": 1.6737091541290283,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 86.6 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 88682,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "e7d8f7bc-97fa-416d-8d01-704f2c0ceeab",
+        "slot_ms": 4
+      }
+    },
+    {
+      "unique_id": "test.vaca_muerta_pulse.reference_entity_reconciliation",
+      "status": "pass",
+      "execution_time": 1.9749608039855957,
+      "failures": 0,
+      "adapter_response": {
+        "_message": "SELECT (1.0 rows, 208.0 KiB processed)",
+        "code": "SELECT",
+        "rows_affected": 1,
+        "bytes_processed": 212960,
+        "bytes_billed": 10485760,
+        "location": "US",
+        "project_id": "vaca-muerta-pulse",
+        "job_id": "78a7d3b8-2f44-4a7b-8a28-7c1928416fa8",
+        "slot_ms": 28
+      }
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "status": "pass",
+  "publication_approved": false,
+  "table": "vaca-muerta-pulse.marts_cap4_candidate_dev.fct_dashboard_month",
+  "job_id": "6e65dab9-65c4-442c-b1a9-0166c7266417",
+  "bytes_processed": 4709752,
+  "rows": 10296,
+  "data_sha256": "1733f539eea0f45a150c7d9ca9dd872249b7a7f59e60f0e3a783f0a6bf8ce6a6",
+  "physical_anchor_check": "pass",
+  "value_reconciliation": "pass",
+  "loaded_lineage": {
+    "status": "pass",
+    "results": {
+      "source_rows": 3614213,
+      "source_mismatched_rows": 0,
+      "price_rows": 828,
+      "price_mismatched_rows": 0,
+      "oil_rows": 472,
+      "gas_rows": 356,
+      "required_oil_rows": 1,
+      "required_gas_rows": 1,
+      "duplicate_price_period_rows": 0
+    },
+    "job_id": "8969b1c6-09b4-4bbf-b85f-d1b058b6729f",
+    "bytes_processed": 267692750,
+    "publication_approved": false
+  },
+  "inputs": {
+    "source_sha256": "cc9bf88747d65fd833ffbab86977f3e32ac55dfeaabcda046fb9b9426092a905",
+    "price_rows_sha256": "828b91c74c669b341a3a9387aced8b4d402493c9f0f1c1e856ac5f499dfef63f"
+  },
+  "reviewed_membership_corrections": 0,
+  "price_export_job_id": "5ce9a690-ebfb-4e08-943b-0785774a6256",
+  "price_export_bytes_processed": 240988,
+  "price_rows_sha256": "828b91c74c669b341a3a9387aced8b4d402493c9f0f1c1e856ac5f499dfef63f",
+  "price_binding": "pass"
+}

@@ -1,0 +1,436 @@
+export type Language = "es" | "en";
+export const locales = { es: "es-AR", en: "en-US" } as const;
+export const languageStorageKey = "vm-language";
+export function readLanguage(value: string | null): Language {
+  return value === "en" ? "en" : "es";
+}
+// Spanish source messages are also the default locale. Variables never translate entity names.
+export const translations: Record<string, string> = {
+  "Deslizá para explorar columnas y períodos →": "Scroll to explore columns and periods →",
+  "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.": "Henry Hub · international reference scenario. Estimated energy conversion using the EIA reference: 1,036 BTU/ft³; not a measured heating value for Vaca Muerta. Does not represent actual revenue.",
+  "Metodología EIA": "EIA methodology",
+  "Precio de referencia Henry Hub": "Henry Hub reference price",
+  "Henry Hub · escenario estimado": "Henry Hub · estimated scenario",
+  "Valor estimado a precio de referencia": "Estimated value at reference price",
+  "Valor estimado a precio de referencia. No representa facturación efectiva.": "Estimated value at reference price. Does not represent actual revenue.",
+  "Precio promedio mensual de referencia.": "Monthly average reference price.",
+  "Promedio mensual de referencia; no es el precio efectivo de venta.": "Monthly average reference; not the actual sale price.",
+  "Precio de referencia no disponible para este período; el valor estimado permanece sin calcular.": "Reference price unavailable for this period; estimated value remains uncalculated.",
+  "Henry Hub mensual · EIA": "Monthly Henry Hub · EIA",
+  "Referencia internacional USD/MMBtu. Escenario energético de 1.036 BTU/pie³; no calorificidad medida de Vaca Muerta. Los faltantes no se rellenan.": "International USD/MMBtu reference. Energy scenario of 1,036 BTU/ft³; not measured Vaca Muerta heating value. Missing observations are not filled.",
+  "Fuente: Secretaría de Energía · Capítulo IV. USD: volumen × precio mensual EIA y conversión energética de referencia para gas; estimación, no facturación.": "Source: Secretariat of Energy · Chapter IV. USD: volume × EIA monthly price and reference energy conversion for gas; estimate, not revenue.",
+
+  "Detalle de {label}": "Details of {label}",
+  "Ver detalle": "View details",
+  "Producción acumulada del año": "Year-to-date production",
+  "Valor acumulado del año": "Year-to-date estimated value",
+  "vs. mismo acumulado de {year}": "vs. same year-to-date period in {year}",
+  "Producción física": "Physical production",
+  "Ambas series": "Both series",
+  "Series del gráfico": "Chart series",
+  "Producción · Ver detalle": "Production · View details",
+  "Actividad · Ver detalle": "Activity · View details",
+  "{section} · Ver detalle ↗": "{section} · View details ↗",
+  "Vaca Muerta en Datos": "Vaca Muerta en Datos",
+  "Producción mensual de petróleo y gas de Vaca Muerta. Vista previa de agregados oficiales.":
+    "Monthly oil and gas production from Vaca Muerta. Preview of official aggregates.",
+  "Ir al contenido": "Skip to content",
+  "Modo claro": "Light mode",
+  "Modo oscuro": "Dark mode",
+  Idioma: "Language",
+  "Vistas de Vaca Muerta en Datos": "Vaca Muerta views",
+  Resumen: "Overview",
+  Producción: "Production",
+  Operadores: "Operators",
+  Áreas: "Areas",
+  Actividad: "Activity",
+  Fluido: "Product",
+  Petróleo: "Oil",
+  Gas: "Gas",
+  Período: "Period",
+  "Mes de producción": "Production month",
+  "Unidad de análisis": "Analysis unit",
+  Volumen: "Volume",
+  "Valor estimado": "Estimated value",
+  "Comparación temporal": "Time comparison",
+  Mensual: "Monthly",
+  Interanual: "Year over year",
+  "No disponible": "Unavailable",
+  "Sin comparador": "No comparison data",
+  "vs. {period}": "vs. {period}",
+  "Metodología de {label}": "Methodology for {label}",
+  "Detalle próximamente": "Details coming soon",
+  "Próximamente: detalle de {label}": "Coming soon: details for {label}",
+  "Evolución del valor estimado": "Estimated value over time",
+  "Evolución de la producción": "Production over time",
+  "Tasa diaria equivalente · {unit}": "Equivalent daily rate · {unit}",
+  "Período de evolución": "Chart time range",
+  "Producción · Próximamente": "Production · Coming soon",
+  "USD/día estimados": "Estimated USD/day",
+  "M USD/día": "M USD/day",
+  "Ver tabla de datos": "View data table",
+  "Tasa diaria equivalente del mes. Los meses o precios ausentes no equivalen a cero.":
+    "Equivalent daily rate for each month. Missing months or prices do not mean zero.",
+  Mes: "Month",
+  "Tasa ({unit})": "Rate ({unit})",
+  "Base de comparación": "Comparison period",
+  "Brent: {price} USD/bbl · EIA": "Brent: {price} USD/bbl · EIA",
+  "Principales operadores": "Leading operators",
+  "Principales áreas": "Leading areas",
+  "Top 5 · valor bruto estimado · USD": "Top 5 · estimated gross value · USD",
+  "Top 5 · volumen mensual · {unit}": "Top 5 · monthly volume · {unit}",
+  "{section} · Próximamente ↗": "{section} · Coming soon ↗",
+  Operador: "Operator",
+  Área: "Area",
+  Cuota: "Share",
+  "USD estimados": "Estimated USD",
+  "Sin operadores para este período.": "No operators for this period.",
+  "Sin áreas para este período.": "No areas for this period.",
+  "Barras: participación en el total · escala 0–100%":
+    "Bars: share of total · 0–100% scale",
+  " · Referencia uniforme, no ingresos efectivos":
+    " · Uniform reference, not actual revenue",
+  "Resumen de Vaca Muerta": "Vaca Muerta overview",
+  "Valor estimado no disponible para gas. Falta validar una referencia nacional comparable y la conversión energética. Se muestran unidades físicas.":
+    "Estimated gas value is unavailable. A comparable national reference and energy conversion still need validation. Physical units are shown.",
+  "Precio Brent no disponible para este período; el valor estimado permanece sin calcular.":
+    "Brent price is unavailable for this period; estimated value remains unavailable.",
+  "Valor diario estimado": "Estimated daily value",
+  "Producción diaria": "Daily production",
+  "Valor mensual estimado": "Estimated monthly value",
+  "Volumen mensual": "Monthly volume",
+  "Pozos productivos": "Producing wells",
+  pozos: "wells",
+  "Con producción positiva": "With positive production",
+  "Precio de referencia Brent": "Brent reference price",
+  "Valor bruto estimado": "Estimated gross value",
+  "Promedio mensual · EIA": "Monthly average · EIA",
+  "Estimación pendiente": "Estimate pending",
+  "A precio Brent · estimación": "At Brent price · estimate",
+  "Valor bruto estimado a precio Brent. No representa facturación efectiva.":
+    "Estimated gross value at Brent price. Does not represent actual revenue.",
+  "Referencia nacional y conversión energética sin validar.":
+    "National reference and energy conversion not yet validated.",
+  "Precio Brent no disponible para este mes. No se calcula un valor sin respaldo.":
+    "Brent price is unavailable for this month. No value is calculated without a verified reference.",
+  "{note} Fórmula: volumen mensual en bbl × {price} USD/bbl ({period}). Fuente: EIA. Actualizada {date}. Valor presentado: {value} USD. Comparaciones con volumen y precio de cada mes.":
+    "{note} Formula: monthly volume in bbl × {price} USD/bbl ({period}). Source: EIA. Updated {date}. Displayed value: {value} USD. Comparisons use each month’s volume and price.",
+  "{help} Diario = valor mensual / {days} días calendario.":
+    "{help} Daily = monthly value / {days} calendar days.",
+  "Volumen mensual / {days} días calendario. Tasa presentada: {value} {unit}. Las comparaciones usan tasas diarias, no volúmenes mensuales.":
+    "Monthly volume / {days} calendar days. Displayed rate: {value} {unit}. Comparisons use daily rates, not monthly volumes.",
+  "{volume}. Las comparaciones usan volúmenes mensuales; pueden diferir de la tasa diaria por los días de cada mes.":
+    "{volume}. Comparisons use monthly volumes; they may differ from daily rates because of the number of days in each month.",
+  "Pozos únicos con producción positiva de {fluid} durante {period}. Las comparaciones usan esta cantidad de pozos, no tasas ni volumen. Base ausente o cero: sin comparador.":
+    "Unique wells with positive {fluid} production during {period}. Comparisons use this well count, not rates or volume. Missing or zero base: no comparison data.",
+  "Europe Brent Spot Price FOB. Promedio mensual en USD/bbl, EIA ({date}). Las comparaciones usan precios. {note}":
+    "Europe Brent Spot Price FOB. Monthly average in USD/bbl, EIA ({date}). Comparisons use prices. {note}",
+  "Las métricas físicas siguen disponibles.":
+    "Physical metrics remain available.",
+  "Cargando agregados oficiales y verificando integridad…":
+    "Loading official aggregates and checking integrity…",
+  "Datos no disponibles": "Data unavailable",
+  "Datos no disponibles.": "Data unavailable.",
+  Reintentar: "Retry",
+  "No pudimos cargar los agregados.": "Could not load the aggregates.",
+  "La versión no coincide con su manifiesto.":
+    "The release does not match its manifest.",
+  "No pudimos verificar el estado de publicación.":
+    "Could not verify publication status.",
+  "Referencia de precios no disponible.": "Price reference unavailable.",
+  "Precio no disponible.": "Price unavailable.",
+  "La referencia de precios no corresponde a esta versión.":
+    "The price reference does not match this release.",
+  "Referencia de precios inválida": "Invalid price reference",
+  "Precio mensual inválido": "Invalid monthly price",
+  "Sin datos para este período": "No data for this period",
+  "Volver al último mes disponible": "Return to the latest available month",
+  Próximamente: "Coming soon",
+  "Esta vista estará disponible en una próxima etapa.":
+    "This view will be available in a future stage.",
+  "Volver al Resumen": "Back to Overview",
+  "Fuente:": "Source:",
+  "Secretaría de Energía · Capítulo IV": "Secretaría de Energía · Chapter IV",
+  " · Producción hasta {period}": " · Production through {period}",
+  "Candidato validado técnicamente; promoción pública pendiente":
+    "Technically validated candidate; public promotion pending",
+  Preliminar: "Preliminary",
+  " · Vaca Muerta · No convencional. ": " · Vaca Muerta · Unconventional. ",
+  "Valorización del gas pendiente.": "Gas valuation pending.",
+  "Fuentes y metodología": "Sources and methodology",
+  "Universo: formación Vaca Muerta y recurso no convencional. Operador declarado por mes; transferencias de activos pueden modificar los rankings. Área: permiso o concesión. Los datos oficiales son revisables; se conserva el último snapshot validado y la promoción pública permanece pendiente.":
+    "Scope: Vaca Muerta formation and unconventional resource. Operator declared each month; asset transfers may change rankings. Area: permit or concession. Official data can be revised; the latest validated snapshot is retained and public promotion remains pending.",
+  "Producción: {period}. Ingesta: {ingested}. Versión preparada: {generated}. Publicación: {published}.":
+    "Production: {period}. Ingested: {ingested}. Release prepared: {generated}. Publication: {published}.",
+  "no informada": "not reported",
+  "pendiente de aprobación": "pending approval",
+  "{year}: fuente actualizada {updated}; extracción {extracted}.":
+    "{year}: source updated {updated}; extracted {extracted}.",
+  "Manifiesto de producción": "Production manifest",
+  "EIA · promedio mensual USD/bbl": "EIA · monthly average USD/bbl",
+  "Brent:": "Brent:",
+  "Actualizada {updated}; ingesta {retrieved}. Valor mensual = bbl × precio del mismo mes; diario = valor mensual / días calendario. Comparaciones calculadas sobre cada valor estimado. No representa facturación efectiva. Referencia uniforme para entidades; no incorpora calidad, descuentos, costos, regalías o tipo de cambio.":
+    "Updated {updated}; ingested {retrieved}. Monthly value = bbl × price for the same month; daily = monthly value / calendar days. Comparisons use each estimated value. Does not represent actual revenue. Uniform reference for entities; excludes quality, discounts, costs, royalties and exchange rates.",
+  "Gas:": "Gas:",
+  "precios nacionales": "national prices",
+  "revisados, sin serie comparable y conversión energética validadas.":
+    "reviewed; comparable history and energy conversion have not been validated.",
+  "Escala desde cero. Una vista porcentual o índice base 100 podría incorporarse en el futuro.":
+    "Scale starts at zero. A percentage change view or base-100 index may be added in the future.",
+  "(zona no informada)": "(time zone not reported)",
+};
+// Contract errors remain diagnostic data; translate all known validation messages at the UI boundary.
+Object.assign(translations, {
+  "Histórico": "History",
+  "Histórico disponible: {start} – {end}": "Available history: {start} – {end}",
+  "Gas: valor estimado no disponible.": "Gas: estimated value unavailable.",
+  "Fila inválida": "Invalid row",
+  "Fluido o período inválido": "Invalid product or period",
+  "Unidad inválida": "Invalid unit",
+  "Métrica inválida": "Invalid metric",
+  "Conteo inválido": "Invalid count",
+  "Cobertura o volumen inválido": "Invalid coverage or volume",
+  "Agregado preparado inválido": "Invalid prepared aggregate",
+  "Entidad inválida": "Invalid entity",
+  "Ranking inválido": "Invalid ranking",
+  "Mes inválido": "Invalid month",
+  "Contrato de release inválido": "Invalid release contract",
+  "Mes duplicado": "Duplicate month",
+  "Entidad duplicada": "Duplicate entity",
+  "Entidad sin mes aceptado": "Entity without accepted month",
+  "Mapa inválido": "Invalid map",
+  "Agrupación inválida": "Invalid grouping",
+  "Mapping inválido": "Invalid mapping",
+  "Regla de operador inválida": "Invalid operator rule",
+  "Procedencia legal inválida": "Invalid legal provenance",
+  "Manifiesto inválido": "Invalid manifest",
+  "Proveniencia inválida": "Invalid provenance",
+  "Períodos aceptados duplicados o cutoff inconsistente":
+    "Duplicate accepted periods or inconsistent cutoff",
+  "Recursos inválidos": "Invalid resources",
+  "Mes fuera del manifiesto": "Month outside manifest",
+  "Snapshot aceptado ausente": "Missing accepted snapshot",
+  "Falta último mes de un fluido": "Missing latest month for a product",
+  "Aprobación no corresponde a esta versión y manifiesto":
+    "Approval does not match this release and manifest",
+  "Referencia geográfica inválida": "Invalid geographic reference",
+  "Evolución de producción y valor": "Production and value over time",
+  "Volumen mensual · escala desde cero.":
+    "Monthly volume · scale starts at zero.",
+  "Producción física": "Physical production",
+  "Valor estimado": "Estimated value",
+  "Mensual · escalas independientes desde cero; alturas no comparables.":
+    "Monthly · independent scales from zero; heights are not comparable.",
+  "El selector Volumen / Valor estimado controla KPIs y rankings; aquí se muestran ambas series disponibles.":
+    "The Volume / Estimated value selector controls KPIs and rankings; this chart shows both available series.",
+  "Gas: valor estimado pendiente de una referencia nacional y conversión energética validadas.":
+    "Gas: estimated value awaits a validated national reference and energy conversion.",
+  "Volumen mensual ({unit})": "Monthly volume ({unit})",
+  "Valor mensual (USD estimados)": "Monthly value (estimated USD)",
+  "Valores mensuales. Los meses o precios ausentes no equivalen a cero.":
+    "Monthly values. Missing months or prices do not equal zero.",
+  "Producción: {value}": "Production: {value}",
+  "Valor estimado: {value}": "Estimated value: {value}",
+  "Volver a {label}": "Back to {label}",
+  "Metodología completa": "Full methodology",
+  "Unidad: {unit} · Período: {period}": "Unit: {unit} · Period: {period}",
+  "Fuente: Secretaría de Energía · formación Vaca Muerta.":
+    "Source: Secretariat of Energy · Vaca Muerta formation.",
+  "Fuente: EIA · Brent mensual; volumen: Secretaría de Energía.":
+    "Source: EIA · monthly Brent; volume: Secretariat of Energy.",
+  "Volumen producido durante el mes dividido por sus días calendario.":
+    "Monthly production volume divided by calendar days.",
+  "Valor mensual a precio histórico Brent dividido por los días del mes.":
+    "Monthly value at historical Brent price divided by calendar days.",
+  "Volumen producido durante el mes seleccionado.":
+    "Production volume during the selected month.",
+  "Volumen mensual multiplicado por el precio Brent de ese mes.":
+    "Monthly volume multiplied by that month’s Brent price.",
+  "Pozos únicos con producción positiva durante el mes.":
+    "Unique wells with positive production during the month.",
+  "Precio promedio mensual Brent utilizado como referencia, no precio efectivo de venta.":
+    "Monthly average Brent reference price, not the actual sale price.",
+  "Valor apresentado: {value}": "Displayed value: {value}",
+  "Fuente: EIA.": "Source: EIA.",
+  "Fuente: Secretaría de Energía · EIA.":
+    "Source: Secretariat of Energy · EIA.",
+  "Fuente: Secretaría de Energía.": "Source: Secretariat of Energy.",
+  "Valor USD": "USD Value",
+  "5 años": "5 years",
+  "Cobertura: {count} de {requested} meses solicitados · {start}–{end}":
+    "Coverage: {count} of {requested} requested months · {start}–{end}",
+  "Gráfico desplazable de producción y valor":
+    "Scrollable production and value chart",
+  "Deslizá para explorar los meses →": "Scroll to explore the months →",
+  "Ver metodología →": "View methodology →",
+  "Promedio diario de producción del mes.":
+    "Average daily production for the month.",
+  "Promedio diario del valor estimado del mes.":
+    "Average daily estimated value for the month.",
+  "Producción acumulada durante el mes.": "Total production during the month.",
+  "Pozos con producción positiva en el mes.":
+    "Wells with positive production during the month.",
+  "Producción valorizada a precio de referencia.":
+    "Production valued at the reference price.",
+  "Volumen mensual dividido por los días del período.":
+    "Monthly volume divided by the days in the period.",
+  "Suma de la producción registrada durante el mes.":
+    "Sum of production recorded during the month.",
+  "Volumen mensual × precio del período. Estimación, no facturación efectiva.":
+    "Monthly volume × the period’s reference price. Estimate, not actual revenue.",
+  "Valor mensual estimado / días calendario. No representa facturación efectiva.":
+    "Estimated monthly value / calendar days. Not actual revenue.",
+  "Promedio mensual Brent de referencia; no es el precio efectivo de venta.":
+    "Monthly average Brent reference; not the actual sale price.",
+  "Precio promedio mensual de referencia Brent.":
+    "Monthly average Brent reference price.",
+  "Estimación monetaria no disponible.": "Monetary estimate unavailable.",
+  "Estimación pendiente: referencia monetaria sin validar para este período.":
+    "Estimate pending: monetary reference not validated for this period.",
+  "El selector Volumen / Valor USD controla KPIs y rankings; aquí se muestran ambas series disponibles.":
+    "The Volume / USD Value selector controls KPIs and rankings; this chart shows both available series.",
+  "Producción diaria = volumen mensual / días calendario. Volumen mensual = suma de la producción registrada. Pozos productivos = pozos únicos con producción positiva. Las comparaciones usan cada métrica y su período correspondiente; bases ausentes o cero no generan variaciones.":
+    "Daily production = monthly volume / calendar days. Monthly volume = sum of recorded production. Producing wells = unique wells with positive production. Comparisons use each metric and its corresponding period; missing or zero bases do not generate changes.",
+});
+Object.assign(translations, {
+  "Evolución de pozos productivos": "Producing wells over time",
+  "Actividad · Próximamente": "Activity · Coming soon",
+  "Gráfico desplazable de pozos productivos": "Scrollable producing wells chart",
+  "El gráfico combinado utiliza escalas independientes para volumen y USD, ambas desde cero. Comparar la evolución de cada serie, no sus alturas entre sí.": "The combined chart uses independent volume and USD scales, both starting at zero. Compare changes within each series, rather than heights across series.",
+});
+Object.assign(translations, {
+  "Explorar la producción": "Explore production",
+  "Evolución, comparaciones y datos mensuales de Vaca Muerta.": "Trends, comparisons and monthly data for Vaca Muerta.",
+  "Producción mensual": "Monthly production",
+  "Cambio absoluto": "Absolute change",
+  "Valor del mes menos el valor de su base calendario exacta.": "Monthly value minus its exact calendar comparison value.",
+  "Crecimiento acumulado": "Year-to-date growth",
+  "Suma enero–mes frente al mismo período del año anterior; requiere todos los meses y precios necesarios.": "January-to-selected-month total versus the same period last year; requires all relevant months and prices.",
+  "Enero–{month} vs. {year}": "January–{month} vs. {year}",
+  "Acumulado: {value}": "YTD: {value}",
+  "Máximo mensual disponible": "Available monthly peak",
+  "Mayor total mensual del histórico disponible hasta el mes seleccionado; no es un récord de toda la historia de Vaca Muerta.": "Largest monthly total in the available history up to the selected month; not an all-time Vaca Muerta record.",
+  "Histórico incompleto para valorar": "Incomplete valuation history",
+  "Desde {period}": "Since {period}",
+  "Comparación entre años": "Year comparison",
+  "Totales por mes · {unit}": "Monthly totals · {unit}",
+  "Gráfico de comparación entre años": "Year comparison chart",
+  "Meses sin registro o posteriores al período seleccionado: sin dato.": "Missing records or months after the selected period: no data.",
+  "Ver comparación en tabla": "View comparison table",
+  "Cambio absoluto por mes": "Absolute monthly change",
+  "{comparison} · {unit}": "{comparison} · {unit}",
+  "Gráfico de cambios absolutos": "Absolute changes chart",
+  "Diferencia de totales mensuales; no de tasas diarias. Sin base exacta, no se calcula.": "Change in monthly totals, not daily rates. No exact comparison month, no calculation.",
+  "Ver datos y bases de comparación": "View data and comparison periods",
+  "Datos mensuales": "Monthly data",
+  "{count} registros de {requested} meses · {start} – {end}": "{count} records across {requested} months · {start} – {end}",
+  "Descargar CSV": "Download CSV",
+  "Cambios absolutos en {unit}. Celdas vacías en CSV indican datos no disponibles.": "Absolute changes in {unit}. Empty CSV cells mean unavailable data.",
+  "Tabla de producción mensual": "Monthly production table",
+  "Base MoM": "MoM period",
+  "Base YoY": "YoY period",
+  "Fuente: Secretaría de Energía · Capítulo IV. USD: volumen × Brent mensual EIA; estimación, no facturación.": "Source: Secretaría de Energía · Capítulo IV. USD: volume × EIA monthly Brent; estimate, not revenue."
+});
+Object.assign(translations, {
+  "Diferencia frente al mes base.": "Difference from the comparison month.",
+  "Acumulado enero–mes vs. año anterior.": "Year-to-date total versus last year.",
+  "Mayor mes dentro del histórico disponible.": "Largest month in the available history.",
+});
+// Only two locales and a small fixed set of precision/date options are used by the UI.
+// Reuse ICU formatters across rows and renders instead of constructing one per cell.
+const formatterCache = new Map<Language, ReturnType<typeof createFormatters>>();
+export function formatters(language: Language) {
+  let value=formatterCache.get(language);
+  if(!value){value=createFormatters(language);formatterCache.set(language,value);}
+  return value;
+}
+function createFormatters(language: Language) {
+  const locale = locales[language];
+  const numberFormats=new Map<string,Intl.NumberFormat>();
+  function numericFormat(decimals:number,minimum:number){
+    const key=`${decimals}/${minimum}`;
+    let formatter=numberFormats.get(key);
+    if(!formatter){formatter=new Intl.NumberFormat(locale,{maximumFractionDigits:decimals,minimumFractionDigits:minimum});numberFormats.set(key,formatter);}
+    return formatter;
+  }
+  const historyFormat=new Intl.DateTimeFormat(locale,{month:"short",year:"numeric",timeZone:"UTC"});
+  const monthFormat=new Intl.DateTimeFormat(locale,{month:"long",year:"numeric",timeZone:"UTC"});
+  const shortMonthFormat=new Intl.DateTimeFormat(locale,{month:"short",timeZone:"UTC"});
+  const dateFormat=new Intl.DateTimeFormat(locale,{dateStyle:"medium",timeZone:"UTC"});
+  const timestampFormat=new Intl.DateTimeFormat(locale,{dateStyle:"medium",timeStyle:"short",timeZone:"UTC"});
+  const t = (key: string, vars: Record<string, string | number> = {}) =>
+    (language === "en" ? (translations[key] ?? key) : key).replace(
+      /\{(\w+)\}/g,
+      (_, k) => String(vars[k] ?? `{${k}}`),
+    );
+  const number = (
+    value: number | null | undefined,
+    decimals = 1,
+    minimum = decimals,
+  ) =>
+    value == null
+      ? t("No disponible")
+      : numericFormat(decimals,minimum).format(value);
+  const historyMonth = (period: string) => historyFormat.format(new Date(`${period}T00:00:00Z`)).replace(/\./g, "");
+  const exact = (value: number | null | undefined) => number(value, 20, 0);
+  const compact = (value: number | null | undefined, decimals = 2) => {
+    if (value == null) return t("No disponible");
+    // Round representation only; promote 999.999K to 1M rather than showing 1,000K.
+    const magnitude = Math.abs(value);
+    const divisor = magnitude >= 999995 ? 1e6 : magnitude >= 999.995 ? 1e3 : 1;
+    return `${number(value / divisor, decimals, 0)}${divisor === 1 ? "" : `${language === "es" ? " " : ""}${divisor === 1e6 ? "M" : "K"}`}`;
+  };
+  const currency = (value: number | null | undefined) =>
+    value == null
+      ? t("No disponible")
+      : `${language === "es" ? "US$" : "USD"} ${compact(value)}`;
+  const physical = (value: number | null | undefined, fluid: "oil" | "gas") =>
+    value == null
+      ? t("No disponible")
+      : `${fluid === "oil" ? compact(value) : number(value, 2, 0)} ${fluid === "oil" ? "bbl" : "MMm³"}`;
+  const million = (value: number | null | undefined, decimals = 1) =>
+    value == null ? t("No disponible") : number(value / 1e6, decimals);
+  const month = (period: string, short = false) => {
+    const text = monthFormat.format(new Date(`${period}T00:00:00Z`));
+    return short
+      ? shortMonthFormat.format(new Date(`${period}T00:00:00Z`))
+          .replace(/\.$/, "") +
+          " " +
+          period.slice(2, 4)
+      : text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+  };
+  const monthYear = (period: string) => {
+    const parts = monthFormat.formatToParts(new Date(`${period}T00:00:00Z`));
+    const text = `${parts.find((p) => p.type === "month")?.value} ${parts.find((p) => p.type === "year")?.value}`;
+    return text.charAt(0).toLocaleUpperCase(locale) + text.slice(1);
+  };
+  const date = (value: string | null | undefined) => {
+    if (!value) return t("no informada");
+    const dateOnly = /^\d{4}-\d{2}-\d{2}$/.test(value);
+    const zoned = /(?:Z|[+-]\d\d:\d\d)$/.test(value);
+    const d = new Date(dateOnly || zoned ? value : `${value}Z`);
+    if (!Number.isFinite(d.getTime())) return t("no informada");
+    return (
+      (dateOnly?dateFormat:timestampFormat).format(d) +
+      (!dateOnly ? (zoned ? " UTC" : ` ${t("(zona no informada)")}`) : "")
+    );
+  };
+  const percent = (v: number, signed = false) =>
+    `${signed ? (v > 0 ? "+" : v < 0 ? "−" : "") : ""}${number(signed ? Math.abs(v) : v)}%`;
+  return {
+    language,
+    locale,
+    t,
+    number,
+    historyMonth,
+    exact,
+    currency,
+    physical,
+    compact,
+    million,
+    month,
+    monthYear,
+    date,
+    percent,
+  };
+}

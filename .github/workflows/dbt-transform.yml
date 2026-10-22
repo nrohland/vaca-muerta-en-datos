@@ -82,11 +82,11 @@ jobs:
       - name: Build static candidate and install browser
         run: |
           npm --prefix apps/web run build
-          cd apps/web
-          npx playwright install --with-deps chromium
+          google-chrome --version
       - name: Verify all tabs and delivery budgets in a real browser
         working-directory: apps/web
         env:
+          SECURITY_BROWSER_CHANNEL: chrome
           EVIDENCE_DIR: ${{ runner.temp }}/visual-evidence
         run: npm run test:browser
       - name: Retain browser results and representative captures

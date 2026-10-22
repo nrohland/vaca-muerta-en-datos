@@ -45,5 +45,7 @@
       ]
     }
   ],
-  "buildCommand": "NEXT_PUBLIC_BASE_PATH='' npm run build"
+  "buildCommand": "NEXT_PUBLIC_BASE_PATH='' npm run build",
+  "framework": null,
+  "outputDirectory": "out"
 }

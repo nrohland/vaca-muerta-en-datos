@@ -62,6 +62,7 @@ jobs:
           node --experimental-strip-types apps/web/scripts/check_snapshot.mjs --data-dir apps/web/public/data
           npm --prefix apps/web run typecheck
           npm --prefix apps/web test
+          npm --prefix apps/web run test:security-html
           npm --prefix apps/web run build
 
   browser:

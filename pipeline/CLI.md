@@ -32,7 +32,7 @@ python pipeline/run_candidate.py transform --history \
   --extract-artifact /tmp/vm-extract --run-dir /tmp/vm-transform
 ```
 
-Nueve etapas: artifact-check → raw-revalidate → loaded-revalidate → dbt-source-freshness → dbt-parse → dbt-compile → dbt-build → dashboard-export → snapshot-check.
+Diez etapas: resource-preflight → artifact-check → raw-revalidate → loaded-revalidate → dbt-source-freshness → dbt-parse → dbt-compile → dbt-build → dashboard-export → snapshot-check.
 
 Metadata requerida: source-evidence, source-manifest, source-load, price-manifest y price-load. Cada JSON prueba fuente/destino/hash/fechas/corte de su carga. dbt usa el target candidato, pricing habilitado, presupuesto de 1 GiB por consulta y selección explícita de producción, dimensiones, valorización y `+fct_dashboard_month`. Freshness exige ambas fuentes PASS; build no admite errores, warnings ni skips.
 

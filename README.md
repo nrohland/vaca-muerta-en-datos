@@ -6,7 +6,7 @@ Pensado para analistas, equipos de energía y periodistas. Como portfolio, muest
 
 ![Resumen de Vaca Muerta en Datos](docs/screenshots/resumen.jpg)
 
-**Estado:** V1 preliminar con 44 meses de enero de 2023 a agosto de 2026. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
+**Estado:** V1 funcional cerrada; datos preliminares con 44 meses de enero de 2023 a agosto de 2026. Septiembre parcial queda excluido; las declaraciones oficiales pueden rectificarse.
 
 **[Abrir demo pública en Vercel](https://vaca-muerta-en-datos.vercel.app)**. El sitio sirve el snapshot revisado; la extracción automática está pausada por problemas de conectividad con Energía. Publicar el frontend no actualiza los datos. [Configuración del despliegue](docs/vercel.md).
 
@@ -24,7 +24,7 @@ Las cinco vistas comparten componentes, filtros y contexto persistente: petróle
 
 ## Datos, precios y definiciones
 
-La fuente principal es [Capítulo IV de la Secretaría de Energía](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv). El universo combina **formación Vaca Muerta y recurso no convencional**; no representa toda la Cuenca Neuquina. Cuatro CSV oficiales anuales contienen 3.614.213 registros nacionales, de los que dbt obtiene el universo y los agregados del producto.
+La fuente principal es [Capítulo IV de la Secretaría de Energía](https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv). El universo combina **formación Vaca Muerta y recurso no convencional**; no representa toda la Cuenca Neuquina. Cuatro CSV oficiales anuales contienen 3.689.451 registros nacionales en la corrida local del 21/10/2026, de los que dbt obtiene el universo y los agregados del producto.
 
 - **Petróleo:** m³ × 6,28981077 → barriles. **Gas:** miles de m³ → MMm³. Tasa diaria equivalente = volumen mensual / días calendario.
 - **Pozos productivos:** IDs únicos con volumen positivo del fluido en cada mes. Los conteos petróleo/gas no se suman.
@@ -112,9 +112,9 @@ Para navegador, instalar Chromium con `npx playwright install chromium`. Para ca
 | `specs/` | Alcance, preguntas, definiciones y contratos vigentes. |
 | `docs/` | Arquitectura, decisiones, evidencia y capturas de V1. |
 
-Nombre de producto: **Vaca Muerta en Datos**. Identificador técnico: `vaca-muerta-pulse`. [Contribución](AGENTS.md) · [Controles de seguridad](docs/security.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.
+Nombre de producto: **Vaca Muerta en Datos**. Repositorio: `vaca-muerta-en-datos` (los identificadores internos de GCP/dbt y el prefijo local conservan `vaca-muerta-pulse` por compatibilidad). [Contribución](AGENTS.md) · [Controles de seguridad](docs/security.md). Los prototipos y la evidencia superada se retiraron del árbol vigente; las versiones previas permanecen en el historial Git. No se versionan secretos ni dumps raw.
 
-La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
+En V1 la actualización es manual desde una máquina con acceso a Energía. Ambos workflows de datos están `disabled_manually`, además de los flags en `false`; no hay alertas diarias ni ejecución manual de Actions hasta rehabilitarlos explícitamente. El CI y los controles de seguridad siguen activos. [Operación y cierre de V1](docs/v1-closeout.md).
 
 El monitor de disponibilidad y rectificativas es independiente y está pausado (`SOURCE_MONITOR_ENABLED=false`). Su calendario previsto contempla revisiones diarias, histórico completo semanal y avisos deduplicados mediante Issues asignadas al propietario. `SOURCE_MONITOR_ENABLED` controla este calendario sin activar las cargas de `DATA_PIPELINE_ENABLED`. [Criterios, fallos y operación](pipeline/MONITOR.md).
 

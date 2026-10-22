@@ -41,7 +41,7 @@ Aplicar analytics-ui en las vistas analíticas: jerarquía, componentes reutiliz
 
 Ejecutar pruebas proporcionales a los cambios: cálculos/transformaciones, contratos y navegación, typecheck/build y pruebas de navegador cuando estén disponibles. Inspeccionar capturas desktop/mobile, corregir problemas y registrar resultados reales con sus límites. No afirmar éxito de Playwright por una inspección manual.
 
-Actualizar documentación operativa si cambia cómo se ejecuta una pieza. Markdown, enlaces y Mermaid deben ser coherentes; nombres técnicos en inglés, narrativa de producto en español. Nombre oficial: **Vaca Muerta en Datos**; identificador de repositorio: `vaca-muerta-pulse`.
+Actualizar documentación operativa si cambia cómo se ejecuta una pieza. Markdown, enlaces y Mermaid deben ser coherentes; nombres técnicos en inglés, narrativa de producto en español. Nombre oficial: **Vaca Muerta en Datos**; identificador de repositorio: `vaca-muerta-en-datos` (GCP/dbt y prefijo local conservan el ID anterior).
 
 ## Secretos y aprobación
 

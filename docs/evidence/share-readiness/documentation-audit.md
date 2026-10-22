@@ -22,4 +22,4 @@ Construí **Vaca Muerta en Datos**, un producto analítico que transforma declar
 
 La solución combina Python y Parquet para extracción, BigQuery como warehouse, dbt para modelado y controles, y Next.js/React/TypeScript con Recharts y MapLibre en el frontend estático de Vercel. El navegador consume agregados validados y no requiere credenciales del warehouse. La demo es preliminar, con datos de enero de 2023 a agosto de 2026; la actualización automática está pausada.
 
-[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-pulse) · [README](../../../README.md) · [Arquitectura](../../architecture.md) · [Capturas](../../screenshots/README.md)
+[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-en-datos) · [README](../../../README.md) · [Arquitectura](../../architecture.md) · [Capturas](../../screenshots/README.md)

@@ -8,8 +8,8 @@ Los límites y el consumo se comparten con las otras aplicaciones de la cuenta.
 
 ## Configuración
 
-- Repositorio `nrohland/vaca-muerta-pulse`, rama de producción `feat/dashboard-visual-polish`.
-  No se mergeó a `main` para este despliegue. Los pushes a esa rama generan builds.
+- Repositorio `nrohland/vaca-muerta-en-datos`, rama de producción `feat/dashboard-visual-polish`.
+  `main` contiene la versión integrada. La rama de producción se sincroniza por fast-forward después de los controles; sus pushes generan builds.
 - Root Directory: `apps/web`.
 - Framework Preset: `Other`, para servir únicamente el export estático.
 - Install Command: `npm ci`.

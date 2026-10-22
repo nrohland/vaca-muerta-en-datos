@@ -4,14 +4,14 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "next dev --webpack",
-    "build": "next build --webpack",
+    "build": "next build --webpack && node scripts/harden-static-html.mjs",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test tests/*.test.ts",
     "test:browser": "playwright test",
     "prebuild": "node --experimental-strip-types scripts/build_delivery.mjs",
     "predev": "node --experimental-strip-types scripts/build_delivery.mjs",
-    "postbuild": "node scripts/check_performance.mjs && node scripts/harden-static-html.mjs",
-    "test:security-html": "node --test scripts/harden-static-html.test.mjs"
+    "test:security-html": "node --test scripts/harden-static-html.test.mjs scripts/delivery-policy.test.mjs",
+    "postbuild": "node scripts/check_performance.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.14.0",

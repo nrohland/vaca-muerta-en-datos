@@ -10,7 +10,8 @@
     "test:browser": "playwright test",
     "prebuild": "node --experimental-strip-types scripts/build_delivery.mjs",
     "predev": "node --experimental-strip-types scripts/build_delivery.mjs",
-    "postbuild": "node scripts/check_performance.mjs"
+    "postbuild": "node scripts/check_performance.mjs && node scripts/harden-static-html.mjs",
+    "test:security-html": "node --test scripts/harden-static-html.test.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.14.0",

@@ -18,7 +18,7 @@ Once a month, a human should review official framework advisories, authenticatio
 
 ## Browser headers
 
-The frontend applies nosniff, anti-framing, referrer and browser-permission policies. CSP enforces base/object/frame/form restrictions; the full resource policy is Report-Only while resources and inline scripts are reviewed. It does not yet block every script source or provide a report collector. Verify the public deployment after each change; keep warnings distinct from enforced controls.
+The full resource CSP is enforced in Vercel headers. Every production build additionally places a strict script policy in each prerendered HTML head before scripts: only same-origin external scripts and hashes of that build's inline scripts are permitted. No unsafe-inline or unsafe-eval is allowed by this document policy; inline event handlers are denied. The HTTP policy retains the framework-compatible inline allowance, but the more restrictive document policy also applies and blocks arbitrary inline scripts. Inline styles remain allowed for React/chart rendering. Hashes are generated from exact emitted bytes, never copied between builds. CI verifies the policy and attempts a blocked inline-script injection. Dynamic pages fail the build until a per-request nonce design is reviewed. There is no CSP report collector or paid logging service.
 
 ## Validation and deployment
 

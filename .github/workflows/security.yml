@@ -5,7 +5,7 @@ on:
   push:
     branches: [main]
   schedule:
-    - cron: '35 8 * * 1'
+    - cron: '0 13 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -24,29 +24,38 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Install reviewed Gitleaks binary
+      - name: Install checksum-verified Gitleaks
         run: |
           curl --fail --silent --show-error --location --retry 0 --max-time 60 https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o "$RUNNER_TEMP/gitleaks.tar.gz"
           printf '%s  %s\n' '551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb' "$RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check --status
           tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
-      - name: Scan complete fetched history without disclosing findings
+      - name: Scan fetched history with fully redacted findings
         run: |
           "$RUNNER_TEMP/gitleaks" git . --log-opts='--all --full-history' --ignore-gitleaks-allow --max-decode-depth=2 --redact=100 --no-banner --report-format=json --report-path="$RUNNER_TEMP/gitleaks-redacted.json"
-      # Reports remain on the ephemeral runner; no public artifact of potential secrets.
+      # Potential-secret reports are not uploaded as public artifacts.
 
   dependencies:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
-          node-version: '22.13.1'
-      - name: Audit locked JavaScript dependencies
-        working-directory: apps/web
-        run: npm audit --audit-level=high
+          node-version: '22'
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Verify fail-closed audit policy
+        run: python scripts/test_security_audit.py
+      - name: Audit locked JavaScript and reviewed framework minimums
+        run: python scripts/security_audit.py --directory apps/web
+      - name: Audit Python requirements and resolved dependencies
+        run: |
+          python -m pip install pip-audit==2.10.1
+          pip-audit -r extraction/requirements.txt -r transform/requirements.txt -r transform/requirements-audit.txt --progress-spinner off
+
 
   codeql:
     runs-on: ubuntu-latest

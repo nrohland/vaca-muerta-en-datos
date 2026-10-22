@@ -123,3 +123,7 @@ La [iteración de rendimiento](specs/021-performance-optimization.md) incorpora 
 ## Alcance de esta versión
 
 V1 permite explorar datos públicos agregados; no consulta BigQuery desde el navegador ni expone credenciales del pipeline. No incluye un chat de datos: esa integración está planificada para una etapa posterior. La demo es preliminar y no ofrece actualización automática mientras la extracción y el monitor permanezcan pausados.
+
+## Security maintenance
+
+Weekly GitHub-hosted dependency, secret and CodeQL checks; reviewed dependency updates without automatic merge. See [cadence, exceptions and monthly review](docs/security-maintenance.md).

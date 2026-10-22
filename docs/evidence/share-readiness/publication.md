@@ -1,12 +1,12 @@
 # Publicación de las mejoras y QA en Chrome
 
-Mejoras autorizadas por Nicolás después de la auditoría. Código integrado por fast-forward a `feat/dashboard-visual-polish`, sin merge a `main`. El PR [#55](https://github.com/nrohland/vaca-muerta-pulse/pull/55) quedó integrado contra esa rama de despliegue.
+Mejoras autorizadas por Nicolás después de la auditoría. Código integrado por fast-forward a `feat/dashboard-visual-polish`, sin merge a `main`. El PR [#55](https://github.com/nrohland/vaca-muerta-en-datos/pull/55) quedó integrado contra esa rama de despliegue.
 
 ## Validación de código
 
 Commit `2e8d46843a460cbf1d71b54339d2e1181335b192`:
 
-- [CI 39511599481](https://github.com/nrohland/vaca-muerta-pulse/actions/runs/39511599481): validate, browser y architecture aprobados.
+- [CI 39511599481](https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/39511599481): validate, browser y architecture aprobados.
 - **41 pruebas browser aprobadas en 48,2 s**, incluyendo reintentos sin recargar overview, precarga paralela del tab activo y requests compartidos al navegar rápidamente.
 - 68 tests Node, 194 tests Python offline, typecheck/build y contrato de snapshot aprobados en la auditoría integrada. La corrida CI también ejecutó sus gates correspondientes.
 - Sin nueva extracción, consultas BigQuery ni cambios en datos, credenciales o facturación.

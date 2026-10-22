@@ -41,4 +41,4 @@ Construí **Vaca Muerta en Datos**, un dashboard para explorar la producción no
 
 El proyecto combina **Python y Parquet, BigQuery y dbt**, con un frontend **Next.js, React, TypeScript, Recharts y MapLibre**, publicado como sitio estático en **Vercel**. Los datos se validan antes de llegar al navegador, que no requiere credenciales del warehouse. La demo preliminar cubre enero de 2023 a agosto de 2026; la actualización automática está pausada.
 
-[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-pulse) · [README local revisado](../../../README.md) · [Arquitectura local revisada](../../architecture.md).
+[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-en-datos) · [README local revisado](../../../README.md) · [Arquitectura local revisada](../../architecture.md).

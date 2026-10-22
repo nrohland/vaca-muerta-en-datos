@@ -10,7 +10,7 @@ import subprocess
 
 PROJECT = 'vaca-muerta-pulse'
 NUMBER = '853495755275'
-REPO = 'nrohland/vaca-muerta-pulse'
+REPO = 'nrohland/vaca-muerta-en-datos'
 POOL = 'vm-data-dev'
 PROVIDER = 'github-data-pipeline'
 EXTRACT = f'vm-pulse-ci-extract-dev@{PROJECT}.iam.gserviceaccount.com'
@@ -19,7 +19,7 @@ CONDITION = (
     "assertion.repository_id == '1364547377' && "
     "assertion.repository_owner_id == '55503418' && "
     "assertion.ref == 'refs/heads/main' && "
-    "assertion.workflow_ref == 'nrohland/vaca-muerta-pulse/.github/workflows/data-pipeline.yml@refs/heads/main' && "
+    "assertion.workflow_ref == 'nrohland/vaca-muerta-en-datos/.github/workflows/data-pipeline.yml@refs/heads/main' && "
     "assertion.event_name in ['schedule', 'workflow_dispatch'] && "
     "assertion.environment in ['data-dev-extract', 'data-dev-dbt']"
 )

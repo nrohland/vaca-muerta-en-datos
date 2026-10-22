@@ -1,10 +1,10 @@
 # Primera ejecución real en GitHub — 13 de octubre de 2026
 
-[Pipeline manual completo](https://github.com/nrohland/vaca-muerta-pulse/actions/runs/38456258503) aprobado sobre main, commit `7dbc1d9`: extracción 8m17s, transformación 5m43s. Fuentes descargadas nuevamente, 3.614.213 registros y 828 cotizaciones cargadas; controles raw, linaje y freshness aprobados. Autenticación WIF real con identidades separadas en ambas etapas, sin modificar IAM.
+[Pipeline manual completo](https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/38456258503) aprobado sobre main, commit `7dbc1d9`: extracción 8m17s, transformación 5m43s. Fuentes descargadas nuevamente, 3.614.213 registros y 828 cotizaciones cargadas; controles raw, linaje y freshness aprobados. Autenticación WIF real con identidades separadas en ambas etapas, sin modificar IAM.
 
 **dbt: 106 nodos aprobados, sin error/warn/skip**. Export de 44 meses y 10.296 agregados, contrato del consumidor, 59 tests frontend, typecheck y build aprobados. El bundle generado queda candidato y no reemplaza automáticamente el snapshot del repo. No se publicó una app ni se habilitó el cron.
 
-[Checks previos del PR](https://github.com/nrohland/vaca-muerta-pulse/actions/runs/38455837901) y [checks de main](https://github.com/nrohland/vaca-muerta-pulse/actions/runs/38456228316) aprobados: 112 tests Python y frontend/parse/build. Primera corrida del PR falló por faltar `--experimental-strip-types` bajo Node 22; corregido antes del merge. No fue un fallo de datos.
+[Checks previos del PR](https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/38455837901) y [checks de main](https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/38456228316) aprobados: 112 tests Python y frontend/parse/build. Primera corrida del PR falló por faltar `--experimental-strip-types` bajo Node 22; corregido antes del merge. No fue un fallo de datos.
 
 ## Seguridad
 

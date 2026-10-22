@@ -28,7 +28,7 @@ La carga y los modelos históricos tienen evidencia real previa; la integración
 
 [Recorrido real en GitHub con WIF aprobado](../docs/evidence/github-actions/README.md), desde descarga hasta build del consumidor. La detección de nuevos meses y rectificativas tiene [monitor independiente](MONITOR.md). La promoción de nuevos datos sigue requiriendo revisión; no hay ingesta automática operativa. Cron preparado día 5 a las 03:00 Argentina, desactivado. El workflow no sube raw, HTML, perfiles, credenciales, manifest dbt completo, dashboard ni build a artifacts; no publica GitHub Pages ni hace commits/push. Cambios nuevos de volumen/clasificación/área bloquean hasta contar con revisión explícita; no se aceptan automáticamente por actualizar hashes.
 
-La validación manual del workflow de datos está permitida únicamente en `main`, independientemente del opt-in del calendario. `DATA_PIPELINE_ENABLED=false` mantiene el cron desactivado; `workflow_dispatch` ejecuta una corrida puntual con los mismos permisos y gates.
+En V1 la operación aceptada es manual local. Ambos workflows de datos están `disabled_manually`, además de los flags en `false`: `workflow_dispatch` requiere rehabilitarlos explícitamente, comprobar conectividad y revisar el claim WIF tras el renombre del repo. CI y seguridad continúan activos. Ver [cierre y operación de V1](../docs/v1-closeout.md).
 
 Antes de warehouse, `resource-preflight` exige billing verificado como desactivado y registra uso/expiración por APIs de metadatos. Una identidad sin visibilidad de todos los jobs informa esa limitación; no fabrica cero. No modifica billing, IAM ni cuotas. El build dbt usa 4 threads y presupuesto agregado de aceptación de 3 GiB. [Spec de rendimiento](../specs/021-performance-optimization.md).
 

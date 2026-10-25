@@ -1,0 +1,10 @@
+name = "vm-source-diagnostic"
+main = "worker.mjs"
+compatibility_date = "2026-10-25"
+workers_dev = true
+
+[placement]
+region = "gcp:southamerica-east1"
+
+[observability]
+enabled = false

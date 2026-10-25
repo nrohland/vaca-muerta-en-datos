@@ -16,7 +16,7 @@ PROVIDER = 'github-data-pipeline'
 EXTRACT = f'vm-pulse-ci-extract-dev@{PROJECT}.iam.gserviceaccount.com'
 DBT = f'vm-pulse-ci-dbt-dev@{PROJECT}.iam.gserviceaccount.com'
 CONDITION = (
-    "assertion.repository_id == '1364547377' && "
+    "assertion.repository_id == '1433589644' && "
     "assertion.repository_owner_id == '55503418' && "
     "assertion.ref == 'refs/heads/main' && "
     "assertion.workflow_ref == 'nrohland/vaca-muerta-en-datos/.github/workflows/data-pipeline.yml@refs/heads/main' && "

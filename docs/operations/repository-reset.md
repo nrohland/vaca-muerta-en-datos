@@ -23,3 +23,7 @@ GCP mantiene facturación deshabilitada. No se copian secrets/variables/entornos
 Un repositorio recreado tiene un ID nuevo aunque conserve el nombre: la confianza WIF anterior y el enlace Vercel deben revisarse antes de reactivar despliegues. No se cambia IAM ni se habilitan servicios facturables. El sitio Vercel existente es independiente del borrado del repositorio; no se borra su proyecto.
 
 Usar ramas pequeñas y squash al integrar un PR coherente; conservar main protegida y los checks requeridos. No habilitar auto-merge. Los documentos de evidencia archivados describen ejecuciones del proyecto anterior, no validaciones nuevas del repositorio recreado.
+
+## Identidad recreada
+
+Repositorio público recreado: ID `1433589644`; anterior `1364547377`. La condición propuesta por configure_pipeline_identity.py usa el ID nuevo, pero el proveedor WIF desplegado no se modificó. No habilitar los workflows de datos hasta revisar la confianza existente y la conectividad.

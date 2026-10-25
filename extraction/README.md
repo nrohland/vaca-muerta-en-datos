@@ -30,3 +30,7 @@ Dependencias cloud: `transform/requirements.txt`. Nunca guardar credenciales o d
 ## Formato histórico
 
 El workflow histórico implementado usa CSV → Parquet Zstandard directamente, en lotes de 32.768 filas y con esquema explícito. Dependencias: `pip install -r extraction/requirements.txt`. Fuente CSV y payload Parquet llevan hashes independientes. El helper monoanual anterior conserva su contrato NDJSON; los precios pequeños conservan el suyo. [Contrato de rendimiento](../specs/021-performance-optimization.md).
+
+## Ejecución con Meltano
+
+La integración local ejecuta los scripts revisados como utilities, sin volver al antiguo tap CKAN ni crear servicios facturables. Ver [instalación, plan offline y fases](MELTANO.md). La programación local no se instala automáticamente; corte y aprobación siguen explícitos.

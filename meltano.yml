@@ -1,0 +1,30 @@
+version: 1
+default_environment: dev
+project_id: 0c9a0908-1c7c-4ad2-8ad6-9ec5fb62c9d0
+send_anonymous_usage_stats: false
+environments:
+  - name: dev
+plugins:
+  utilities:
+    - name: cap4
+      namespace: cap4
+      commands:
+        plan:
+          executable: python
+          args: scripts/run_meltano.py all --plan
+        prepare:
+          executable: python
+          args: scripts/run_meltano.py prepare
+        load:
+          executable: python
+          args: scripts/run_meltano.py load
+        transform:
+          executable: python
+          args: scripts/run_meltano.py transform
+        pipeline:
+          executable: python
+          args: scripts/run_meltano.py all
+jobs:
+  - name: candidate-history
+    tasks:
+      - cap4:pipeline

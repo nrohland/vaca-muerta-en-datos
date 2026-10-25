@@ -1,0 +1,4 @@
+# Execute existing batch extraction/validation as Meltano utilities (not Singer taps).
+meltano==4.4.1
+-r requirements.txt
+-r ../transform/requirements.txt

@@ -1,0 +1,8 @@
+{
+  "status": "pass",
+  "project": "vaca-muerta-pulse",
+  "job_id": "6577c37f-0d59-4d77-a643-7106a1f67761",
+  "query": "SELECT 1 AS access_ok",
+  "bytes_processed": 0,
+  "scope": "local ADC; not a GitHub WIF runner test"
+}

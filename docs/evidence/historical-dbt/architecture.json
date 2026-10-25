@@ -1,0 +1,74 @@
+{
+  "status": "completed_with_advisories",
+  "package": "dbt-labs/dbt_project_evaluator",
+  "execution": "local DuckDB graph metadata; not a BigQuery runtime benchmark",
+  "invocation_id": "69412388-31a8-49fa-87a4-0e288a612e0d",
+  "passed": 75,
+  "warnings": [
+    {
+      "test": "is_empty_fct_source_directories_",
+      "failures": 2,
+      "details": [
+        {
+          "rule_model": "fct_source_directories",
+          "findings": [
+            {
+              "resource_name": "candidate_pricing.monthly_reference_price",
+              "resource_type": "source",
+              "current_file_path": "models/pricing/_pricing.yml",
+              "change_file_path_to": "models/staging/candidate_pricing/_pricing.yml"
+            },
+            {
+              "resource_name": "raw_cap4.produccion_pozo_mes",
+              "resource_type": "source",
+              "current_file_path": "models/staging/_sources.yml",
+              "change_file_path_to": "models/staging/raw_cap4/_sources.yml"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "test": "is_empty_fct_model_directories_",
+      "failures": 2,
+      "details": [
+        {
+          "rule_model": "fct_model_directories",
+          "findings": [
+            {
+              "resource_name": "stg_produccion_pozo_mes",
+              "resource_type": "model",
+              "model_type": "staging",
+              "current_file_path": "models/staging/stg_produccion_pozo_mes.sql",
+              "change_file_path_to": "models/staging/raw_cap4/stg_produccion_pozo_mes.sql"
+            },
+            {
+              "resource_name": "stg_monthly_reference_price",
+              "resource_type": "model",
+              "model_type": "staging",
+              "current_file_path": "models/pricing/stg_monthly_reference_price.sql",
+              "change_file_path_to": "models/staging/candidate_pricing/stg_monthly_reference_price.sql"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "test": "is_empty_fct_model_fanout_",
+      "failures": 1,
+      "details": [
+        {
+          "rule_model": "fct_model_fanout",
+          "findings": [
+            {
+              "parent": "fct_well_month",
+              "parent_model_type": "marts",
+              "leaf_children": "dim_area, dim_company, fct_area_month, fct_company_month, fct_dashboard_month, fct_production_rate"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": 0
+}

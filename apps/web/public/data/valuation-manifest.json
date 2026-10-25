@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "status": "candidate",
+  "release_sha256": "e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd",
+  "prices_sha256": "1521a678dbaac3f12d79cfa1f6cf9e1b99ddf68137c2845da39ae9707a047ef9",
+  "generated_at": "2026-10-21T17:31:19.448911+00:00",
+  "missing_oil_price_periods": [],
+  "missing_gas_price_periods": [],
+  "method": "Oil: monthly bbl × same-month EIA Brent USD/bbl. Gas: reported m3 × reference-scenario MMBtu/m3 × same-month EIA Henry Hub USD/MMBtu; daily = monthly value / calendar days. Estimated reference values, not realized revenues or measured VM gas energy.",
+  "gas_status": "available",
+  "gas_valuation_kind": "international_reference_scenario",
+  "energy_basis": "EIA_US_AVERAGE_1036_BTU_PER_CUBIC_FOOT_SCENARIO_V1",
+  "m3_to_mmbtu": 0.03658599472346218,
+  "reference_sources": {
+    "oil": {
+      "frequency": "monthly",
+      "provider": "EIA",
+      "response_sha256": "c98878a3315012c2dd0f15a01ca8f5cbdcf747dfcf04989ae117e9b916c448d5",
+      "retrieved_at": "2026-10-21T17:20:50.909177+00:00",
+      "series": "Europe Brent Spot Price FOB",
+      "source_updated_at": "2026-10-15",
+      "unit": "USD/bbl",
+      "url": "https://www.eia.gov/dnav/pet/hist/leafhandler.ashx?f=m&n=pet&s=rbrte"
+    },
+    "gas": {
+      "frequency": "monthly",
+      "provider": "EIA",
+      "response_sha256": "02f3d7576e93a7db8f4b6af18b91875a7fe5764ba15e8c8988afb69ef4dc21de",
+      "retrieved_at": "2026-10-21T17:20:51.103392+00:00",
+      "series": "Henry Hub Natural Gas Spot Price",
+      "source_updated_at": "2026-10-21",
+      "unit": "USD/MMBtu",
+      "url": "https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm"
+    }
+  },
+  "publication_approved": false
+}

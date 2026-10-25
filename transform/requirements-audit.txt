@@ -1,0 +1,3 @@
+# Optional local architecture audit; reuse pinned dbt Core dependencies.
+dbt-duckdb==1.11.0
+duckdb==1.5.6

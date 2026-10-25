@@ -1,0 +1,1484 @@
+{
+  "schema_version": 1,
+  "policy": {
+    "coverage_floor": 0.98,
+    "stable_hours": 48,
+    "fresh_hours": 36,
+    "historical_full_days": 7,
+    "reference_months": 3,
+    "volume_ratio_min": 0.5,
+    "volume_ratio_max": 2.0
+  },
+  "accepted_periods": [
+    "2023-01-01",
+    "2023-02-01",
+    "2023-03-01",
+    "2023-04-01",
+    "2023-05-01",
+    "2023-06-01",
+    "2023-07-01",
+    "2023-08-01",
+    "2023-09-01",
+    "2023-10-01",
+    "2023-11-01",
+    "2023-12-01",
+    "2024-01-01",
+    "2024-02-01",
+    "2024-03-01",
+    "2024-04-01",
+    "2024-05-01",
+    "2024-06-01",
+    "2024-07-01",
+    "2024-08-01",
+    "2024-09-01",
+    "2024-10-01",
+    "2024-11-01",
+    "2024-12-01",
+    "2025-01-01",
+    "2025-02-01",
+    "2025-03-01",
+    "2025-04-01",
+    "2025-05-01",
+    "2025-06-01",
+    "2025-07-01",
+    "2025-08-01",
+    "2025-09-01",
+    "2025-10-01",
+    "2025-11-01",
+    "2025-12-01",
+    "2026-01-01",
+    "2026-02-01",
+    "2026-03-01",
+    "2026-04-01",
+    "2026-05-01",
+    "2026-06-01",
+    "2026-07-01",
+    "2026-08-01"
+  ],
+  "periods": {
+    "2023-01-01": {
+      "profile": {
+        "rows": 80833,
+        "vm_rows": 1847,
+        "oil_m3": "1402581.252347",
+        "gas_km3": "1571998.317794000",
+        "duplicate_rows": 0,
+        "oil_wells": 1309,
+        "gas_wells": 1453,
+        "fingerprint": "ccf30a90b2dc0c68c606231a8dcac0428fce107aba2c7d7832de97bf1b9b29ab",
+        "vm_fingerprint": "9121b44919792704fa0587c886f92c596e44bd68a4a27107fb7f8d166e31330e",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-02-01": {
+      "profile": {
+        "rows": 80912,
+        "vm_rows": 1873,
+        "oil_m3": "1303678.320868",
+        "gas_km3": "1465473.852379000",
+        "duplicate_rows": 0,
+        "oil_wells": 1312,
+        "gas_wells": 1443,
+        "fingerprint": "8fc0429e27967ebee55f7628363a98fc97f339c1305539b4d3947bccaf9b352e",
+        "vm_fingerprint": "d0f0bf7ac151329e7453164cc719476a5519e025c2ead848a53723813c2d0770",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-03-01": {
+      "profile": {
+        "rows": 80969,
+        "vm_rows": 1891,
+        "oil_m3": "1480730.968066",
+        "gas_km3": "1629582.321089000",
+        "duplicate_rows": 0,
+        "oil_wells": 1322,
+        "gas_wells": 1452,
+        "fingerprint": "e12aeda3283bccf1465958d84ec6d1cb10fd6bb27d0e6d023301877d48b0ef2d",
+        "vm_fingerprint": "5577867ede156f091402a25204c7b035db1a62abb93d6699a9d3a2a227b821ab",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-04-01": {
+      "profile": {
+        "rows": 81048,
+        "vm_rows": 1911,
+        "oil_m3": "1409147.681013",
+        "gas_km3": "1559339.241322378",
+        "duplicate_rows": 0,
+        "oil_wells": 1323,
+        "gas_wells": 1464,
+        "fingerprint": "5675fc20f50011bdb65d914665114eff350da6d5f3f62c6caa4922a98d40fc16",
+        "vm_fingerprint": "61d5b1204a1a62dbaef8e09ce76d711380d86ec0bb8b16223c05ada64c139f60",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-05-01": {
+      "profile": {
+        "rows": 81133,
+        "vm_rows": 1937,
+        "oil_m3": "1458757.931127",
+        "gas_km3": "1795783.849748681",
+        "duplicate_rows": 0,
+        "oil_wells": 1353,
+        "gas_wells": 1517,
+        "fingerprint": "737e5e4c8dbd9a0eb72423373a17e11df7141b282633b799b72f9aa45cd9694b",
+        "vm_fingerprint": "96e6f752639cc2bebff2a78de872277c3cdd74dfbbaa08d9eb6711d5f1c4f8e6",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-06-01": {
+      "profile": {
+        "rows": 81240,
+        "vm_rows": 1978,
+        "oil_m3": "1385024.615083",
+        "gas_km3": "1868533.419683050",
+        "duplicate_rows": 0,
+        "oil_wells": 1370,
+        "gas_wells": 1525,
+        "fingerprint": "3a357d0996222544e68feef3bca4371245e639236172c80afb129e6221a65eaf",
+        "vm_fingerprint": "41511ea10e54dbdfc1a2e6fad6cee8af6ee34650f9e5bdf090f4741140f80aca",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-07-01": {
+      "profile": {
+        "rows": 81312,
+        "vm_rows": 1998,
+        "oil_m3": "1432784.628385",
+        "gas_km3": "2011241.126880043",
+        "duplicate_rows": 0,
+        "oil_wells": 1389,
+        "gas_wells": 1551,
+        "fingerprint": "5c222032b0f6afab4e1296928aac20a46cc7c7438a308825e6df0cbd48417128",
+        "vm_fingerprint": "36408a8f331d59300574cc4a1ea3cfae4b4ed9c0bdc48d761b04915374813d86",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-08-01": {
+      "profile": {
+        "rows": 81349,
+        "vm_rows": 2031,
+        "oil_m3": "1463153.120275",
+        "gas_km3": "2124189.102052613",
+        "duplicate_rows": 0,
+        "oil_wells": 1402,
+        "gas_wells": 1566,
+        "fingerprint": "dafa6b9c0d94447688f97885cebf30807156271de22f4a65af2dda3cfcd8c407",
+        "vm_fingerprint": "c1557843f606a75af3771b70ce2ae56868ce9eaf70141c25fe847221628f806d",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-09-01": {
+      "profile": {
+        "rows": 81431,
+        "vm_rows": 2061,
+        "oil_m3": "1453753.278653",
+        "gas_km3": "2022363.241224242999994",
+        "duplicate_rows": 0,
+        "oil_wells": 1430,
+        "gas_wells": 1591,
+        "fingerprint": "25084fc43f6beffdca1f8b6c136b16f5bd93aae754a296b52a74e44fc7ecf2b6",
+        "vm_fingerprint": "2bafeb3beaf54d016081f44a3f67bc0d7ea7628ea8464e7d2e59dbab1774c794",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-10-01": {
+      "profile": {
+        "rows": 81496,
+        "vm_rows": 2085,
+        "oil_m3": "1592939.701207000000004",
+        "gas_km3": "1769251.57950700000013",
+        "duplicate_rows": 0,
+        "oil_wells": 1474,
+        "gas_wells": 1615,
+        "fingerprint": "c2b3bec84db39c9b40ca7ff43fd138c8e296e4d8983050dbe7e69287732395b3",
+        "vm_fingerprint": "c4a017e668a240dc6db26329c9b911d9b83c10f6515f973c610c710f0c2137f5",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-11-01": {
+      "profile": {
+        "rows": 81561,
+        "vm_rows": 2126,
+        "oil_m3": "1618184.012570",
+        "gas_km3": "1766549.185877000",
+        "duplicate_rows": 0,
+        "oil_wells": 1490,
+        "gas_wells": 1633,
+        "fingerprint": "374c5c782bfc30515925c9842817166a43c530c1f39e5b95931d2be5ef920ccf",
+        "vm_fingerprint": "bddcb0e8957177ebc14e3a7eb7057a6f024126be3d756aa44a7ad67131ac8ba4",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2023-12-01": {
+      "profile": {
+        "rows": 81687,
+        "vm_rows": 2173,
+        "oil_m3": "1733525.477668",
+        "gas_km3": "1587120.7540290000001",
+        "duplicate_rows": 0,
+        "oil_wells": 1516,
+        "gas_wells": 1661,
+        "fingerprint": "c59353753a4f829af6ea0d317ec54168a6137d65510392f0fc7866fd54dc4fa2",
+        "vm_fingerprint": "ddc85f9c8d128ad43cd3e5248cfac3a75fd4d293bb41b697db4e9ad40d097d6e",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "stable_since": "2026-10-13T14:41:31.167486+00:00",
+      "observations": 1
+    },
+    "2024-01-01": {
+      "profile": {
+        "rows": 81572,
+        "vm_rows": 2200,
+        "oil_m3": "1701895.191985",
+        "gas_km3": "1754326.86013700000002",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1547,
+        "gas_wells": 1683,
+        "fingerprint": "1fdc13b3abc9e721ba591beecea1fdb78a969b6bd248e16996be3761d3204a36",
+        "vm_fingerprint": "ca38d9adb76ad9c7ec187155bda3ade21ee926e4fd4d3d64169b0f620cdf8906"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-02-01": {
+      "profile": {
+        "rows": 81649,
+        "vm_rows": 2237,
+        "oil_m3": "1625860.3724309999998",
+        "gas_km3": "1791241.66848473800041",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1568,
+        "gas_wells": 1716,
+        "fingerprint": "f7b13936217b0b0eb6e7693a339ffce54accf21a626e507383188872442c13d8",
+        "vm_fingerprint": "8861dfe2fdbf4734fe1074718a31a17f6c5ab70cf2cde44f0e3f29a6539c27b7"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-03-01": {
+      "profile": {
+        "rows": 81720,
+        "vm_rows": 2268,
+        "oil_m3": "1775568.29419836",
+        "gas_km3": "1946688.7452958250007",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1615,
+        "gas_wells": 1764,
+        "fingerprint": "c07d8a458d100aa7904fdc7edff1127215c72c7be3407631fcf07054a22fb65f",
+        "vm_fingerprint": "4a1bc51c2016795a4f45c53b16114df705055c428e521b2cbec155546c5e43c0"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-04-01": {
+      "profile": {
+        "rows": 81797,
+        "vm_rows": 2300,
+        "oil_m3": "1731248.16449252",
+        "gas_km3": "1936532.49780903599997",
+        "negative_fields_outside_product": 2,
+        "duplicate_rows": 0,
+        "oil_wells": 1634,
+        "gas_wells": 1790,
+        "fingerprint": "c7a2c981b35655c21d5588bed02c6ccc2210ab341e6ca427a25b18b55ab80d51",
+        "vm_fingerprint": "f005250de744b10c20e7d663f5e00335b5ebeb4025e0262c653f807583af0b88"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-05-01": {
+      "profile": {
+        "rows": 81883,
+        "vm_rows": 2342,
+        "oil_m3": "1804133.63148297000003",
+        "gas_km3": "2411471.539997633999959",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1696,
+        "gas_wells": 1845,
+        "fingerprint": "09451f572aa07815c8e8cb8553de49ec6448edd95d0adfeb9391631eaa40c148",
+        "vm_fingerprint": "bbc417b212b5f9718f3186b36bbbdee27a1aa256cb5bbe6f9b7d875891521563"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-06-01": {
+      "profile": {
+        "rows": 81934,
+        "vm_rows": 2367,
+        "oil_m3": "1779339.27328705000012",
+        "gas_km3": "2345836.71475038399996",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1735,
+        "gas_wells": 1887,
+        "fingerprint": "c7217cd0492b901ad60ca548763bebacc8d066dfad52159e66f92303cddfafeb",
+        "vm_fingerprint": "c9a08017b29ceafc317a96f117839d08199f1f04e1db67fb58590985a569237b"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-07-01": {
+      "profile": {
+        "rows": 82008,
+        "vm_rows": 2414,
+        "oil_m3": "1901613.89342399999996",
+        "gas_km3": "2574094.31299329999934",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1767,
+        "gas_wells": 1925,
+        "fingerprint": "9aad77b1848ba5cb48c98f93cb7e5ec0af91648d82c57e51f0cc6be2821b0667",
+        "vm_fingerprint": "3ebe67da72a8d7e8bff116a1ffb227df68f0533d853fc7b38b3a6d47b32709b4"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-08-01": {
+      "profile": {
+        "rows": 82104,
+        "vm_rows": 2463,
+        "oil_m3": "1982777.1676472",
+        "gas_km3": "2604976.15116331300017",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1816,
+        "gas_wells": 1981,
+        "fingerprint": "8fd6ec200efc9a7fdb7a8465964070c599322d7c38a79dbe6d4d38d93b69b0c8",
+        "vm_fingerprint": "f9cbf509fb0023ce5512322de8eedcd2b32d2af30d3b0952d6ae3376f145bc0f"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-09-01": {
+      "profile": {
+        "rows": 81994,
+        "vm_rows": 2346,
+        "oil_m3": "1837929.4299238800001",
+        "gas_km3": "2349609.17435485900013",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1734,
+        "gas_wells": 1896,
+        "fingerprint": "e96ae22c9d676f6ae1dd719c5515a63297041b77feea82c39e57a6114e5a678f",
+        "vm_fingerprint": "e971c96f73a33ffa4f0d2d37aa433f98bb75489eed49ab5b914403c39759c6a7"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-10-01": {
+      "profile": {
+        "rows": 82223,
+        "vm_rows": 2525,
+        "oil_m3": "2076828.44987936",
+        "gas_km3": "2010215.302349979",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1860,
+        "gas_wells": 2016,
+        "fingerprint": "dbc85a0d5991f3031485b2f525c1d335f8221c53f5dcfe158e2302e8225c10dc",
+        "vm_fingerprint": "f73122ab1ae4c126a1d4a8ea518b16c8af1ef8dc9c9057fe956b061c4ea5eddd"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-11-01": {
+      "profile": {
+        "rows": 82316,
+        "vm_rows": 2554,
+        "oil_m3": "2085295.4700150600002",
+        "gas_km3": "1864553.096595961",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1848,
+        "gas_wells": 2021,
+        "fingerprint": "ee9b7947ff6356427aa0f0fc206071ad0db8c3686edd2c9ae55d4168aabda70b",
+        "vm_fingerprint": "df7fb167ef440ec2b64c65b967a71c2ee2bd8da7f80d0f209968b10878e0033a"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2024-12-01": {
+      "profile": {
+        "rows": 82351,
+        "vm_rows": 2570,
+        "oil_m3": "2205011.91378882",
+        "gas_km3": "1907440.84481276200048",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1882,
+        "gas_wells": 2039,
+        "fingerprint": "abad03ccd24a7cb9d16213581950b8df8f5a9344a97b8bc1a21e1e1de3a78e2a",
+        "vm_fingerprint": "d854ae8a72c9c5d507c5c7dce393f846ef246031b269e5c323df78016fef69d4"
+      },
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "stable_since": "2026-10-13T14:41:22.902614+00:00",
+      "observations": 1
+    },
+    "2025-01-01": {
+      "profile": {
+        "rows": 82412,
+        "vm_rows": 2609,
+        "oil_m3": "2179998.80217994",
+        "gas_km3": "2131178.74530210100002",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1952,
+        "gas_wells": 2113,
+        "fingerprint": "cded8cd4324b451cebd84c59974d4f1440e5f91a8c2aee1941d0bcd3178cc190",
+        "vm_fingerprint": "921762c7b88c305885838e8573c297ec4621476ea5b496372cb6ff42085b9bf1"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-02-01": {
+      "profile": {
+        "rows": 82490,
+        "vm_rows": 2652,
+        "oil_m3": "1972456.521195079999994",
+        "gas_km3": "2082262.010411400000118",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1960,
+        "gas_wells": 2115,
+        "fingerprint": "8fc4ff5906aea518477959910ccafe59508175f4cb62ea0635e2124da4b3dc71",
+        "vm_fingerprint": "4770ce547639182ad2406d8a650890d576546a88367839d05bf4826acae77a06"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-03-01": {
+      "profile": {
+        "rows": 82556,
+        "vm_rows": 2684,
+        "oil_m3": "2199084.2810238599997",
+        "gas_km3": "2069632.57962182200001",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 1985,
+        "gas_wells": 2145,
+        "fingerprint": "47cbf1b3c59570a493891d7dd441cdd74ca1fc489ce71b82a25315a27d6d1db7",
+        "vm_fingerprint": "a78dbb93fc5d5cb61a5f8c5237002c5f15a2aa15653d315c73b43a86f5184244"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-04-01": {
+      "profile": {
+        "rows": 82651,
+        "vm_rows": 2728,
+        "oil_m3": "2105994.1580725699998",
+        "gas_km3": "2078284.72182468000079",
+        "negative_fields_outside_product": 2,
+        "duplicate_rows": 0,
+        "oil_wells": 2030,
+        "gas_wells": 2201,
+        "fingerprint": "85db84e835ccf680d6b286879543e5ab6726d466d9005c7181b1833b61d350b4",
+        "vm_fingerprint": "3e8fb34a74444e77a3112431efe96b98ffe51ccf7c4de44db8268ab6e8e74b03"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-05-01": {
+      "profile": {
+        "rows": 82734,
+        "vm_rows": 2782,
+        "oil_m3": "2207064.1694950180001",
+        "gas_km3": "2470915.89981102900023",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2069,
+        "gas_wells": 2232,
+        "fingerprint": "8b4867bf8c741850eb85eaeaa46a8cbcbf731448a454ec562eb83dfd8042ee52",
+        "vm_fingerprint": "17760d6a4276b98cf84404cdb5a2a0f0289f00ac0e6bad407f496c01e286674a"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-06-01": {
+      "profile": {
+        "rows": 82804,
+        "vm_rows": 2825,
+        "oil_m3": "2270949.52538196999983",
+        "gas_km3": "2661589.23931521899986",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2146,
+        "gas_wells": 2312,
+        "fingerprint": "c74e03871c2b1f54ad6d6d44917ec5e596bedc0a3c9a9ae3d41fd27b6f14fb5b",
+        "vm_fingerprint": "c594dd0107923e4c3b929e10aac17bdf2a497dfb47b85cb70e8306e4bf1f3cc2"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-07-01": {
+      "profile": {
+        "rows": 82184,
+        "vm_rows": 2862,
+        "oil_m3": "2506760.803990899",
+        "gas_km3": "2829206.505913393000714",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2188,
+        "gas_wells": 2359,
+        "fingerprint": "871b110e0a1d3ef262a481ca713f78663e5f5cb9e9d438ccd0b27d8f25e8e01f",
+        "vm_fingerprint": "47268b97932449cecbd80815a83c641257f200b31d9d165cfa8c06ce34b1cb79"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-08-01": {
+      "profile": {
+        "rows": 82659,
+        "vm_rows": 2914,
+        "oil_m3": "2595176.457312845",
+        "gas_km3": "2796471.28548555900027",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2214,
+        "gas_wells": 2394,
+        "fingerprint": "46378bbe2083c572c6de11ab37356f640449c1848ec88322ff7693e9039f4ea7",
+        "vm_fingerprint": "9c536e8fd2dfc38cbd31bdaf4679065ad5fc22cf1c252bfdfccd31b2c3a60ebb"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-09-01": {
+      "profile": {
+        "rows": 82846,
+        "vm_rows": 2947,
+        "oil_m3": "2607802.41290959000017",
+        "gas_km3": "2261452.0050071249996",
+        "negative_fields_outside_product": 7,
+        "duplicate_rows": 0,
+        "oil_wells": 2247,
+        "gas_wells": 2430,
+        "fingerprint": "0585cb8bcf7b4e17ebf5ac00f4ca17dd99205bcc874ff5ba1cc1f48c86fe2f91",
+        "vm_fingerprint": "e23eb1d31de0e82d1cb194cbba3adc394c13b2ee89fb4a46b8a1433d33d32d08"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-10-01": {
+      "profile": {
+        "rows": 82829,
+        "vm_rows": 2990,
+        "oil_m3": "2800987.7386068499998",
+        "gas_km3": "2011084.7133320140003",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2287,
+        "gas_wells": 2452,
+        "fingerprint": "2c3f261a5d860b75fbabb165cc647b209a5b23d99891d5a2b3bfc38aa12ee349",
+        "vm_fingerprint": "b756fd08bf8394073e95ba13e87f3f0b14296c5392c064fddc8979f75d49e942"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-11-01": {
+      "profile": {
+        "rows": 82881,
+        "vm_rows": 3017,
+        "oil_m3": "2750778.8830235600005",
+        "gas_km3": "1922698.6634221749996",
+        "negative_fields_outside_product": 1,
+        "duplicate_rows": 0,
+        "oil_wells": 2301,
+        "gas_wells": 2455,
+        "fingerprint": "91772f915761958b89a74adbd68e6cd83636d6fcd278efe70800970fbae54b9b",
+        "vm_fingerprint": "500d2f2846112faa3929b7d0d4b755375042aa24ff075c5a2b1481c2bc9d6a88"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2025-12-01": {
+      "profile": {
+        "rows": 82890,
+        "vm_rows": 3053,
+        "oil_m3": "2909815.32526969",
+        "gas_km3": "2255800.2819491630011",
+        "negative_fields_outside_product": 0,
+        "duplicate_rows": 0,
+        "oil_wells": 2355,
+        "gas_wells": 2515,
+        "fingerprint": "7fbc7f6be48f48d9db849a15705c407936d620327b9ea8379c93f4758d928182",
+        "vm_fingerprint": "dc9c767382025aa32b75cb8d0f8c2948870fa45ea3f61a319048e50fca3f0571"
+      },
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "stable_since": "2026-10-13T14:41:34.614428+00:00",
+      "observations": 1
+    },
+    "2026-01-01": {
+      "profile": {
+        "rows": 82948,
+        "vm_rows": 3085,
+        "oil_m3": "2954410.6475754000002",
+        "gas_km3": "2260617.97922733300024",
+        "duplicate_rows": 0,
+        "oil_wells": 2379,
+        "gas_wells": 2542,
+        "fingerprint": "5b750e21a5f9dfaa49ffaa57b3e61963fa19280b2d33567deec401389af0cb27",
+        "vm_fingerprint": "0c5489f55a102f90a2c1e116c1365f48ea35e8077d6bfaa5ffa3ff1d6d33380e",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-02-01": {
+      "profile": {
+        "rows": 83001,
+        "vm_rows": 3127,
+        "oil_m3": "2630008.6995825399999",
+        "gas_km3": "2194107.97978963300147",
+        "duplicate_rows": 0,
+        "oil_wells": 2411,
+        "gas_wells": 2588,
+        "fingerprint": "70d3afbb314dedc5f8291d147b8e98cd0d8831d9b99de9c48e324d22986137aa",
+        "vm_fingerprint": "295e4048a5e7228506659c300a6d6491d9eb44d072365c10f923724b4cb0fbc1",
+        "negative_fields_outside_product": 1
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-03-01": {
+      "profile": {
+        "rows": 83035,
+        "vm_rows": 3165,
+        "oil_m3": "2945239.97392979",
+        "gas_km3": "2564071.36619238200106",
+        "duplicate_rows": 0,
+        "oil_wells": 2461,
+        "gas_wells": 2658,
+        "fingerprint": "9bc33856f9d66ed00786df3725ae7459787bda48d2fc4ddb736951a70eeb8915",
+        "vm_fingerprint": "47ec52d6ac25715f5b3cd79d6ac8ef92797d4cce3eda7f13ac663869c93c0804",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-04-01": {
+      "profile": {
+        "rows": 82949,
+        "vm_rows": 3217,
+        "oil_m3": "2938290.4325433299999",
+        "gas_km3": "2485117.07831525399972",
+        "duplicate_rows": 0,
+        "oil_wells": 2506,
+        "gas_wells": 2704,
+        "fingerprint": "167ee345ec2d2d4d8fb5ff173b889d8e6d8f791f56b9e7a053253c931fd8c736",
+        "vm_fingerprint": "3ba1bd446f332c5194a1475a385ed2504a289a3a14e9c8e7f0f2d0764b0c1211",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-05-01": {
+      "profile": {
+        "rows": 83033,
+        "vm_rows": 3281,
+        "oil_m3": "3068706.0098304599999",
+        "gas_km3": "2962415.479297004000401",
+        "duplicate_rows": 0,
+        "oil_wells": 2556,
+        "gas_wells": 2771,
+        "fingerprint": "2a25eea5d500cd63db49797524f80c52e25ed68875750acf31009466b002fa05",
+        "vm_fingerprint": "94c09deece9fd466a378a2f2045dbb7217a999b7a353f03e71ba7778843fca72",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-06-01": {
+      "profile": {
+        "rows": 82476,
+        "vm_rows": 3322,
+        "oil_m3": "3021594.4763968199993",
+        "gas_km3": "2932907.633160722000416",
+        "duplicate_rows": 0,
+        "oil_wells": 2585,
+        "gas_wells": 2783,
+        "fingerprint": "ce228fe1bb6ab032fba870fb261ff9357a3950c72c63cc296b740b7f55806d9f",
+        "vm_fingerprint": "427001258e98f27b1782fc8fcfc8211ca15a0986efd758507405addfd50814b8",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-07-01": {
+      "profile": {
+        "rows": 82549,
+        "vm_rows": 3369,
+        "oil_m3": "3169661.239685634",
+        "gas_km3": "2994332.40924207000038",
+        "duplicate_rows": 0,
+        "oil_wells": 2633,
+        "gas_wells": 2836,
+        "fingerprint": "517b6beb29139c3a522b08a8b75fc92d1af69915e430ad5f3e7ed794a5d12c81",
+        "vm_fingerprint": "903c70bc3ddec24116a4b27973419c1db6e4b2a1f82b6e62a07cdfcf98feefc7",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    },
+    "2026-08-01": {
+      "profile": {
+        "rows": 79576,
+        "vm_rows": 3404,
+        "oil_m3": "3301191.71813899999979997",
+        "gas_km3": "2958950.8994440000024",
+        "duplicate_rows": 0,
+        "oil_wells": 2678,
+        "gas_wells": 2884,
+        "fingerprint": "acbe6f4ca6bf13ab70af32d872fffb1c7b3d635f63fa9087fa8ce4abe36ee900",
+        "vm_fingerprint": "2d986250d4769fc34272067e2bd8f83d091f7a70ec2f13c7da18afa4413bd8b8",
+        "negative_fields_outside_product": 0
+      },
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "stable_since": "2026-10-13T14:41:07.672014+00:00",
+      "observations": 1
+    }
+  },
+  "prices": {
+    "oil": {
+      "2023-01-01": 82.5,
+      "2023-02-01": 82.59,
+      "2023-03-01": 78.43,
+      "2023-04-01": 84.64,
+      "2023-05-01": 75.47,
+      "2023-06-01": 74.84,
+      "2023-07-01": 80.11,
+      "2023-08-01": 86.15,
+      "2023-09-01": 93.72,
+      "2023-10-01": 90.6,
+      "2023-11-01": 82.94,
+      "2023-12-01": 77.63,
+      "2024-01-01": 80.12,
+      "2024-02-01": 83.48,
+      "2024-03-01": 85.41,
+      "2024-04-01": 89.94,
+      "2024-05-01": 81.75,
+      "2024-06-01": 82.25,
+      "2024-07-01": 85.15,
+      "2024-08-01": 80.36,
+      "2024-09-01": 74.02,
+      "2024-10-01": 75.63,
+      "2024-11-01": 74.35,
+      "2024-12-01": 73.86,
+      "2025-01-01": 79.27,
+      "2025-02-01": 75.44,
+      "2025-03-01": 72.73,
+      "2025-04-01": 68.13,
+      "2025-05-01": 64.45,
+      "2025-06-01": 71.44,
+      "2025-07-01": 71.04,
+      "2025-08-01": 67.87,
+      "2025-09-01": 67.99,
+      "2025-10-01": 64.54,
+      "2025-11-01": 63.8,
+      "2025-12-01": 62.54,
+      "2026-01-01": 66.6,
+      "2026-02-01": 70.89,
+      "2026-03-01": 103.13,
+      "2026-04-01": 117.29,
+      "2026-05-01": 107.14,
+      "2026-06-01": 85.4,
+      "2026-07-01": 83.76,
+      "2026-08-01": 91.08
+    },
+    "gas": {
+      "2023-01-01": 3.27,
+      "2023-02-01": 2.38,
+      "2023-03-01": 2.31,
+      "2023-04-01": 2.16,
+      "2023-05-01": 2.15,
+      "2023-06-01": 2.18,
+      "2023-07-01": 2.55,
+      "2023-08-01": 2.58,
+      "2023-09-01": 2.64,
+      "2023-10-01": 2.98,
+      "2023-11-01": 2.71,
+      "2023-12-01": 2.52,
+      "2024-01-01": 3.18,
+      "2024-02-01": 1.72,
+      "2024-03-01": 1.49,
+      "2024-04-01": 1.6,
+      "2024-05-01": 2.12,
+      "2024-06-01": 2.54,
+      "2024-07-01": 2.07,
+      "2024-08-01": 1.99,
+      "2024-09-01": 2.28,
+      "2024-10-01": 2.2,
+      "2024-11-01": 2.12,
+      "2024-12-01": 3.01,
+      "2025-01-01": 4.13,
+      "2025-02-01": 4.19,
+      "2025-03-01": 4.12,
+      "2025-04-01": 3.42,
+      "2025-05-01": 3.12,
+      "2025-06-01": 3.02,
+      "2025-07-01": 3.2,
+      "2025-08-01": 2.91,
+      "2025-09-01": 2.97,
+      "2025-10-01": 3.19,
+      "2025-11-01": 3.79,
+      "2025-12-01": 4.26,
+      "2026-01-01": 7.72,
+      "2026-02-01": 3.62,
+      "2026-03-01": 3.04,
+      "2026-04-01": 2.77,
+      "2026-05-01": 2.94,
+      "2026-06-01": 3.15,
+      "2026-07-01": 2.89,
+      "2026-08-01": 2.78
+    }
+  },
+  "accepted_reference": {
+    "2023-01-01": {
+      "rows": 80833,
+      "vm_rows": 1847,
+      "oil_m3": "1402581.252347",
+      "gas_km3": "1571998.317794000",
+      "duplicate_rows": 0,
+      "oil_wells": 1309,
+      "gas_wells": 1453,
+      "fingerprint": "ccf30a90b2dc0c68c606231a8dcac0428fce107aba2c7d7832de97bf1b9b29ab",
+      "vm_fingerprint": "9121b44919792704fa0587c886f92c596e44bd68a4a27107fb7f8d166e31330e",
+      "negative_fields_outside_product": 0
+    },
+    "2023-02-01": {
+      "rows": 80912,
+      "vm_rows": 1873,
+      "oil_m3": "1303678.320868",
+      "gas_km3": "1465473.852379000",
+      "duplicate_rows": 0,
+      "oil_wells": 1312,
+      "gas_wells": 1443,
+      "fingerprint": "8fc0429e27967ebee55f7628363a98fc97f339c1305539b4d3947bccaf9b352e",
+      "vm_fingerprint": "d0f0bf7ac151329e7453164cc719476a5519e025c2ead848a53723813c2d0770",
+      "negative_fields_outside_product": 0
+    },
+    "2023-03-01": {
+      "rows": 80969,
+      "vm_rows": 1891,
+      "oil_m3": "1480730.968066",
+      "gas_km3": "1629582.321089000",
+      "duplicate_rows": 0,
+      "oil_wells": 1322,
+      "gas_wells": 1452,
+      "fingerprint": "e12aeda3283bccf1465958d84ec6d1cb10fd6bb27d0e6d023301877d48b0ef2d",
+      "vm_fingerprint": "5577867ede156f091402a25204c7b035db1a62abb93d6699a9d3a2a227b821ab",
+      "negative_fields_outside_product": 0
+    },
+    "2023-04-01": {
+      "rows": 81048,
+      "vm_rows": 1911,
+      "oil_m3": "1409147.681013",
+      "gas_km3": "1559339.241322378",
+      "duplicate_rows": 0,
+      "oil_wells": 1323,
+      "gas_wells": 1464,
+      "fingerprint": "5675fc20f50011bdb65d914665114eff350da6d5f3f62c6caa4922a98d40fc16",
+      "vm_fingerprint": "61d5b1204a1a62dbaef8e09ce76d711380d86ec0bb8b16223c05ada64c139f60",
+      "negative_fields_outside_product": 0
+    },
+    "2023-05-01": {
+      "rows": 81133,
+      "vm_rows": 1937,
+      "oil_m3": "1458757.931127",
+      "gas_km3": "1795783.849748681",
+      "duplicate_rows": 0,
+      "oil_wells": 1353,
+      "gas_wells": 1517,
+      "fingerprint": "737e5e4c8dbd9a0eb72423373a17e11df7141b282633b799b72f9aa45cd9694b",
+      "vm_fingerprint": "96e6f752639cc2bebff2a78de872277c3cdd74dfbbaa08d9eb6711d5f1c4f8e6",
+      "negative_fields_outside_product": 0
+    },
+    "2023-06-01": {
+      "rows": 81240,
+      "vm_rows": 1978,
+      "oil_m3": "1385024.615083",
+      "gas_km3": "1868533.419683050",
+      "duplicate_rows": 0,
+      "oil_wells": 1370,
+      "gas_wells": 1525,
+      "fingerprint": "3a357d0996222544e68feef3bca4371245e639236172c80afb129e6221a65eaf",
+      "vm_fingerprint": "41511ea10e54dbdfc1a2e6fad6cee8af6ee34650f9e5bdf090f4741140f80aca",
+      "negative_fields_outside_product": 0
+    },
+    "2023-07-01": {
+      "rows": 81312,
+      "vm_rows": 1998,
+      "oil_m3": "1432784.628385",
+      "gas_km3": "2011241.126880043",
+      "duplicate_rows": 0,
+      "oil_wells": 1389,
+      "gas_wells": 1551,
+      "fingerprint": "5c222032b0f6afab4e1296928aac20a46cc7c7438a308825e6df0cbd48417128",
+      "vm_fingerprint": "36408a8f331d59300574cc4a1ea3cfae4b4ed9c0bdc48d761b04915374813d86",
+      "negative_fields_outside_product": 0
+    },
+    "2023-08-01": {
+      "rows": 81349,
+      "vm_rows": 2031,
+      "oil_m3": "1463153.120275",
+      "gas_km3": "2124189.102052613",
+      "duplicate_rows": 0,
+      "oil_wells": 1402,
+      "gas_wells": 1566,
+      "fingerprint": "dafa6b9c0d94447688f97885cebf30807156271de22f4a65af2dda3cfcd8c407",
+      "vm_fingerprint": "c1557843f606a75af3771b70ce2ae56868ce9eaf70141c25fe847221628f806d",
+      "negative_fields_outside_product": 0
+    },
+    "2023-09-01": {
+      "rows": 81431,
+      "vm_rows": 2061,
+      "oil_m3": "1453753.278653",
+      "gas_km3": "2022363.241224242999994",
+      "duplicate_rows": 0,
+      "oil_wells": 1430,
+      "gas_wells": 1591,
+      "fingerprint": "25084fc43f6beffdca1f8b6c136b16f5bd93aae754a296b52a74e44fc7ecf2b6",
+      "vm_fingerprint": "2bafeb3beaf54d016081f44a3f67bc0d7ea7628ea8464e7d2e59dbab1774c794",
+      "negative_fields_outside_product": 0
+    },
+    "2023-10-01": {
+      "rows": 81496,
+      "vm_rows": 2085,
+      "oil_m3": "1592939.701207000000004",
+      "gas_km3": "1769251.57950700000013",
+      "duplicate_rows": 0,
+      "oil_wells": 1474,
+      "gas_wells": 1615,
+      "fingerprint": "c2b3bec84db39c9b40ca7ff43fd138c8e296e4d8983050dbe7e69287732395b3",
+      "vm_fingerprint": "c4a017e668a240dc6db26329c9b911d9b83c10f6515f973c610c710f0c2137f5",
+      "negative_fields_outside_product": 0
+    },
+    "2023-11-01": {
+      "rows": 81561,
+      "vm_rows": 2126,
+      "oil_m3": "1618184.012570",
+      "gas_km3": "1766549.185877000",
+      "duplicate_rows": 0,
+      "oil_wells": 1490,
+      "gas_wells": 1633,
+      "fingerprint": "374c5c782bfc30515925c9842817166a43c530c1f39e5b95931d2be5ef920ccf",
+      "vm_fingerprint": "bddcb0e8957177ebc14e3a7eb7057a6f024126be3d756aa44a7ad67131ac8ba4",
+      "negative_fields_outside_product": 0
+    },
+    "2023-12-01": {
+      "rows": 81687,
+      "vm_rows": 2173,
+      "oil_m3": "1733525.477668",
+      "gas_km3": "1587120.7540290000001",
+      "duplicate_rows": 0,
+      "oil_wells": 1516,
+      "gas_wells": 1661,
+      "fingerprint": "c59353753a4f829af6ea0d317ec54168a6137d65510392f0fc7866fd54dc4fa2",
+      "vm_fingerprint": "ddc85f9c8d128ad43cd3e5248cfac3a75fd4d293bb41b697db4e9ad40d097d6e",
+      "negative_fields_outside_product": 0
+    },
+    "2024-01-01": {
+      "rows": 81572,
+      "vm_rows": 2200,
+      "oil_m3": "1701895.191985",
+      "gas_km3": "1754326.86013700000002",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1547,
+      "gas_wells": 1683,
+      "fingerprint": "1fdc13b3abc9e721ba591beecea1fdb78a969b6bd248e16996be3761d3204a36",
+      "vm_fingerprint": "ca38d9adb76ad9c7ec187155bda3ade21ee926e4fd4d3d64169b0f620cdf8906"
+    },
+    "2024-02-01": {
+      "rows": 81649,
+      "vm_rows": 2237,
+      "oil_m3": "1625860.3724309999998",
+      "gas_km3": "1791241.66848473800041",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1568,
+      "gas_wells": 1716,
+      "fingerprint": "f7b13936217b0b0eb6e7693a339ffce54accf21a626e507383188872442c13d8",
+      "vm_fingerprint": "8861dfe2fdbf4734fe1074718a31a17f6c5ab70cf2cde44f0e3f29a6539c27b7"
+    },
+    "2024-03-01": {
+      "rows": 81720,
+      "vm_rows": 2268,
+      "oil_m3": "1775568.29419836",
+      "gas_km3": "1946688.7452958250007",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1615,
+      "gas_wells": 1764,
+      "fingerprint": "c07d8a458d100aa7904fdc7edff1127215c72c7be3407631fcf07054a22fb65f",
+      "vm_fingerprint": "4a1bc51c2016795a4f45c53b16114df705055c428e521b2cbec155546c5e43c0"
+    },
+    "2024-04-01": {
+      "rows": 81797,
+      "vm_rows": 2300,
+      "oil_m3": "1731248.16449252",
+      "gas_km3": "1936532.49780903599997",
+      "negative_fields_outside_product": 2,
+      "duplicate_rows": 0,
+      "oil_wells": 1634,
+      "gas_wells": 1790,
+      "fingerprint": "c7a2c981b35655c21d5588bed02c6ccc2210ab341e6ca427a25b18b55ab80d51",
+      "vm_fingerprint": "f005250de744b10c20e7d663f5e00335b5ebeb4025e0262c653f807583af0b88"
+    },
+    "2024-05-01": {
+      "rows": 81883,
+      "vm_rows": 2342,
+      "oil_m3": "1804133.63148297000003",
+      "gas_km3": "2411471.539997633999959",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1696,
+      "gas_wells": 1845,
+      "fingerprint": "09451f572aa07815c8e8cb8553de49ec6448edd95d0adfeb9391631eaa40c148",
+      "vm_fingerprint": "bbc417b212b5f9718f3186b36bbbdee27a1aa256cb5bbe6f9b7d875891521563"
+    },
+    "2024-06-01": {
+      "rows": 81934,
+      "vm_rows": 2367,
+      "oil_m3": "1779339.27328705000012",
+      "gas_km3": "2345836.71475038399996",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1735,
+      "gas_wells": 1887,
+      "fingerprint": "c7217cd0492b901ad60ca548763bebacc8d066dfad52159e66f92303cddfafeb",
+      "vm_fingerprint": "c9a08017b29ceafc317a96f117839d08199f1f04e1db67fb58590985a569237b"
+    },
+    "2024-07-01": {
+      "rows": 82008,
+      "vm_rows": 2414,
+      "oil_m3": "1901613.89342399999996",
+      "gas_km3": "2574094.31299329999934",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1767,
+      "gas_wells": 1925,
+      "fingerprint": "9aad77b1848ba5cb48c98f93cb7e5ec0af91648d82c57e51f0cc6be2821b0667",
+      "vm_fingerprint": "3ebe67da72a8d7e8bff116a1ffb227df68f0533d853fc7b38b3a6d47b32709b4"
+    },
+    "2024-08-01": {
+      "rows": 82104,
+      "vm_rows": 2463,
+      "oil_m3": "1982777.1676472",
+      "gas_km3": "2604976.15116331300017",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1816,
+      "gas_wells": 1981,
+      "fingerprint": "8fd6ec200efc9a7fdb7a8465964070c599322d7c38a79dbe6d4d38d93b69b0c8",
+      "vm_fingerprint": "f9cbf509fb0023ce5512322de8eedcd2b32d2af30d3b0952d6ae3376f145bc0f"
+    },
+    "2024-09-01": {
+      "rows": 81994,
+      "vm_rows": 2346,
+      "oil_m3": "1837929.4299238800001",
+      "gas_km3": "2349609.17435485900013",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1734,
+      "gas_wells": 1896,
+      "fingerprint": "e96ae22c9d676f6ae1dd719c5515a63297041b77feea82c39e57a6114e5a678f",
+      "vm_fingerprint": "e971c96f73a33ffa4f0d2d37aa433f98bb75489eed49ab5b914403c39759c6a7"
+    },
+    "2024-10-01": {
+      "rows": 82223,
+      "vm_rows": 2525,
+      "oil_m3": "2076828.44987936",
+      "gas_km3": "2010215.302349979",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1860,
+      "gas_wells": 2016,
+      "fingerprint": "dbc85a0d5991f3031485b2f525c1d335f8221c53f5dcfe158e2302e8225c10dc",
+      "vm_fingerprint": "f73122ab1ae4c126a1d4a8ea518b16c8af1ef8dc9c9057fe956b061c4ea5eddd"
+    },
+    "2024-11-01": {
+      "rows": 82316,
+      "vm_rows": 2554,
+      "oil_m3": "2085295.4700150600002",
+      "gas_km3": "1864553.096595961",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1848,
+      "gas_wells": 2021,
+      "fingerprint": "ee9b7947ff6356427aa0f0fc206071ad0db8c3686edd2c9ae55d4168aabda70b",
+      "vm_fingerprint": "df7fb167ef440ec2b64c65b967a71c2ee2bd8da7f80d0f209968b10878e0033a"
+    },
+    "2024-12-01": {
+      "rows": 82351,
+      "vm_rows": 2570,
+      "oil_m3": "2205011.91378882",
+      "gas_km3": "1907440.84481276200048",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1882,
+      "gas_wells": 2039,
+      "fingerprint": "abad03ccd24a7cb9d16213581950b8df8f5a9344a97b8bc1a21e1e1de3a78e2a",
+      "vm_fingerprint": "d854ae8a72c9c5d507c5c7dce393f846ef246031b269e5c323df78016fef69d4"
+    },
+    "2025-01-01": {
+      "rows": 82412,
+      "vm_rows": 2609,
+      "oil_m3": "2179998.80217994",
+      "gas_km3": "2131178.74530210100002",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1952,
+      "gas_wells": 2113,
+      "fingerprint": "cded8cd4324b451cebd84c59974d4f1440e5f91a8c2aee1941d0bcd3178cc190",
+      "vm_fingerprint": "921762c7b88c305885838e8573c297ec4621476ea5b496372cb6ff42085b9bf1"
+    },
+    "2025-02-01": {
+      "rows": 82490,
+      "vm_rows": 2652,
+      "oil_m3": "1972456.521195079999994",
+      "gas_km3": "2082262.010411400000118",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1960,
+      "gas_wells": 2115,
+      "fingerprint": "8fc4ff5906aea518477959910ccafe59508175f4cb62ea0635e2124da4b3dc71",
+      "vm_fingerprint": "4770ce547639182ad2406d8a650890d576546a88367839d05bf4826acae77a06"
+    },
+    "2025-03-01": {
+      "rows": 82556,
+      "vm_rows": 2684,
+      "oil_m3": "2199084.2810238599997",
+      "gas_km3": "2069632.57962182200001",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 1985,
+      "gas_wells": 2145,
+      "fingerprint": "47cbf1b3c59570a493891d7dd441cdd74ca1fc489ce71b82a25315a27d6d1db7",
+      "vm_fingerprint": "a78dbb93fc5d5cb61a5f8c5237002c5f15a2aa15653d315c73b43a86f5184244"
+    },
+    "2025-04-01": {
+      "rows": 82651,
+      "vm_rows": 2728,
+      "oil_m3": "2105994.1580725699998",
+      "gas_km3": "2078284.72182468000079",
+      "negative_fields_outside_product": 2,
+      "duplicate_rows": 0,
+      "oil_wells": 2030,
+      "gas_wells": 2201,
+      "fingerprint": "85db84e835ccf680d6b286879543e5ab6726d466d9005c7181b1833b61d350b4",
+      "vm_fingerprint": "3e8fb34a74444e77a3112431efe96b98ffe51ccf7c4de44db8268ab6e8e74b03"
+    },
+    "2025-05-01": {
+      "rows": 82734,
+      "vm_rows": 2782,
+      "oil_m3": "2207064.1694950180001",
+      "gas_km3": "2470915.89981102900023",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2069,
+      "gas_wells": 2232,
+      "fingerprint": "8b4867bf8c741850eb85eaeaa46a8cbcbf731448a454ec562eb83dfd8042ee52",
+      "vm_fingerprint": "17760d6a4276b98cf84404cdb5a2a0f0289f00ac0e6bad407f496c01e286674a"
+    },
+    "2025-06-01": {
+      "rows": 82804,
+      "vm_rows": 2825,
+      "oil_m3": "2270949.52538196999983",
+      "gas_km3": "2661589.23931521899986",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2146,
+      "gas_wells": 2312,
+      "fingerprint": "c74e03871c2b1f54ad6d6d44917ec5e596bedc0a3c9a9ae3d41fd27b6f14fb5b",
+      "vm_fingerprint": "c594dd0107923e4c3b929e10aac17bdf2a497dfb47b85cb70e8306e4bf1f3cc2"
+    },
+    "2025-07-01": {
+      "rows": 82184,
+      "vm_rows": 2862,
+      "oil_m3": "2506760.803990899",
+      "gas_km3": "2829206.505913393000714",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2188,
+      "gas_wells": 2359,
+      "fingerprint": "871b110e0a1d3ef262a481ca713f78663e5f5cb9e9d438ccd0b27d8f25e8e01f",
+      "vm_fingerprint": "47268b97932449cecbd80815a83c641257f200b31d9d165cfa8c06ce34b1cb79"
+    },
+    "2025-08-01": {
+      "rows": 82659,
+      "vm_rows": 2914,
+      "oil_m3": "2595176.457312845",
+      "gas_km3": "2796471.28548555900027",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2214,
+      "gas_wells": 2394,
+      "fingerprint": "46378bbe2083c572c6de11ab37356f640449c1848ec88322ff7693e9039f4ea7",
+      "vm_fingerprint": "9c536e8fd2dfc38cbd31bdaf4679065ad5fc22cf1c252bfdfccd31b2c3a60ebb"
+    },
+    "2025-09-01": {
+      "rows": 82846,
+      "vm_rows": 2947,
+      "oil_m3": "2607802.41290959000017",
+      "gas_km3": "2261452.0050071249996",
+      "negative_fields_outside_product": 7,
+      "duplicate_rows": 0,
+      "oil_wells": 2247,
+      "gas_wells": 2430,
+      "fingerprint": "0585cb8bcf7b4e17ebf5ac00f4ca17dd99205bcc874ff5ba1cc1f48c86fe2f91",
+      "vm_fingerprint": "e23eb1d31de0e82d1cb194cbba3adc394c13b2ee89fb4a46b8a1433d33d32d08"
+    },
+    "2025-10-01": {
+      "rows": 82829,
+      "vm_rows": 2990,
+      "oil_m3": "2800987.7386068499998",
+      "gas_km3": "2011084.7133320140003",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2287,
+      "gas_wells": 2452,
+      "fingerprint": "2c3f261a5d860b75fbabb165cc647b209a5b23d99891d5a2b3bfc38aa12ee349",
+      "vm_fingerprint": "b756fd08bf8394073e95ba13e87f3f0b14296c5392c064fddc8979f75d49e942"
+    },
+    "2025-11-01": {
+      "rows": 82881,
+      "vm_rows": 3017,
+      "oil_m3": "2750778.8830235600005",
+      "gas_km3": "1922698.6634221749996",
+      "negative_fields_outside_product": 1,
+      "duplicate_rows": 0,
+      "oil_wells": 2301,
+      "gas_wells": 2455,
+      "fingerprint": "91772f915761958b89a74adbd68e6cd83636d6fcd278efe70800970fbae54b9b",
+      "vm_fingerprint": "500d2f2846112faa3929b7d0d4b755375042aa24ff075c5a2b1481c2bc9d6a88"
+    },
+    "2025-12-01": {
+      "rows": 82890,
+      "vm_rows": 3053,
+      "oil_m3": "2909815.32526969",
+      "gas_km3": "2255800.2819491630011",
+      "negative_fields_outside_product": 0,
+      "duplicate_rows": 0,
+      "oil_wells": 2355,
+      "gas_wells": 2515,
+      "fingerprint": "7fbc7f6be48f48d9db849a15705c407936d620327b9ea8379c93f4758d928182",
+      "vm_fingerprint": "dc9c767382025aa32b75cb8d0f8c2948870fa45ea3f61a319048e50fca3f0571"
+    },
+    "2026-01-01": {
+      "rows": 82948,
+      "vm_rows": 3085,
+      "oil_m3": "2954410.6475754000002",
+      "gas_km3": "2260617.97922733300024",
+      "duplicate_rows": 0,
+      "oil_wells": 2379,
+      "gas_wells": 2542,
+      "fingerprint": "5b750e21a5f9dfaa49ffaa57b3e61963fa19280b2d33567deec401389af0cb27",
+      "vm_fingerprint": "0c5489f55a102f90a2c1e116c1365f48ea35e8077d6bfaa5ffa3ff1d6d33380e",
+      "negative_fields_outside_product": 0
+    },
+    "2026-02-01": {
+      "rows": 83001,
+      "vm_rows": 3127,
+      "oil_m3": "2630008.6995825399999",
+      "gas_km3": "2194107.97978963300147",
+      "duplicate_rows": 0,
+      "oil_wells": 2411,
+      "gas_wells": 2588,
+      "fingerprint": "70d3afbb314dedc5f8291d147b8e98cd0d8831d9b99de9c48e324d22986137aa",
+      "vm_fingerprint": "295e4048a5e7228506659c300a6d6491d9eb44d072365c10f923724b4cb0fbc1",
+      "negative_fields_outside_product": 1
+    },
+    "2026-03-01": {
+      "rows": 83035,
+      "vm_rows": 3165,
+      "oil_m3": "2945239.97392979",
+      "gas_km3": "2564071.36619238200106",
+      "duplicate_rows": 0,
+      "oil_wells": 2461,
+      "gas_wells": 2658,
+      "fingerprint": "9bc33856f9d66ed00786df3725ae7459787bda48d2fc4ddb736951a70eeb8915",
+      "vm_fingerprint": "47ec52d6ac25715f5b3cd79d6ac8ef92797d4cce3eda7f13ac663869c93c0804",
+      "negative_fields_outside_product": 0
+    },
+    "2026-04-01": {
+      "rows": 82949,
+      "vm_rows": 3217,
+      "oil_m3": "2938290.4325433299999",
+      "gas_km3": "2485117.07831525399972",
+      "duplicate_rows": 0,
+      "oil_wells": 2506,
+      "gas_wells": 2704,
+      "fingerprint": "167ee345ec2d2d4d8fb5ff173b889d8e6d8f791f56b9e7a053253c931fd8c736",
+      "vm_fingerprint": "3ba1bd446f332c5194a1475a385ed2504a289a3a14e9c8e7f0f2d0764b0c1211",
+      "negative_fields_outside_product": 0
+    },
+    "2026-05-01": {
+      "rows": 83033,
+      "vm_rows": 3281,
+      "oil_m3": "3068706.0098304599999",
+      "gas_km3": "2962415.479297004000401",
+      "duplicate_rows": 0,
+      "oil_wells": 2556,
+      "gas_wells": 2771,
+      "fingerprint": "2a25eea5d500cd63db49797524f80c52e25ed68875750acf31009466b002fa05",
+      "vm_fingerprint": "94c09deece9fd466a378a2f2045dbb7217a999b7a353f03e71ba7778843fca72",
+      "negative_fields_outside_product": 0
+    },
+    "2026-06-01": {
+      "rows": 82476,
+      "vm_rows": 3322,
+      "oil_m3": "3021594.4763968199993",
+      "gas_km3": "2932907.633160722000416",
+      "duplicate_rows": 0,
+      "oil_wells": 2585,
+      "gas_wells": 2783,
+      "fingerprint": "ce228fe1bb6ab032fba870fb261ff9357a3950c72c63cc296b740b7f55806d9f",
+      "vm_fingerprint": "427001258e98f27b1782fc8fcfc8211ca15a0986efd758507405addfd50814b8",
+      "negative_fields_outside_product": 0
+    },
+    "2026-07-01": {
+      "rows": 82549,
+      "vm_rows": 3369,
+      "oil_m3": "3169661.239685634",
+      "gas_km3": "2994332.40924207000038",
+      "duplicate_rows": 0,
+      "oil_wells": 2633,
+      "gas_wells": 2836,
+      "fingerprint": "517b6beb29139c3a522b08a8b75fc92d1af69915e430ad5f3e7ed794a5d12c81",
+      "vm_fingerprint": "903c70bc3ddec24116a4b27973419c1db6e4b2a1f82b6e62a07cdfcf98feefc7",
+      "negative_fields_outside_product": 0
+    },
+    "2026-08-01": {
+      "rows": 79576,
+      "vm_rows": 3404,
+      "oil_m3": "3301191.71813899999979997",
+      "gas_km3": "2958950.8994440000024",
+      "duplicate_rows": 0,
+      "oil_wells": 2678,
+      "gas_wells": 2884,
+      "fingerprint": "acbe6f4ca6bf13ab70af32d872fffb1c7b3d635f63fa9087fa8ce4abe36ee900",
+      "vm_fingerprint": "2d986250d4769fc34272067e2bd8f83d091f7a70ec2f13c7da18afa4413bd8b8",
+      "negative_fields_outside_product": 0
+    }
+  },
+  "years": {
+    "2023": {
+      "observed_at": "2026-10-13T14:41:31.167486+00:00",
+      "metadata": {
+        "id": "231c39b3-e81e-4398-af8d-b115807f2c25",
+        "url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/231c39b3-e81e-4398-af8d-b115807f2c25/download/produccin-de-pozos-de-gas-y-petrleo-2023.csv",
+        "size": 304699019,
+        "last_modified": "2026-06-05T17:37:05.622693"
+      },
+      "csv_sha256": "acb887f8255134fbea1b954e472e21ccb02e70ce82d595d11be80b9d2e870a40"
+    },
+    "2024": {
+      "observed_at": "2026-10-13T14:41:22.902614+00:00",
+      "metadata": {
+        "id": "43a09dce-1742-44d0-bc13-f193deaab563",
+        "url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/43a09dce-1742-44d0-bc13-f193deaab563/download/produccin-de-pozos-de-gas-y-petrleo-2024.csv",
+        "size": 319898336,
+        "last_modified": "2026-10-03T08:10:25.374981"
+      },
+      "csv_sha256": "2c3e2f6ec26840266c92aea509acf7677daf146d52e58bbd794a976b96e29cba"
+    },
+    "2025": {
+      "observed_at": "2026-10-13T14:41:34.614428+00:00",
+      "metadata": {
+        "id": "d774b5d7-0756-48fe-88f2-8729b57b22da",
+        "url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/d774b5d7-0756-48fe-88f2-8729b57b22da/download/produccin-de-pozos-de-gas-y-petrleo-2025.csv",
+        "size": 315374928,
+        "last_modified": "2026-10-03T08:09:01.753161"
+      },
+      "csv_sha256": "01cc0ae6e549e02ff4206002d1de0ac11e7dcdff5fcc72d969717897667dad69"
+    },
+    "2026": {
+      "observed_at": "2026-10-13T14:41:07.672014+00:00",
+      "metadata": {
+        "id": "fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+        "url": "http://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+        "size": 215291772,
+        "last_modified": "2026-10-13T10:01:46.565507"
+      },
+      "csv_sha256": "7978a52c7ed409e78a32d08440c2c1fbdd5af6df74ea5b73d8cdcad4f4e7ec73"
+    }
+  },
+  "notified_event_ids": [],
+  "publication_approved": false,
+  "catalogue_resource_ids": [
+    "231c39b3-e81e-4398-af8d-b115807f2c25",
+    "43a09dce-1742-44d0-bc13-f193deaab563",
+    "6f9f63bd-3f7e-43ab-8743-85997ae1380c",
+    "94d82d18-488b-434c-806d-ee5e053ce1cd",
+    "d774b5d7-0756-48fe-88f2-8729b57b22da",
+    "fb7a47a0-cba9-4667-a004-6f6c1c346c23"
+  ]
+}

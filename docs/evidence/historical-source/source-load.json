@@ -1,0 +1,16 @@
+{
+  "schema_version": 2,
+  "status": "pass",
+  "job_id": "csv_history_candidate_bbda8d6de8a3b7f8ff8f3a32_5a71e117a047",
+  "source_sha256": "bbda8d6de8a3b7f8ff8f3a325be6f04442dae5e1a0df415471066046152d9a05",
+  "source_hashes": {
+    "2023": "acb887f8255134fbea1b954e472e21ccb02e70ce82d595d11be80b9d2e870a40",
+    "2024": "2c3e2f6ec26840266c92aea509acf7677daf146d52e58bbd794a976b96e29cba",
+    "2025": "01cc0ae6e549e02ff4206002d1de0ac11e7dcdff5fcc72d969717897667dad69",
+    "2026": "7978a52c7ed409e78a32d08440c2c1fbdd5af6df74ea5b73d8cdcad4f4e7ec73"
+  },
+  "rows": 3614213,
+  "destination": "vaca-muerta-pulse.raw_cap4_candidate_dev.produccion_pozo_mes",
+  "loaded_at": "2026-10-13T16:48:19.480600+00:00",
+  "publication_approved": false
+}

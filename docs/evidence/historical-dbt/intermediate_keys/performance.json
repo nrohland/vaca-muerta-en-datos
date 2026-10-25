@@ -1,0 +1,67 @@
+{
+  "schema_version": 1,
+  "invocation_id": "d14e9fe1-fed2-4a5f-b613-bd2c0f2ba6d5",
+  "wall_seconds": 5.076345,
+  "totals": {
+    "bytes_processed": 406598776,
+    "bytes_billed": 406847488,
+    "slot_ms": 628
+  },
+  "node_count": 2,
+  "metrics_available": {
+    "bytes_processed": 2,
+    "bytes_billed": 2,
+    "slot_ms": 2
+  },
+  "models": [],
+  "slowest_nodes": [
+    {
+      "node": "test.vaca_muerta_pulse.not_null_int_produccion_vm_noconv_well_month_id.024fd86571",
+      "status": "pass",
+      "seconds": 3.1576778888702393,
+      "bytes_processed": 203299388,
+      "bytes_billed": 203423744,
+      "slot_ms": 216,
+      "job_id": "35a77792-16db-49f0-abb7-836c4713b091",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_int_produccion_vm_noconv_well_month_id.7e3e063cec",
+      "status": "pass",
+      "seconds": 1.911515235900879,
+      "bytes_processed": 203299388,
+      "bytes_billed": 203423744,
+      "slot_ms": 412,
+      "job_id": "4f0ae3c3-abf0-46ca-a0a1-e97e15aa2790",
+      "resource_type": "test"
+    }
+  ],
+  "nodes": [
+    {
+      "node": "test.vaca_muerta_pulse.not_null_int_produccion_vm_noconv_well_month_id.024fd86571",
+      "status": "pass",
+      "seconds": 3.1576778888702393,
+      "bytes_processed": 203299388,
+      "bytes_billed": 203423744,
+      "slot_ms": 216,
+      "job_id": "35a77792-16db-49f0-abb7-836c4713b091",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.unique_int_produccion_vm_noconv_well_month_id.7e3e063cec",
+      "status": "pass",
+      "seconds": 1.911515235900879,
+      "bytes_processed": 203299388,
+      "bytes_billed": 203423744,
+      "slot_ms": 412,
+      "job_id": "4f0ae3c3-abf0-46ca-a0a1-e97e15aa2790",
+      "resource_type": "test"
+    }
+  ],
+  "limitations": [
+    "One execution, not a statistically comparable performance baseline.",
+    "Missing adapter metrics remain null; totals include only reported values.",
+    "Bytes billed are not a monetary charge; no pricing assumption is applied.",
+    "A view CREATE with zero processed bytes does not measure its downstream query cost."
+  ]
+}

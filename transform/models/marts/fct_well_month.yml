@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: fct_well_month
+    description: >
+      Public well-month fact for the Pulse cut (Vaca Muerta, no convencional).
+
+      **Grain:** one row = `idpozo` × `anio` × `mes` (CONFIRMED unique in 2025
+      DataStore; staging dedupes if other years differ). Clustered by
+      idempresa, idpozo. Not partitioned by `periodo` while the GCP sandbox
+      forces 60-day partition expiration (2025 months would drop on write).
+
+      Vaca Muerta en Datos headline (`fct_production_rate`) must reconcile `prod_pet_m3`
+      to the sum of this table for the same `periodo`. Company / area marts
+      (`fct_company_month`, `fct_area_month`) roll up from here.
+      Completions are outside V1; this mart contains production declarations only.
+    columns:
+      - name: well_month_id
+        description: Surrogate of idpozo + anio + mes.
+        data_tests:
+          - unique
+          - not_null
+      - name: idpozo
+        description: Well id. Grain key with anio, mes.
+        data_tests:
+          - not_null
+      - name: anio
+        description: DDJJ year. Grain key.
+        data_tests:
+          - not_null
+      - name: mes
+        description: DDJJ month. Grain key.
+        data_tests:
+          - not_null
+      - name: periodo
+        description: Business month DATE YYYY-MM-01. Use this, not source_batched_at.
+        data_tests:
+          - not_null
+      - name: prod_pet_m3
+        description: Oil m³ for the well-month.
+      - name: tef
+        description: >
+          Effective time. Preferred Vaca Muerta en Datos denominator when the monthly
+          SUM over the Pulse cut is > 0. Warehouse 2025 Pulse: 0 nulls, min 0,
+          max 31.0, 6115 zeros / 27936 > 0 of 34051 rows. Official dictionary
+          / other years remain UNKNOWN.
+        data_tests:
+          - dbt_expectations.expect_column_values_to_be_between:
+              arguments:
+                min_value: 0
+                max_value: 31.5
+                row_condition: "tef is not null"
+              config:
+                severity: warn
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [idpozo, anio, mes]

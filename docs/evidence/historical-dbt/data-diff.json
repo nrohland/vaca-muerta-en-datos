@@ -1,0 +1,19 @@
+{
+  "status": "pass",
+  "job_id": "56d6ebdb-e3ff-49c6-86a7-054ecaff0884",
+  "bytes_processed": 180342040,
+  "rows": [
+    {
+      "classification": "added",
+      "rows": 24,
+      "explained_reclassification_rows": 24
+    },
+    {
+      "classification": "identical",
+      "rows": 112506,
+      "explained_reclassification_rows": 0
+    }
+  ],
+  "package": "dbt-labs/audit_helper",
+  "version": "0.14.0"
+}

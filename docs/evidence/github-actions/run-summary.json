@@ -1,0 +1,25 @@
+{
+  "run_id": 38456258503,
+  "url": "https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/38456258503",
+  "commit": "7dbc1d98c33f3e68c6bb786c19f2c6b871097032",
+  "status": "success",
+  "extract_seconds": 497,
+  "transform_seconds": 343,
+  "dbt_nodes": 106,
+  "dbt_status_counts": {
+    "pass": 93,
+    "success": 13
+  },
+  "dbt_wall_seconds": 176.395218,
+  "snapshot": {
+    "status": "pass",
+    "publication_approved": false,
+    "data_sha256": "1733f539eea0f45a150c7d9ca9dd872249b7a7f59e60f0e3a783f0a6bf8ce6a6",
+    "months": 44,
+    "production_rows": 88,
+    "entity_rows": 10208,
+    "prices_sha256": "324fe9f5c395a873eb8fb32385b5b916624414665346fbcf3ee0021a72dca2a7"
+  },
+  "recurring_schedule_enabled": false,
+  "publication_approved": false
+}

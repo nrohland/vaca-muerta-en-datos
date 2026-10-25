@@ -1,0 +1,18 @@
+{
+  "results": [
+    {
+      "unique_id": "source.vaca_muerta_pulse.candidate_pricing.monthly_reference_price",
+      "status": "pass",
+      "max_loaded_at": "2026-10-12T22:59:21.033339+00:00",
+      "snapshotted_at": "2026-10-13T17:24:51.627450+00:00",
+      "max_loaded_at_time_ago_in_s": 66330.594111
+    },
+    {
+      "unique_id": "source.vaca_muerta_pulse.raw_cap4.produccion_pozo_mes",
+      "status": "pass",
+      "max_loaded_at": "2026-10-13T16:42:44.782963+00:00",
+      "snapshotted_at": "2026-10-13T17:24:53.517213+00:00",
+      "max_loaded_at_time_ago_in_s": 2528.73425
+    }
+  ]
+}

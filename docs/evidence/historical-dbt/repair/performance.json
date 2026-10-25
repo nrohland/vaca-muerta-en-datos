@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "invocation_id": "6fb1ca87-dbcf-4f4a-9019-179123a68086",
+  "wall_seconds": 17.916946,
+  "totals": {
+    "bytes_processed": 28549798,
+    "bytes_billed": 62914560,
+    "slot_ms": 373435
+  },
+  "node_count": 4,
+  "metrics_available": {
+    "bytes_processed": 4,
+    "bytes_billed": 4,
+    "slot_ms": 4
+  },
+  "models": [
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.83755898475647,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 373373,
+      "job_id": "504612c4-95ce-4c0c-830f-826545b62a6c",
+      "resource_type": "model"
+    }
+  ],
+  "slowest_nodes": [
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.83755898475647,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 373373,
+      "job_id": "504612c4-95ce-4c0c-830f-826545b62a6c",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_contract",
+      "status": "pass",
+      "seconds": 3.354301929473877,
+      "bytes_processed": 1023176,
+      "bytes_billed": 10485760,
+      "slot_ms": 26,
+      "job_id": "cd53a6d9-7f71-46bb-a6f2-2ec12559755e",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_reconciles",
+      "status": "pass",
+      "seconds": 2.033881902694702,
+      "bytes_processed": 367840,
+      "bytes_billed": 10485760,
+      "slot_ms": 24,
+      "job_id": "543af62c-7a5d-4459-9c6d-8667e6e4441f",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_months",
+      "status": "pass",
+      "seconds": 1.6759839057922363,
+      "bytes_processed": 285472,
+      "bytes_billed": 10485760,
+      "slot_ms": 12,
+      "job_id": "972b426b-1cac-4f23-bad9-4abdcfbb1c6c",
+      "resource_type": "test"
+    }
+  ],
+  "nodes": [
+    {
+      "node": "model.vaca_muerta_pulse.fct_dashboard_month",
+      "status": "success",
+      "seconds": 10.83755898475647,
+      "bytes_processed": 26873310,
+      "bytes_billed": 31457280,
+      "slot_ms": 373373,
+      "job_id": "504612c4-95ce-4c0c-830f-826545b62a6c",
+      "resource_type": "model"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_contract",
+      "status": "pass",
+      "seconds": 3.354301929473877,
+      "bytes_processed": 1023176,
+      "bytes_billed": 10485760,
+      "slot_ms": 26,
+      "job_id": "cd53a6d9-7f71-46bb-a6f2-2ec12559755e",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_months",
+      "status": "pass",
+      "seconds": 1.6759839057922363,
+      "bytes_processed": 285472,
+      "bytes_billed": 10485760,
+      "slot_ms": 12,
+      "job_id": "972b426b-1cac-4f23-bad9-4abdcfbb1c6c",
+      "resource_type": "test"
+    },
+    {
+      "node": "test.vaca_muerta_pulse.dashboard_publication_reconciles",
+      "status": "pass",
+      "seconds": 2.033881902694702,
+      "bytes_processed": 367840,
+      "bytes_billed": 10485760,
+      "slot_ms": 24,
+      "job_id": "543af62c-7a5d-4459-9c6d-8667e6e4441f",
+      "resource_type": "test"
+    }
+  ],
+  "limitations": [
+    "One execution, not a statistically comparable performance baseline.",
+    "Missing adapter metrics remain null; totals include only reported values.",
+    "Bytes billed are not a monetary charge; no pricing assumption is applied.",
+    "A view CREATE with zero processed bytes does not measure its downstream query cost."
+  ]
+}

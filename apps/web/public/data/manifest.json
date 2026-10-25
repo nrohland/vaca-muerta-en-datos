@@ -1,0 +1,236 @@
+{
+  "data_sha256": "e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd",
+  "generated_at": "2026-10-21T17:31:19.333615+00:00",
+  "input_sha256": {
+    "price_rows_sha256": "54cc4dee3f2a61bb28415e005809756e467a52ef802b7ec619da290fe0e28854",
+    "source_sha256": "9fa7baa766de25828468e161431f324018dcb2db724b23b3ee7dea8c3f49a836"
+  },
+  "operator_grouping": {
+    "legal_provenance_field": "legal_operator_provenance",
+    "mappings": [
+      {
+        "grouping_basis": "reviewed_explicit_id_mapping",
+        "history_policy": "presentation_constant_from_2023_01_no_acquired_vendor_restatement",
+        "legal_operator_id": "PCN",
+        "operator_group_id": "PLUSPETROL",
+        "operator_group_name": "Pluspetrol",
+        "rule_version": "estrato-operator-groups-v1",
+        "valid_from": "2023-01-01",
+        "valid_to": ""
+      },
+      {
+        "grouping_basis": "reviewed_explicit_id_mapping",
+        "history_policy": "presentation_constant_from_2023_01_no_acquired_vendor_restatement",
+        "legal_operator_id": "PLU",
+        "operator_group_id": "PLUSPETROL",
+        "operator_group_name": "Pluspetrol",
+        "rule_version": "estrato-operator-groups-v1",
+        "valid_from": "2023-01-01",
+        "valid_to": ""
+      }
+    ],
+    "rule_version": "estrato-operator-groups-v1",
+    "seed_sha256": "4ac8b5ac9491fdd65a1d6122c80b1b854f859d4040417be78464c0a9015aeffc",
+    "semantics": "constant presentation mapping from 2023-01; no acquired-vendor historical restatement",
+    "unknown_id_policy": "preserve source ID and declared legal name"
+  },
+  "publication_approved": false,
+  "schema_version": 1,
+  "source": {
+    "acceptance_note": "Technical validation of 44 complete available-record months; owner promotion approval separate. September 2026 excluded.",
+    "accepted_at": "2026-10-21T17:31:05.350007+00:00",
+    "accepted_periods": [
+      "2023-01-01",
+      "2023-02-01",
+      "2023-03-01",
+      "2023-04-01",
+      "2023-05-01",
+      "2023-06-01",
+      "2023-07-01",
+      "2023-08-01",
+      "2023-09-01",
+      "2023-10-01",
+      "2023-11-01",
+      "2023-12-01",
+      "2024-01-01",
+      "2024-02-01",
+      "2024-03-01",
+      "2024-04-01",
+      "2024-05-01",
+      "2024-06-01",
+      "2024-07-01",
+      "2024-08-01",
+      "2024-09-01",
+      "2024-10-01",
+      "2024-11-01",
+      "2024-12-01",
+      "2025-01-01",
+      "2025-02-01",
+      "2025-03-01",
+      "2025-04-01",
+      "2025-05-01",
+      "2025-06-01",
+      "2025-07-01",
+      "2025-08-01",
+      "2025-09-01",
+      "2025-10-01",
+      "2025-11-01",
+      "2025-12-01",
+      "2026-01-01",
+      "2026-02-01",
+      "2026-03-01",
+      "2026-04-01",
+      "2026-05-01",
+      "2026-06-01",
+      "2026-07-01",
+      "2026-08-01"
+    ],
+    "approved_period": "2026-08-01",
+    "bundle_sha256": "9fa7baa766de25828468e161431f324018dcb2db724b23b3ee7dea8c3f49a836",
+    "commit": "7cad3414a922776e094fc117076a090704fb3635",
+    "data_kind": "official",
+    "ingested_at": "2026-10-21T17:24:27.134149+00:00",
+    "published_at": null,
+    "raw_candidate": "vaca-muerta-pulse.raw_cap4_candidate_dev.produccion_pozo_mes",
+    "resources": [
+      {
+        "extracted_at": "2026-10-21T16:55:45.745494+00:00",
+        "hash_scope": "original official CSV bytes",
+        "id": "231c39b3-e81e-4398-af8d-b115807f2c25",
+        "period_rows": {
+          "2023-01-01": 80833,
+          "2023-02-01": 80912,
+          "2023-03-01": 80969,
+          "2023-04-01": 81048,
+          "2023-05-01": 81133,
+          "2023-06-01": 81240,
+          "2023-07-01": 81312,
+          "2023-08-01": 81349,
+          "2023-09-01": 81431,
+          "2023-10-01": 81496,
+          "2023-11-01": 81561,
+          "2023-12-01": 81687
+        },
+        "raw_rows": 974971,
+        "sha256": "acb887f8255134fbea1b954e472e21ccb02e70ce82d595d11be80b9d2e870a40",
+        "url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/231c39b3-e81e-4398-af8d-b115807f2c25/download/produccin-de-pozos-de-gas-y-petrleo-2023.csv",
+        "year": 2023
+      },
+      {
+        "extracted_at": "2026-10-21T16:56:06.829016+00:00",
+        "hash_scope": "original official CSV bytes",
+        "id": "43a09dce-1742-44d0-bc13-f193deaab563",
+        "period_rows": {
+          "2024-01-01": 81572,
+          "2024-02-01": 81649,
+          "2024-03-01": 81720,
+          "2024-04-01": 81797,
+          "2024-05-01": 81883,
+          "2024-06-01": 81934,
+          "2024-07-01": 82008,
+          "2024-08-01": 82104,
+          "2024-09-01": 81994,
+          "2024-10-01": 82223,
+          "2024-11-01": 82316,
+          "2024-12-01": 82351
+        },
+        "raw_rows": 983551,
+        "sha256": "2c3e2f6ec26840266c92aea509acf7677daf146d52e58bbd794a976b96e29cba",
+        "url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/43a09dce-1742-44d0-bc13-f193deaab563/download/produccin-de-pozos-de-gas-y-petrleo-2024.csv",
+        "year": 2024
+      },
+      {
+        "extracted_at": "2026-10-21T16:52:51.857496+00:00",
+        "hash_scope": "original official CSV bytes",
+        "id": "d774b5d7-0756-48fe-88f2-8729b57b22da",
+        "period_rows": {
+          "2025-01-01": 82412,
+          "2025-02-01": 82490,
+          "2025-03-01": 82556,
+          "2025-04-01": 82651,
+          "2025-05-01": 82734,
+          "2025-06-01": 82804,
+          "2025-07-01": 82184,
+          "2025-08-01": 82659,
+          "2025-09-01": 82846,
+          "2025-10-01": 82829,
+          "2025-11-01": 82881,
+          "2025-12-01": 82890
+        },
+        "raw_rows": 991936,
+        "sha256": "01cc0ae6e549e02ff4206002d1de0ac11e7dcdff5fcc72d969717897667dad69",
+        "url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/d774b5d7-0756-48fe-88f2-8729b57b22da/download/produccin-de-pozos-de-gas-y-petrleo-2025.csv",
+        "year": 2025
+      },
+      {
+        "extracted_at": "2026-10-21T17:11:31.459915+00:00",
+        "hash_scope": "original official CSV bytes",
+        "id": "fb7a47a0-cba9-4667-a004-6f6c1c346c23",
+        "period_rows": {
+          "2026-01-01": 82948,
+          "2026-02-01": 83001,
+          "2026-03-01": 83035,
+          "2026-04-01": 82949,
+          "2026-05-01": 83033,
+          "2026-06-01": 82476,
+          "2026-07-01": 82549,
+          "2026-08-01": 79576,
+          "2026-09-01": 79426
+        },
+        "raw_rows": 738993,
+        "sha256": "357e761e25fcf0c57136ba07788f37340065d75235bb89d706220a1b96e73192",
+        "url": "https://datos.energia.gob.ar/dataset/c846e79c-026c-4040-897f-1ad3543b407c/resource/fb7a47a0-cba9-4667-a004-6f6c1c346c23/download/produccin-de-pozos-de-gas-y-petrleo-2026.csv",
+        "year": 2026
+      }
+    ],
+    "snapshot_revisions_note": "Official annual CSV history reconciled against the retained technically reviewed physical snapshot. Historical classification and area revisions are incorporated in the reviewed baseline; any new physical difference blocks export."
+  },
+  "status": "candidate",
+  "valuation": {
+    "job_id": "58df2b22-ca12-469b-bbbc-c44d244b0105",
+    "model": "fct_dashboard_month",
+    "producer": "dbt"
+  },
+  "version": "candidate-dbt-e6daf853a626",
+  "delivery": {
+    "schema_version": 1,
+    "release_sha256": "e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd",
+    "overview": {
+      "path": "snapshots/e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd/overview-c7aecba168625167.json.gz",
+      "sha256": "c7aecba168625167a6b713b7f5d0b279cfab775a4669a2046af20d5b971497f2",
+      "bytes": 248713,
+      "decoded_bytes": 1731358,
+      "rows": 880
+    },
+    "entities": {
+      "oil-company": {
+        "path": "snapshots/e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd/oil-company-47612dba96347dc4.json.gz",
+        "sha256": "47612dba96347dc4ac7bbeed869dca924cd66fdf21bf7ef5874f993f30aece12",
+        "bytes": 228081,
+        "decoded_bytes": 2115919,
+        "rows": 1232
+      },
+      "oil-area": {
+        "path": "snapshots/e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd/oil-area-1370eb10a72860ce.json.gz",
+        "sha256": "1370eb10a72860ceda8282f4d0e830b91d891bfd78f72c338486154820c68f16",
+        "bytes": 720228,
+        "decoded_bytes": 6358771,
+        "rows": 3872
+      },
+      "gas-company": {
+        "path": "snapshots/e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd/gas-company-d44cbf66fbf68367.json.gz",
+        "sha256": "d44cbf66fbf683674f691c7cd4718fe8771a5f2e420b93391d836b79d433b8d3",
+        "bytes": 214134,
+        "decoded_bytes": 2189617,
+        "rows": 1232
+      },
+      "gas-area": {
+        "path": "snapshots/e6daf853a62638d93a25395aed1f937c0005c21032b2029f63024fc7afb28dbd/gas-area-e194f637f117da80.json.gz",
+        "sha256": "e194f637f117da80e0117d2b708cda248a3178b7a8ff7f3777d2cc153a40f2f9",
+        "bytes": 685296,
+        "decoded_bytes": 6637557,
+        "rows": 3872
+      }
+    }
+  }
+}

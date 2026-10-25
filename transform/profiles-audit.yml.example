@@ -1,0 +1,9 @@
+# Metadata-only architecture audit; no warehouse credentials required.
+vaca_muerta_pulse:
+  target: candidate
+  outputs:
+    candidate:
+      type: duckdb
+      path: "{{ env_var('DBT_ARCHITECTURE_PATH', '/tmp/vm-architecture.duckdb') }}"
+      schema: stg_cap4_candidate_dev
+      threads: 1

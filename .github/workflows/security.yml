@@ -24,6 +24,10 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - name: Reject environment files and credentials across the complete history
+        run: |
+          python3 scripts/test_check_publication.py
+          python3 scripts/check_publication.py --history
       - name: Install checksum-verified Gitleaks
         run: |
           curl --fail --silent --show-error --location --retry 0 --max-time 60 https://github.com/gitleaks/gitleaks/releases/download/v8.30.1/gitleaks_8.30.1_linux_x64.tar.gz -o "$RUNNER_TEMP/gitleaks.tar.gz"

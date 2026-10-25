@@ -1,5 +1,12 @@
 # Vaca Muerta en Datos
 
+Proyecto reiniciado con historial Git independiente: una importación explícita del baseline público revisado y commits por cambio coherente. Se conservan las mejoras auditadas y el snapshot preliminar; no se importan el historial antiguo ni credenciales locales. **Facturación GCP deshabilitada.**
+
+- [Ejecución local con Meltano](extraction/MELTANO.md).
+- [Adopción optativa con Terraform](infra/terraform/README.md).
+- [Controles de publicación y reinicio](docs/operations/repository-reset.md).
+
+
 **Un producto analítico para entender cómo evoluciona la producción no convencional de Vaca Muerta, quién la impulsa y dónde se concentra.** Transforma declaraciones mensuales oficiales en métricas comparables, rankings y exploración interactiva, con trazabilidad desde la fuente hasta la pantalla.
 
 Pensado para analistas, equipos de energía y periodistas. Como portfolio, muestra un recorrido completo de ingeniería de datos, modelado analítico y diseño de producto.

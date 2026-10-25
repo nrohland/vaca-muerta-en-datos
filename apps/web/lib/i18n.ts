@@ -6,6 +6,9 @@ export function readLanguage(value: string | null): Language {
 }
 // Spanish source messages are also the default locale. Variables never translate entity names.
 export const translations: Record<string, string> = {
+  "Datos: {period} · Ingesta: {ingested}": "Data: {period} · Ingested: {ingested}",
+  "Integridad validada al construir; no certifica frescura del origen.": "Integrity verified at build time; does not certify source freshness.",
+  "El gráfico muestra una magnitud por vez, con su unidad y escala desde cero. El valor USD es una referencia, no facturación.": "The chart shows one magnitude at a time, with its unit and a zero baseline. USD is a reference value, not revenue.",
   "Deslizá para explorar columnas y períodos →": "Scroll to explore columns and periods →",
   "Henry Hub · escenario internacional de referencia. Conversión energética estimada con referencia EIA: 1.036 BTU/pie³; no poder calorífico medido de Vaca Muerta. No representa facturación efectiva.": "Henry Hub · international reference scenario. Estimated energy conversion using the EIA reference: 1,036 BTU/ft³; not a measured heating value for Vaca Muerta. Does not represent actual revenue.",
   "Metodología EIA": "EIA methodology",
@@ -296,7 +299,6 @@ Object.assign(translations, {
   "Evolución de pozos productivos": "Producing wells over time",
   "Actividad · Próximamente": "Activity · Coming soon",
   "Gráfico desplazable de pozos productivos": "Scrollable producing wells chart",
-  "El gráfico combinado utiliza escalas independientes para volumen y USD, ambas desde cero. Comparar la evolución de cada serie, no sus alturas entre sí.": "The combined chart uses independent volume and USD scales, both starting at zero. Compare changes within each series, rather than heights across series.",
 });
 Object.assign(translations, {
   "Explorar la producción": "Explore production",

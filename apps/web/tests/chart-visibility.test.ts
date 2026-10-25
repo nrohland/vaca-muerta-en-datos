@@ -1,24 +1,28 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {chartVisibility} from "../lib/chart-visibility.ts";
-test("hiding verified USD by choice does not claim missing prices",()=>{
-  const result=chartVisibility({wells:false,fluid:"oil",detailView:true,selected:"physical",hasEstimated:true});
-  assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);assert.equal(result.unavailable,false);
-});
-test("a selected USD series falls back to physical when the window has no valid prices",()=>{
-  const result=chartVisibility({wells:false,fluid:"oil",detailView:true,selected:"value",hasEstimated:false});
-  assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);assert.equal(result.unavailable,true);assert.equal(result.activeSeries,"physical");
-});
-test("productive wells retain physical charts; gas reference can show USD",()=>{
-  for(const options of [{wells:true,fluid:"oil" as const}]){
-    const result=chartVisibility({...options,detailView:true,selected:"value",hasEstimated:true});
-    assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);
-    assert.equal(result.unavailable,!options.wells);
+const common={wells:false,fluid:"oil" as const,hasEstimated:true,mode:"volume" as const};
+test("overview follows volume/value mode with exactly one visible magnitude",()=>{
+  for(const mode of ["volume","value"] as const){
+    const result=chartVisibility({...common,mode,detailView:false,selected:"physical"});
+    assert.equal(result.showPhysical,mode==="volume");
+    assert.equal(result.monetary,mode==="value");
+    assert.equal(result.unavailable,false);
   }
 });
-test("available USD can be isolated while overview preserves both series",()=>{
-  const options={wells:false,fluid:"oil" as const,selected:"value" as const,hasEstimated:true};
-  assert.equal(chartVisibility({...options,detailView:true}).showPhysical,false);
-  const overview=chartVisibility({...options,detailView:false});
-  assert.equal(overview.showPhysical,true);assert.equal(overview.monetary,true);
+test("hiding verified USD by choice does not claim missing prices",()=>{
+ const result=chartVisibility({...common,detailView:true,selected:"physical"});
+ assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);assert.equal(result.unavailable,false);
+});
+test("unavailable USD falls back to physical without inventing zeros",()=>{
+ const result=chartVisibility({...common,detailView:true,selected:"value",hasEstimated:false});
+ assert.equal(result.activeSeries,"physical");assert.equal(result.unavailable,true);
+});
+test("productive wells never acquire a monetary axis",()=>{
+ const result=chartVisibility({...common,wells:true,mode:"value",detailView:false,selected:"value"});
+ assert.equal(result.showPhysical,true);assert.equal(result.monetary,false);assert.equal(result.unavailable,false);
+});
+test("detail series choice stays independent of global metric until changed",()=>{
+ const result=chartVisibility({...common,detailView:true,selected:"value"});
+ assert.equal(result.showPhysical,false);assert.equal(result.monetary,true);
 });

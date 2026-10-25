@@ -1,15 +1,18 @@
 import type { Fluid } from "./contract.ts";
-export type SeriesView = "both" | "physical" | "value";
-// A user-hidden series and an unavailable series are distinct states.
-export function chartVisibility({wells, fluid, detailView, selected, hasEstimated}: {
-  wells: boolean; fluid: Fluid; detailView: boolean; selected: SeriesView; hasEstimated: boolean;
+import type { Mode } from "./metrics.ts";
+export type SeriesView = "physical" | "value";
+// One visible magnitude: volume and reference USD never share independent axes.
+export function chartVisibility({wells, detailView, selected, hasEstimated, mode}: {
+  wells: boolean; fluid: Fluid; detailView: boolean; selected: SeriesView;
+  hasEstimated: boolean; mode: Mode;
 }) {
   const available = !wells && hasEstimated;
-  const activeSeries: SeriesView = wells || !available ? "physical" : detailView ? selected : "both";
+  const activeSeries: SeriesView = wells || !available ? "physical"
+    : detailView ? selected : mode === "value" ? "value" : "physical";
   return {
     activeSeries,
-    showPhysical: activeSeries !== "value",
-    monetary: available && activeSeries !== "physical",
+    showPhysical: activeSeries === "physical",
+    monetary: available && activeSeries === "value",
     unavailable: !wells && !available,
   };
 }

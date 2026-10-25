@@ -2075,3 +2075,17 @@ details:not([open]) > :not(summary) {display:none}
 @media(min-width:1101px){
  .page[data-workspace=explore] .areas-explorer .areas-filters{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+
+/* Expanded methodology belongs below the workspace, without shrinking rankings. */
+@media(min-width:1101px){
+ .page[data-workspace=explore]:has(.provenance[open]){height:auto;min-height:100svh}
+ .page[data-workspace=explore]:has(.provenance[open])>main,
+ .page[data-workspace=explore]:has(.provenance[open]) main>[role=tabpanel]{flex:none}
+ .page[data-workspace=explore]:has(.provenance[open]) .operators-grid{height:430px;min-height:430px;max-height:430px}
+ .page[data-workspace=explore]:has(.provenance[open]) .areas-explorer{min-height:600px}
+ .page[data-workspace=explore]:has(.provenance[open])>footer{align-items:flex-start}
+}
+.kpi-context,.ranking-scale{font-size:12px}
+.provenance p{font-size:13px;line-height:1.6}
+
+.snapshot-status{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:var(--muted);margin:6px 0 12px;flex:none}

@@ -19,7 +19,7 @@ const base = "/vaca-muerta-pulse/?tab=production&month=2026-08-01";
 async function ready(page: any) {
   await expect(page.locator(".production-data tbody tr")).toHaveCount(36);
   await expect(
-    page.locator(".production-evolution .recharts-line"),
+    page.locator(".production-evolution .recharts-wrapper"),
   ).toHaveCount(1);
 }
 test("filter matrix updates real KPIs and retains navigation state", async ({
@@ -79,7 +79,7 @@ test("filter matrix updates real KPIs and retains navigation state", async ({
           const formatted = delta == null ? f.t("Sin comparador") : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${fluid === "gas" && mode === "volume" ? f.number(Math.abs(delta), 2, 0) : f.compact(Math.abs(delta))}`;
           await expect(page.locator(".production-data tbody tr").first().locator(".production-selected-column")).toContainText(formatted);
           await expect(
-            page.locator(".production-evolution .recharts-line"),
+            page.locator(".production-evolution .recharts-wrapper"),
           ).toHaveCount(1);
         }
   }
@@ -131,16 +131,13 @@ test("first month has no fabricated comparison or future observations", async ({
     page.locator(".production-annual tbody tr").nth(1),
   ).toContainText("No disponible");
 });
-test("reference asset failure preserves validated warehouse values", async ({
+test("build-verified warehouse values persist after switching to USD", async ({
   page,
 }) => {
-  await page.route("**/data/prices.json", (route) =>
-    route.fulfill({ status: 503 }),
-  );
   await page.goto(base);
   await expect(page.locator(".production-data tbody tr")).toHaveCount(36);
   await expect(
-    page.locator(".production-evolution .recharts-line"),
+    page.locator(".production-evolution .recharts-wrapper"),
   ).toHaveCount(1);
   await page.getByRole("button", { name: "Valor USD", exact: true }).click();
   await expect(page.locator(".kpi-card--primary")).toContainText("USD");

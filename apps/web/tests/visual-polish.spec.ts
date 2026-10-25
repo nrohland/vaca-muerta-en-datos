@@ -81,3 +81,18 @@ test('overlapping map symbols offer explicit selection and keep selected readout
  await page.getByLabel('Mes de producción').selectOption('2026-07-01');
  await expect(page.locator('.map-choice')).toHaveCount(0);
 });
+
+
+test('expanded methodology does not collapse operator ranking',async({page})=>{
+  await page.setViewportSize({width:1280,height:720});
+  await page.goto('/vaca-muerta-pulse/');
+  await page.locator('#methodology > summary').click();
+  await page.getByRole('tab',{name:'Operadores',exact:true}).click();
+  const grid=page.locator('.operators-grid');
+  await expect(grid).toBeVisible();
+  await expect.poll(async()=> (await grid.boundingBox())?.height??0).toBeGreaterThanOrEqual(430);
+  const bounds=await grid.boundingBox();
+  const footer=await page.locator('footer').boundingBox();
+  expect(bounds).not.toBeNull();expect(footer).not.toBeNull();
+  expect(footer!.y).toBeGreaterThanOrEqual(bounds!.y+bounds!.height-1);
+});

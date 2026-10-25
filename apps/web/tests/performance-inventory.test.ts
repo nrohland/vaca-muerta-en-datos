@@ -17,3 +17,15 @@ test('build budget counts mixed-case script tags and excludes legacy nomodule as
   assert.equal(report.modern_initial_js_bytes,9);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
+
+test('serialized HTML cannot bypass the transfer budget',()=>{
+ const dir=mkdtempSync(path.join(tmpdir(),'vm-html-budget-'));
+ try{
+  mkdirSync(path.join(dir,'out'),{recursive:true});
+  // Deterministic pseudo-random text avoids a trivially compressible fixture.
+  let state=13;const chars=[];
+  for(let i=0;i<600000;i++){state=(Math.imul(state,1664525)+1013904223)>>>0;chars.push(String.fromCharCode(33+(state>>>24)%90));}
+  writeFileSync(path.join(dir,'out/index.html'),chars.join(''));
+  assert.throws(()=>execFileSync(process.execPath,[path.resolve('scripts/check_performance.mjs')],{cwd:dir,env:{...process.env,NEXT_PUBLIC_BASE_PATH:''},stdio:'pipe'}),/Command failed/);
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});

@@ -11,7 +11,8 @@
     "prebuild": "node --experimental-strip-types scripts/build_delivery.mjs",
     "predev": "node --experimental-strip-types scripts/build_delivery.mjs",
     "test:security-html": "node --test scripts/harden-static-html.test.mjs scripts/delivery-policy.test.mjs",
-    "postbuild": "node scripts/check_performance.mjs"
+    "postbuild": "node scripts/check_performance.mjs",
+    "pretest": "node --experimental-strip-types scripts/build_delivery.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.14.0",

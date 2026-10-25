@@ -28,7 +28,7 @@ jobs:
             cd /tmp/vm-source-diagnostic
             timeout 240s python pipeline/check_public_sources.py > /tmp/vm-source-diagnostic.jsonl
             cat /tmp/vm-source-diagnostic.jsonl
-            python - <<'PY'
+            python - \<<'PY'
             import json
             from pathlib import Path
             rows = [json.loads(line) for line in Path('/tmp/vm-source-diagnostic.jsonl').read_text().splitlines()]

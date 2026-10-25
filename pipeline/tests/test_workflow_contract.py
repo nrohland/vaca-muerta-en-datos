@@ -60,7 +60,9 @@ class WorkflowContract(unittest.TestCase):
         build=next(i for i,s in enumerate(transform) if 'run_candidate.py transform --history' in s.get('run',''))
         frontend=next(i for i,s in enumerate(transform) if 'npm --prefix apps/web run build' in s.get('run',''))
         self.assertLess(build,frontend)
-        self.assertIn('vm-transform/dashboard/release.json',transform[frontend]['run'])
+        self.assertIn('install_candidate_bundle.py',transform[frontend]['run'])
+        self.assertIn('check_snapshot.mjs --data-dir',transform[frontend]['run'])
+        self.assertNotIn('cp ',transform[frontend]['run'])
 
     def test_pr_checks_have_no_cloud_identity_or_publication(self):
         path=Path(__file__).resolve().parents[2]/'.github/workflows/dbt-transform.yml'

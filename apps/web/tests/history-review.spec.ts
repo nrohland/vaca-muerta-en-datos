@@ -66,9 +66,9 @@ test("desktop historical coverage, simplified backs and ES/EN themes", async ({
             })
             .click();
         await expect(page.locator(".recharts-bar-rectangle")).toHaveCount(44);
-        await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(
-          1,
-        );
+        // Volume mode must not overlay a reference-USD line on an independent scale.
+        await expect(page.locator(".production-evolution .recharts-line-curve")).toHaveCount(0);
+        await expect(page.locator(".production-evolution .recharts-yAxis")).toHaveCount(1);
         expect(
           await page.evaluate(
             () => document.documentElement.scrollWidth <= innerWidth,

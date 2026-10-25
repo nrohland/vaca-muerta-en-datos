@@ -1,0 +1,49 @@
+version: 2.1
+
+parameters:
+  run-source-diagnostic:
+    type: boolean
+    default: true
+
+jobs:
+  public-source-connectivity:
+    docker:
+      - image: cimg/python:3.12
+    resource_class: small
+    steps:
+      - run:
+          name: Fetch reviewed public code without repository credentials
+          command: |
+            set -eu
+            git init /tmp/vm-source-diagnostic
+            cd /tmp/vm-source-diagnostic
+            git remote add origin https://github.com/nrohland/vaca-muerta-en-datos.git
+            git -c credential.helper= fetch --depth=1 origin b251e5ac8e78da39536546a16a25f27742d66afc
+            git checkout --detach FETCH_HEAD
+          no_output_timeout: 2m
+      - run:
+          name: Probe public endpoints without cloud access or data writes
+          command: |
+            set -eu
+            cd /tmp/vm-source-diagnostic
+            timeout 240s python pipeline/check_public_sources.py > /tmp/vm-source-diagnostic.jsonl
+            cat /tmp/vm-source-diagnostic.jsonl
+            python - <<'PY'
+            import json
+            from pathlib import Path
+            rows = [json.loads(line) for line in Path('/tmp/vm-source-diagnostic.jsonl').read_text().splitlines()]
+            summary = rows[-1]
+            if summary.get('origin_status') != 'reachable':
+                raise SystemExit('SOURCE_UNAVAILABLE: diagnostic completed, origin inaccessible')
+            print('METADATA_REACHABLE: annual CSV download remains unverified')
+            PY
+          no_output_timeout: 5m
+
+workflows:
+  source-diagnostic:
+    when: << pipeline.parameters.run-source-diagnostic >>
+    jobs:
+      - public-source-connectivity:
+          filters:
+            branches:
+              only: test/circleci-source-connectivity

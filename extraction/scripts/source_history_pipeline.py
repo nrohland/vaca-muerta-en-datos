@@ -15,6 +15,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 from urllib.request import HTTPRedirectHandler, build_opener
+from urllib.error import HTTPError, URLError
+from http.client import IncompleteRead
+import ssl
 
 from prepare_csv_candidate import prepare
 from source_csv_pipeline import review_csv, digest
@@ -103,7 +106,7 @@ def stable_metadata(before, after, year):
     official_url(before['url'],year)
 
 
-def retrieve(year, csv_path):
+def _retrieve_once(year, csv_path):
     opener = build_opener(AnnualRedirect(year))
     before = read_metadata(year,opener)
     source_url = before['url'].replace('http://','https://',1)
@@ -123,6 +126,32 @@ def retrieve(year, csv_path):
             'source_url':source_url,'final_url':final_url,'downloaded_at':downloaded_at,
             'transport_security':'https' if urlparse(final_url).scheme=='https' else 'official_public_http_redirect',
             'sha256':digest(csv_path)}
+
+
+def retrieve(year, csv_path):
+    """Bounded retries; discard partial bytes and retain actual retrieval time."""
+    if csv_path.exists():
+        raise ValueError('Fresh destination required')
+    partial = csv_path.with_suffix(csv_path.suffix + '.partial')
+    if partial.exists():
+        raise ValueError('Fresh partial destination required')
+    for attempt in range(3):
+        try:
+            receipt = _retrieve_once(year, partial)
+            partial.replace(csv_path)
+            return receipt
+        except (HTTPError, URLError, TimeoutError, ConnectionError, IncompleteRead) as error:
+            partial.unlink(missing_ok=True)
+            reason = error.reason if isinstance(error, URLError) else error
+            retryable = (not isinstance(reason, ssl.SSLError)
+                         and (not isinstance(error, HTTPError)
+                              or error.code in (429, 500, 502, 503, 504)))
+            if not retryable or attempt == 2:
+                raise
+            time.sleep(2 ** attempt)
+        except Exception:
+            partial.unlink(missing_ok=True)
+            raise
 
 
 def normalize_retained(year, value):
@@ -240,7 +269,7 @@ def prepare_stage(args):
         contract_path.write_text(json.dumps(annual_contract,sort_keys=True)+'\n')
         review = measure('anchor-review',year,lambda:review_csv(csv_path,args.anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True))
         return csv_path,retrieval,review,contract_path
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=1) as executor:
         futures={year:executor.submit(review_year,year) for year in RESOURCES}
         try:reviewed={year:future.result() for year,future in futures.items()}
         except Exception:

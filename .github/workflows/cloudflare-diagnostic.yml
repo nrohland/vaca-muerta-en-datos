@@ -16,7 +16,7 @@ jobs:
           base = 'https://vm-source-diagnostic.booming-mantis.workers.dev'
           failed = False
           for path in ['/health','/probe/resource','/probe/catalogue']:
-              req = urllib.request.Request(base + path, headers={'Accept':'application/json'})
+              req = urllib.request.Request(base + path, headers={'Accept':'application/json','User-Agent':'VacaMuertaEnDatos-connectivity-diagnostic/1.0'})
               try:
                   response = urllib.request.urlopen(req, timeout=30)
               except urllib.error.HTTPError as error:
@@ -29,7 +29,7 @@ jobs:
                   raw = response.read(8193)
                   try: payload = json.loads(raw) if len(raw) <= 8192 else None
                   except ValueError: payload = None
-                  print(json.dumps({'path':path,'status':response.status,'cf_placement':response.headers.get('cf-placement'),'diagnostic':payload}), flush=True)
+                  print(json.dumps({'path':path,'status':response.status,'cf_placement':response.headers.get('cf-placement'),'diagnostic':payload,'server':response.headers.get('server'),'cf_ray':response.headers.get('cf-ray'),'public_error':raw.decode('utf-8',errors='replace')[:1200] if payload is None else None}), flush=True)
                   failed |= response.status != 200 or payload is None
                   if path.startswith('/probe/'):
                       failed |= not isinstance(payload, dict) or payload.get('http_status') != 200

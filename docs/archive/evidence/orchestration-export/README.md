@@ -29,4 +29,4 @@ DATA_PIPELINE_ENABLED=false. Main, cron y despliegue no se modificaron. Falta ej
 
 ## Evidencia
 
-[Run de nueve etapas](run.json), [summary dbt](dbt-summary.json), [freshness](freshness.json), [rendimiento real](performance.json), [recibo export](export-receipt.json), [contrato frontend](snapshot-check.json), [paridad](snapshot-parity.json). [CLI](../../../pipeline/CLI.md), [arquitectura](../../architecture.md), [linaje dbt](../../lineage/README.md). Los logs locales y bundle quedan en outputs; aquí se conserva metadata revisable, sin registros raw ni credenciales.
+[Run de nueve etapas](run.json), [summary dbt](dbt-summary.json), [freshness](freshness.json), [rendimiento real](performance.json), [recibo export](export-receipt.json), [contrato frontend](snapshot-check.json), [paridad](snapshot-parity.json). [CLI](../../../../pipeline/CLI.md), [arquitectura](../../../architecture.md), [linaje dbt](../../../lineage/README.md). Los logs locales y bundle quedan en outputs; aquí se conserva metadata revisable, sin registros raw ni credenciales.

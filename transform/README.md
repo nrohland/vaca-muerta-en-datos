@@ -19,8 +19,8 @@ Para configuración local: [ADC y perfiles](docs/local-setup.md). Credenciales f
 
 ## Calidad y performance
 
-La ejecución integrada validó **106/106 nodos**: 12 modelos, 1 seed, 83 tests de datos y 10 unit tests, sin warnings, errores o skips. Se comprueban claves, unidades, cobertura calendario, agregados, valorización, comparaciones y YTD. [Evidencia actual](../docs/evidence/orchestration-export/README.md).
+La ejecución integrada validó **106/106 nodos**: 12 modelos, 1 seed, 83 tests de datos y 10 unit tests, sin warnings, errores o skips. Se comprueban claves, unidades, cobertura calendario, agregados, valorización, comparaciones y YTD. [Evidencia actual](../docs/archive/evidence/orchestration-export/README.md).
 
-`audit_helper` compara hechos físicos; `dbt_project_evaluator` evalúa estructura sobre metadata. Sus advertencias de arquitectura no equivalen a fallos de datos. Los reportes registran tiempos, bytes y slot-ms reales; no se deduce costo de una vista sólo de su CREATE. [Herramientas y límites](docs/quality-and-performance.md), [auditoría histórica](../docs/evidence/historical-dbt/README.md).
+`audit_helper` compara hechos físicos; `dbt_project_evaluator` evalúa estructura sobre metadata. Sus advertencias de arquitectura no equivalen a fallos de datos. Los reportes registran tiempos, bytes y slot-ms reales; no se deduce costo de una vista sólo de su CREATE. [Herramientas y límites](docs/quality-and-performance.md), [auditoría histórica](../docs/archive/evidence/historical-dbt/README.md).
 
 Los prototipos de completaciones se retiraron del árbol vigente; no forman parte de V1. Sin fuente validada, la UI no presenta esas métricas. El acceso federado y la ejecución local están preparados; el runner real de GitHub pasó el recorrido completo: [evidencia](../docs/evidence/github-actions/README.md). El calendario automático sigue desactivado.

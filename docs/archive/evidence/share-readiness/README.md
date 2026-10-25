@@ -14,7 +14,7 @@
 | Queries y N+1 | Sin SQL en runtime ni N+1 de warehouse por entidad. Export: dos queries de datos por bundle más gates independientes. Revisados nodos lentos con evidencia histórica; no se cambió SQL sin benchmark ni se ejecutó BigQuery. |
 | Imágenes, fuentes y scripts | Logos SVG/WebP mantienen calidad y dimensiones, lazy loading nativo. Fuentes del sistema; sin nuevas dependencias, scripts externos ni servicios. MapLibre/worker siguen diferidos a Áreas. |
 
-[Mediciones y reproducción del frontend](../../../apps/web/PERFORMANCE.md). La muestra del subagente para 300 rankings pasó de 4.150 a 213 ms; la repetición del agente principal dio 114 ms. Son muestras locales variables, no latencias del sitio ni SLA. El formato de 10.000 pares número/mes pasó de 698 a 17 ms en la comparación del subagente.
+[Mediciones y reproducción del frontend](../../../../apps/web/PERFORMANCE.md). La muestra del subagente para 300 rankings pasó de 4.150 a 213 ms; la repetición del agente principal dio 114 ms. Son muestras locales variables, no latencias del sitio ni SLA. El formato de 10.000 pares número/mes pasó de 698 a 17 ms en la comparación del subagente.
 
 ## Verificación integrada
 
@@ -31,7 +31,7 @@ Capturas y logs de integración conservados en `outputs/share-quality-2026-10-20
 
 ## Publicación y límites
 
-Al registrar la auditoría, la demo y el README remoto todavía no la incluían. Ese estado se cerró en el [registro de publicación](publication.md). La [regla del repositorio](../../../AGENTS.md) reserva merge/publicación/despliegue al propietario; por eso se entrega primero una versión concreta y revisable. Siguiente paso: autorización para subir la rama, ejecutar CI y actualizar la rama de despliegue; no se requiere merge a `main` para ello. Confirmar headers de caché después del despliegue y conservar los gates de validación.
+Al registrar la auditoría, la demo y el README remoto todavía no la incluían. Ese estado se cerró en el [registro de publicación](publication.md). La [regla del repositorio](../../../../AGENTS.md) reserva merge/publicación/despliegue al propietario; por eso se entrega primero una versión concreta y revisable. Siguiente paso: autorización para subir la rama, ejecutar CI y actualizar la rama de despliegue; no se requiere merge a `main` para ello. Confirmar headers de caché después del despliegue y conservar los gates de validación.
 
 No se activó extracción, monitor, chat/LLM, facturación, IAM ni nuevas credenciales. Datos enero 2023–agosto 2026; extracción automática pausada por conectividad con la fuente. La demo sirve agregados preliminares, no información en tiempo real. Los USD son estimaciones con Brent/Henry Hub, no ingresos reales. El plan del data agent sigue guardado para más adelante.
 
@@ -41,4 +41,4 @@ Construí **Vaca Muerta en Datos**, un dashboard para explorar la producción no
 
 El proyecto combina **Python y Parquet, BigQuery y dbt**, con un frontend **Next.js, React, TypeScript, Recharts y MapLibre**, publicado como sitio estático en **Vercel**. Los datos se validan antes de llegar al navegador, que no requiere credenciales del warehouse. La demo preliminar cubre enero de 2023 a agosto de 2026; la actualización automática está pausada.
 
-[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-en-datos) · [README local revisado](../../../README.md) · [Arquitectura local revisada](../../architecture.md).
+[Dashboard](https://vaca-muerta-en-datos.vercel.app) · [Repositorio](https://github.com/nrohland/vaca-muerta-en-datos) · [README local revisado](../../../../README.md) · [Arquitectura local revisada](../../../architecture.md).

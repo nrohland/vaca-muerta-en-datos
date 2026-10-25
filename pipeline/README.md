@@ -24,7 +24,7 @@ WIF usa el archivo ADC externo de la acción oficial, nunca una key. Se instalan
 
 ## Estado y límites
 
-La carga y los modelos históricos tienen evidencia real previa; la integración del export se registra en [evidencia de orquestación/export](../docs/evidence/orchestration-export/README.md). El snapshot revisado y las capturas están en [integración frontend](../docs/evidence/snapshot-integration/README.md). El árbol conserva la evidencia vigente y la auditoría histórica relevante; las iteraciones superadas permanecen en Git.
+La carga y los modelos históricos tienen evidencia real previa; la integración del export se registra en [evidencia de orquestación/export](../docs/archive/evidence/orchestration-export/README.md). El snapshot revisado y las capturas están en [integración frontend](../docs/archive/evidence/snapshot-integration/README.md). El árbol conserva la evidencia vigente y la auditoría histórica relevante; las iteraciones superadas permanecen en Git.
 
 [Recorrido real en GitHub con WIF aprobado](../docs/evidence/github-actions/README.md), desde descarga hasta build del consumidor. La detección de nuevos meses y rectificativas tiene [monitor independiente](MONITOR.md). La promoción de nuevos datos sigue requiriendo revisión; no hay ingesta automática operativa. Cron preparado día 5 a las 03:00 Argentina, desactivado. El workflow no sube raw, HTML, perfiles, credenciales, manifest dbt completo, dashboard ni build a artifacts; no publica GitHub Pages ni hace commits/push. Cambios nuevos de volumen/clasificación/área bloquean hasta contar con revisión explícita; no se aceptan automáticamente por actualizar hashes.
 

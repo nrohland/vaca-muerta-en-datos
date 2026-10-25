@@ -59,7 +59,7 @@ GitHub encadena prepare público → auth extracción → load → auth dbt → 
 
 `--python`, `--dbt-bin`, `--node` y `--dbt-project-dir` seleccionan ejecutables/copia de proyecto revisados, no comandos shell. `all --history` une extract y transform/export/check localmente con una identidad que tenga permisos para ambas capas; GitHub mantiene identidades distintas. Sin `--history` permanece la ruta candidata anual anterior, sin dashboard histórico.
 
-El calendario preparado (día 5, 03:00 Argentina) no prueba fecha de publicación de la fuente. **DATA_PIPELINE_ENABLED=false**, runner real validado y promoción de snapshots sólo con aceptación. El mes máximo raw nunca reemplaza automáticamente el corte completo. [Evidencia actual](../docs/evidence/orchestration-export/README.md), [acceso WIF](../docs/evidence/pipeline-access/README.md) y [calidad/performance dbt](../transform/docs/quality-and-performance.md).
+El calendario preparado (día 5, 03:00 Argentina) no prueba fecha de publicación de la fuente. **DATA_PIPELINE_ENABLED=false**, runner real validado y promoción de snapshots sólo con aceptación. El mes máximo raw nunca reemplaza automáticamente el corte completo. [Evidencia actual](../docs/archive/evidence/orchestration-export/README.md), [acceso WIF](../docs/evidence/pipeline-access/README.md) y [calidad/performance dbt](../transform/docs/quality-and-performance.md).
 
 Para disponibilidad de meses nuevos y revisiones históricas: [monitor independiente](MONITOR.md). Se ejecuta antes de aceptar/promover nuevos datos y también luego de finalizar la ingesta.
 

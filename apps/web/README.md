@@ -43,13 +43,13 @@ Producción profundiza en historia, acumulados comparables, años calendario, ca
 
 ## Evidencia y límites
 
-La [revisión histórica del snapshot](../../docs/evidence/snapshot-integration/README.md) registra cálculos, navegación, capturas desktop/mobile y restricciones de Playwright. La [orquestación/export](../../docs/evidence/orchestration-export/README.md) valida el consumidor sobre el bundle generado. [Capturas de las cinco vistas](../../docs/screenshots/README.md).
+La [revisión histórica del snapshot](../../docs/archive/evidence/snapshot-integration/README.md) registra cálculos, navegación, capturas desktop/mobile y restricciones de Playwright. La [orquestación/export](../../docs/archive/evidence/orchestration-export/README.md) valida el consumidor sobre el bundle generado. [Capturas de las cinco vistas](../../docs/screenshots/README.md).
 
 La extracción y transformación son reproducibles. La demo pública sirve el snapshot incluido en Git; la extracción automática permanece pausada por conectividad con la fuente. [Arquitectura](../../docs/architecture.md). No afirmar frescura o publicación por una fecha de build.
 
 ## Conexión histórica validada
 
-El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca y 10.208 de entidades; pesa 16,75 MiB sin comprimir. Se conserva el grano ID × fluido × mes y los ceros explícitos de entidades ausentes dentro de meses técnicamente aceptados. “Áreas reportadas” cuenta sólo áreas con registros del mes, aunque el ranking conserve todo el catálogo histórico. [Resultados actuales y límites](../../docs/evidence/snapshot-integration/README.md).
+El snapshot actual tiene 44 meses (enero 2023–agosto 2026), 88 filas de cuenca y 10.208 de entidades; pesa 16,75 MiB sin comprimir. Se conserva el grano ID × fluido × mes y los ceros explícitos de entidades ausentes dentro de meses técnicamente aceptados. “Áreas reportadas” cuenta sólo áreas con registros del mes, aunque el ranking conserve todo el catálogo histórico. [Resultados actuales y límites](../../docs/archive/evidence/snapshot-integration/README.md).
 
 `apps/web/scripts/check_snapshot.mjs --data-dir ...` valida bundles generados con los contratos del consumidor y sus hashes antes de copiar assets a un checkout temporal de CI. El pipeline histórico ejecuta ese checker después de exportar; el workflow continúa con typecheck/tests/build sin despliegue.
 

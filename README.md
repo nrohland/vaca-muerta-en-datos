@@ -75,7 +75,7 @@ El [CLI compartido](pipeline/CLI.md) prepara fuentes públicas, carga tablas can
 
 La fuente es mensual. GitHub tiene preparado el día 5 a las 03:00 Argentina, con **`DATA_PIPELINE_ENABLED=false`**. No se presupone que la fuente publique ese día. Frescura operativa máxima de siete días; el warning dbt desde cinco días también detiene el pipeline. Se distinguen recuperación, ingesta, mes de negocio y cobertura: descargar hoy no vuelve completo el último mes.
 
-La validación histórica documentó nueve etapas, **106/106 nodos dbt aprobados, sin warnings, errores ni skips**, 59 tests frontend y 10.296 agregados conciliados. Es evidencia de esa ejecución, no un contador de pruebas de la versión actual. [Evidencia del recorrido](docs/evidence/orchestration-export/README.md) · [Revisión visual](docs/evidence/snapshot-integration/README.md).
+La validación histórica documentó nueve etapas, **106/106 nodos dbt aprobados, sin warnings, errores ni skips**, 59 tests frontend y 10.296 agregados conciliados. Es evidencia de esa ejecución, no un contador de pruebas de la versión actual. [Evidencia del recorrido](docs/archive/evidence/orchestration-export/README.md) · [Revisión visual](docs/archive/evidence/snapshot-integration/README.md).
 
 **Ejecución real:** extracción, WIF, dbt, export y frontend aprobados en la validación histórica de [GitHub Actions](docs/evidence/github-actions/README.md). La demo está publicada en Vercel y conserva el snapshot preliminar. La extracción y el monitor automático permanecen pausados por problemas de conectividad de los runners con Energía; publicar el frontend no reanuda la ingesta. Playwright corre en CI. El [monitor de fuentes](pipeline/MONITOR.md), actualmente pausado, está preparado para detectar nuevos meses y rectificativas; sus avisos no certifican cierre oficial. [Configuración y operación del sitio](docs/vercel.md).
 
@@ -127,3 +127,7 @@ V1 permite explorar datos públicos agregados; no consulta BigQuery desde el nav
 ## Security maintenance
 
 Weekly GitHub-hosted dependency, secret and CodeQL checks; reviewed dependency updates without automatic merge. See [cadence, exceptions and monthly review](docs/security-maintenance.md).
+
+## Mejoras locales de la auditoría
+
+La nueva ruta valida el snapshot durante build y prerenderiza KPIs; los detalles y gráficos siguen diferidos. El gráfico muestra una magnitud a la vez. [Meltano local](extraction/MELTANO.md) ejecuta el CLI batch y conserva los gates sin habilitar facturación. [Terraform optativo](infra/terraform/README.md) permite adoptar datasets existentes tras importación; no despliega cómputo, red ni almacenamiento facturable. [Decisión](docs/adrs/0007-local-meltano-no-billing.md). Estas mejoras no cambian el corte ni certifican una nueva ingesta.

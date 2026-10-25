@@ -17,3 +17,7 @@ El usuario eligió símbolos proporcionales sobre concesiones neutras. El mapa p
 Mapa y ranking preceden a las tarjetas, cuyo alcance de área seleccionada se anuncia. Se distinguen registros del mes, catálogo histórico y geometrías disponibles. Cámara y controles Argentina/áreas conservan contexto al cambiar selección, idioma, fluido o modo. Sin agrupaciones que sumen o inventen pozos. El zoom permite separar áreas cercanas.
 
 MapLibre se importa al entrar a Áreas; no se agrega al JS inicial de Resumen. Fondo OpenStreetMap raster sobre HTTPS, atribución visible, caché estándar y sin prefetch masivo. CI intercepta teselas para comprobar geometría/interacción sin tráfico automatizado al servicio comunitario. La revisión humana inspecciona el fondo real. No requiere API key ni una cuenta de facturación; el proveedor de teselas ofrece disponibilidad de mejor esfuerzo y puede sustituirse si la operación pública exige otro SLA.
+
+## Revisión de auditoría
+
+El resumen sigue el modo global volumen/valor con una sola magnitud y eje visible. Detalle permite seleccionar producción o USD sin superponer escalas. Pozos sólo presenta magnitud física. Metodología expandida libera la altura del shell para no recortar rankings. Fecha de producción e ingesta se muestran junto a filtros; validación de integridad no certifica frescura upstream.

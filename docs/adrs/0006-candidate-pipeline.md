@@ -18,6 +18,6 @@ El export lee marts, reconstruye cotizaciones desde la misma carga y liga manifi
 
 ## Consecuencias y verificación
 
-Aislamiento permite validar sin reemplazar datasets compartidos. Preparación pública precede WIF; uploads sólo metadata JSON sanitizada. Sin cambios IAM, push, promoción o despliegue implícitos. El recorrido integrado local pasó nueve etapas y 106/106 nodos dbt limpios; reutilizó carga fresca aceptada, no una nueva descarga/ingesta. [Evidencia](../evidence/orchestration-export/README.md).
+Aislamiento permite validar sin reemplazar datasets compartidos. Preparación pública precede WIF; uploads sólo metadata JSON sanitizada. Sin cambios IAM, push, promoción o despliegue implícitos. El recorrido integrado local pasó nueve etapas y 106/106 nodos dbt limpios; reutilizó carga fresca aceptada, no una nueva descarga/ingesta. [Evidencia](../archive/evidence/orchestration-export/README.md).
 
 WIF y el pipeline pasaron en [runner GitHub real](../evidence/github-actions/README.md). La [demo está publicada en Vercel](../vercel.md) con el snapshot preliminar. El monitor de meses/rectificativas existe, pero está pausado junto con la carga por problemas de conectividad de los runners con Energía. La reactivación exige resolver acceso, validar la corrida y revisar la promoción del nuevo snapshot; no se deduce del deploy de la interfaz. No ampliar permisos ni confianza de rama para simular la prueba.

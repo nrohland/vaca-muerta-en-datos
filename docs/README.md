@@ -9,10 +9,10 @@
 | [Linaje dbt](lineage/README.md) | Grafo generado y procedencia |
 | [Capturas V1](screenshots/README.md) | Las cinco vistas desktop/mobile |
 | [GitHub y seguridad](evidence/github-actions/README.md) | Recorrido cloud real y revisión de credenciales |
-| [Ejecución integrada](evidence/orchestration-export/README.md) | dbt, export, consumidor y límites |
-| [Revisión frontend](evidence/snapshot-integration/README.md) | Cálculos, navegación y capturas |
+| [Ejecución integrada](archive/evidence/orchestration-export/README.md) | dbt, export, consumidor y límites |
+| [Revisión frontend](archive/evidence/snapshot-integration/README.md) | Cálculos, navegación y capturas |
 | [Fuente histórica](evidence/historical-source/README.md) | Cobertura y rectificativas |
-| [Calidad dbt](evidence/historical-dbt/README.md) | Auditoría física, arquitectura y rendimiento |
+| [Calidad dbt](archive/evidence/historical-dbt/README.md) | Auditoría física, arquitectura y rendimiento |
 | [Acceso](evidence/pipeline-access/README.md) | Permisos y tamaño de raw |
 | [Contratos](../specs/README.md) | Alcance y definiciones |
 

@@ -10,4 +10,4 @@ Validación del 13 de octubre de 2026 (Argentina), sobre la ingesta histórica P
 
 El PR incorpora tests de Chromium Linux y auditoría de grafo DuckDB; la ejecución exacta se consulta en los checks del PR. Los tiempos anteriores/nuevos son una referencia, no un benchmark estadístico: precio/recovery metadata y condiciones pueden variar. Los presupuestos de bytes bloquean aceptación; tiempos son advisory. No se habilitó facturación, cron de carga ni hosting.
 
-[Contrato de rendimiento](../../../specs/021-performance-optimization.md).
+[Contrato de rendimiento](../../../../specs/021-performance-optimization.md).

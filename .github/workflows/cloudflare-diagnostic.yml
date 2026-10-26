@@ -13,7 +13,7 @@ jobs:
         shell: python
         run: |
           import json, urllib.request, urllib.error
-          base = 'https://vm-source-diagnostic.booming-mantis.workers.dev'
+          base = 'https://vm-source-diagnostic.nicolas-rohland.workers.dev'
           failed = False
           for path in ['/health','/probe/resource','/probe/catalogue']:
               req = urllib.request.Request(base + path, headers={'Accept':'application/json','User-Agent':'VacaMuertaEnDatos-connectivity-diagnostic/1.0'})

@@ -21,32 +21,32 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y tor
           python -m pip install curl_cffi==0.17.0
-      - name: Bootstrap private client-only Tor instance
+      - name: Bootstrap client-only Tor using the Ubuntu service
         run: |
-          mkdir -m 700 "$RUNNER_TEMP/vm-tor"
-          tor --quiet -f /dev/null --ClientOnly 1 --SocksPort '127.0.0.1:19050 IsolateSOCKSAuth' --DataDirectory "$RUNNER_TEMP/vm-tor" --PidFile "$RUNNER_TEMP/vm-tor.pid" --Log "notice file $RUNNER_TEMP/vm-tor.log" --RunAsDaemon 1
-          python - <<'PY'
-          import json, os, time
-          from pathlib import Path
-          log=Path(os.environ['RUNNER_TEMP'])/'vm-tor.log'
+          sudo install -d -m 2750 -o debian-tor -g adm /var/log/tor
+          sudo tee /etc/tor/torrc >/dev/null <<'TORRC'
+          ClientOnly 1
+          SocksPort 127.0.0.1:19050 IsolateSOCKSAuth
+          DataDirectory /var/lib/tor
+          Log notice file /var/log/tor/notices.log
+          TORRC
+          sudo tor --verify-config -f /etc/tor/torrc
+          sudo systemctl restart tor@default
+          python - <<'PYBOOT'
+          import json, subprocess, time
           for _ in range(60):
-              if log.exists() and 'Bootstrapped 100%' in log.read_text():
+              log=subprocess.run(['sudo','cat','/var/log/tor/notices.log'],capture_output=True,text=True)
+              if 'Bootstrapped 100%' in log.stdout:
                   print(json.dumps({'tor_bootstrap':'ready','client_only':True}))
                   break
               time.sleep(2)
           else:
-              raise SystemExit('Tor bootstrap unavailable: source not tested')
-          PY
+              print(json.dumps({'tor_bootstrap':'unavailable','source_tested':False}))
+              subprocess.run(['sudo','systemctl','status','tor@default','--no-pager'])
+              raise SystemExit(1)
+          PYBOOT
       - name: Probe bounded official metadata and CSV prefixes via SOCKS5 remote DNS
         run: python diagnostics/curl-cffi/probe.py --tor
-      - name: Stop the isolated Tor client
+      - name: Stop the diagnostic Tor client
         if: always()
-        run: |
-          python - <<'PY'
-          import os, signal
-          from pathlib import Path
-          pid=Path(os.environ['RUNNER_TEMP'])/'vm-tor.pid'
-          if pid.exists():
-              try:os.kill(int(pid.read_text()),signal.SIGTERM)
-              except ProcessLookupError:pass
-          PY
+        run: sudo systemctl stop tor@default

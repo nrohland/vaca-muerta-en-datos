@@ -14,4 +14,4 @@ jobs:
         with:
           persist-credentials: false
       - name: Inspect national catalogue and pinned public mirror
-        run: timeout 240s python3 pipeline/check_catalogue_mirrors.py --search-only
+        run: timeout 240s python3 pipeline/check_catalogue_mirrors.py --lookup-only

@@ -16,6 +16,7 @@ CATALOGUES = {
     'national_page': 'https://datos.gob.ar/dataset/energia-produccion-petroleo-gas-por-pozo-capitulo-iv',
 }
 SEARCH_URL = 'https://datos.gob.ar/api/3/action/package_search?q=pozo&rows=20'
+LOOKUP_URL = 'https://datos.gob.ar/api/3/action/package_show?id=7a388cf4-b266-54ac-865a-732996c2d1d7'
 HF_COMMIT = 'a53f0fdca86d585edfebee68ff87e73672bfbd11'
 HF_FILE = f'https://huggingface.co/spaces/contepablod/vm_app/resolve/{HF_COMMIT}/data/well_prod_data.csv'
 HF_SHA256 = '40f56220b48bb71e8f6730432aa25cce14d94b3cbc8ad6b3e02a403a04ea84dd'
@@ -113,8 +114,10 @@ def mirror():
 
 
 if __name__ == '__main__':
-    parser=argparse.ArgumentParser(); parser.add_argument('--search-only', action='store_true'); args=parser.parse_args()
-    if args.search_only:
+    parser=argparse.ArgumentParser(); parser.add_argument('--search-only', action='store_true'); parser.add_argument('--lookup-only', action='store_true'); args=parser.parse_args()
+    if args.lookup_only:
+        catalogue('national_verified_id',LOOKUP_URL)
+    elif args.search_only:
         catalogue('national_search',SEARCH_URL)
     else:
         for name,url in CATALOGUES.items(): catalogue(name,url)

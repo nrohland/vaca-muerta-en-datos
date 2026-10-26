@@ -1,13 +1,35 @@
-# Diagnóstico de transporte — Workers Free
+# Diagnóstico remoto — Workers Free
 
-Prueba autorizada de acceso remoto, no colector productivo. Únicamente GET /health, /probe/resource y /probe/catalogue con destinos HTTPS fijos, timeout20s y redirects sin seguir. El body oficial se cancela al recibir headers. No acepta destinos/query arbitrarios, no lee secretos ni tiene almacenamiento, cron o bindings.
+Ejecutado el25/10/2026, sin upgrades ni medios de pago agregados. Prueba de transporte, no colector productivo.
 
-Workers Free comprobado en dashboard el25/10/2026 ($0). Worker `vm-source-diagnostic.nicolas-rohland.workers.dev` creado; Placement Region/GCP/southamerica-east1 guardado sin recursos GCP. El editor web quedó cargando; la prueba de código se desplegó mediante Wrangler4.152.0 en una cuenta temporal de vista previa (caduca60min), en https://vm-source-diagnostic.booming-mantis.workers.dev. La invocación Actions está pendiente. El Worker de la cuenta del usuario conserva Hello World y no es evidencia de acceso a Energía. La vista previa temporal no es un colector permanente.
+## Resultado desde GitHub Actions
 
-`wrangler.toml` reproduce la configuración propuesta con observability deshabilitado. El alta inicial por dashboard habilita logs por defecto; esa configuración todavía difiere del archivo. No se registran credenciales ni raw. No activar Workers Paid, R2 ni servicios adicionales.
+[Run40253478821](https://github.com/nrohland/vaca-muerta-en-datos/actions/runs/40253478821), runner Ubuntu estándar del repositorio público:
 
-`ingress_colo` indica el punto de entrada, no demuestra dónde ejecutó el Worker colocado. Registrar `cf-placement` cuando esté disponible. El hint no garantiza país/IP de salida ni evita bloqueos del origen.
+| Ruta | Respuesta del Worker | Resultado upstream | Placement |
+| --- | --- | --- | --- |
+| /health |200| Diagnóstico activo |remote-GRU|
+| /probe/resource |502| Energía522,19,612s |remote-GRU|
+| /probe/catalogue |502| Timeout20s |remote-GRU|
 
-Workflow `.github/workflows/cloudflare-diagnostic.yml`: Ubuntu estándar, repo público, sin secretos ni permisos GitHub, tres llamadas acotadas al Worker. Se ejecuta al publicar la rama test/cloudflare-source-connectivity o manualmente. HTTP200 sólo confirma headers; metadata válida y CSV completo son pruebas posteriores. No cambia snapshot ni timestamps de frescura.
+Entrada del request: LAX. Ejecución confirmada por `cf-placement: remote-GRU`, São Paulo. Esto demuestra que el Placement Hint se aplicó aunque la llamada provino de Actions. No resolvió la comunicación con Energía. No se puede inferir un fallo TLS ni bloqueo por país; GRU tampoco prueba una IP argentina.
 
-Verificaciones locales: sintaxis Node correcta y seis casos con fetch simulado (health, dos destinos, queryrechazada, POSTrechazado y ruta desconocida). Sin acceso real a la fuente durante estas verificaciones.
+Worker de la cuenta: `https://vm-source-diagnostic.nicolas-rohland.workers.dev`, versión6db06b68-a691-434d-a448-0c3b681a82a0. Plan Workers Free ($0) comprobado en dashboard. Sin bindings, cron ni almacenamiento de datos. Logs de invocación gratuitos del dashboard conservados; el código no registra raw ni credenciales. La sesión OAuth de Wrangler fue revocada mediante `wrangler logout` después de la prueba. No hay token Cloudflare en Actions.
+
+## Alcance
+
+Sólo GET /health, /probe/resource y /probe/catalogue; destinos HTTPS fijos, timeout20s, sin redirects automáticos. Se cancela el body después de recibir headers. No acepta URLs arbitrarias ni query del llamante. HTTP200 no certifica metadata válida ni un CSV completo. No cambia snapshot ni timestamps de frescura.
+
+El hint gcp:southamerica-east1 orienta la ejecución dentro de Cloudflare; no crea recursos GCP. La extracción no depende de la Mac. Sigue sin colector remoto con acceso verificado a la fuente.
+
+## Configuración y pruebas
+
+`wrangler.toml` reproduce Free Worker sin previews adicionales ni bindings. Publicación por CLI oficial, con autorización temporal del usuario para escritura de scripts, lectura de cuenta/usuario y offline_access; sesión cerrada al terminar.
+
+Workflow `.github/workflows/cloudflare-diagnostic.yml`: sin permisos GitHub, secretos, checkout ni artifacts; llamadas acotadas al Worker desde Ubuntu estándar. Corre en push a la rama test/cloudflare-source-connectivity o manualmente. No está integrado a main.
+
+Verificaciones locales: sintaxis Node y seis casos con fetch simulado (health, dos destinos, query rechazada, POST rechazado y ruta desconocida). Prueba real en Actions: falló correctamente porque el origen no respondió.
+
+## Ensayo temporal previo
+
+La vista previa temporal de60min respondió /health desde navegador con ingreso EZE, pero Actions recibió403 de Cloudflare con HTML “Just a moment…” incluso en /health (runs40234834847 y40235054573). Ese resultado no evaluó Cloudflare→Energía. No se reclamó la cuenta temporal. La prueba final en la cuenta del usuario sí alcanzó el código del Worker y confirmó remote-GRU.

@@ -30,7 +30,7 @@ jobs:
           DataDirectory /var/lib/tor
           Log notice file /var/log/tor/notices.log
           TORRC
-          sudo tor --verify-config -f /etc/tor/torrc
+          sudo -u debian-tor tor --verify-config -f /etc/tor/torrc
           sudo systemctl restart tor@default
           python - <<'PYBOOT'
           import json, subprocess, time

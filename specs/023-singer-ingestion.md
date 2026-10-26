@@ -8,4 +8,6 @@ Aceptación: facturación observada deshabilitada antes de escribir; proyecto/da
 
 CI: discovery sin IO, contratos existentes y prueba real del protocolo/worker con mocks de fuente y cliente BigQuery. Casos negativos: billing activo, destino/modo no permitido, tabla existente, dataset ausente, EOF parcial, payload alterado, duplicación y error de load job. Sin credenciales ni consultas a Energía.
 
-Fuera de alcance: ingesta de precios, programación remota, conectividad oficial, promoción canónica y export. No se cambia `main`, billing, IAM ni Terraform. Ver [operación](../extraction/MELTANO.md) y [ADR](../docs/adrs/0008-singer-bigquery-sandbox.md).
+Actualización ADR 0009: precios Brent/Henry Hub migrados a `tap-eia-prices`, con su loader batch heredado y verificación de cobertura/hash. Ambos recibos deben pertenecer a la misma corrida. Los comandos batch de producción/precios están retirados.
+
+Fuera de alcance implementado: programación remota activa, conectividad oficial, promoción canónica y export de candidatos Singer. No se cambia `main`, billing, IAM ni Terraform. Ver [operación](../extraction/MELTANO.md) y [ADR](../docs/adrs/0008-singer-bigquery-sandbox.md).

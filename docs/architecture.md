@@ -84,4 +84,4 @@ El reporte histórico del 13/10 registra 105,83 s, 1,59 GiB facturables reportad
 
 ## Nueva ingesta Singer candidata
 
-[Meltano](../extraction/MELTANO.md) conecta el tap Capítulo IV con el target BigQuery de Blueprint mediante load jobs, en tablas aisladas que expiran. No promueve el raw canónico ni ejecuta dbt/export. La operación remota permanece pendiente de acceso a la fuente; [ADR 0008](adrs/0008-singer-bigquery-sandbox.md).
+[Meltano](../extraction/MELTANO.md) conecta el tap Capítulo IV con el target BigQuery de Blueprint mediante load jobs, en tablas aisladas que expiran. Producción y referencias EIA usan esta única entrada. Los CLIs batch fueron retirados. No promueve el raw canónico ni ejecuta dbt/export. La operación remota permanece pendiente de acceso a la fuente; [ADR 0008](adrs/0008-singer-bigquery-sandbox.md).

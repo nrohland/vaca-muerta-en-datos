@@ -9,6 +9,7 @@ from target_bigquery.batch_job import BigQueryBatchJobDenormalizedSink
 from target_bigquery.target import TargetBigQuery
 from extraction.scripts import source_history_pipeline as source
 from pipeline import resource_preflight
+from pipeline.verify_loaded_lineage import validate_price_manifest
 from .common import record_bytes, run_identity, write_json_once
 
 
@@ -55,7 +56,8 @@ class ReviewedBatchSink(BigQueryBatchJobDenormalizedSink):
 class SandboxTargetBigQuery(TargetBigQuery):
     # Same loader implementation and worker code as the pinned Blueprint fork.
     config_jsonschema = deepcopy(TargetBigQuery.config_jsonschema)
-    config_jsonschema['properties'].update({'run_id':{'type':'string'},'artifacts_dir':{'type':'string'}})
+    config_jsonschema['properties'].update({'run_id':{'type':'string'},'artifacts_dir':{'type':'string'},
+        'source_kind':{'type':'string','enum':['cap4','reference_prices'],'default':'cap4'}})
     config_jsonschema['required'] = [*config_jsonschema.get('required',[]),'run_id','artifacts_dir']
 
     def __init__(self,*args,**kwargs):
@@ -66,6 +68,7 @@ class SandboxTargetBigQuery(TargetBigQuery):
         self._sandbox_verified = False
         self._received_rows = 0
         self._received_hash = hashlib.sha256()
+        self._price_payload_hash = hashlib.sha256()
         self._pending_state = None
         self._committed = False
 
@@ -103,6 +106,9 @@ class SandboxTargetBigQuery(TargetBigQuery):
         super()._process_record_message(message_dict)
         self._received_rows += 1
         self._received_hash.update(record_bytes(message_dict['record']))
+        if self.config.get('source_kind') == 'reference_prices':
+            normalized = json.loads(record_bytes(message_dict['record']))
+            self._price_payload_hash.update((json.dumps(normalized, sort_keys=True)+'\n').encode())
 
     def _write_state_message(self,state):
         # No checkpoint is acknowledged until the source completes and all BQ workers succeed.
@@ -121,7 +127,15 @@ class SandboxTargetBigQuery(TargetBigQuery):
     def process_endofpipe(self):
         super().process_endofpipe()
         receipt = json.loads((self.artifacts_dir/'tap-complete.json').read_text())
-        source.validate_bundle(receipt['evidence'])
+        if self.config.get('source_kind') == 'reference_prices':
+            manifest = receipt['evidence']['price_manifest']
+            validate_price_manifest(manifest)
+            if (manifest['row_count'] != self._received_rows
+                or manifest['rows_sha256'] != self._price_payload_hash.hexdigest()
+                or receipt['evidence']['source_sha256'] != manifest['rows_sha256']):
+                raise ValueError('Price payload differs from reviewed manifest')
+        else:
+            source.validate_bundle(receipt['evidence'])
         if (receipt.get('run_id') != self.run_id or receipt.get('stream') != self.allowed_stream
             or receipt.get('rows') != self._received_rows
             or receipt['evidence'].get('total_rows') != self._received_rows

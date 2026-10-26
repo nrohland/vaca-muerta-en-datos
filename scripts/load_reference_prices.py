@@ -1,7 +1,4 @@
-"""Load reviewed immutable price snapshot into the isolated candidate table.
-
-Explicit --apply required; no IAM changes, keys, production or dev writes.
-"""
+"""Reusable price validation for Singer; standalone batch loader retired."""
 import argparse
 import hashlib
 import json
@@ -9,8 +6,12 @@ import math
 import re
 from datetime import date, datetime, timezone, timedelta
 from pathlib import Path
-from import_brent import URL
-from import_henry_hub import URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
+if __package__:
+    from .import_brent import URL
+    from .import_henry_hub import URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
+else:
+    from import_brent import URL
+    from import_henry_hub import URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
 
 TABLE = 'vaca-muerta-pulse.raw_cap4_candidate_dev.monthly_reference_price'
 
@@ -85,25 +86,4 @@ def validate(payload, manifest):
 
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser()
-    p.add_argument('--rows', type=Path, required=True)
-    p.add_argument('--manifest', type=Path, required=True)
-    p.add_argument('--apply', action='store_true')
-    a = p.parse_args()
-    payload = a.rows.read_bytes()
-    manifest = json.loads(a.manifest.read_text())
-    rows = validate(payload, manifest)
-    if not a.apply:
-        print(json.dumps({'table': TABLE, 'rows': len(rows), 'apply': False}))
-    else:
-        from google.cloud import bigquery
-        fields = [('product', 'STRING'), ('periodo', 'DATE'), ('benchmark', 'STRING'), ('price', 'FLOAT64'),
-                  ('currency', 'STRING'), ('price_unit', 'STRING'), ('source_url', 'STRING'),
-                  ('source_sha256', 'STRING'), ('source_updated_at', 'DATE'), ('retrieved_at', 'TIMESTAMP'),
-                  ('accepted_cutoff', 'DATE'), ('snapshot_id', 'STRING'), ('energy_basis', 'STRING')]
-        client = bigquery.Client(project='vaca-muerta-pulse')
-        job = client.load_table_from_json(rows, TABLE, job_config=bigquery.LoadJobConfig(
-            schema=[bigquery.SchemaField(n, t) for n, t in fields],
-            write_disposition='WRITE_TRUNCATE'), location='US')
-        job.result(timeout=120)
-        print(json.dumps({'table': TABLE, 'rows': job.output_rows, 'job_id': job.job_id}))
+    raise SystemExit('Batch ingestion retired. Use: meltano run candidate-history')

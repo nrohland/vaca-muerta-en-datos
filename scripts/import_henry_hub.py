@@ -2,7 +2,10 @@
 from datetime import datetime, timezone
 import hashlib
 import re
-from import_brent import Table
+if __package__:
+    from .import_brent import Table
+else:
+    from import_brent import Table
 
 URL = 'https://www.eia.gov/dnav/ng/hist/rngwhhdm.htm'
 BENCHMARK = 'EIA_HENRY_HUB_MONTHLY'

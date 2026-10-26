@@ -1,6 +1,6 @@
 # ADR 0008 — Singer con BigQuery directo y facturación deshabilitada
 
-Estado: implementación candidata; sin ejecución real cloud ni programación remota habilitada. Sustituye la integración utilities del ADR 0007.
+Estado: ampliado por [ADR 0009](0009-meltano-exclusive-ingestion.md); implementación candidata; sin ejecución real cloud ni programación remota habilitada. Sustituye la integración utilities del ADR 0007.
 
 El propietario exige Meltano con tap/target auténticos, target BigQuery directo, cero cargos y extracción remota. Se implementa `tap-cap4` con singer-sdk y el target de Blueprint fijado al commit `caad808faf94102067a1da42bcfced26845b5b42`. `batch_job` carga NDJSON comprimido mediante `load_table_from_file`; evita GCS y las interfaces de streaming que Sandbox no admite.
 

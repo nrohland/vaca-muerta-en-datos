@@ -126,13 +126,9 @@ class HistoryPipelineTests(unittest.TestCase):
         for bad in [good+'&extra=1',good.replace(resource,source.RESOURCES[2024]),good.replace('datos.energia.gob.ar','datos.energia.gob.ar.evil.test'),good+'#fragment',good.replace('http://','file://'),good.replace('http://','http://u:p@')]:
             with self.assertRaises(ValueError):source.official_url(bad,2023)
 
-    def test_shared_dataset_never_reaches_client(self):
-        with self.assertRaisesRegex(ValueError,'restricted'):
-            source.load_stage(argparse.Namespace(project=source.PROJECT,dataset='raw_cap4_dev'))
-
-    def test_wrong_project_never_reaches_client(self):
-        with self.assertRaisesRegex(ValueError,'restricted'):
-            source.load_stage(argparse.Namespace(project='another-project',dataset=source.DATASET))
+    def test_batch_loader_is_retired_even_for_candidate_dataset(self):
+        with self.assertRaisesRegex(ValueError,'Batch load retired'):
+            source.load_stage(argparse.Namespace(project=source.PROJECT,dataset=source.DATASET))
 
     def test_payload_bytes_tampering_rejected(self):
         self.prepared()

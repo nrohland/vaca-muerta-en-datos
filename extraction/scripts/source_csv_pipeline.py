@@ -158,84 +158,11 @@ def prepare_stage(args):
 
 
 def load_stage(args):
-    if args.project != PROJECT or args.dataset != DATASET:
-        raise ValueError('Writes restricted to exact candidate project/dataset')
-    manifest = json.loads((args.candidate/'manifest.json').read_text())
-    evidence = json.loads((args.candidate/'evidence.json').read_text())
-    contract = json.loads(args.contract.read_text())
-    if manifest.get('status') != 'pass' or not manifest.get('review') or not 0 < manifest['rows'] <= MAX_ROWS:
-        raise ValueError('Validated source manifest required')
-    if (manifest.get('year') != 2026 or manifest.get('resource',{}).get('id') != RESOURCE
-        or manifest.get('schema') != contract or evidence.get('resource_id') != RESOURCE
-        or evidence.get('year') != 2026 or evidence.get('year_rows') != manifest['rows']
-        or evidence.get('source_sha256') != manifest.get('sha256_csv')
-        or evidence.get('month_rows') != manifest.get('period_rows')
-        or evidence.get('hash_scope') != 'official_csv_bytes'
-        or evidence.get('coverage_status') != 'reviewed_complete_snapshot'
-        or evidence.get('accepted_periods') != [f'2026-{m:02d}-01' for m in range(1,9)]
-        or not re.fullmatch('[a-f0-9]{64}', manifest.get('sha256_csv',''))
-        or not re.fullmatch('[a-f0-9]{64}', manifest.get('sha256_normalized_ndjson',''))):
-        raise ValueError('Manifest/evidence/resource/schema contract differs')
-    extracted = datetime.fromisoformat(manifest['extracted_at'])
-    if extracted.tzinfo is None or not 0 <= (datetime.now(timezone.utc)-extracted).total_seconds() <= 7*86400:
-        raise ValueError('Source download stale or future')
-    year = manifest['year']
-    source = args.candidate/f'{year}.raw.ndjson'
-    csv_source = args.candidate.with_suffix('.csv')
-    if digest(csv_source) != manifest['sha256_csv']:
-        raise ValueError('Retained CSV content digest differs')
-    if digest(source) != manifest['sha256_normalized_ndjson']:
-        raise ValueError('Normalized content digest differs')
-    from google.cloud import bigquery
-    client = bigquery.Client(project=PROJECT, location='US')
-    fields = manifest['schema']
-    integers = {'idpozo', 'anio', 'mes', 'idusuario'}
-    schema = [bigquery.SchemaField(k, 'STRING' if v == 'text' else 'TIMESTAMP' if v == 'timestamp' else 'INT64' if k in integers else 'FLOAT64') for k,v in fields.items()]
-    schema += [bigquery.SchemaField('periodo', 'DATE')]
-    schema += [bigquery.SchemaField(k, 'TIMESTAMP') for k in ('_sdc_extracted_at','_sdc_batched_at','_sdc_received_at')]
-    schema += [bigquery.SchemaField('_source_sha256','STRING')]
-    stamped = args.candidate/'load.ndjson'
-    batched = datetime.now(timezone.utc).isoformat()
-    with source.open() as stream, stamped.open('x') as target:
-        for line in stream:
-            record = json.loads(line)
-            record.update(_sdc_extracted_at=manifest['extracted_at'], _sdc_batched_at=batched,
-                          _sdc_received_at=batched, _source_sha256=manifest['sha256_csv'])
-            target.write(json.dumps(record, ensure_ascii=False, allow_nan=False)+'\n')
-    config = bigquery.LoadJobConfig(schema=schema, source_format=bigquery.SourceFormat.NEWLINE_DELIMITED_JSON,
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE, max_bad_records=0,
-        time_partitioning=bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.MONTH,field='_sdc_batched_at'),
-        clustering_fields=['empresa','idpozo','cuenca'])
-    run_key = hashlib.sha256(manifest['downloaded_at'].encode()).hexdigest()[:12]
-    with stamped.open('rb') as stream:
-        job = client.load_table_from_file(stream, f'{PROJECT}.{DATASET}.produccion_pozo_mes', job_config=config,
-            job_id='csv_candidate_'+manifest['sha256_csv'][:24]+'_'+run_key, location='US')
-        job.result(timeout=300)
-    result = {'status':'pass','job_id':job.job_id,'source_sha256':manifest['sha256_csv'],
-              'rows':job.output_rows,'destination':str(job.destination),'loaded_at':batched,'publication_approved':False}
-    if job.output_rows != manifest['rows']:
-        raise ValueError('Load rows differ from source')
-    (args.candidate/'load-receipt.json').write_text(json.dumps(result, indent=2)+'\n')
-    return result
+    raise ValueError('Batch load retired; use Meltano target-bigquery')
 
 
 def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    commands = parser.add_subparsers(dest='stage', required=True)
-    source = commands.add_parser('prepare')
-    source.add_argument('--resource-id', required=True)
-    source.add_argument('--year', type=int, required=True)
-    source.add_argument('--month', type=int, required=True)
-    source.add_argument('--contract', type=Path, required=True)
-    source.add_argument('--anchor-release', type=Path, required=True)
-    source.add_argument('--output', type=Path, required=True)
-    load = commands.add_parser('load')
-    load.add_argument('--project', required=True)
-    load.add_argument('--dataset', required=True)
-    load.add_argument('--candidate', type=Path, required=True)
-    load.add_argument('--contract', type=Path, required=True)
-    args = parser.parse_args()
-    print(json.dumps(prepare_stage(args) if args.stage == 'prepare' else load_stage(args)))
+    raise SystemExit('Batch ingestion retired. Use: meltano run candidate-history')
 
 
 if __name__ == '__main__':

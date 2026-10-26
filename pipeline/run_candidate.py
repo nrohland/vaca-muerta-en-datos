@@ -133,74 +133,6 @@ def execute_stage(args):
     history = getattr(args, 'history', False)
     if args.stage == 'resource-preflight':
         report=run_json([python,str(root/'pipeline/resource_preflight.py'),'--output',str(out/'resource-preflight.json')],root)
-    elif args.stage == 'prepared-check':
-        prepared=args.prepared_artifact.resolve()
-        previous=load_json(prepared/'run.json')
-        if previous.get('status')!='passed' or [v['name'] for v in previous.get('stages',[])]!=['price-prepare','source-prepare']:
-            raise ValueError('Preparation run must pass before loads')
-        validate_price_manifest(load_json(prepared/'price-manifest.json'))
-        for name in ('source-evidence','source-manifest','price-manifest'):
-            write_report(out/f'{name}.json',load_json(prepared/f'{name}.json'))
-        report=normalized_report({'phase':'load'})
-    elif args.stage == 'source-prepare':
-        if history:
-            argv = [python,str(root/'extraction/scripts/source_history_pipeline.py'),'prepare',
-                '--contract',str(contract),'--anchor-release',str(root/'docs/evidence/historical-source/physical-anchors.json'),
-                '--output',str(candidate),'--metrics-output',str(out/'source-preparation-metrics.json')]
-            if getattr(args, 'source_inbound', None):
-                argv += ['--inbound',str(args.source_inbound.resolve())]
-            report = run_json(argv,root)
-        else:
-            report = run_json([python,str(root/'extraction/scripts/source_csv_pipeline.py'),'prepare',
-            '--resource-id',RESOURCE,'--year','2026','--month','8','--contract',str(contract),
-            '--anchor-release',str(root/'apps/web/public/data/release.json'),'--output',str(candidate)],root)
-        if report.get('status') != 'pass' or report.get('publication_approved') is not False:
-            raise ValueError('Source prepare gate rejected')
-        write_report(out/'source-evidence.json',load_json(candidate/'evidence.json'))
-        write_report(out/'source-manifest.json',load_json(candidate/'manifest.json'))
-    elif args.stage == 'source-load':
-        report = run_json([python,str(root/('extraction/scripts/source_history_pipeline.py' if history else 'extraction/scripts/source_csv_pipeline.py')),'load',
-            '--project',PROJECT,'--dataset',DATASET,'--candidate',str(candidate),'--contract',str(contract)],root)
-        if report.get('status') != 'pass' or report.get('publication_approved') is not False:
-            raise ValueError('Source load gate rejected')
-        write_report(out/'source-load.json',report)
-    elif args.stage == 'price-prepare':
-        from verify_loaded_lineage import PRICE_URL, GAS_URL
-        scripts = root/'scripts'
-        downloaded = {}
-        from public_price_fetch import fetch
-        metrics={'schema_version':1,'attempts':[],'publication_approved':False}
-        def observe(product,event):
-            metrics['attempts'].append({'reference':product,**event})
-            write_report(out/'price-preparation-metrics.json',metrics)
-        for name, allowed in [('brent',PRICE_URL),('henry_hub',GAS_URL)]:
-            raw=fetch(allowed,observe=lambda event:observe(name,event))
-            response_path = scratch/(name+'.html'); response_path.write_bytes(raw)
-            downloaded[name] = (response_path,utc_now(),hashlib.sha256(raw).hexdigest())
-        rows = scratch/'price.ndjson'
-        manifest = run_json([python,str(scripts/'prepare_reference_prices.py'),
-            '--source',str(downloaded['brent'][0]),'--cutoff',CUTOFF,
-            '--retrieved-at',downloaded['brent'][1],
-            '--gas-source',str(downloaded['henry_hub'][0]),
-            '--gas-retrieved-at',downloaded['henry_hub'][1],'--output',str(rows)],root)
-        products = validate_price_manifest(manifest)
-        for product, name in [('oil','brent'),('gas','henry_hub')]:
-            if products[product]['response_sha256'] != downloaded[name][2]:
-                raise ValueError('Price preparation differs from downloaded bytes')
-        write_report(out/'price-manifest.json',manifest)
-        report = normalized_report({'rows':manifest['row_count'],
-                   'source_hashes':{k:v['response_sha256'] for k,v in products.items()}})
-    elif args.stage == 'price-load':
-        rows = scratch/'price.ndjson'
-        receipt = run_json([python,str(root/'scripts/load_reference_prices.py'),'--rows',str(rows),
-            '--manifest',str(rows.with_suffix('.manifest.json')),'--apply'],root)
-        manifest = load_json(out/'price-manifest.json')
-        if receipt.get('rows') != manifest['row_count'] or receipt.get('table') != f'{PROJECT}.{DATASET}.monthly_reference_price' or not receipt.get('job_id'):
-            raise ValueError('Price load receipt differs')
-        receipt['source_hashes'] = {k:v['response_sha256'] for k,v in validate_price_manifest(manifest).items()}
-        receipt['rows_sha256'] = manifest['rows_sha256']
-        write_report(out/'price-load.json',receipt)
-        report = normalized_report(receipt)
     elif args.stage == 'artifact-check':
         assert_extract_artifact(artifact, history=history)
         # Only reviewed metadata crosses runner boundaries, never raw data.
@@ -290,13 +222,12 @@ def execute_stage(args):
 
 def plan(args):
     stages = []
-    extract = ['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage']
     transform = ['resource-preflight','artifact-check','raw-revalidate','loaded-revalidate','dbt-source-freshness','dbt-parse','dbt-compile','dbt-build']
     if getattr(args,'history',False): transform += ['dashboard-export','snapshot-check']
-    plans={'prepare':['price-prepare','source-prepare'],
-        'load':['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'],
-        'extract':extract,'transform':transform,'all':extract+transform,
+    plans={'transform':transform,
         'export':['resource-preflight','artifact-check','dashboard-export','snapshot-check']}
+    if args.phase not in plans:
+        raise ValueError('Batch ingestion retired. Use: meltano run candidate-history')
     names=plans[args.phase]
     for name in names:
         argv = [args.python,str(Path(__file__).resolve()),args.phase,'--repo',str(args.repo.resolve()),
@@ -325,7 +256,7 @@ def plan(args):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('phase',choices=['prepare','load','extract','transform','export','all'])
+    parser.add_argument('phase',choices=['transform','export'])
     parser.add_argument('--repo',type=Path,default=Path(__file__).resolve().parents[1])
     parser.add_argument('--run-dir',type=Path,required=True)
     parser.add_argument('--extract-artifact',type=Path)
@@ -340,8 +271,6 @@ def main():
     parser.add_argument('--source-inbound',type=Path,help='Retained official annual CSV bytes with original retrieval metadata')
     parser.add_argument('--stage',help=argparse.SUPPRESS)
     args = parser.parse_args()
-    if args.phase == 'load' and (not args.prepared_artifact or not args.scratch_dir):
-        parser.error('load requires --prepared-artifact and the original --scratch-dir')
     if args.phase == 'export' and (not args.history or not args.transform_artifact):
         parser.error('export requires --history and --transform-artifact with accepted dbt-summary.json')
     if args.phase in ('transform','export') and not args.extract_artifact:
@@ -351,6 +280,9 @@ def main():
     else:
         args.scratch_dir.mkdir(parents=True,exist_ok=True)
     if args.stage:
+        allowed = {stage.name for stage in plan(args)}
+        if args.stage not in allowed:
+            parser.error('Stage is not permitted for this phase; ingestion runs only in Meltano')
         execute_stage(args)
         return 0
     report = run(plan(args),args.run_dir.resolve())

@@ -13,6 +13,7 @@ from google.api_core.exceptions import NotFound
 from target_bigquery.target import TargetBigQuery
 from vaca_muerta_singer.common import run_identity
 from vaca_muerta_singer.tap import TapCap4, source
+from vaca_muerta_singer.prices import TapEIAPrices
 from vaca_muerta_singer.target import SandboxTargetBigQuery, check_settings
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -93,7 +94,8 @@ class SingerTests(unittest.TestCase):
             tap.sync_all()
         return output.getvalue()
 
-    def run_wire(self, directory, wire, *, rows=4, worker_error=False):
+    def run_wire(self, directory, wire, *, rows=4, worker_error=False, source_kind="cap4"):
+        cfg=config(directory); cfg["source_kind"]=source_kind
         client=MagicMock()
         tables={}; loaded=[]
         def get_table(ref):
@@ -121,7 +123,7 @@ class SingerTests(unittest.TestCase):
             stack.enter_context(patch('target_bigquery.batch_job.bigquery_client_factory',return_value=client))
             stack.enter_context(patch.object(source,'validate_bundle'))
             stack.enter_context(redirect_stdout(stdout))
-            target=SandboxTargetBigQuery(config=config(directory))
+            target=SandboxTargetBigQuery(config=cfg)
             try:target.listen(io.StringIO(wire))
             finally:self.last_stdout=stdout.getvalue();self.last_client=client;self.last_loaded=loaded
         return target
@@ -141,6 +143,47 @@ class SingerTests(unittest.TestCase):
             self.last_client.create_dataset.assert_not_called()
             self.assertFalse(receipt['publication_approved'])
             self.assertIsInstance(target,TargetBigQuery)
+
+    def price_wire_fixture(self, directory, *, missing=False):
+        rows=[]
+        for year in range(2023,2027):
+            cells=['50.00' if year<2026 or month<=8 else '-' for month in range(1,13)]
+            if missing and year==2023:cells[0]='-'
+            rows.append('<tr><td>'+str(year)+'</td>'+''.join('<td>'+v+'</td>' for v in cells)+'</tr>')
+        raw=('Henry Hub Natural Gas Spot Price Dollars per Million Btu Release Date: 10/25/2026 '
+             +'<table>'+''.join(rows)+'</table>').encode()
+        output=io.StringIO()
+        with patch('vaca_muerta_singer.prices.fetch',return_value=raw),redirect_stdout(output):
+            tap=TapEIAPrices(config={'run_id':'offline','artifacts_dir':str(directory/'offline')})
+            tap.sync_all()
+        return output.getvalue()
+
+    def test_prices_real_parsers_wire_and_batch_worker(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp);wire=self.price_wire_fixture(directory)
+            self.run_wire(directory,wire,rows=88,source_kind='reference_prices')
+            receipt=json.loads((directory/'offline/target-complete.json').read_text())
+            self.assertEqual(receipt['rows'],88)
+            self.assertEqual({r['product'] for r in self.last_loaded},{'oil','gas'})
+            self.assertTrue(receipt['destination'].endswith('monthly_reference_price_singer_offline'))
+            self.assertIn('references',self.last_stdout)
+            self.last_client.query.assert_not_called()
+
+    def test_incomplete_prices_never_certify_tap(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            with self.assertRaisesRegex(ValueError,'Incomplete price coverage'):
+                self.price_wire_fixture(Path(tmp),missing=True)
+            self.assertFalse((Path(tmp)/'offline/tap-complete.json').exists())
+
+    def test_altered_price_manifest_does_not_certify_target(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            directory=Path(tmp);wire=self.price_wire_fixture(directory)
+            path=directory/'offline/tap-complete.json';receipt=json.loads(path.read_text())
+            receipt['evidence']['price_manifest']['rows_sha256']='b'*64
+            path.write_text(json.dumps(receipt))
+            with self.assertRaisesRegex(ValueError,'Price payload differs'):
+                self.run_wire(directory,wire,rows=88,source_kind='reference_prices')
+            self.assertEqual(self.last_stdout,'')
 
     def test_partial_input_does_not_acknowledge_state(self):
         with tempfile.TemporaryDirectory() as tmp:

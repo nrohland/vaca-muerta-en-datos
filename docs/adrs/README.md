@@ -15,3 +15,5 @@ Cambios de fuente, grano, métricas o arquitectura deben actualizar la decisión
 - [0007 — Meltano local y Terraform sin facturación](0007-local-meltano-no-billing.md).
 
 - [0008 — Singer y BigQuery Sandbox](0008-singer-bigquery-sandbox.md).
+
+- [0009 — Meltano como única ingesta](0009-meltano-exclusive-ingestion.md).

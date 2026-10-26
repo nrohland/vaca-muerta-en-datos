@@ -408,48 +408,11 @@ def validate_candidate(candidate, contract):
 
 
 def load_stage(args):
-    if args.project != PROJECT or args.dataset != DATASET:
-        raise ValueError('Writes restricted to exact candidate project/dataset')
-    contract=json.loads(args.contract.read_text())
-    manifest=validate_candidate(args.candidate,contract)
-    contract=manifest['schema']
-    from google.cloud import bigquery
-    client=bigquery.Client(project=PROJECT,location='US')
-    integers={'id','idpozo','anio','mes','idusuario'}
-    schema=[bigquery.SchemaField(k,'STRING' if v=='text' else 'TIMESTAMP' if v=='timestamp' else 'INT64' if k in integers else 'FLOAT64') for k,v in contract.items()]
-    schema += [bigquery.SchemaField('periodo','DATE')]
-    schema += [bigquery.SchemaField(k,'TIMESTAMP') for k in ('_sdc_extracted_at','_sdc_batched_at','_sdc_received_at')]
-    schema += [bigquery.SchemaField('_source_sha256','STRING')]
-    config=bigquery.LoadJobConfig(schema=schema,source_format=bigquery.SourceFormat.PARQUET,
-        write_disposition=bigquery.WriteDisposition.WRITE_TRUNCATE,max_bad_records=0,
-        time_partitioning=bigquery.TimePartitioning(type_=bigquery.TimePartitioningType.MONTH,field='_sdc_batched_at'),
-        clustering_fields=['empresa','idpozo','cuenca'])
-    run_key=hashlib.sha256(manifest['normalized_at'].encode()).hexdigest()[:12]
-    with (args.candidate/'history.raw.parquet').open('rb') as stream:
-        job=client.load_table_from_file(stream,DESTINATION,job_config=config,
-            job_id='parquet_history_candidate_'+manifest['source_sha256'][:24]+'_'+run_key,location='US')
-        job.result(timeout=600)
-    if str(job.destination) != DESTINATION:
-        raise ValueError('Actual load destination differs from isolated candidate')
-    if job.output_rows != manifest['rows']:
-        raise ValueError('Actual load rows differ from reviewed bundle')
-    result={'schema_version':2,'status':'pass','job_id':job.job_id,'source_sha256':manifest['source_sha256'],
-            'source_hashes':manifest['source_hashes'],'rows':job.output_rows,'destination':str(job.destination),
-            'loaded_at':now(),'publication_approved':False}
-    (args.candidate/'load-receipt.json').write_text(json.dumps(result,indent=2)+'\n')
-    return result
+    raise ValueError('Batch load retired; use Meltano target-bigquery')
 
 
 def main():
-    parser=argparse.ArgumentParser(description=__doc__)
-    sub=parser.add_subparsers(dest='stage',required=True)
-    prep=sub.add_parser('prepare');prep.add_argument('--start-period',default=START_PERIOD);prep.add_argument('--cutoff',default=CUTOFF)
-    prep.add_argument('--metrics-output',type=Path);prep.add_argument('--inbound',type=Path);prep.add_argument('--contract',type=Path,required=True)
-    prep.add_argument('--anchor-release',type=Path,required=True);prep.add_argument('--output',type=Path,required=True)
-    load=sub.add_parser('load');load.add_argument('--project',required=True);load.add_argument('--dataset',required=True)
-    load.add_argument('--candidate',type=Path,required=True);load.add_argument('--contract',type=Path,required=True)
-    args=parser.parse_args()
-    print(json.dumps(prepare_stage(args) if args.stage=='prepare' else load_stage(args)))
+    raise SystemExit('Batch ingestion retired. Use: meltano run candidate-history')
 
 
 if __name__=='__main__':

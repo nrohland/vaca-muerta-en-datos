@@ -99,28 +99,9 @@ class SourcePipelineTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, 'Missing independently'):
             source.review_csv(*self.fixture(), 2026, 2)
 
-    def test_shared_dataset_rejected_before_client(self):
-        with self.assertRaisesRegex(ValueError, 'restricted'):
-            source.load_stage(argparse.Namespace(project='vaca-muerta-pulse',dataset='raw_cap4_dev',candidate=self.path))
-
-    def test_wrong_project_rejected(self):
-        with self.assertRaisesRegex(ValueError, 'restricted'):
-            source.load_stage(argparse.Namespace(project='another',dataset='raw_cap4_candidate_dev',candidate=self.path))
-
-    def test_tampered_manifest_rejected_before_client(self):
-        (self.path/'manifest.json').write_text(json.dumps({'status':'pass','review':{'accepted':True},'rows':1,
-            'year':2026,'resource':{'id':'other'},'schema':{}}))
-        (self.path/'evidence.json').write_text('{}')
-        contract = self.path/'contract.json'; contract.write_text('{}')
-        with self.assertRaisesRegex(ValueError, 'contract differs'):
-            source.load_stage(argparse.Namespace(project=source.PROJECT,dataset=source.DATASET,candidate=self.path,contract=contract))
-
-    def test_oversized_manifest_rejected_before_client(self):
-        (self.path/'manifest.json').write_text(json.dumps({'status':'pass','review':{'accepted':True},'rows':source.MAX_ROWS+1}))
-        (self.path/'evidence.json').write_text('{}')
-        contract = self.path/'contract.json'; contract.write_text('{}')
-        with self.assertRaisesRegex(ValueError, 'Validated source'):
-            source.load_stage(argparse.Namespace(project=source.PROJECT,dataset=source.DATASET,candidate=self.path,contract=contract))
+    def test_batch_loader_is_retired_even_for_candidate_dataset(self):
+        with self.assertRaisesRegex(ValueError, 'Batch load retired'):
+            source.load_stage(argparse.Namespace(project=source.PROJECT,dataset=source.DATASET))
 
     def test_wrong_cutoff_rejected_before_fetch(self):
         with self.assertRaisesRegex(ValueError, 'August'):

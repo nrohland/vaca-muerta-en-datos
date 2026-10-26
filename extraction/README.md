@@ -1,6 +1,6 @@
 # Extracción — Vaca Muerta en Datos
 
-La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV (2023–2026) y referencias mensuales EIA. Los contratos, hashes y controles preceden cualquier carga. La nueva ruta [Meltano Singer](MELTANO.md) emite registros tipados directamente al target BigQuery. El CLI histórico conserva su ruta Parquet independiente.
+La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV (2023–2026) y referencias mensuales EIA. Los contratos, hashes y controles preceden cualquier carga. La nueva ruta [Meltano Singer](MELTANO.md) emite registros tipados directamente al target BigQuery. Los CLIs batch históricos están retirados; se conservan helpers para validar fuentes y probar regresiones.
 
 ## Componentes
 
@@ -11,7 +11,7 @@ La ruta vigente usa **Python** para cuatro CSV anuales oficiales de Capítulo IV
 - `scripts/check_raw_snapshot.py`: verificación de raw para la ruta de un año.
 - `../scripts/prepare_reference_prices.py` y `load_reference_prices.py`: preparación/carga de Brent y Henry Hub.
 
-CSV es el formato publicado por la fuente. La ruta histórica del CLI carga Parquet Zstandard; el helper monoanual conserva NDJSON y las referencias de precio mantienen su contrato de carga pequeño. Los payloads de ingesta quedan fuera de Git. El consumidor recibe JSON agregado, nunca raw.
+CSV es el formato publicado por la fuente. Las utilidades de validación históricas conservan pruebas de Parquet/NDJSON; sus antiguos loaders no escriben BigQuery. Las referencias EIA ahora ingresan mediante `tap-eia-prices`. Los payloads de ingesta quedan fuera de Git. El consumidor recibe JSON agregado, nunca raw.
 
 ## Operación
 

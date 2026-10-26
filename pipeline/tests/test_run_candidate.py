@@ -49,11 +49,11 @@ class CandidateCLITests(unittest.TestCase):
         self.assertTrue(all(s.environment['DBT_RAW_DATASET']==candidate.DATASET for s in stages))
 
     def test_history_stage_argument_survives_every_subprocess(self):
-        args=self.args('all');args.history=True;args.source_inbound=self.path/'inbound'
+        args=self.args('transform');args.history=True;args.source_inbound=self.path/'inbound'
         stages=candidate.plan(args)
         self.assertTrue(all('--history' in s.argv for s in stages))
         self.assertTrue(all('--source-inbound' in s.argv for s in stages))
-        self.assertEqual(next(s for s in stages if s.name=='source-prepare').timeout_seconds,1200)
+        self.assertTrue(all('load' not in s.name or s.name=='loaded-revalidate' for s in stages))
 
     def test_history_transform_exports_only_after_successful_build(self):
         args=self.args();args.history=True
@@ -80,21 +80,15 @@ class CandidateCLITests(unittest.TestCase):
         self.assertEqual(candidate.run(stages,args.run_dir,execute=execute)['status'],'failed')
         self.assertNotIn('snapshot-check',calls)
 
-    def test_prepare_is_public_only_and_load_is_separate_without_dbt(self):
-        self.assertEqual([s.name for s in candidate.plan(self.args('prepare'))],['price-prepare','source-prepare'])
-        args=self.args('load');args.prepared_artifact=self.path/'prepared'
-        stages=candidate.plan(args)
-        self.assertEqual([s.name for s in stages],['prepared-check','resource-preflight','source-load','price-load','raw-gate','loaded-lineage'])
-        self.assertTrue(all('--prepared-artifact' in s.argv for s in stages))
+    def test_batch_ingestion_phases_are_retired(self):
+        for phase in ('prepare','load','extract','all'):
+            with self.subTest(phase=phase), self.assertRaisesRegex(ValueError,'Batch ingestion retired'):
+                candidate.plan(self.args(phase))
 
     def test_single_annual_artifact_is_not_accepted_as_history(self):
         path=self.artifacts()
         with self.assertRaises((ValueError, KeyError)):
             candidate.assert_extract_artifact(path,history=True)
-
-    def test_extract_never_plans_dbt(self):
-        stages=candidate.plan(self.args('extract'))
-        self.assertEqual([s.name for s in stages],['source-prepare','resource-preflight','source-load','price-prepare','price-load','raw-gate','loaded-lineage'])
 
     def test_artifact_rejects_source_hash_mismatch(self):
         path=self.artifacts();p=path/'source-load.json';value=json.loads(p.read_text());value['source_sha256']='b'*64;p.write_text(json.dumps(value))

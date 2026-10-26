@@ -21,6 +21,18 @@ plugins:
         repo_dir: .
         run_id: ${VM_RUN_ID}
         artifacts_dir: .local/singer/${VM_RUN_ID}
+    - name: tap-eia-prices
+      namespace: tap_eia_prices
+      pip_url: -e .
+      executable: tap-eia-prices
+      capabilities: [discover, catalog, state, about]
+      select: ["*.*"]
+      settings:
+        - name: run_id
+        - name: artifacts_dir
+      config:
+        run_id: ${VM_RUN_ID}
+        artifacts_dir: .local/singer/prices/${VM_RUN_ID}
   loaders:
     - name: target-bigquery
       namespace: target_bigquery
@@ -30,6 +42,7 @@ plugins:
       settings:
         - name: run_id
         - name: artifacts_dir
+        - name: source_kind
         - name: project
         - name: dataset
         - name: location
@@ -72,7 +85,13 @@ plugins:
         options:
           max_workers: 1
           process_pool: false
+    - name: target-bigquery-prices
+      inherit_from: target-bigquery
+      config:
+        source_kind: reference_prices
+        artifacts_dir: .local/singer/prices/${VM_RUN_ID}
 jobs:
   - name: candidate-history
     tasks:
       - tap-cap4 target-bigquery
+      - tap-eia-prices target-bigquery-prices

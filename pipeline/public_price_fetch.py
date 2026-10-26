@@ -3,7 +3,10 @@ from urllib.request import HTTPRedirectHandler, Request, build_opener
 from urllib.error import HTTPError, URLError
 import time
 from http.client import IncompleteRead
-from verify_loaded_lineage import PRICE_URL,GAS_URL
+if __package__:
+    from .verify_loaded_lineage import PRICE_URL,GAS_URL
+else:
+    from verify_loaded_lineage import PRICE_URL,GAS_URL
 MAX_BYTES=5*1024**2
 
 

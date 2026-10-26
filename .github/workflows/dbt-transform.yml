@@ -45,11 +45,13 @@ jobs:
         run: |
           python -m pip install -r extraction/requirements-meltano.txt
           python -m unittest discover -s extraction/singer/tests
-          meltano install extractor tap-cap4
-          meltano install loader target-bigquery
+          meltano install extractor tap-cap4 tap-eia-prices
+          meltano install loader target-bigquery target-bigquery-prices
           export VM_RUN_ID=offline_ci
           meltano invoke tap-cap4 --discover > "$RUNNER_TEMP/cap4-catalog.json"
+          meltano invoke tap-eia-prices --discover > "$RUNNER_TEMP/prices-catalog.json"
           meltano invoke target-bigquery --about
+          meltano invoke target-bigquery-prices --about
   validate:
     if: github.event_name != 'workflow_dispatch' || (!inputs.public_source_check && !inputs.singer_only)
     runs-on: ubuntu-latest

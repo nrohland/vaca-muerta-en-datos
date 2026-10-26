@@ -13,9 +13,10 @@ dependencies = ["singer-sdk==0.54.9", "pyarrow==26.0.0"]
 bigquery = ["z3-target-bigquery @ git+https://github.com/blueprint-data/target-bigquery.git@caad808faf94102067a1da42bcfced26845b5b42"]
 
 [project.scripts]
+tap-eia-prices = "vaca_muerta_singer.prices:TapEIAPrices.cli"
 tap-cap4 = "vaca_muerta_singer.tap:TapCap4.cli"
 target-bigquery-sandbox = "vaca_muerta_singer.target:SandboxTargetBigQuery.cli"
 
 [tool.setuptools]
-packages = ["vaca_muerta_singer", "extraction", "extraction.scripts", "pipeline"]
+packages = ["vaca_muerta_singer", "extraction", "extraction.scripts", "pipeline", "scripts"]
 package-dir = {"vaca_muerta_singer" = "extraction/singer/vaca_muerta_singer"}

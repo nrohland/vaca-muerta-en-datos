@@ -1,14 +1,18 @@
 """Build immutable candidate pricing rows from the retained official EIA HTML.
 
-No warehouse writes. Feed output to load_reference_prices.py only after review.
+Reusable normalization for tap-eia-prices. Standalone batch CLI retired.
 """
 import argparse
 import hashlib
 import json
 from datetime import date, datetime, timezone
 from pathlib import Path
-from import_brent import parse, URL
-from import_henry_hub import parse as parse_gas, URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
+if __package__:
+    from .import_brent import parse, URL
+    from .import_henry_hub import parse as parse_gas, URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
+else:
+    from import_brent import parse, URL
+    from import_henry_hub import parse as parse_gas, URL as GAS_URL, BENCHMARK as GAS_BENCHMARK, ENERGY_BASIS
 
 
 def prepare(raw, cutoff, retrieved_at, gas_raw=None, gas_retrieved_at=None):
@@ -79,16 +83,4 @@ def prepare(raw, cutoff, retrieved_at, gas_raw=None, gas_retrieved_at=None):
 
 
 if __name__ == '__main__':
-    p = argparse.ArgumentParser()
-    p.add_argument('--source', type=Path, required=True)
-    p.add_argument('--cutoff', required=True)
-    p.add_argument('--retrieved-at', required=True)
-    p.add_argument('--output', type=Path, required=True)
-    p.add_argument('--gas-source', type=Path)
-    p.add_argument('--gas-retrieved-at')
-    a = p.parse_args()
-    rows, manifest = prepare(a.source.read_bytes(), a.cutoff, a.retrieved_at,
-        a.gas_source.read_bytes() if a.gas_source else None, a.gas_retrieved_at)
-    a.output.write_bytes(rows)
-    a.output.with_suffix('.manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    print(json.dumps(manifest))
+    raise SystemExit('Batch ingestion retired. Use: meltano run candidate-history')

@@ -12,7 +12,11 @@ def run_identity(config):
     directory = Path(config['artifacts_dir']).resolve()
     if directory.name != run_id:
         raise ValueError('artifacts_dir must end with run_id')
-    return run_id, directory, 'produccion_pozo_mes_singer_' + run_id
+    prefixes = {'cap4':'produccion_pozo_mes_singer_', 'reference_prices':'monthly_reference_price_singer_'}
+    kind = config.get('source_kind', 'cap4')
+    if kind not in prefixes:
+        raise ValueError('Unsupported source_kind')
+    return run_id, directory, prefixes[kind] + run_id
 
 
 def _unsupported(value):

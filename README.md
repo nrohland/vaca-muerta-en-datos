@@ -2,7 +2,7 @@
 
 Proyecto reiniciado con historial Git independiente: una importación explícita del baseline público revisado y commits por cambio coherente. Se conservan las mejoras auditadas y el snapshot preliminar; no se importan el historial antiguo ni credenciales locales. **Facturación GCP deshabilitada.**
 
-- [Ejecución local con Meltano](extraction/MELTANO.md).
+- [Meltano con tap y target Singer](extraction/MELTANO.md).
 - [Adopción optativa con Terraform](infra/terraform/README.md).
 - [Controles de publicación y reinicio](docs/operations/repository-reset.md).
 
@@ -137,4 +137,4 @@ Weekly GitHub-hosted dependency, secret and CodeQL checks; reviewed dependency u
 
 ## Mejoras locales de la auditoría
 
-La nueva ruta valida el snapshot durante build y prerenderiza KPIs; los detalles y gráficos siguen diferidos. El gráfico muestra una magnitud a la vez. [Meltano local](extraction/MELTANO.md) ejecuta el CLI batch y conserva los gates sin habilitar facturación. [Terraform optativo](infra/terraform/README.md) permite adoptar datasets existentes tras importación; no despliega cómputo, red ni almacenamiento facturable. [Decisión](docs/adrs/0007-local-meltano-no-billing.md). Estas mejoras no cambian el corte ni certifican una nueva ingesta.
+La nueva ruta valida el snapshot durante build y prerenderiza KPIs; los detalles y gráficos siguen diferidos. El gráfico muestra una magnitud a la vez. [Meltano Singer](extraction/MELTANO.md) conecta `tap-cap4` con el target BigQuery de Blueprint mediante load jobs y conserva la facturación deshabilitada. La operación remota sigue pendiente de conectividad oficial. [Terraform optativo](infra/terraform/README.md) permite adoptar datasets existentes tras importación; no despliega cómputo, red ni almacenamiento facturable. [Decisión](docs/adrs/0008-singer-bigquery-sandbox.md). Estas mejoras no cambian el corte ni certifican una nueva ingesta.

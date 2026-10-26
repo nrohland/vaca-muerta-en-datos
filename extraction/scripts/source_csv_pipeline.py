@@ -11,7 +11,10 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 from urllib.request import HTTPRedirectHandler, build_opener
 
-from prepare_csv_candidate import prepare
+if __package__:
+    from .prepare_csv_candidate import prepare
+else:
+    from prepare_csv_candidate import prepare
 
 RESOURCE = 'fb7a47a0-cba9-4667-a004-6f6c1c346c23'
 PROJECT = 'vaca-muerta-pulse'

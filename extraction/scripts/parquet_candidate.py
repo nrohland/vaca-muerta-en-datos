@@ -29,14 +29,9 @@ def timestamp(value):
     return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed.astimezone(timezone.utc)
 
 
-def append_csv(writer, csv_path, contract, year, source_hash, retrieved_at, batched_at):
-    schema = arrow_schema(contract)
-    buffers = {f.name: [] for f in schema}
-    periods = Counter(); seen = {}; total = 0
-    def flush():
-        if buffers['anio']:
-            writer.write_table(pa.Table.from_pydict(buffers, schema=schema), row_group_size=BATCH_ROWS)
-            for values in buffers.values(): values.clear()
+def iter_csv_records(csv_path, contract, year, source_hash, retrieved_at, batched_at):
+    """Strict raw records shared by Singer and Parquet batch preparation."""
+    seen = {}
     with csv_path.open(encoding='utf-8-sig', newline='') as stream:
         reader = csv.DictReader(stream)
         expected = set(contract) - ({'id'} if year != 2024 else set())
@@ -65,13 +60,26 @@ def append_csv(writer, csv_path, contract, year, source_hash, retrieved_at, batc
             bit = 1 << record['mes']; previous = seen.get(record['idpozo'], 0)
             if previous & bit: raise ValueError('Duplicate production grain')
             seen[record['idpozo']] = previous | bit
-            period = date(year, record['mes'], 1); periods[period.isoformat()] += 1
+            period = date(year, record['mes'], 1)
             record.update(periodo=period, _source_sha256=source_hash,
                 _sdc_extracted_at=timestamp(retrieved_at), _sdc_batched_at=timestamp(batched_at),
                 _sdc_received_at=timestamp(batched_at))
-            for name, values in buffers.items(): values.append(record[name])
-            total += 1
-            if total % BATCH_ROWS == 0: flush()
-        flush()
+            yield record
+
+
+def append_csv(writer, csv_path, contract, year, source_hash, retrieved_at, batched_at):
+    schema = arrow_schema(contract)
+    buffers = {f.name: [] for f in schema}
+    periods = Counter(); total = 0
+    def flush():
+        if buffers['anio']:
+            writer.write_table(pa.Table.from_pydict(buffers, schema=schema), row_group_size=BATCH_ROWS)
+            for values in buffers.values(): values.clear()
+    for record in iter_csv_records(csv_path, contract, year, source_hash, retrieved_at, batched_at):
+        periods[record['periodo'].isoformat()] += 1
+        for name, values in buffers.items(): values.append(record[name])
+        total += 1
+        if total % BATCH_ROWS == 0: flush()
+    flush()
     if total == 0: raise ValueError('Empty source')
     return {'rows': total, 'period_rows': dict(sorted(periods.items()))}

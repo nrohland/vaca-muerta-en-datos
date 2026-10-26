@@ -20,3 +20,5 @@ Estas especificaciones documentan preguntas, granos, semántica y aceptación. E
 Los planes de hitos, checklists antiguos y specs de iteraciones visuales superadas se retiraron del árbol actual y permanecen en Git. Antes de cambiar una regla, actualizar su contrato y pruebas. No inventar definiciones para fuentes ausentes.
 
 - [021 · Rendimiento y operación sin facturación](021-performance-optimization.md)
+
+- [023 · Ingesta Singer candidata](023-singer-ingestion.md)

@@ -81,3 +81,7 @@ La navegación ejecuta transformaciones sobre agregados públicos en memoria; no
 La entrega divide el snapshot en overview y cuatro detalles por fluido/dimensión. Los módulos de pestaña y el mapa se cargan diferidos; los detalles se reutilizan por versión para evitar descargar por cada cambio de período. Los blobs gzip se verifican antes de descomprimir y no deben recibir un segundo `Content-Encoding: gzip`. El manifiesto permite ligar una versión sin mezclar datos de builds distintos. La política HTTP efectiva depende del host; no se afirma cache inmutable a partir de un nombre con hash.
 
 El reporte histórico del 13/10 registra 105,83 s, 1,59 GiB facturables reportados y 554.443 slot-ms para 106 nodos dbt. El nodo de mayor pared fue `fct_reference_valuation_entity_month` (17,10 s); el de mayor uso de cómputo fue `fct_dashboard_month` (401.272 slot-ms). Son candidatos para medir, no prueba de una regresión ni latencia del dashboard. No se ejecutaron nuevas queries cloud en la revisión del 20/10. [Auditoría, hallazgos y límites](archive/evidence/share-readiness/architecture-audit.md).
+
+## Nueva ingesta Singer candidata
+
+[Meltano](../extraction/MELTANO.md) conecta el tap Capítulo IV con el target BigQuery de Blueprint mediante load jobs, en tablas aisladas que expiran. No promueve el raw canónico ni ejecuta dbt/export. La operación remota permanece pendiente de acceso a la fuente; [ADR 0008](adrs/0008-singer-bigquery-sandbox.md).

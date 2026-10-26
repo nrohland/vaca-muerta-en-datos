@@ -1,6 +1,6 @@
 # ADR 0007 — Meltano local y Terraform sin facturación
 
-Estado: implementación local de la integración; ejecución cloud y programación no habilitadas.
+Estado: integración utilities sustituida por [ADR 0008](0008-singer-bigquery-sandbox.md). Terraform optativo sin cambios; ejecución cloud y programación no habilitadas.
 
 ## Restricción y decisión
 

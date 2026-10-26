@@ -19,8 +19,12 @@ from urllib.error import HTTPError, URLError
 from http.client import IncompleteRead
 import ssl
 
-from prepare_csv_candidate import prepare
-from source_csv_pipeline import review_csv, digest
+if __package__:
+    from .prepare_csv_candidate import prepare
+    from .source_csv_pipeline import review_csv, digest
+else:
+    from prepare_csv_candidate import prepare
+    from source_csv_pipeline import review_csv, digest
 
 PROJECT = 'vaca-muerta-pulse'
 DATASET = 'raw_cap4_candidate_dev'
@@ -216,6 +220,29 @@ def validate_retrieval(year, csv_path, retrieval):
         raise ValueError('Retained annual source bytes differ or exceed budget')
 
 
+def review_annual_source(year, inbound, contract, output, anchor_release, measure=None):
+    """Download/validate one source; shared by batch CLI and Singer tap."""
+    measure = measure or (lambda phase, year, action: action())
+    if inbound:
+        csv_path = inbound/f'{year}.csv'
+        retrieval = normalize_retained(year,json.loads((inbound/f'{year}.retrieval.json').read_text()))
+    else:
+        csv_path = output/f'{year}.csv'
+        retrieval = measure('download',year,lambda:retrieve(year,csv_path))
+        (output/f'{year}.retrieval.json').write_text(json.dumps(retrieval,indent=2)+'\n')
+    measure('retrieval-validation',year,lambda:validate_retrieval(year,csv_path,retrieval))
+    with csv_path.open(encoding='utf-8-sig',newline='') as stream:
+        header = next(csv.reader(stream))
+    extra = set(header)-set(contract)
+    if (len(header)!=len(set(header)) or set(contract)-set(header)
+        or extra not in (set(), {'id'} if year==2024 else set())):
+        raise ValueError('Annual CSV fields differ from reviewed historical contract')
+    annual_contract = {**contract, **({'id':'numeric'} if extra else {})}
+    contract_path = output/f'{year}.contract.json'
+    contract_path.write_text(json.dumps(annual_contract,sort_keys=True)+'\n')
+    review = measure('anchor-review',year,lambda:review_csv(csv_path,anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True))
+    return csv_path,retrieval,review,contract_path
+
 def prepare_stage(args):
     if args.start_period != START_PERIOD or args.cutoff != CUTOFF:
         raise ValueError('Reviewed history fixed to 2023–August 2026')
@@ -250,25 +277,7 @@ def prepare_stage(args):
         finally:
             with metrics_lock:event.update(seconds=round(time.perf_counter()-start,3),finished_at=now());checkpoint()
     def review_year(year):
-        if args.inbound:
-            csv_path = args.inbound/f'{year}.csv'
-            retrieval = normalize_retained(year,json.loads((args.inbound/f'{year}.retrieval.json').read_text()))
-        else:
-            csv_path = args.output/f'{year}.csv'
-            retrieval = measure('download',year,lambda:retrieve(year,csv_path))
-            (args.output/f'{year}.retrieval.json').write_text(json.dumps(retrieval,indent=2)+'\n')
-        measure('retrieval-validation',year,lambda:validate_retrieval(year,csv_path,retrieval))
-        with csv_path.open(encoding='utf-8-sig',newline='') as stream:
-            header = next(csv.reader(stream))
-        extra = set(header)-set(contract)
-        if (len(header)!=len(set(header)) or set(contract)-set(header)
-            or extra not in (set(), {'id'} if year==2024 else set())):
-            raise ValueError('Annual CSV fields differ from reviewed historical contract')
-        annual_contract = {**contract, **({'id':'numeric'} if extra else {})}
-        contract_path = args.output/f'{year}.contract.json'
-        contract_path.write_text(json.dumps(annual_contract,sort_keys=True)+'\n')
-        review = measure('anchor-review',year,lambda:review_csv(csv_path,args.anchor_release,year,8 if year==2026 else 12,allow_out_of_scope_negative=True))
-        return csv_path,retrieval,review,contract_path
+        return review_annual_source(year, args.inbound, contract, args.output, args.anchor_release, measure)
     with ThreadPoolExecutor(max_workers=1) as executor:
         futures={year:executor.submit(review_year,year) for year in RESOURCES}
         try:reviewed={year:future.result() for year,future in futures.items()}
@@ -276,7 +285,10 @@ def prepare_stage(args):
             for future in futures.values():future.cancel()
             raise
     contract = {**contract, 'id':'numeric'}
-    from parquet_candidate import arrow_schema, append_csv
+    if __package__:
+        from .parquet_candidate import arrow_schema, append_csv
+    else:
+        from parquet_candidate import arrow_schema, append_csv
     import pyarrow.parquet as pq
     with pq.ParquetWriter(combined, arrow_schema(contract), compression='zstd',
                           use_dictionary=True, write_statistics=True) as writer:
@@ -363,7 +375,10 @@ def validate_candidate(candidate, contract):
     payload=candidate/'history.raw.parquet'
     if digest(payload)!=manifest['sha256_payload'] or payload.stat().st_size!=manifest.get('payload_bytes'):
         raise ValueError('Combined payload bytes differ')
-    from parquet_candidate import arrow_schema, timestamp
+    if __package__:
+        from .parquet_candidate import arrow_schema, timestamp
+    else:
+        from parquet_candidate import arrow_schema, timestamp
     import pyarrow.parquet as pq
     parquet = pq.ParquetFile(payload)
     if not parquet.schema_arrow.equals(arrow_schema(contract)) or parquet.metadata.num_rows!=expected_rows:

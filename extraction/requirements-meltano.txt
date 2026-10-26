@@ -1,4 +1,3 @@
-# Execute existing batch extraction/validation as Meltano utilities (not Singer taps).
+# Install from repository root. The loader extra pins Blueprint's target by commit.
 meltano==4.4.1
--r requirements.txt
--r ../transform/requirements.txt
+-e .[bigquery]

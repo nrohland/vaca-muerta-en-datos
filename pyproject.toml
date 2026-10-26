@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=80,<83"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "vaca-muerta-singer"
+version = "0.1.0"
+description = "Reviewed Capitulo IV Singer tap and guarded Blueprint BigQuery target"
+requires-python = ">=3.12"
+dependencies = ["singer-sdk==0.54.9", "pyarrow==26.0.0"]
+
+[project.optional-dependencies]
+bigquery = ["z3-target-bigquery @ git+https://github.com/blueprint-data/target-bigquery.git@caad808faf94102067a1da42bcfced26845b5b42"]
+
+[project.scripts]
+tap-cap4 = "vaca_muerta_singer.tap:TapCap4.cli"
+target-bigquery-sandbox = "vaca_muerta_singer.target:SandboxTargetBigQuery.cli"
+
+[tool.setuptools]
+packages = ["vaca_muerta_singer", "extraction", "extraction.scripts", "pipeline"]
+package-dir = {"vaca_muerta_singer" = "extraction/singer/vaca_muerta_singer"}

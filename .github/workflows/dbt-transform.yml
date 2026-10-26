@@ -37,11 +37,15 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
           python-version: '3.12'
-      - name: Validate local Meltano execution plan without source or cloud access
+      - name: Validate Singer plugins without source or cloud access
         run: |
-          python -m pip install meltano==4.4.1
-          meltano run cap4:plan
-          python -m unittest discover -s pipeline/tests -p test_meltano_adapter.py
+          python -m pip install -r extraction/requirements-meltano.txt
+          python -m unittest discover -s extraction/singer/tests
+          meltano install extractor tap-cap4
+          meltano install loader target-bigquery
+          export VM_RUN_ID=offline_ci
+          meltano invoke tap-cap4 --discover > "$RUNNER_TEMP/cap4-catalog.json"
+          meltano invoke target-bigquery --about
   validate:
     if: github.event_name != 'workflow_dispatch' || !inputs.public_source_check
     runs-on: ubuntu-latest

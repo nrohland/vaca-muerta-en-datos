@@ -5,26 +5,74 @@ send_anonymous_usage_stats: false
 environments:
   - name: dev
 plugins:
-  utilities:
-    - name: cap4
-      namespace: cap4
-      commands:
-        plan:
-          executable: python
-          args: scripts/run_meltano.py all --plan
-        prepare:
-          executable: python
-          args: scripts/run_meltano.py prepare
-        load:
-          executable: python
-          args: scripts/run_meltano.py load
-        transform:
-          executable: python
-          args: scripts/run_meltano.py transform
-        pipeline:
-          executable: python
-          args: scripts/run_meltano.py all
+  extractors:
+    - name: tap-cap4
+      namespace: tap_cap4
+      pip_url: -e .
+      executable: tap-cap4
+      capabilities: [discover, catalog, state, about]
+      select: ["*.*"]
+      settings:
+        - name: repo_dir
+        - name: run_id
+        - name: artifacts_dir
+        - name: inbound_dir
+      config:
+        repo_dir: .
+        run_id: ${VM_RUN_ID}
+        artifacts_dir: .local/singer/${VM_RUN_ID}
+  loaders:
+    - name: target-bigquery
+      namespace: target_bigquery
+      pip_url: -e .[bigquery]
+      executable: target-bigquery-sandbox
+      capabilities: [about]
+      settings:
+        - name: run_id
+        - name: artifacts_dir
+        - name: project
+        - name: dataset
+        - name: location
+        - name: method
+        - name: batch_size
+          kind: integer
+        - name: denormalized
+          kind: boolean
+        - name: fail_fast
+          kind: boolean
+        - name: load_method
+        - name: overwrite
+          kind: boolean
+        - name: upsert
+          kind: boolean
+        - name: generate_view
+          kind: boolean
+        - name: add_record_metadata
+          kind: boolean
+        - name: flattening_enabled
+          kind: boolean
+        - name: options
+          kind: object
+      config:
+        run_id: ${VM_RUN_ID}
+        artifacts_dir: .local/singer/${VM_RUN_ID}
+        project: vaca-muerta-pulse
+        dataset: raw_cap4_candidate_dev
+        location: US
+        method: batch_job
+        batch_size: 32768
+        denormalized: true
+        fail_fast: true
+        load_method: append-only
+        overwrite: false
+        upsert: false
+        generate_view: false
+        add_record_metadata: false
+        flattening_enabled: false
+        options:
+          max_workers: 1
+          process_pool: false
 jobs:
   - name: candidate-history
     tasks:
-      - cap4:pipeline
+      - tap-cap4 target-bigquery

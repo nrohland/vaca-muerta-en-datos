@@ -4,6 +4,10 @@ on:
   pull_request:
   workflow_dispatch:
     inputs:
+      singer_only:
+        description: Only offline Singer plugin checks (no source or cloud access)
+        type: boolean
+        default: false
       public_source_check:
         description: Read-only public source connectivity check (no cloud or notices)
         type: boolean
@@ -47,7 +51,7 @@ jobs:
           meltano invoke tap-cap4 --discover > "$RUNNER_TEMP/cap4-catalog.json"
           meltano invoke target-bigquery --about
   validate:
-    if: github.event_name != 'workflow_dispatch' || !inputs.public_source_check
+    if: github.event_name != 'workflow_dispatch' || (!inputs.public_source_check && !inputs.singer_only)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:

@@ -1,0 +1,52 @@
+name: Tor SOCKS5 official source experiment
+on:
+  push:
+    branches: [test/tor-source-connectivity]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: Install diagnostic clients on the ephemeral runner
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y tor
+          python -m pip install curl_cffi==0.17.0
+      - name: Bootstrap private client-only Tor instance
+        run: |
+          mkdir -m 700 "$RUNNER_TEMP/vm-tor"
+          tor --quiet -f /dev/null --ClientOnly 1 --SocksPort '127.0.0.1:19050 IsolateSOCKSAuth' --DataDirectory "$RUNNER_TEMP/vm-tor" --PidFile "$RUNNER_TEMP/vm-tor.pid" --Log "notice file $RUNNER_TEMP/vm-tor.log" --RunAsDaemon 1
+          python - <<'PY'
+          import json, os, time
+          from pathlib import Path
+          log=Path(os.environ['RUNNER_TEMP'])/'vm-tor.log'
+          for _ in range(60):
+              if log.exists() and 'Bootstrapped 100%' in log.read_text():
+                  print(json.dumps({'tor_bootstrap':'ready','client_only':True}))
+                  break
+              time.sleep(2)
+          else:
+              raise SystemExit('Tor bootstrap unavailable: source not tested')
+          PY
+      - name: Probe bounded official metadata and CSV prefixes via SOCKS5 remote DNS
+        run: python diagnostics/curl-cffi/probe.py --tor
+      - name: Stop the isolated Tor client
+        if: always()
+        run: |
+          python - <<'PY'
+          import os, signal
+          from pathlib import Path
+          pid=Path(os.environ['RUNNER_TEMP'])/'vm-tor.pid'
+          if pid.exists():
+              try:os.kill(int(pid.read_text()),signal.SIGTERM)
+              except ProcessLookupError:pass
+          PY
